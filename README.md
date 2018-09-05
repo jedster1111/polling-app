@@ -108,20 +108,8 @@ JSON:
 ------
 Response Code: `400` <br>
 Description: Failed to update poll, maybe syntax is invalid or poll with id doesn't exist <br>
-JSON:
-```
-{
-	id: "1",
-	creatorName: "Roy",
-	pollName: "What furniture?",
-	description: "We are going to get some new furniture in the office!",
-	options: [
-		{id: 1, value: "bean bags", votes: ["Jed", "James"]},
-		{id: 2, value: "rocking chairs", votes: ["Roy"]},
-		{id: 3, value: "garden bench", votes: []},
-	]
-}
-```
+JSON: N/A
+
 ------
 ### `GET /polls/:id`
 #### Expects
