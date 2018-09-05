@@ -3,6 +3,8 @@ All routes go through `/api/`, eg: `www.polling-app.com/api/polls` <br>
 
 ------
 ### `POST /polls`
+#### Usage
+Create a new poll.
 #### Expects
 ```
 { 
@@ -22,14 +24,14 @@ Description: Succesfully created a new poll <br>
 Json:
 ```
 {
-	id: "1",
+	pollId: "1",
 	creatorName: "Roy",
 	pollName: "What furniture?",
 	description: "We are going to get some new furniture in the office!",
 	options: [
-		{id: 1, value: "bean bags", votes: ["Jed", "James"]},
-		{id: 2, value: "rocking chairs", votes: ["Roy"]},
-		{id: 3, value: "garden bench", votes: []},
+		{optionId: 1, value: "bean bags", votes: ["Jed", "James"]},
+		{optionId: 2, value: "rocking chairs", votes: ["Roy"]},
+		{optionId: 3, value: "garden bench", votes: []},
 	]
 }
 ```
@@ -41,6 +43,8 @@ Json: N/A
 
 ------
 ### `GET /polls`
+#### Usage
+Gets a list of existing polls and their information.
 #### Expects
 N/A
 #### Returns
@@ -51,24 +55,24 @@ Json:
 {
 	polls: [
 		{
-			id: "1",
+			pollId: "1",
 			creatorName: "Roy",
 			pollName: "What furniture?",
 			description: "We are going to get some new furniture in the office!",
 			options: [
-				{id: 1, value: "bean bags", votes: ["Jed", "James"]},
-				{id: 2, value: "rocking chairs", votes: ["Roy"]},
-				{id: 3, value: "garden bench", votes: []},
+				{optionId: 1, value: "bean bags", votes: ["Jed", "James"]},
+				{optionId: 2, value: "rocking chairs", votes: ["Roy"]},
+				{optionId: 3, value: "garden bench", votes: []},
 			]
 		},
 		{
-			id: "2",
+			pollId: "2",
 			creatorName: "Jed",
 			pollName: "New monitors?",
 			description: "What type of monitor would you guys like?",
 			options: [
-				{id: 1, value: "dell", votes: ["Jed", "James"]},
-				{id: 2, value: "acer", votes: ["Roy"]}
+				{optionId: 1, value: "dell", votes: ["Jed", "James"]},
+				{optionId: 2, value: "acer", votes: ["Roy"]}
 			]
 		}
 	]
@@ -76,15 +80,16 @@ Json:
 ```
 ------
 ### `POST /polls/:id`
+#### Usage
+Updates a specific poll <br>
+You are only required to enter in the information that you wish to change. <br>
+Id can not be changed, it can only be used for identification.
 #### Expects
 ```
 {
-	id: "1",
-	creatorName: "Roy",
-	pollName: "What furniture?",
 	description: "What furniture do you want?",
 	options: [
-		{id: 1, value: "bean-bags"},
+		{optionId: 1, value: "bar stools"},
 	]
 }
 ```
@@ -94,14 +99,14 @@ Description: Succesfully updated poll information <br>
 JSON:
 ```
 {
-	id: "1",
+	pollId: "1",
 	creatorName: "Roy",
 	pollName: "What furniture?",
 	description: "What furniture do you want?",
 	options: [
-		{id: 1, value: "bean-bags", votes: ["Jed", "James"]},
-		{id: 2, value: "rocking chairs", votes: ["Roy"]},
-		{id: 3, value: "garden bench", votes: []},
+		{optionId: 1, value: "bar stools", votes: ["Jed", "James"]},
+		{optionId: 2, value: "rocking chairs", votes: ["Roy"]},
+		{optionId: 3, value: "garden bench", votes: []},
 	]
 }
 ```
@@ -112,6 +117,8 @@ JSON: N/A
 
 ------
 ### `GET /polls/:id`
+#### Usage
+Gets the data for a specific poll
 #### Expects
 N/A
 #### Returns
@@ -120,14 +127,14 @@ Description: Got specific poll information <br>
 JSON:
 ```
 {
-	id: "1",
+	pollId: "1",
 	creatorName: "Roy",
 	pollName: "What furniture?",
 	description: "What furniture do you want?",
 	options: [
-		{id: 1, value: "bean-bags", votes: ["Jed", "James"]},
-		{id: 2, value: "rocking chairs", votes: ["Roy"]},
-		{id: 3, value: "garden bench", votes: []},
+		{optionId: 1, value: "bean-bags", votes: ["Jed", "James"]},
+		{optionId: 2, value: "rocking chairs", votes: ["Roy"]},
+		{optionId: 3, value: "garden bench", votes: []},
 	]
 }
 ```
@@ -138,30 +145,15 @@ JSON: N/A
 
 ------
 ### `DELETE /polls/:id`
+#### Usage
+Deletes a specific poll
 #### Expects
 N/A
 #### Returns
 Response Code: `200` <br>
 Description: Succesfully deleted poll <br>
-JSON:
-```
-I deleted poll with id 2 in this example
-{
-	polls: [
-		{
-			id: "1",
-			creatorName: "Roy",
-			pollName: "What furniture?",
-			description: "We are going to get some new furniture in the office!",
-			options: [
-				{id: 1, value: "bean bags", votes: ["Jed", "James"]},
-				{id: 2, value: "rocking chairs", votes: ["Roy"]},
-				{id: 3, value: "garden bench", votes: []},
-			]
-		}
-	]
-}
-```
+JSON: N/A
+
 ------
 Response Code: `400` <br>
 Description: Failed to delete poll, maybe the poll with that id doesn't exist <br>
@@ -169,12 +161,14 @@ JSON: N/A
 
 ------
 ### `POST /polls/:id/vote`
+#### Usage
+Casts a vote on an option within a specific poll. <br>
+If the user has already voted on the option chosen, his previous vote should be removed.
 #### Expects
 ```
 {
-	id: "1",
 	voterName: "Jimmy",
-	optionID: "2"
+	optionId: "2"
 }
 ```
 #### Returns
@@ -183,31 +177,31 @@ Description: Succesfully voted for option in poll <br>
 JSON:
 ```
 {
-	id: "1",
+	pollId: "1",
 	creatorName: "Roy",
 	pollName: "What furniture?",
 	description: "What furniture do you want?",
 	options: [
-		{id: 1, value: "bean-bags", votes: ["Jed", "James"]},
-		{id: 2, value: "rocking chairs", votes: ["Roy", "Jimmy"]},
-		{id: 3, value: "garden bench", votes: []},
+		{optionId: 1, value: "bean-bags", votes: ["Jed", "James"]},
+		{optionId: 2, value: "rocking chairs", votes: ["Roy", "Jimmy"]},
+		{optionId: 3, value: "garden bench", votes: []},
 	]
 }
 ```
 ------
 Response Code: `400` <br>
-Description: Vote was rejected, possibly due to duplicate votes or maybe invalid option id <br>
+Description: Vote was rejected, possibly due to invalid option id <br>
 JSON:
 ```
 {
-	id: "1",
+	pollId: "1",
 	creatorName: "Roy",
 	pollName: "What furniture?",
 	description: "What furniture do you want?",
 	options: [
-		{id: 1, value: "bean-bags", votes: ["Jed", "James"]},
-		{id: 2, value: "rocking chairs", votes: ["Roy"]},
-		{id: 3, value: "garden bench", votes: []},
+		{optionId: 1, value: "bean-bags", votes: ["Jed", "James"]},
+		{optionId: 2, value: "rocking chairs", votes: ["Roy"]},
+		{optionId: 3, value: "garden bench", votes: []},
 	]
 }
 ```
