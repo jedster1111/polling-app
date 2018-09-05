@@ -1,3 +1,9 @@
+## Commands
+To run a file while watching for changes in tsDist directory to restart: `npm run nodemon -- (path to file)` <br>
+For example: `npm run nodemon -- tsDist/server/server`
+
+To compile ts files inside src directory into tsDist directory while watching for changes, run: `tsc -w`
+
 ## Api Design
 All routes go through `/api/`, eg: `www.polling-app.com/api/polls` <br>
 

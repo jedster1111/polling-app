@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+		"outDir": "tsDist",
+		"rootDir": "src",
+        "allowJs": true,
+        "strict" : true,
+        "target": "es6",
+        "module": "commonjs",
+        "moduleResolution": "node"
+    },
+    "include": [
+        "./src/**/*"
+    ],
+    "exclude": [
+        "tsDist"
+    ]
+}
