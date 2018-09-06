@@ -37,6 +37,10 @@ describe("Test POST /api/polls", () => {
       .set("Accept", "application/json")
       .expect(200);
     const dbResult = pollsModel.findOne({ name: "testing" });
+    if (!dbResult) {
+      throw new Error("Entry wasn't created");
+    }
+    // check if input was stored into database correctly
     expect({ name: dbResult.name, creator: dbResult.creator }).toMatchObject(
       inputData
     );
