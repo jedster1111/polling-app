@@ -8,7 +8,8 @@
     "rules": {
         "no-console": false,
         "prettier": true,
-        "member-access": false
+        "member-access": false,
+        "interface-name": false
     },
     "rulesDirectory": ["tslint-plugin-prettier"]
 }

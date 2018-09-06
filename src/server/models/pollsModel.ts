@@ -5,12 +5,12 @@ const pollsModel = db.addCollection("polls");
 // pollsModel.insert({ name: "test", creator: "Jed" });
 // pollsModel.insert({ name: "test2", creator: "Roy" });
 
-interface InterfaceOption {
-  optionId: string;
+interface Option {
+  optionId?: string;
   value: string;
   votes: string[];
 }
-class Poll {
+export class Poll {
   pollId: string;
   creatorName: string;
   pollName: string;
@@ -18,11 +18,11 @@ class Poll {
   options: object[];
 
   constructor(
-    pollId: string,
     creatorName: string,
     pollName: string,
     description: string,
-    options: InterfaceOption[]
+    options: Option[],
+    pollId?: string
   ) {
     this.pollId = pollId || uuid();
     this.creatorName = creatorName;

@@ -7,11 +7,9 @@ pollRouter
   .route("/")
   .get((req, res) => {
     const polls: object[] = pollsModel.find();
-    console.log("/api/polls was accessed");
     res.json(polls);
   })
   .post((req, res) => {
-    console.log(req.body);
     const newPoll = req.body;
     pollsModel.insert(newPoll);
     res.status(200).send(pollsModel.find({ id: req.body.id }));
