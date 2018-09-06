@@ -1,4 +1,3 @@
-import uuid = require("uuid/v1");
 import { Poll } from "./pollsModel";
 
 jest.mock("uuid/v1", () => {
@@ -22,7 +21,7 @@ test("test Poll constructor works", () => {
   ]);
   expect(poll.pollId).toBe("1");
 });
-test.only("if you don't input Id it will generate for you", () => {
+test("if you don't input Id it will generate for you", () => {
   const poll = new Poll("Jed", "test", "hey there", [
     { value: "chair", votes: [] },
     { value: "bench", votes: [] }

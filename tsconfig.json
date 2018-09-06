@@ -6,7 +6,10 @@
         "strict" : true,
         "target": "es6",
         "module": "commonjs",
-        "moduleResolution": "node"
+        "moduleResolution": "node",
+        "forceConsistentCasingInFileNames": true,
+        "noImplicitReturns": true,
+        "noUnusedLocals": true,
     },
     "include": [
         "./src/**/*"

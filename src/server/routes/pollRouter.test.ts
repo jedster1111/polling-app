@@ -31,7 +31,7 @@ describe("Test POST /api/polls", () => {
   });
   test("tests if POST request with json adds to database", async () => {
     const inputData = { name: "testing", creator: "Joe" };
-    const response = await request(app)
+    await request(app)
       .post("/api/polls")
       .send(inputData)
       .set("Accept", "application/json")
