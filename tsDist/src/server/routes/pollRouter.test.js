@@ -11,7 +11,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const request = require("supertest");
 const app_1 = require("../app");
 const pollsModel_1 = require("../models/pollsModel");
-describe("Test /api/polls", () => {
+describe("Test GET /api/polls", () => {
     // adds test data before each test
     beforeEach(() => {
         pollsModel_1.default.insert({ name: "test", creator: "Jed" });
@@ -23,8 +23,8 @@ describe("Test /api/polls", () => {
     });
     test("GET should respond with 200 and json in body", () => __awaiter(this, void 0, void 0, function* () {
         const response = yield request(app_1.default).get("/api/polls");
-        const responseCleaned = response.body.map(el => {
-            return { name: el.name, creator: el.creator };
+        const responseCleaned = response.body.map((poll) => {
+            return { name: poll.name, creator: poll.creator };
         });
         expect(response.status).toBe(200);
         expect(responseCleaned).toMatchObject([

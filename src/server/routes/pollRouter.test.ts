@@ -2,7 +2,7 @@ import request = require("supertest");
 import app from "../app";
 import pollsModel from "../models/pollsModel";
 
-describe("Test /api/polls", () => {
+describe("Test GET /api/polls", () => {
   // adds test data before each test
   beforeEach(() => {
     pollsModel.insert({ name: "test", creator: "Jed" });
@@ -14,8 +14,8 @@ describe("Test /api/polls", () => {
   });
   test("GET should respond with 200 and json in body", async () => {
     const response = await request(app).get("/api/polls");
-    const responseCleaned = response.body.map(el => {
-      return { name: el.name, creator: el.creator };
+    const responseCleaned = response.body.map((poll: any) => {
+      return { name: poll.name, creator: poll.creator };
     });
     expect(response.status).toBe(200);
     expect(responseCleaned).toMatchObject([
