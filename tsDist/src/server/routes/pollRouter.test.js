@@ -33,3 +33,18 @@ describe("Test GET /api/polls", () => {
         ]);
     }));
 });
+describe("Test POST /api/polls", () => {
+    afterEach(() => {
+        // cleans up test data after each test
+        pollsModel_1.default.removeDataOnly();
+    });
+    test("tests if POST request with json adds to database", () => __awaiter(this, void 0, void 0, function* () {
+        const inputData = { name: "testing", creator: "Joe" };
+        const response = yield request(app_1.default)
+            .post("/api/polls")
+            .send(inputData)
+            .set("Accept", "application/json")
+            .expect(200);
+        expect(response.body).toMatchObject(inputData);
+    }));
+});

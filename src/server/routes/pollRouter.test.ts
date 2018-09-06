@@ -24,3 +24,18 @@ describe("Test GET /api/polls", () => {
     ]);
   });
 });
+describe("Test POST /api/polls", () => {
+  afterEach(() => {
+    // cleans up test data after each test
+    pollsModel.removeDataOnly();
+  });
+  test("tests if POST request with json adds to database", async () => {
+    const inputData = { name: "testing", creator: "Joe" };
+    const response = await request(app)
+      .post("/api/polls")
+      .send(inputData)
+      .set("Accept", "application/json")
+      .expect(200);
+    expect(response.body).toMatchObject(inputData);
+  });
+});
