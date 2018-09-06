@@ -6,7 +6,7 @@
   "scripts": {
     "nodemon": "nodemon --watch tsDist ",
     "server": "nodemon --watch tsDist tsDist/server/server",
-    "test": "jest"
+    "test": "npx jest"
   },
   "keywords": [],
   "author": "",

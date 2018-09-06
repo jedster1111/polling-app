@@ -9,7 +9,7 @@
         "moduleResolution": "node"
     },
     "include": [
-        "./src/**/*"
+        "./src/**/*", "jest.config.js"
     ],
     "exclude": [
         "tsDist"
