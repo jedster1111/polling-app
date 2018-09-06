@@ -14,7 +14,7 @@ pollRouter
     console.log(req.body);
     const newPoll = req.body;
     pollsModel.insert(newPoll);
-    res.status(200).send(pollsModel.find({ name: req.body.name }));
+    res.status(200).send(pollsModel.find({ id: req.body.id }));
   });
 
 export default pollRouter;
