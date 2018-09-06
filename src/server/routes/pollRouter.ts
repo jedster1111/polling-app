@@ -1,5 +1,8 @@
 import express = require("express");
+import db from "../models/database";
 import pollsModel from "../models/pollsModel";
+
+db.insertPoll()
 
 const pollRouter = express.Router();
 
