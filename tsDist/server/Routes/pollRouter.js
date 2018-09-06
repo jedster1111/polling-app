@@ -4,7 +4,8 @@ const express = require("express");
 const pollsModel_1 = require("../models/pollsModel");
 const pollRouter = express.Router();
 pollRouter.route("/").get((req, res) => {
-    const poll = pollsModel_1.default.findOne({ name: "test2" });
-    console.log(poll);
+    const polls = pollsModel_1.default.find();
+    console.log("/api/polls was accessed");
+    res.json(polls);
 });
 exports.default = pollRouter;
