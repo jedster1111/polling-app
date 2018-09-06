@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "nodemon": "nodemon --watch tsDist ",
+    "server": "nodemon --watch tsDist tsDist/server/server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
