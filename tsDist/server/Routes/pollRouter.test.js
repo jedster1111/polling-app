@@ -11,7 +11,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const request = require("supertest");
 const app_1 = require("../app");
 const pollsModel_1 = require("../models/pollsModel");
-describe("Test /api/polls", () => {
+describe("Test GET /api/polls", () => {
     // adds test data before each test
     beforeEach(() => {
         pollsModel_1.default.insert({ name: "test", creator: "Jed" });
@@ -23,13 +23,29 @@ describe("Test /api/polls", () => {
     });
     test("GET should respond with 200 and json in body", () => __awaiter(this, void 0, void 0, function* () {
         const response = yield request(app_1.default).get("/api/polls");
-        const responseCleaned = response.body.map(el => {
-            return { name: el.name, creator: el.creator };
+        const responseCleaned = response.body.map((poll) => {
+            return { name: poll.name, creator: poll.creator };
         });
         expect(response.status).toBe(200);
         expect(responseCleaned).toMatchObject([
             { name: "test", creator: "Jed" },
             { name: "test2", creator: "Roy" }
         ]);
+    }));
+});
+describe("Test POST /api/polls", () => {
+    afterEach(() => {
+        // cleans up test data after each test
+        pollsModel_1.default.removeDataOnly();
+    });
+    test("tests if POST request with json adds to database", () => __awaiter(this, void 0, void 0, function* () {
+        const inputData = { name: "testing", creator: "Joe" };
+        const response = yield request(app_1.default)
+            .post("/api/polls")
+            .send(inputData)
+            .set("Accept", "application/json")
+            .expect(200);
+        const dbResult = pollsModel_1.default.findOne({ name: "testing" });
+        expect({ name: dbResult.name, creator: dbResult.creator }).toMatchObject(inputData);
     }));
 });

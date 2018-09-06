@@ -10,12 +10,11 @@ pollRouter
     console.log("/api/polls was accessed");
     res.json(polls);
   })
-  .post(async (req, res) => {
-    console.log("POST was called", req.body);
+  .post((req, res) => {
+    console.log(req.body);
     const newPoll = req.body;
-    await pollsModel.insert(newPoll);
-    console.log(pollsModel.find());
-    res.status(200).send(newPoll);
+    pollsModel.insert(newPoll);
+    res.status(200).send(pollsModel.find({ name: req.body.name }));
   });
 
 export default pollRouter;

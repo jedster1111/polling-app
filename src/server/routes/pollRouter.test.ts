@@ -36,6 +36,9 @@ describe("Test POST /api/polls", () => {
       .send(inputData)
       .set("Accept", "application/json")
       .expect(200);
-    expect(response.body).toMatchObject(inputData);
+    const dbResult = pollsModel.findOne({ name: "testing" });
+    expect({ name: dbResult.name, creator: dbResult.creator }).toMatchObject(
+      inputData
+    );
   });
 });
