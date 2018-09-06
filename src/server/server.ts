@@ -1,13 +1,14 @@
-import express = require("express");
-const app = express();
 import bodyParser = require("body-parser");
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+import express = require("express");
+import loki = require("lokijs");
+import request = require("supertest");
+import pollRouter from "./routes/pollRouter";
 
+const app = express();
 const port = process.env.PORT || 8000;
 
-const router = express.Router();
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use("/api/polls", pollRouter);
 
-router.get("/", (req, res) => res.json({ message: "hooray! welcome to our api" }));
-
-app.listen(3000, () => console.log("App is running on port 3000"));
+app.listen(port, () => console.log(`App is running on port: ${port}`));
