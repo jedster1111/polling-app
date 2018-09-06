@@ -1,5 +1,6 @@
 /vscode/launch.json
 /media
+/tsDist
 
 # dependencies
 /node_modules
