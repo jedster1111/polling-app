@@ -1,10 +1,11 @@
 import request = require("supertest");
 import app from "../app";
-import db, { Poll, PollInput } from "../models/database";
+import db, { Poll, PollInput, UpdatePollInput } from "../models/database";
 
 describe("Test GET /api/polls", () => {
   // adds test data before each test
-  beforeAll(() => {
+  beforeEach(() => {
+    db.reset();
     db.insertPoll({
       creatorName: "Jed",
       description: "hey there",
@@ -18,10 +19,9 @@ describe("Test GET /api/polls", () => {
       pollName: "fruit"
     });
   });
-  afterAll(() => {
+  afterEach(() => {
     // cleans up test data after each test
-    db.removeAllPollsData();
-    db.resetCount();
+    db.reset();
   });
   test("GET should respond with 200 and json in body", async () => {
     const response = await request(app)
@@ -57,6 +57,9 @@ describe("Test GET /api/polls", () => {
 });
 
 describe("Test POST /api/polls", () => {
+  beforeEach(() => db.reset());
+  afterEach(() => db.reset());
+
   test("tests if POST request returns new poll", async () => {
     const inputData: PollInput = {
       creatorName: "Jed",
@@ -86,7 +89,8 @@ describe("Test POST /api/polls", () => {
 });
 
 describe("Test GET /api/polls/:id", () => {
-  beforeAll(() => {
+  beforeEach(() => {
+    db.reset();
     db.insertPoll({
       creatorName: "Jed",
       description: "hey there",
@@ -100,10 +104,51 @@ describe("Test GET /api/polls/:id", () => {
       pollName: "fruit"
     });
   });
+  afterEach(() => db.reset());
   test("You can get a poll by Id", async () => {
     const response = await request(app).get("/api/polls/2");
     const responsePoll: Poll = response.body.poll;
     const dbPoll: Poll = db.getPoll({ pollId: "2" });
     expect(responsePoll).toMatchObject(dbPoll);
+  });
+});
+
+describe("Test POST /api/polls/:id", () => {
+  beforeEach(() => {
+    db.reset();
+    db.insertPoll({
+      creatorName: "Jed",
+      description: "hey there",
+      options: ["bean bags"],
+      pollName: "test"
+    });
+    db.insertPoll({
+      creatorName: "James",
+      description: "testing again",
+      options: ["banana", "orange"],
+      pollName: "fruit"
+    });
+  });
+  afterEach(() => db.reset());
+  test("You can change properties of a poll, excluding options", async () => {
+    const inputData: UpdatePollInput = {
+      creatorName: "creatorNameChanged",
+      pollName: "pollNameChanged"
+    };
+    const expectedResponse: Poll = {
+      creatorName: "creatorNameChanged",
+      description: "hey there",
+      options: [{ optionId: "1", value: "bean bags", votes: [] }],
+      pollId: "1",
+      pollName: "pollNameChanged"
+    };
+    const payload = await request(app)
+      .post("/api/polls/1")
+      .send(inputData)
+      .set("Accept", "application/json")
+      .expect(200);
+    const postResponse = JSON.parse(payload.text).poll;
+    expect(postResponse).toMatchObject(expectedResponse);
+    expect(postResponse).toMatchObject(db.getPoll({ pollId: "1" }));
   });
 });

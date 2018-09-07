@@ -16,6 +16,7 @@ const pollInputs: PollInput[] = [
 ];
 
 beforeAll(() => {
+  db.reset();
   pollInputs.forEach(pollInput => db.insertPoll(pollInput));
 });
 afterAll(() => {

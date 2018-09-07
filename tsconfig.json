@@ -16,6 +16,7 @@
         "./src/**/*"
     ],
     "exclude": [
-        "tsDist"
+        "tsDist",
+        "src/coverage"
     ]
 }
