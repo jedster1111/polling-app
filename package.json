@@ -4,9 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "nodemon": "nodemon --watch tsDist ",
-    "server": "nodemon --watch tsDist tsDist/server/server",
-    "ts-node":"nodemon --exec ./node_modules/.bin/ts-node -- ./src/server/server.ts",
+    "build": "tsc",
+    "server": "nodemon --exec ./node_modules/.bin/ts-node -- ./src/server/server.ts",
     "test": "jest"
   },
   "keywords": [],

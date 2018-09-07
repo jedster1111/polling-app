@@ -1,5 +1,5 @@
 import express = require("express");
-import db from "../models/database";
+import db, { UpdatePollInput } from "../models/database";
 
 const pollRouter = express.Router();
 
@@ -11,13 +11,26 @@ pollRouter
   })
   .post((req, res) => {
     const newPoll = req.body;
-    db.insertPoll(newPoll);
-    const pollId: string = req.body.id;
-    res.status(200).send(db.getPoll({ pollId }));
+    const poll = db.insertPoll(newPoll);
+    res.status(201);
+    res.setHeader("Content-Type", "application/json");
+    res.json(poll);
   });
-pollRouter.route("/:id").get((req, res) => {
-  const poll = db.getPoll({ pollId: req.params.id });
-  res.json(poll);
-});
+
+pollRouter
+  .route("/:pollId")
+  .get((req, res) => {
+    const poll = db.getPoll({ pollId: req.params.pollId });
+    res.json(poll);
+  })
+  .post((req, res) => {
+    const updatedPollInput: UpdatePollInput = req.body;
+    const pollId = req.params.pollId;
+    db.updatePoll(pollId, updatedPollInput);
+    res
+      .status(200)
+      .set("Content-Type", "text/plain")
+      .send("HEllO can you see me!");
+  });
 
 export default pollRouter;

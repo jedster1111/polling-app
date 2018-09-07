@@ -1,14 +1,12 @@
 ## Commands
+  * To build, run: `npm run build` <br>
+	To run in watch mode, run `npm run build -- -w`
 
   * To run server and restart on changes: `npm run server` <br>
 *The above command will restart when any file changes within `tsDist` directory*
 
   * To execute tests with jest, run: `npm test`
 
-  * To compile ts files inside src directory into tsDist directory while watching for changes, run: `tsc -w`
-
-  * To run a file while watching for changes in tsDist directory to restart: `npm run nodemon -- (path to file)` <br>
-For example: `npm run nodemon -- tsDist/server/server`
 
 ## Api Design
 All routes go through `/api/`, eg: `www.polling-app.com/api/polls` <br>

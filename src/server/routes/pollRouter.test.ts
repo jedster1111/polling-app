@@ -62,7 +62,7 @@ describe("Test POST /api/polls", () => {
     db.removeAllPollsData();
     db.resetCount();
   });
-  test("tests if POST request adds to database", async () => {
+  test("tests if POST request returns new poll", async () => {
     const inputData: PollInput = {
       creatorName: "Jed",
       description: "hey test",
@@ -73,20 +73,15 @@ describe("Test POST /api/polls", () => {
       .post("/api/polls")
       .send(inputData)
       .set("Accept", "application/json")
-      .expect(200);
-    // const dbResult = db.getPoll({ pollName: "test" });
-    // if (!dbResult) {
-    //   throw new Error("Entry wasn't created");
-    // }
-    // check if input was stored into database correctly
-    expect(payload.body).toMatchObject({
+      .expect(201);
+    // console.log(payload);
+    expect(JSON.parse(payload.text)).toMatchObject({
       creatorName: "Jed",
       description: "hey test",
       options: [
         { optionId: "1", value: "chair", votes: [] },
         { optionId: "2", value: "bench", votes: [] }
       ],
-      pollId: "1",
       pollName: "test"
     });
   });
