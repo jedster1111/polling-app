@@ -69,17 +69,17 @@ describe("Test POST /api/polls", () => {
       options: ["chair", "bench"],
       pollName: "test"
     };
-    await request(app)
+    const payload = await request(app)
       .post("/api/polls")
       .send(inputData)
       .set("Accept", "application/json")
       .expect(200);
-    const dbResult = db.getPoll({ pollName: "test" });
-    if (!dbResult) {
-      throw new Error("Entry wasn't created");
-    }
+    // const dbResult = db.getPoll({ pollName: "test" });
+    // if (!dbResult) {
+    //   throw new Error("Entry wasn't created");
+    // }
     // check if input was stored into database correctly
-    expect(dbResult).toMatchObject({
+    expect(payload.body).toMatchObject({
       creatorName: "Jed",
       description: "hey test",
       options: [
