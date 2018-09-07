@@ -17,16 +17,22 @@ describe("Test GET /api/polls", () => {
     db.removeAllPollsData();
   });
   test("GET should respond with 200 and json in body", async () => {
-    const response = await request(app).get("/api/polls");
+    const response = await request(app)
+      .get("/api/polls")
+      .expect("Content-Type", /json/);
     // const responseCleaned = response.body.map((poll: any) => {
     //   return { name: poll.name, creator: poll.creator };
     // });
     expect(response.status).toBe(200);
+  });
+  test("GET should respond with array of polls", async () => {
+    const response = await request(app).get("/api/polls");
     expect(response.body).toMatchObject([
       {
         creatorName: "Jed",
         description: "hey there",
-        options: ["bean bags"],
+        options: [{ optionId: "1", value: "bean bags", votes: [] }],
+        pollId: "1",
         pollName: "test"
       }
     ]);
@@ -54,6 +60,15 @@ describe("Test POST /api/polls", () => {
       throw new Error("Entry wasn't created");
     }
     // check if input was stored into database correctly
-    expect(dbResult).toMatchObject(inputData);
+    expect(dbResult).toMatchObject({
+      creatorName: "Jed",
+      description: "hey test",
+      options: [
+        { optionId: "1", value: "chair", votes: [] },
+        { optionId: "2", value: "bench", votes: [] }
+      ],
+      pollId: "1",
+      pollName: "test"
+    });
   });
 });
