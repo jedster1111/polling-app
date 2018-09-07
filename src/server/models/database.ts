@@ -1,4 +1,5 @@
 import loki = require("lokijs");
+import uuid = require("uuid/v1");
 
 export interface PollInput {
   creatorName: string;
@@ -6,7 +7,8 @@ export interface PollInput {
   description: string;
   options: string[];
 }
-interface CleanedPollInput extends PollInput {
+interface Poll extends PollInput {
+  pollId: string;
   options: any[];
 }
 interface Option {
@@ -21,6 +23,9 @@ class Database {
   getPolls(): object[] {
     return this.polls.find();
   }
+  getPoll(query: object): Poll {
+    return this.polls.findOne(query);
+  }
   insertPoll(pollInput: PollInput): void {
     const newOptions: Option[] = pollInput.options.map(
       (option: string, index: number) => {
@@ -31,9 +36,14 @@ class Database {
         };
       }
     );
-    const cleanedPollInput: CleanedPollInput = Object.assign({}, pollInput);
-    cleanedPollInput.options = newOptions;
-    this.polls.insert(pollInput);
+    const cleanedPollInput: Poll = Object.assign(
+      { options: newOptions, pollId: uuid() },
+      pollInput
+    );
+    this.polls.insert(cleanedPollInput);
+  }
+  removeAllPollsData(): void {
+    this.polls.removeDataOnly();
   }
 }
 

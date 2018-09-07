@@ -1,21 +1,18 @@
 import express = require("express");
 import db from "../models/database";
-import pollsModel from "../models/pollsModel";
-
-db.insertPoll()
 
 const pollRouter = express.Router();
 
 pollRouter
   .route("/")
   .get((req, res) => {
-    const polls: object[] = pollsModel.find();
+    const polls: object[] = db.getPolls();
     res.json(polls);
   })
   .post((req, res) => {
     const newPoll = req.body;
-    pollsModel.insert(newPoll);
-    res.status(200).send(pollsModel.find({ id: req.body.id }));
+    db.insertPoll(newPoll);
+    res.status(200).send(db.getPoll({ pollId: req.body.id }));
   });
 
 export default pollRouter;
