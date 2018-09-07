@@ -85,11 +85,5 @@ export function createDatabase() {
 }
 
 const db = createDatabase();
-db.insertPoll({
-  creatorName: "creatorName1",
-  description: "description1",
-  options: ["option1", "option2"],
-  pollName: "pollName1"
-});
 
 export default db;

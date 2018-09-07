@@ -4,7 +4,7 @@ import db, { Poll, PollInput } from "../models/database";
 
 describe("Test GET /api/polls", () => {
   // adds test data before each test
-  beforeEach(() => {
+  beforeAll(() => {
     db.insertPoll({
       creatorName: "Jed",
       description: "hey there",
@@ -18,7 +18,7 @@ describe("Test GET /api/polls", () => {
       pollName: "fruit"
     });
   });
-  afterEach(() => {
+  afterAll(() => {
     // cleans up test data after each test
     db.removeAllPollsData();
     db.resetCount();
@@ -34,12 +34,12 @@ describe("Test GET /api/polls", () => {
   });
   test("GET should respond with array of polls", async () => {
     const response = await request(app).get("/api/polls");
-    expect(response.body).toMatchObject([
+    const polls: Poll[] = response.body.polls;
+    expect(polls).toMatchObject([
       {
         creatorName: "Jed",
         description: "hey there",
         options: [{ optionId: "1", value: "bean bags", votes: [] }],
-        pollId: "1",
         pollName: "test"
       },
       {
@@ -49,18 +49,18 @@ describe("Test GET /api/polls", () => {
           { optionId: "1", value: "banana", votes: [] },
           { optionId: "2", value: "orange", votes: [] }
         ],
-        pollId: "2",
         pollName: "fruit"
       }
     ]);
+    expect(polls[0].pollId).toBeTruthy();
   });
 });
 
 describe("Test POST /api/polls", () => {
   afterEach(() => {
     // cleans up test data after each test
-    db.removeAllPollsData();
-    db.resetCount();
+    // db.removeAllPollsData();
+    // db.resetCount();
   });
   test("tests if POST request returns new poll", async () => {
     const inputData: PollInput = {
@@ -75,7 +75,7 @@ describe("Test POST /api/polls", () => {
       .set("Accept", "application/json")
       .expect(201);
     // console.log(payload);
-    expect(JSON.parse(payload.text)).toMatchObject({
+    expect(JSON.parse(payload.text).poll).toMatchObject({
       creatorName: "Jed",
       description: "hey test",
       options: [
@@ -104,14 +104,8 @@ describe("Test GET /api/polls/:id", () => {
   });
   test("You can get a poll by Id", async () => {
     const response = await request(app).get("/api/polls/2");
-    const poll: Poll = response.body;
-    expect(poll.pollId).toBe("2");
-    expect(poll.pollName).toBe("fruit");
-    expect(poll.creatorName).toBe("James");
-    expect(poll.description).toBe("testing again");
-    expect(poll.options).toMatchObject([
-      { optionId: "1", value: "banana", votes: [] },
-      { optionId: "2", value: "orange", votes: [] }
-    ]);
+    const responsePoll: Poll = response.body.poll;
+    const dbPoll: Poll = db.getPoll({ pollId: "2" });
+    expect(responsePoll).toMatchObject(dbPoll);
   });
 });
