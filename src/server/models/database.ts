@@ -58,13 +58,14 @@ class Database {
   updatePoll(
     query: { [key: string]: string },
     updatePollInput: UpdatePollInput
-  ) {
+  ): Poll {
     const poll = this.getPoll(query);
     const updateKeys: string[] = Object.keys(updatePollInput);
     updateKeys.forEach(key => {
       poll[key] = updatePollInput[key] as string;
     });
     this.polls.update(poll);
+    return poll;
   }
   removeAllPollsData(): void {
     this.polls.removeDataOnly();
