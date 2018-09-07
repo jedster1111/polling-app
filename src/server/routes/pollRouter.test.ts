@@ -1,6 +1,6 @@
 import request = require("supertest");
 import app from "../app";
-import db, { PollInput } from "../models/database";
+import db, { Poll, PollInput } from "../models/database";
 
 describe("Test GET /api/polls", () => {
   // adds test data before each test
@@ -55,6 +55,7 @@ describe("Test GET /api/polls", () => {
     ]);
   });
 });
+
 describe("Test POST /api/polls", () => {
   afterEach(() => {
     // cleans up test data after each test
@@ -88,5 +89,34 @@ describe("Test POST /api/polls", () => {
       pollId: "1",
       pollName: "test"
     });
+  });
+});
+
+describe("Test GET /api/polls/:id", () => {
+  beforeAll(() => {
+    db.insertPoll({
+      creatorName: "Jed",
+      description: "hey there",
+      options: ["bean bags"],
+      pollName: "test"
+    });
+    db.insertPoll({
+      creatorName: "James",
+      description: "testing again",
+      options: ["banana", "orange"],
+      pollName: "fruit"
+    });
+  });
+  test("You can get a poll by Id", async () => {
+    const response = await request(app).get("/api/polls/2");
+    const poll: Poll = response.body;
+    expect(poll.pollId).toBe("2");
+    expect(poll.pollName).toBe("fruit");
+    expect(poll.creatorName).toBe("James");
+    expect(poll.description).toBe("testing again");
+    expect(poll.options).toMatchObject([
+      { optionId: "1", value: "banana", votes: [] },
+      { optionId: "2", value: "orange", votes: [] }
+    ]);
   });
 });

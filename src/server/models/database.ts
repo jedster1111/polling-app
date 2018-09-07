@@ -6,7 +6,7 @@ export interface PollInput {
   description: string;
   options: string[];
 }
-interface Poll extends PollInput {
+export interface Poll extends PollInput {
   pollId: string;
   options: any[];
 }
