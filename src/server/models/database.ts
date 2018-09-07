@@ -46,6 +46,9 @@ class Database {
   removeAllPollsData(): void {
     this.polls.removeDataOnly();
   }
+  resetCount(): void {
+    this.pollsCount = 0;
+  }
 }
 
 export function createDatabase() {

@@ -11,10 +11,17 @@ describe("Test GET /api/polls", () => {
       options: ["bean bags"],
       pollName: "test"
     });
+    db.insertPoll({
+      creatorName: "James",
+      description: "testing again",
+      options: ["banana", "orange"],
+      pollName: "fruit"
+    });
   });
   afterEach(() => {
     // cleans up test data after each test
     db.removeAllPollsData();
+    db.resetCount();
   });
   test("GET should respond with 200 and json in body", async () => {
     const response = await request(app)
@@ -34,6 +41,16 @@ describe("Test GET /api/polls", () => {
         options: [{ optionId: "1", value: "bean bags", votes: [] }],
         pollId: "1",
         pollName: "test"
+      },
+      {
+        creatorName: "James",
+        description: "testing again",
+        options: [
+          { optionId: "1", value: "banana", votes: [] },
+          { optionId: "2", value: "orange", votes: [] }
+        ],
+        pollId: "2",
+        pollName: "fruit"
       }
     ]);
   });
@@ -42,8 +59,9 @@ describe("Test POST /api/polls", () => {
   afterEach(() => {
     // cleans up test data after each test
     db.removeAllPollsData();
+    db.resetCount();
   });
-  test("tests if POST request with json adds to database", async () => {
+  test("tests if POST request adds to database", async () => {
     const inputData: PollInput = {
       creatorName: "Jed",
       description: "hey test",

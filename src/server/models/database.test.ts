@@ -1,6 +1,9 @@
 import db, { PollInput } from "./database";
 
-afterEach(() => db.removeAllPollsData());
+afterEach(() => {
+  db.removeAllPollsData();
+  db.resetCount();
+});
 test("test Poll constructor works", () => {
   const pollInput: PollInput = {
     creatorName: "Jed",
