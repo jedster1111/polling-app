@@ -57,11 +57,6 @@ describe("Test GET /api/polls", () => {
 });
 
 describe("Test POST /api/polls", () => {
-  afterEach(() => {
-    // cleans up test data after each test
-    // db.removeAllPollsData();
-    // db.resetCount();
-  });
   test("tests if POST request returns new poll", async () => {
     const inputData: PollInput = {
       creatorName: "Jed",
@@ -69,13 +64,7 @@ describe("Test POST /api/polls", () => {
       options: ["chair", "bench"],
       pollName: "test"
     };
-    const payload = await request(app)
-      .post("/api/polls")
-      .send(inputData)
-      .set("Accept", "application/json")
-      .expect(201);
-    // console.log(payload);
-    expect(JSON.parse(payload.text).poll).toMatchObject({
+    const expectedResponse = {
       creatorName: "Jed",
       description: "hey test",
       options: [
@@ -83,7 +72,16 @@ describe("Test POST /api/polls", () => {
         { optionId: "2", value: "bench", votes: [] }
       ],
       pollName: "test"
-    });
+    };
+    const payload = await request(app)
+      .post("/api/polls")
+      .send(inputData)
+      .set("Accept", "application/json")
+      .expect(201);
+    const postResponse = JSON.parse(payload.text).poll;
+    // console.log(payload);
+    expect(postResponse).toMatchObject(expectedResponse);
+    expect(postResponse).toMatchObject(db.getPoll({ pollName: "test" }));
   });
 });
 
