@@ -1,33 +1,32 @@
 import db, { PollInput } from "./database";
 
-const pollInputs: PollInput[] = [
-  {
-    creatorName: "creatorName1",
-    description: "description1",
-    options: ["option1", "option2"],
-    pollName: "pollName1"
-  },
-  {
-    creatorName: "creatorName2",
-    description: "description2",
-    options: ["option1", "option2"],
-    pollName: "pollName2"
-  },
-  {
-    creatorName: "creatorName3",
-    description: "description3",
-    options: ["option1", "option2"],
-    pollName: "pollName3"
-  }
-];
-
 describe("Test Database class", () => {
-  beforeAll(() => {
+  beforeEach(() => {
+    const pollInputs: PollInput[] = [
+      {
+        creatorName: "creatorName1",
+        description: "description1",
+        options: ["option1", "option2"],
+        pollName: "pollName1"
+      },
+      {
+        creatorName: "creatorName2",
+        description: "description2",
+        options: ["option1", "option2"],
+        pollName: "pollName2"
+      },
+      {
+        creatorName: "creatorName3",
+        description: "description3",
+        options: ["option1", "option2"],
+        pollName: "pollName3"
+      }
+    ];
     db.reset();
     pollInputs.forEach(pollInput => db.insertPoll(pollInput));
     // test
   });
-  afterAll(() => {
+  afterEach(() => {
     db.reset();
   });
 
