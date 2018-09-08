@@ -18,31 +18,35 @@ Create a new poll.
 #### Expects
 ```
 { 
-	creatorName: "Roy",
-	pollName: "What furniture?",
-	description: "We are going to get some new furniture in the office!",
-	options: [
-		"bean bags",
-		"rocking chairs",
-		"garden bench"
-	]
+	poll: {
+		creatorName: "Roy",
+		pollName: "What furniture?",
+		description: "We are going to get some new furniture in the office!",
+		options: [
+			"bean bags",
+			"rocking chairs",
+			"garden bench"
+		]
+	}
 }
 ```
 #### Returns
-Response code: `200` <br>
+Response code: `201` <br>
 Description: Succesfully created a new poll <br>
 Json:
 ```
 {
-	pollId: "1",
-	creatorName: "Roy",
-	pollName: "What furniture?",
-	description: "We are going to get some new furniture in the office!",
-	options: [
-		{optionId: 1, value: "bean bags", votes: ["Jed", "James"]},
-		{optionId: 2, value: "rocking chairs", votes: ["Roy"]},
-		{optionId: 3, value: "garden bench", votes: []},
-	]
+	poll: {
+		pollId: "1",
+		creatorName: "Roy",
+		pollName: "What furniture?",
+		description: "We are going to get some new furniture in the office!",
+		options: [
+			{optionId: 1, value: "bean bags", votes: ["Jed", "James"]},
+			{optionId: 2, value: "rocking chairs", votes: ["Roy"]},
+			{optionId: 3, value: "garden bench", votes: []},
+		]
+	}
 }
 ```
 
@@ -63,7 +67,7 @@ Description: Got a list of polls <br>
 Json:
 ```
 {
-	polls: [
+	polls: {[
 		{
 			pollId: "1",
 			creatorName: "Roy",
@@ -85,7 +89,7 @@ Json:
 				{optionId: 2, value: "acer", votes: ["Roy"]}
 			]
 		}
-	]
+	]}
 }
 ```
 ------
@@ -98,9 +102,7 @@ Id can not be changed, it can only be used for identification.
 ```
 {
 	description: "What furniture do you want?",
-	options: [
-		{optionId: 1, value: "bar stools"},
-	]
+	pollName: "Changed Name"
 }
 ```
 #### Returns
@@ -109,15 +111,17 @@ Description: Succesfully updated poll information <br>
 JSON:
 ```
 {
-	pollId: "1",
-	creatorName: "Roy",
-	pollName: "What furniture?",
-	description: "What furniture do you want?",
-	options: [
-		{optionId: 1, value: "bar stools", votes: ["Jed", "James"]},
-		{optionId: 2, value: "rocking chairs", votes: ["Roy"]},
-		{optionId: 3, value: "garden bench", votes: []},
-	]
+	poll: {
+		pollId: "1",
+		creatorName: "Changed Name",
+		pollName: "What furniture?",
+		description: "What furniture do you want?",
+		options: [
+			{optionId: 1, value: "bean bags", votes: ["Jed", "James"]},
+			{optionId: 2, value: "rocking chairs", votes: ["Roy"]},
+			{optionId: 3, value: "garden bench", votes: []},
+		]
+	}
 }
 ```
 ------
@@ -136,16 +140,18 @@ Response Code: `200` <br>
 Description: Got specific poll information <br>
 JSON:
 ```
-{
-	pollId: "1",
-	creatorName: "Roy",
-	pollName: "What furniture?",
-	description: "What furniture do you want?",
-	options: [
-		{optionId: 1, value: "bean-bags", votes: ["Jed", "James"]},
-		{optionId: 2, value: "rocking chairs", votes: ["Roy"]},
-		{optionId: 3, value: "garden bench", votes: []},
-	]
+{	
+	poll: {
+		pollId: "1",
+		creatorName: "Roy",
+		pollName: "What furniture?",
+		description: "What furniture do you want?",
+		options: [
+			{optionId: 1, value: "bean-bags", votes: ["Jed", "James"]},
+			{optionId: 2, value: "rocking chairs", votes: ["Roy"]},
+			{optionId: 3, value: "garden bench", votes: []},
+		]
+	}
 }
 ```
 ------
@@ -187,33 +193,23 @@ Description: Succesfully voted for option in poll <br>
 JSON:
 ```
 {
-	pollId: "1",
-	creatorName: "Roy",
-	pollName: "What furniture?",
-	description: "What furniture do you want?",
-	options: [
-		{optionId: 1, value: "bean-bags", votes: ["Jed", "James"]},
-		{optionId: 2, value: "rocking chairs", votes: ["Roy", "Jimmy"]},
-		{optionId: 3, value: "garden bench", votes: []},
-	]
+	poll: {
+		pollId: "1",
+		creatorName: "Roy",
+		pollName: "What furniture?",
+		description: "What furniture do you want?",
+		options: [
+			{optionId: 1, value: "bean-bags", votes: ["Jed", "James"]},
+			{optionId: 2, value: "rocking chairs", votes: ["Roy", "Jimmy"]},
+			{optionId: 3, value: "garden bench", votes: []},
+		]
+	}
 }
 ```
 ------
 Response Code: `400` <br>
 Description: Vote was rejected, possibly due to invalid option id <br>
-JSON:
-```
-{
-	pollId: "1",
-	creatorName: "Roy",
-	pollName: "What furniture?",
-	description: "What furniture do you want?",
-	options: [
-		{optionId: 1, value: "bean-bags", votes: ["Jed", "James"]},
-		{optionId: 2, value: "rocking chairs", votes: ["Roy"]},
-		{optionId: 3, value: "garden bench", votes: []},
-	]
-}
-```
+JSON: N/A
+
 ------
 

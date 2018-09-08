@@ -19,20 +19,9 @@ describe("Test GET /api/polls", () => {
       pollName: "fruit"
     });
   });
-  afterEach(() => {
-    // cleans up test data after each test
-    db.reset();
-  });
-  test("GET should respond with 200 and json in body", async () => {
-    const response = await request(app)
-      .get("/api/polls")
-      .expect("Content-Type", /json/);
-    // const responseCleaned = response.body.map((poll: any) => {
-    //   return { name: poll.name, creator: poll.creator };
-    // });
-    expect(response.status).toBe(200);
-  });
-  test("GET should respond with array of polls", async () => {
+  afterEach(() => db.reset());
+
+  test("Should respond with array of polls", async () => {
     const response = await request(app).get("/api/polls");
     const polls: Poll[] = response.body.polls;
     expect(polls).toMatchObject([
@@ -60,7 +49,7 @@ describe("Test POST /api/polls", () => {
   beforeEach(() => db.reset());
   afterEach(() => db.reset());
 
-  test("tests if POST request returns new poll", async () => {
+  test("Creates and then returns new poll", async () => {
     const inputData: PollInput = {
       creatorName: "Jed",
       description: "hey test",
@@ -105,7 +94,7 @@ describe("Test GET /api/polls/:id", () => {
     });
   });
   afterEach(() => db.reset());
-  test("You can get a poll by Id", async () => {
+  test("Returns a specific poll identified with pollId", async () => {
     const response = await request(app).get("/api/polls/2");
     const responsePoll: Poll = response.body.poll;
     const dbPoll: Poll = db.getPoll({ pollId: "2" });
@@ -130,7 +119,7 @@ describe("Test POST /api/polls/:id", () => {
     });
   });
   afterEach(() => db.reset());
-  test("You can change properties of a poll, excluding options", async () => {
+  test("Changes the properties of a poll, excluding options", async () => {
     const inputData: UpdatePollInput = {
       creatorName: "creatorNameChanged",
       pollName: "pollNameChanged"

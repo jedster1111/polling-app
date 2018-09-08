@@ -13,7 +13,7 @@ export interface Poll {
   pollName: string;
   description: string;
   pollId: string;
-  options: any[];
+  options: Option[];
 }
 export interface UpdatePollInput {
   [key: string]: string | undefined;
@@ -24,14 +24,18 @@ export interface UpdatePollInput {
 interface Option {
   optionId: string;
   value: string;
-  votes: any[];
+  votes: string[];
 }
 class Database {
   db = new loki("polling-app.db");
   polls = this.db.addCollection("polls");
   pollsCount = 0;
 
-  getPolls(): object[] {
+  /**
+   * Gets current polls
+   * @returns returns an array of polls
+   */
+  getPolls(): Poll[] {
     return this.polls.find();
   }
   getPoll(query: object): Poll {
@@ -47,11 +51,11 @@ class Database {
         };
       }
     );
-    const cleanedPollInput: any = Object.assign(pollInput, {
+    const cleanedPollInput = Object.assign(pollInput, {
       options: newOptions,
       pollId: `${this.pollsCount + 1}`
     });
-    const newPoll = this.polls.insert(cleanedPollInput);
+    const newPoll: Poll = this.polls.insert(cleanedPollInput);
     this.pollsCount++;
     return newPoll;
   }
