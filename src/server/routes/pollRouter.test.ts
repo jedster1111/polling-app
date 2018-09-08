@@ -6,12 +6,7 @@ import importData from "./inputData";
 beforeEach(() => {
   db.reset();
   console.log("inserting data");
-  db.insertPoll({
-    creatorName: "creatorName1",
-    description: "description1",
-    options: ["option1"],
-    pollName: "pollName1"
-  });
+  db.insertPoll(importData[0]);
   db.insertPoll({
     creatorName: "creatorName2",
     description: "description2",
