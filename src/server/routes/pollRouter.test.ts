@@ -4,15 +4,10 @@ import db, { Poll, PollInput, UpdatePollInput } from "../models/database";
 import importData from "./inputData";
 
 beforeEach(() => {
+  jest.resetModules();
   db.reset();
-  console.log("inserting data");
-  db.insertPoll(importData[0]);
-  db.insertPoll({
-    creatorName: "creatorName2",
-    description: "description2",
-    options: ["option1", "option2"],
-    pollName: "pollName2"
-  });
+  // have to create copy as lokiJs will add properties to object when added to collection
+  importData.forEach(pollInput => db.insertPoll(Object.assign({}, pollInput)));
 });
 afterEach(() => {
   console.log("resetting");

@@ -1,4 +1,6 @@
-const inputData = [
+import { PollInput } from "../models/database";
+
+const inputData: PollInput[] = [
   {
     creatorName: "creatorName1",
     description: "description1",

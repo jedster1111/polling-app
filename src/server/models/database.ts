@@ -79,7 +79,7 @@ class Database {
     this.polls.findAndRemove({ pollId });
   }
   removeAllPollsData(): void {
-    this.polls.removeDataOnly();
+    this.polls.clear();
   }
   resetCount(): void {
     this.pollsCount = 0;
