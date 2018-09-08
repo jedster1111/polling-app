@@ -1,15 +1,15 @@
 const inputData = [
   {
-    creatorName: "Jed",
-    description: "hey there",
-    options: ["bean bags"],
-    pollName: "test"
+    creatorName: "creatorName1",
+    description: "description1",
+    options: ["option1"],
+    pollName: "pollName1"
   },
   {
-    creatorName: "James",
-    description: "testing again",
-    options: ["banana", "orange"],
-    pollName: "fruit"
+    creatorName: "creatorName2",
+    description: "description2",
+    options: ["option1", "option2"],
+    pollName: "pollName2"
   }
 ];
 

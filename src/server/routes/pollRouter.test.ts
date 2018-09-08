@@ -2,43 +2,42 @@ import request = require("supertest");
 import app from "../app";
 import db, { Poll, PollInput, UpdatePollInput } from "../models/database";
 
-describe("Test GET /api/polls", () => {
-  // adds test data before each test
-  beforeEach(() => {
-    db.reset();
-    db.insertPoll({
-      creatorName: "Jed",
-      description: "hey there",
-      options: ["bean bags"],
-      pollName: "test"
-    });
-    db.insertPoll({
-      creatorName: "James",
-      description: "testing again",
-      options: ["banana", "orange"],
-      pollName: "fruit"
-    });
+beforeEach(() => {
+  db.reset();
+  db.insertPoll({
+    creatorName: "creatorName1",
+    description: "description1",
+    options: ["option1"],
+    pollName: "pollName1"
   });
-  afterEach(() => db.reset());
+  db.insertPoll({
+    creatorName: "creatorName2",
+    description: "description2",
+    options: ["option1", "option2"],
+    pollName: "pollName2"
+  });
+});
+afterEach(() => db.reset());
 
+describe("Test GET /api/polls", () => {
   test("Should respond with array of polls", async () => {
     const response = await request(app).get("/api/polls");
     const polls: Poll[] = response.body.polls;
     expect(polls).toMatchObject([
       {
-        creatorName: "Jed",
-        description: "hey there",
-        options: [{ optionId: "1", value: "bean bags", votes: [] }],
-        pollName: "test"
+        creatorName: "creatorName1",
+        description: "description1",
+        options: [{ optionId: "1", value: "option1", votes: [] }],
+        pollName: "pollName1"
       },
       {
-        creatorName: "James",
-        description: "testing again",
+        creatorName: "creatorName2",
+        description: "description2",
         options: [
-          { optionId: "1", value: "banana", votes: [] },
-          { optionId: "2", value: "orange", votes: [] }
+          { optionId: "1", value: "option1", votes: [] },
+          { optionId: "2", value: "option2", votes: [] }
         ],
-        pollName: "fruit"
+        pollName: "pollName2"
       }
     ]);
     expect(polls[0].pollId).toBeTruthy();
@@ -46,24 +45,21 @@ describe("Test GET /api/polls", () => {
 });
 
 describe("Test POST /api/polls", () => {
-  beforeEach(() => db.reset());
-  afterEach(() => db.reset());
-
   test("Creates and then returns new poll", async () => {
     const inputData: PollInput = {
-      creatorName: "Jed",
-      description: "hey test",
-      options: ["chair", "bench"],
-      pollName: "test"
+      creatorName: "creatorNamePOST",
+      description: "descriptionPOST",
+      options: ["option1", "option2"],
+      pollName: "pollNamePOST"
     };
     const expectedResponse = {
-      creatorName: "Jed",
-      description: "hey test",
+      creatorName: "creatorNamePOST",
+      description: "descriptionPOST",
       options: [
-        { optionId: "1", value: "chair", votes: [] },
-        { optionId: "2", value: "bench", votes: [] }
+        { optionId: "1", value: "option1", votes: [] },
+        { optionId: "2", value: "option2", votes: [] }
       ],
-      pollName: "test"
+      pollName: "pollNamePOST"
     };
     const payload = await request(app)
       .post("/api/polls")
@@ -73,27 +69,13 @@ describe("Test POST /api/polls", () => {
     const postResponse = JSON.parse(payload.text).poll;
     // console.log(payload);
     expect(postResponse).toMatchObject(expectedResponse);
-    expect(postResponse).toMatchObject(db.getPoll({ pollName: "test" }));
+    expect(postResponse).toMatchObject(
+      db.getPoll({ pollName: "pollNamePOST" })
+    );
   });
 });
 
 describe("Test GET /api/polls/:id", () => {
-  beforeEach(() => {
-    db.reset();
-    db.insertPoll({
-      creatorName: "Jed",
-      description: "hey there",
-      options: ["bean bags"],
-      pollName: "test"
-    });
-    db.insertPoll({
-      creatorName: "James",
-      description: "testing again",
-      options: ["banana", "orange"],
-      pollName: "fruit"
-    });
-  });
-  afterEach(() => db.reset());
   test("Returns a specific poll identified with pollId", async () => {
     const response = await request(app).get("/api/polls/2");
     const responsePoll: Poll = response.body.poll;
@@ -103,22 +85,6 @@ describe("Test GET /api/polls/:id", () => {
 });
 
 describe("Test POST /api/polls/:id", () => {
-  beforeEach(() => {
-    db.reset();
-    db.insertPoll({
-      creatorName: "Jed",
-      description: "hey there",
-      options: ["bean bags"],
-      pollName: "test"
-    });
-    db.insertPoll({
-      creatorName: "James",
-      description: "testing again",
-      options: ["banana", "orange"],
-      pollName: "fruit"
-    });
-  });
-  afterEach(() => db.reset());
   test("Changes the properties of a poll, excluding options", async () => {
     const inputData: UpdatePollInput = {
       creatorName: "creatorNameChanged",
@@ -126,8 +92,8 @@ describe("Test POST /api/polls/:id", () => {
     };
     const expectedResponse: Poll = {
       creatorName: "creatorNameChanged",
-      description: "hey there",
-      options: [{ optionId: "1", value: "bean bags", votes: [] }],
+      description: "description1",
+      options: [{ optionId: "1", value: "option1", votes: [] }],
       pollId: "1",
       pollName: "pollNameChanged"
     };
@@ -142,16 +108,8 @@ describe("Test POST /api/polls/:id", () => {
   });
 });
 describe("Test DELETE /api/polls/:id", () => {
-  beforeEach(() =>
-    db.insertPoll({
-      creatorName: "Jed",
-      description: "hey there",
-      options: ["bean bags"],
-      pollName: "test"
-    }));
-  afterEach(() => db.reset());
   test("Poll with Id 1 is removed", async () => {
-    expect(db.getPoll({ pollId: "1" }).creatorName).toBe("Jed");
+    expect(db.getPoll({ pollId: "1" }).creatorName).toBe("creatorName1");
     await request(app)
       .delete("/api/polls/1")
       .expect(200);
