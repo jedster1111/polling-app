@@ -68,7 +68,7 @@ class Database {
     updateKeys.forEach(key => {
       poll[key] = updatePollInput[key] as string;
     });
-    this.polls.update(poll);
+    // this.polls.update(poll);
     return poll;
   }
   removeAllPollsData(): void {
