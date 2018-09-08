@@ -1,10 +1,13 @@
-## Commands
+## Setup
+  * To install dependencies run: `npm install`
+### Node Server
+  * To start the server run: `npm run server` <br>
+	*Note that the server restarts on changes in the working directory*
+
+### Other Commands
   * To build, run: `npm run build` <br>
-	To run in watch mode, run `npm run build -- -w`
-
-  * To run server and restart on changes: `npm run server` <br>
-*The above command will restart when any file changes within `tsDist` directory*
-
+	To run in watch mode, run `npm run build -- -w` <br>
+	*Note as ts-node is installed there's no need to build during development*
   * To execute tests with jest, run: `npm test`
 
 
@@ -97,7 +100,8 @@ Json:
 #### Usage
 Updates a specific poll <br>
 You are only required to enter in the information that you wish to change. <br>
-Id can not be changed, it can only be used for identification.
+Id can not be changed, it can only be used for identification. <br>
+***Note: Options can not currently be updated***
 #### Expects
 ```
 {
