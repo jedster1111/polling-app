@@ -52,9 +52,13 @@ describe("Test Database class", () => {
     expect(changedPoll.creatorName).toBe("creatorNameChanged");
   });
 
-  test("test Database removeAllPollsData() actually removes all", () => {
+  test("test Database removeAllPollsData removes all polls", () => {
     db.removeAllPollsData();
     const result = db.getPolls();
     expect(result).toEqual([]);
+  });
+  test("Database can remove a poll by Id", () => {
+    db.removePollById("1");
+    expect(db.getPoll({ pollId: "1" })).toBeNull();
   });
 });

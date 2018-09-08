@@ -71,6 +71,13 @@ class Database {
     // this.polls.update(poll);
     return poll;
   }
+  /**
+   * Removes a poll with the specified Id.
+   * @param pollId Id of the poll you wish to remove from the database.
+   */
+  removePollById(pollId: string): void {
+    this.polls.findAndRemove({ pollId });
+  }
   removeAllPollsData(): void {
     this.polls.removeDataOnly();
   }

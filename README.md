@@ -2,6 +2,7 @@
   * To install dependencies run: `npm install`
 ### Node Server
   * To start the server run: `npm run server` <br>
+	By default server will run on port 8000, you can change this by setting a `PORT` environment variable. <br>
 	*Note that the server restarts on changes in the working directory*
 
 ### Other Commands
@@ -12,10 +13,10 @@
 
 
 ## Api Design
-All routes go through `/api/`, eg: `www.polling-app.com/api/polls` <br>
+All routes go through `/api/`, eg: `localhost:8000/api/polls` <br>
 
 ------
-### `POST /polls`
+### `POST /api/polls`
 #### Usage
 Create a new poll.
 #### Expects
@@ -59,7 +60,7 @@ Description: Failed to create poll, could be due to an issue with the sent infor
 Json: N/A
 
 ------
-### `GET /polls`
+### `GET /api/polls`
 #### Usage
 Gets a list of existing polls and their information.
 #### Expects
@@ -96,7 +97,7 @@ Json:
 }
 ```
 ------
-### `POST /polls/:id`
+### `POST /api/polls/:id`
 #### Usage
 Updates a specific poll <br>
 You are only required to enter in the information that you wish to change. <br>
@@ -134,7 +135,7 @@ Description: Failed to update poll, maybe syntax is invalid or poll with id does
 JSON: N/A
 
 ------
-### `GET /polls/:id`
+### `GET /api/polls/:id`
 #### Usage
 Gets the data for a specific poll
 #### Expects
@@ -164,7 +165,7 @@ Description: Failed to get poll information, poll with that id might not exist <
 JSON: N/A
 
 ------
-### `DELETE /polls/:id`
+### `DELETE /api/polls/:id`
 #### Usage
 Deletes a specific poll
 #### Expects
@@ -180,7 +181,7 @@ Description: Failed to delete poll, maybe the poll with that id doesn't exist <b
 JSON: N/A
 
 ------
-### `POST /polls/:id/vote`
+### `POST /api/polls/:id/vote`
 #### Usage
 Casts a vote on an option within a specific poll. <br>
 If the user has already voted on the option chosen, his previous vote should be removed.
