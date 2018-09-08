@@ -141,3 +141,20 @@ describe("Test POST /api/polls/:id", () => {
     expect(postResponse).toMatchObject(db.getPoll({ pollId: "1" }));
   });
 });
+describe("Test DELETE /api/polls/:id", () => {
+  beforeEach(() =>
+    db.insertPoll({
+      creatorName: "Jed",
+      description: "hey there",
+      options: ["bean bags"],
+      pollName: "test"
+    }));
+  afterEach(() => db.reset());
+  test("Poll with Id 1 is removed", async () => {
+    expect(db.getPoll({ pollId: "1" }).creatorName).toBe("Jed");
+    await request(app)
+      .delete("/api/polls/1")
+      .expect(200);
+    expect(db.getPoll({ pollId: 1 })).toBeNull();
+  });
+});

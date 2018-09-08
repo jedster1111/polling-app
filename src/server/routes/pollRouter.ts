@@ -27,6 +27,11 @@ pollRouter
     const pollId = req.params.pollId;
     const poll = db.updatePoll(pollId, updatedPollInput);
     res.status(200).json({ poll });
+  })
+  .delete((req, res) => {
+    const pollId = req.params.pollId;
+    db.removePollById(pollId);
+    res.status(200).send();
   });
 
 export default pollRouter;
