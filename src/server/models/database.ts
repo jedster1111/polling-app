@@ -49,8 +49,8 @@ class Database {
       "pollName",
       "options"
     ];
-    const isCorrectInput = necessaryProperties.every(input =>
-      pollInput.hasOwnProperty(input)
+    const isCorrectInput = necessaryProperties.every(property =>
+      pollInput.hasOwnProperty(property)
     );
     if (!isCorrectInput) {
       const errorMessage =
