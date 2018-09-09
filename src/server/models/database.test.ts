@@ -61,9 +61,15 @@ describe("Test Database class", () => {
     expect(db.getPoll({ pollId: "1" })).toBeNull();
   });
   test("Database votePoll succesfully votes for an option", () => {
-    const poll = db.votePoll("2", { voterName: "voter", optionId: "1" });
-    console.log(poll);
+    let poll = db.votePoll("2", { voterName: "voter", optionId: "1" });
     expect(poll.options[0].votes).toEqual(["voter"]);
     expect(poll.options[0].votes).toHaveLength(1);
+    expect(poll.options[1].votes).toEqual([]);
+    poll = db.votePoll("2", { voterName: "voter2", optionId: "1" });
+    expect(poll.options[0].votes).toEqual(["voter", "voter2"]);
+    expect(poll.options[0].votes).toHaveLength(2);
+    expect(poll.options[1].votes).toEqual([]);
+    poll = db.votePoll("2", { voterName: "voter", optionId: "1" });
+    expect(poll.options[0].votes).toEqual(["voter2"]);
   });
 });

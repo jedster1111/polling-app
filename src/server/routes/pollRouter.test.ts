@@ -99,18 +99,20 @@ test("Poll with Id 1 is removed", async () => {
 });
 test("Voting endpoint is working", async () => {
   let response = await request(app)
-    .post("/api/polls/1/vote")
+    .post("/api/polls/2/vote")
     .send({ voterName: "voter", optionId: "1" })
     .set("Accept", "application/json")
     .expect(200);
   let postResponse: Poll = JSON.parse(response.text).poll;
   expect(postResponse.options[0].votes).toEqual(["voter"]);
   expect(postResponse.options[0].votes.length).toBe(1);
+  expect(postResponse.options[1].votes).toEqual([]);
   response = await request(app)
-    .post("/api/polls/1/vote")
+    .post("/api/polls/2/vote")
     .send({ voterName: "voter", optionId: "1" })
     .set("Accept", "application/json")
     .expect(200);
   postResponse = JSON.parse(response.text).poll;
   expect(postResponse.options[0].votes).toEqual([]);
+  expect(postResponse.options[1].votes).toEqual([]);
 });

@@ -75,6 +75,7 @@ class Database {
    * Casts a vote on a specific poll. If the name already exists on the option the vote will be removed.
    * @param pollId Id of poll to be voted on
    * @param voteInput An object containing name of person voting and the Id of the option they're voting on
+   * @returns Returns the poll that was updated
    */
   votePoll(
     pollId: string,
@@ -82,13 +83,17 @@ class Database {
   ): Poll {
     const poll = db.getPoll({ pollId });
     for (const option of poll.options) {
-      const indexOfName: number = option.votes.findIndex(
-        vote => voteInput.voterName === vote
-      );
-      if (indexOfName !== -1) {
-        option.votes.splice(indexOfName, 1);
-      } else {
-        option.votes.push(voteInput.voterName);
+      if (option.optionId === voteInput.optionId) {
+        const indexOfName: number = option.votes.findIndex(
+          vote => voteInput.voterName === vote
+        );
+        if (indexOfName !== -1) {
+          option.votes.splice(indexOfName, 1);
+        } else {
+          option.votes.push(voteInput.voterName);
+        }
+        // if you've found the needed option then break
+        break;
       }
     }
     return poll;
