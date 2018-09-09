@@ -51,7 +51,6 @@ describe("Test Database class", () => {
     const changedPoll = db.getPoll({ creatorName: "creatorNameChanged" });
     expect(changedPoll.creatorName).toBe("creatorNameChanged");
   });
-
   test("test Database removeAllPollsData removes all polls", () => {
     db.removeAllPollsData();
     const result = db.getPolls();
@@ -60,5 +59,11 @@ describe("Test Database class", () => {
   test("Database can remove a poll by Id", () => {
     db.removePollById("1");
     expect(db.getPoll({ pollId: "1" })).toBeNull();
+  });
+  test("Database votePoll succesfully votes for an option", () => {
+    const poll = db.votePoll("2", { voterName: "voter", optionId: "1" });
+    console.log(poll);
+    expect(poll.options[0].votes).toEqual(["voter"]);
+    expect(poll.options[0].votes).toHaveLength(1);
   });
 });

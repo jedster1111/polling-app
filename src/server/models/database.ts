@@ -72,6 +72,28 @@ class Database {
     return poll;
   }
   /**
+   * Casts a vote on a specific poll. If the name already exists on the option the vote will be removed.
+   * @param pollId Id of poll to be voted on
+   * @param voteInput An object containing name of person voting and the Id of the option they're voting on
+   */
+  votePoll(
+    pollId: string,
+    voteInput: { voterName: string; optionId: string }
+  ): Poll {
+    const poll = db.getPoll({ pollId });
+    for (const option of poll.options) {
+      const indexOfName: number = option.votes.findIndex(
+        vote => voteInput.voterName === vote
+      );
+      if (indexOfName !== -1) {
+        option.votes.splice(indexOfName, 1);
+      } else {
+        option.votes.push(voteInput.voterName);
+      }
+    }
+    return poll;
+  }
+  /**
    * Removes a poll with the specified Id.
    * @param pollId Id of the poll you wish to remove from the database.
    */

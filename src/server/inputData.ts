@@ -1,4 +1,4 @@
-import { PollInput } from "../models/database";
+import { PollInput } from "./models/database";
 
 const inputData: PollInput[] = [
   {

@@ -1,7 +1,7 @@
 import request = require("supertest");
 import app from "../app";
+import importData from "../inputData";
 import db, { Poll, PollInput, UpdatePollInput } from "../models/database";
-import importData from "./inputData";
 
 beforeEach(() => {
   db.reset();
@@ -96,4 +96,21 @@ test("Poll with Id 1 is removed", async () => {
     .delete("/api/polls/1")
     .expect(200);
   expect(db.getPoll({ pollId: 1 })).toBeNull();
+});
+test("Voting endpoint is working", async () => {
+  let response = await request(app)
+    .post("/api/polls/1/vote")
+    .send({ voterName: "voter", optionId: "1" })
+    .set("Accept", "application/json")
+    .expect(200);
+  let postResponse: Poll = JSON.parse(response.text).poll;
+  expect(postResponse.options[0].votes).toEqual(["voter"]);
+  expect(postResponse.options[0].votes.length).toBe(1);
+  response = await request(app)
+    .post("/api/polls/1/vote")
+    .send({ voterName: "voter", optionId: "1" })
+    .set("Accept", "application/json")
+    .expect(200);
+  postResponse = JSON.parse(response.text).poll;
+  expect(postResponse.options[0].votes).toEqual([]);
 });
