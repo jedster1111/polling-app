@@ -4,13 +4,11 @@ import db, { Poll, PollInput, UpdatePollInput } from "../models/database";
 import importData from "./inputData";
 
 beforeEach(() => {
-  jest.resetModules();
   db.reset();
   // have to create copy as lokiJs will add properties to object when added to collection
   importData.forEach(pollInput => db.insertPoll(Object.assign({}, pollInput)));
 });
 afterEach(() => {
-  console.log("resetting");
   db.reset();
 });
 
