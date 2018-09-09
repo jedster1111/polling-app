@@ -1,4 +1,5 @@
 import loki = require("lokijs");
+import { ErrorWithStatusCode } from "../app";
 
 export interface PollInput {
   [key: string]: string | string[];
@@ -42,6 +43,22 @@ class Database {
     return this.polls.findOne(query);
   }
   insertPoll(pollInput: PollInput): Poll {
+    const necessaryProperties = [
+      "creatorName",
+      "description",
+      "pollName",
+      "options"
+    ];
+    const isCorrectInput = necessaryProperties.every(input =>
+      pollInput.hasOwnProperty(input)
+    );
+    if (!isCorrectInput) {
+      const errorMessage =
+        "Poll Input data is incorrect! Unable to create a poll.";
+      const err = new Error(errorMessage) as ErrorWithStatusCode;
+      err.statusCode = 400;
+      throw err;
+    }
     const newOptions: Option[] = pollInput.options.map(
       (option: string, index: number) => {
         return {
