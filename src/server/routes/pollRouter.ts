@@ -9,11 +9,15 @@ pollRouter
     const polls = db.getPolls();
     res.json({ polls });
   })
-  .post((req, res) => {
-    const newPoll = req.body;
-    const poll = db.insertPoll(newPoll);
-    res.status(201);
-    res.json({ poll });
+  .post((req, res, next) => {
+    try {
+      const newPoll = req.body;
+      const poll = db.insertPoll(newPoll);
+      res.status(201);
+      res.json({ poll });
+    } catch (error) {
+      next(error);
+    }
   });
 
 pollRouter
