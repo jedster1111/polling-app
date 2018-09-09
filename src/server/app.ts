@@ -20,7 +20,7 @@ const errorHandlerMiddleware: ErrorRequestHandler = (
   }
   console.log("Something went wrong!");
   console.error(err);
-  res.status(err.statusCode).json(err.message);
+  res.status(err.statusCode).json({ error: err.message });
   console.log("Carrying on then...");
 };
 

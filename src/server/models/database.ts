@@ -49,12 +49,15 @@ class Database {
       "pollName",
       "options"
     ];
-    const isCorrectInput = necessaryProperties.every(property =>
-      pollInput.hasOwnProperty(property)
-    );
-    if (!isCorrectInput) {
-      const errorMessage =
-        "Poll Input data is incorrect! Unable to create a poll.";
+    const missingProperties: string[] = [];
+    necessaryProperties.forEach(property => {
+      if (!pollInput.hasOwnProperty(property)) {
+        missingProperties.push(property);
+      }
+    });
+    const hasMissingProperties = missingProperties.length > 0;
+    if (hasMissingProperties) {
+      const errorMessage = `Poll Input data is incorrect! Unable to create a poll. Missing properties: ${missingProperties}`;
       const err = new Error(errorMessage) as ErrorWithStatusCode;
       err.statusCode = 400;
       throw err;
