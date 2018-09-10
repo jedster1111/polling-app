@@ -30,6 +30,6 @@ module.exports = {
     }),
     new webpack.HotModuleReplacementPlugin()
   ],
-  mode: "production",
+  mode: "development",
   stats: { chunks: false, chunkModules: false }
 };

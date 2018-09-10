@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import PollingApp from "./polling-app";
+import PollingApp from "./components/polling-app";
 declare let module: any;
 
 ReactDOM.render(<PollingApp />, document.getElementById("root"));
