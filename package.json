@@ -61,10 +61,10 @@
     "verbose": true,
     "rootDir": "",
     "transform": {
-      "^.+\\.ts?$": "ts-jest"
+      "^.+\\.tsx?$": "ts-jest"
     },
     "testEnvironment": "node",
-    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(js?|ts?)$",
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
     "moduleFileExtensions": [
       "ts",
       "tsx",
@@ -72,6 +72,13 @@
       "jsx",
       "json",
       "node"
+    ],
+    "collectCoverageFrom": [
+      "**/*.{js,jsx,ts,tsx}"
+    ],
+    "coveragePathIgnorePatterns": [
+      "/coverage/",
+      "/dist/"
     ]
   }
 }
