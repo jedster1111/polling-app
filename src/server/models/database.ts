@@ -57,7 +57,9 @@ class Database {
     });
     const hasMissingProperties = missingProperties.length > 0;
     if (hasMissingProperties) {
-      const errorMessage = `Poll Input data is incorrect! Unable to create a poll. Missing properties: ${missingProperties}`;
+      let errorMessage = `Poll Input data is incorrect! Unable to create a poll. Missing properties:`;
+      errorMessage +=
+        " " + missingProperties.toLocaleString().replace(/[,]/g, ", ");
       const err = new Error(errorMessage) as ErrorWithStatusCode;
       err.statusCode = 400;
       throw err;
