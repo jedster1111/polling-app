@@ -6,20 +6,34 @@ interface ArticlesState {
   isLoading: boolean;
 }
 export interface Article {
-  name: string;
+  id: string;
+  title: string;
+}
+export interface InitialState {
+  [key: string]: any;
+  articles: ArticlesState;
 }
 
-const initialState: { articles: ArticlesState } = {
+const initialState: InitialState = {
   articles: {
     articles: [],
-    isLoading: true
+    isLoading: false
   }
 };
 
-const rootReducer: Reducer = (state = initialState, action: AnyAction) => {
+const rootReducer: Reducer = (
+  state: InitialState = initialState,
+  action: AnyAction
+) => {
   switch (action.type) {
     case ADD_ARTICLE:
-      return { ...state, articles: [...state.articles, action.payload] };
+      return {
+        ...state,
+        articles: {
+          ...state.articles,
+          articles: [...state.articles.articles, action.payload]
+        }
+      };
     default:
       return state;
   }

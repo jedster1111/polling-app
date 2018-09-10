@@ -1,5 +1,6 @@
 import * as React from "react";
-import { Fragment } from "react";
+import Form from "./ExampleForm";
+import List from "./List";
 interface IProps {
   compiler: string;
   framework: string;
@@ -8,16 +9,15 @@ interface IProps {
 export class Hello extends React.Component<IProps, {}> {
   render() {
     return (
-      <Fragment>
+      <div>
         <h1>
           This is a {this.props.framework} application using{" "}
           {this.props.compiler} with {this.props.bundler} test did this change?
         </h1>
-        <h3>
-          Articles:
-          {/* <List /> */}
-        </h3>
-      </Fragment>
+        <h3>Articles:</h3>
+        <List />
+        <Form />
+      </div>
     );
   }
 }
