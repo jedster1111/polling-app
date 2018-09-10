@@ -1,9 +1,10 @@
 ## Setup
   * To install dependencies run: `npm install`
-### Node Server
-  * To start the server run: `npm run server` <br>
-	By default server will run on port 8000, you can change this by setting a `PORT` environment variable. <br>
-	*Note that the server restarts on changes in the working directory*
+### Development Server
+  * To start the server run: `npm start` <br>
+	*By default server will run on port 8000, you can change this by setting a `PORT` environment variable.*
+	<br>
+	*Note that the server restarts on changes in the working directory and browser hot reloads*
 
 ### Other Commands
   * To build, run: `npm run build` <br>
