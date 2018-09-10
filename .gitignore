@@ -2,6 +2,7 @@
 /media
 /tsDist
 /src/coverage
+/dist
 
 # dependencies
 /node_modules

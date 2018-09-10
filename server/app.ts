@@ -1,6 +1,7 @@
 import bodyParser = require("body-parser");
 import express = require("express");
 import { ErrorRequestHandler } from "express";
+import path = require("path");
 import pollRouter from "./routes/pollRouter";
 
 export interface ErrorWithStatusCode extends Error {
@@ -8,7 +9,6 @@ export interface ErrorWithStatusCode extends Error {
 }
 
 const app = express();
-
 const errorHandlerMiddleware: ErrorRequestHandler = (
   err: ErrorWithStatusCode,
   req,
@@ -24,8 +24,14 @@ const errorHandlerMiddleware: ErrorRequestHandler = (
   console.log("Carrying on then...");
 };
 
+app.use(express.static(path.resolve(__dirname, "dist")));
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+app.get("/", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "..", "dist", "index.html"));
+});
 app.use("/api/polls", pollRouter);
 app.use(errorHandlerMiddleware);
 
