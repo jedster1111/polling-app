@@ -1,12 +1,13 @@
 import * as React from "react";
-import Form from "./ExampleForm";
+import ConnectedForm from "./ExampleForm";
 import List from "./List";
-interface IProps {
+
+interface Props {
   compiler: string;
   framework: string;
   bundler: string;
 }
-export class Hello extends React.Component<IProps, {}> {
+export class Hello extends React.Component<Props, {}> {
   render() {
     return (
       <div>
@@ -16,7 +17,7 @@ export class Hello extends React.Component<IProps, {}> {
         </h1>
         <h3>Articles:</h3>
         <List />
-        <Form />
+        <ConnectedForm />
       </div>
     );
   }

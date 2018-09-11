@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { Article, InitialState } from "../reducers";
+import { Article, InitialState } from "../reducers/reducers";
 
 const mapStateToProps = (state: InitialState) => ({
   articles: state.articles.articles

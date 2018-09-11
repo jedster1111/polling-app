@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Hello } from "./Hello";
+import { Hello } from "./HelloWorld";
 
 class PollingApp extends React.Component {
   render() {

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import uuid = require("uuid/v1");
-import { addArticle } from "../actions";
+import { addArticle } from "../actions/actions";
 
 interface Article {
   title: string;
@@ -25,7 +25,7 @@ const mapDispatchToProps = (dispatch: any) => {
     addArticle: (article: Article) => dispatch(addArticle(article))
   };
 };
-class ConnectedForm extends React.Component<FormProps, FormState> {
+class ExampleForm extends React.Component<FormProps, FormState> {
   constructor(props: FormProps) {
     super(props);
     this.state = {
@@ -64,9 +64,9 @@ class ConnectedForm extends React.Component<FormProps, FormState> {
   }
 }
 
-const Form = connect(
+const ConnectedForm = connect(
   null,
   mapDispatchToProps
-)(ConnectedForm);
+)(ExampleForm);
 
-export default Form;
+export default ConnectedForm;
