@@ -1,5 +1,5 @@
 import { AnyAction, combineReducers, Reducer } from "redux";
-import { Poll } from "../../../server/models/database";
+import { PollInput } from "../../../server/models/database";
 import { ADD_ARTICLE, ADD_POLL } from "../actions/action-types";
 
 export interface ArticlesState {
@@ -11,7 +11,7 @@ export interface Article {
   title: string;
 }
 export interface PollsState {
-  polls: Poll[];
+  polls: PollInput[];
   isLoading: boolean;
 }
 export interface InitialState {

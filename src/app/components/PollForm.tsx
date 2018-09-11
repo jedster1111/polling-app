@@ -3,35 +3,36 @@ import { PollInput } from "../../../server/models/database";
 
 interface PollFormProps {
   handleSubmitPoll: (e: React.FormEvent<HTMLFormElement>) => void;
-  handleCreatorNameChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handlePollNameChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleDescriptionChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   pollInput: PollInput;
 }
 
 const PollForm = (props: PollFormProps) => (
   <form onSubmit={props.handleSubmitPoll}>
     <div>
-      <label htmlFor="creatorName">Your name?</label>
+      <label>Your name?</label>
       <input
+        id="creatorName"
         type="text"
         value={props.pollInput.creatorName}
-        onChange={props.handleCreatorNameChange}
+        onChange={props.handleChange}
       />
-      <label htmlFor="pollName">Title of your poll?</label>
+      <label>Title of your poll?</label>
       <input
+        id="pollName"
         type="text"
         value={props.pollInput.pollName}
-        onChange={props.handlePollNameChange}
+        onChange={props.handleChange}
       />
-      <label htmlFor="description">Enter a short description?</label>
+      <label>Enter a short description?</label>
       <input
-        type="text"
+        id="description"
         value={props.pollInput.description}
-        onChange={props.handleDescriptionChange}
+        onChange={props.handleChange}
       />
-      <label htmlFor="pollName">Options</label>
+      <label>Options</label>
       <div>TODO</div>
+      <button type="submit">Add Poll</button>
     </div>
   </form>
 );
