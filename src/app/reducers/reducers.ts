@@ -2,7 +2,6 @@ import { AnyAction, combineReducers, Reducer } from "redux";
 import { PollInput } from "../../../server/models/database";
 import {
   ADD_ARTICLE,
-  ADD_POLL,
   GET_POLLS_ERROR,
   GET_POLLS_REQUEST,
   GET_POLLS_SUCCESS,
@@ -57,11 +56,6 @@ const polls: Reducer = (
   action: AnyAction
 ): PollsState => {
   switch (action.type) {
-    case ADD_POLL:
-      return {
-        ...pollsState,
-        polls: [...pollsState.polls, action.payload]
-      };
     case GET_POLLS_REQUEST:
       return {
         ...pollsState,
@@ -91,6 +85,7 @@ const polls: Reducer = (
     case POST_POLLS_SUCCESS:
       return {
         ...pollsState,
+        polls: [...pollsState.polls, action.payload.poll],
         postPolls: { ...pollsState.postPolls, isLoading: false }
       };
     case POST_POLLS_ERROR:

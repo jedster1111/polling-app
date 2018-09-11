@@ -1,12 +1,12 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import { PollInput } from "../../../server/models/database";
-import { addPoll, fetchPolls } from "../actions/actions";
+import { createPoll, fetchPolls } from "../actions/actions";
 import PollForm from "./PollForm";
 
 const mapDispatchToProps = (dispatch: any) => {
   return {
-    addPoll: (poll: PollInput) => dispatch(addPoll(poll)),
+    addPoll: (poll: PollInput) => dispatch(createPoll(poll)),
     fetchPolls: () => dispatch(fetchPolls())
   };
 };
@@ -42,7 +42,7 @@ class PollFormContainer extends React.Component<Props, State> {
     e.preventDefault();
     const { creatorName, pollName, description, options } = this.state.pollData;
     this.props.addPoll({ creatorName, pollName, description, options });
-    this.setState(prevState => ({
+    this.setState(() => ({
       pollData: {
         creatorName: "",
         pollName: "",

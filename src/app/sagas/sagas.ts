@@ -1,4 +1,4 @@
-import { call, put, takeLatest } from "redux-saga/effects";
+import { all, call, put, takeLatest } from "redux-saga/effects";
 import { Poll } from "../../../server/models/database";
 import * as actionTypes from "../actions/action-types";
 import * as api from "../api/api";
@@ -15,15 +15,22 @@ function* getPollsSaga() {
     yield put({ type: actionTypes.GET_POLLS_ERROR, payload: { error } });
   }
 }
-// function postPolls() {
-//   return axios.post("http://localhost:8000/api/polls");
-// }
-// function* postPollsSaga() {
-//   try {
-//     const response = yield call(postPolls;
-//   }
-// }
+function* postPollsSaga(action: any) {
+  try {
+    console.log(action.payload);
+    const response = yield call(api.createPoll, action.payload);
+    const poll: Poll = response.data.poll;
+    console.log(poll);
+    yield put({ type: actionTypes.POST_POLLS_SUCCESS, payload: { poll } });
+    yield put({ type: actionTypes.GET_POLLS_REQUEST });
+  } catch (error) {
+    yield put({ type: actionTypes.GET_POLLS_ERROR, payload: { error } });
+  }
+}
 
-export function* watcherSaga() {
-  yield takeLatest(actionTypes.GET_POLLS_REQUEST, getPollsSaga);
+export function* mainSaga() {
+  yield all([
+    takeLatest(actionTypes.GET_POLLS_REQUEST, getPollsSaga),
+    takeLatest(actionTypes.POST_POLLS_REQUEST, postPollsSaga)
+  ]);
 }
