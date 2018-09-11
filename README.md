@@ -23,16 +23,14 @@ Create a new poll.
 #### Expects
 ```
 { 
-	poll: {
-		creatorName: "Roy",
-		pollName: "What furniture?",
-		description: "We are going to get some new furniture in the office!",
-		options: [
-			"bean bags",
-			"rocking chairs",
-			"garden bench"
-		]
-	}
+	creatorName: "Roy",
+	pollName: "What furniture?",
+	description: "We are going to get some new furniture inthe office!",
+	options: [
+		"bean bags",
+		"rocking chairs",
+		"garden bench"
+	]
 }
 ```
 #### Returns
