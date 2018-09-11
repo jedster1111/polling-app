@@ -1,6 +1,15 @@
 import { AnyAction, combineReducers, Reducer } from "redux";
 import { PollInput } from "../../../server/models/database";
-import { ADD_ARTICLE, ADD_POLL } from "../actions/action-types";
+import {
+  ADD_ARTICLE,
+  ADD_POLL,
+  GET_POLLS_ERROR,
+  GET_POLLS_REQUEST,
+  GET_POLLS_SUCCESS,
+  POST_POLLS_ERROR,
+  POST_POLLS_REQUEST,
+  POST_POLLS_SUCCESS
+} from "../actions/action-types";
 
 export interface ArticlesState {
   articles: Article[];
@@ -10,9 +19,14 @@ export interface Article {
   id: string;
   title: string;
 }
+interface ApiChecks {
+  isLoading: boolean;
+  error: Error | null;
+}
 export interface PollsState {
   polls: PollInput[];
-  isLoading: boolean;
+  getPolls: ApiChecks;
+  postPolls: ApiChecks;
 }
 export interface InitialState {
   [key: string]: any;
@@ -27,19 +41,66 @@ const initialState: InitialState = {
   },
   polls: {
     polls: [],
-    isLoading: false
+    getPolls: {
+      error: null,
+      isLoading: false
+    },
+    postPolls: {
+      error: null,
+      isLoading: false
+    }
   }
 };
 
 const polls: Reducer = (
   pollsState: PollsState = initialState.polls,
   action: AnyAction
-) => {
+): PollsState => {
   switch (action.type) {
     case ADD_POLL:
       return {
         ...pollsState,
         polls: [...pollsState.polls, action.payload]
+      };
+    case GET_POLLS_REQUEST:
+      return {
+        ...pollsState,
+        getPolls: { ...pollsState.getPolls, isLoading: true, error: null }
+      };
+    case GET_POLLS_SUCCESS:
+      return {
+        ...pollsState,
+        polls: action.payload.polls,
+        getPolls: { ...pollsState.getPolls, isLoading: false }
+      };
+    case GET_POLLS_ERROR:
+      return {
+        ...pollsState,
+        getPolls: {
+          ...pollsState.getPolls,
+          isLoading: false,
+          error: action.payload.error
+        }
+      };
+
+    case POST_POLLS_REQUEST:
+      return {
+        ...pollsState,
+        postPolls: { ...pollsState.postPolls, isLoading: true, error: null }
+      };
+    case POST_POLLS_SUCCESS:
+      return {
+        ...pollsState,
+        postPolls: { ...pollsState.postPolls, isLoading: false }
+      };
+    case POST_POLLS_ERROR:
+      return {
+        ...pollsState,
+        postPolls: {
+          ...pollsState.postPolls,
+          isLoading: false,
+          error: action.payload.error
+        }
       };
     default:
       return pollsState;
@@ -59,9 +120,9 @@ const articles: Reducer = (
       return articleState;
   }
 };
-const rootReducer = combineReducers({
+const reducer = combineReducers({
   articles,
   polls
 });
 
-export default rootReducer;
+export default reducer;

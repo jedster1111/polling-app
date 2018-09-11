@@ -1,11 +1,19 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import { PollInput } from "../../../server/models/database";
-import { addPoll } from "../actions/actions";
+import { addPoll, fetchPolls } from "../actions/actions";
 import PollForm from "./PollForm";
+
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    addPoll: (poll: PollInput) => dispatch(addPoll(poll)),
+    fetchPolls: () => dispatch(fetchPolls())
+  };
+};
 
 interface Props {
   addPoll: (pollInput: PollInput) => void;
+  fetchPolls: () => void;
 }
 interface State {
   pollData: PollInput;
@@ -46,20 +54,17 @@ class PollFormContainer extends React.Component<Props, State> {
   render() {
     const pollData = this.state.pollData;
     return (
-      <PollForm
-        handleChange={this.handleChange}
-        handleSubmitPoll={this.handleSubmit}
-        pollInput={pollData}
-      />
+      <React.Fragment>
+        <PollForm
+          handleChange={this.handleChange}
+          handleSubmitPoll={this.handleSubmit}
+          pollInput={pollData}
+          fetchPolls={this.props.fetchPolls}
+        />
+      </React.Fragment>
     );
   }
 }
-
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    addPoll: (poll: PollInput) => dispatch(addPoll(poll))
-  };
-};
 
 const connectedPollForm = connect(
   null,

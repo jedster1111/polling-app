@@ -1,2 +1,12 @@
 export const ADD_ARTICLE = "ADD_ARTICLE";
 export const ADD_POLL = "ADD_POLL";
+
+export const GET_POLLS_REQUEST = "GET_POLLS_REQUEST";
+export const GET_POLLS_SUCCESS = "GET_POLLS_SUCCESS";
+export const GET_POLLS_ERROR = "GET_POLLS_ERROR";
+
+export const POST_POLLS_REQUEST = "POST_POLLS_REQUEST";
+export const POST_POLLS_SUCCESS = "POST_POLLS_SUCCESS";
+export const POST_POLLS_ERROR = "POST_POLLS_ERROR";
+
+export const HELLO_SAGA = "HELLO_SAGA";
