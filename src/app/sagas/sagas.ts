@@ -1,25 +1,30 @@
-import axios from "axios";
 import { call, put, takeLatest } from "redux-saga/effects";
-import {
-  GET_POLLS_ERROR,
-  GET_POLLS_REQUEST,
-  GET_POLLS_SUCCESS
-} from "../actions/action-types";
+import * as actionTypes from "../actions/action-types";
 
-function fetchPolls() {
-  return axios.get("http://localhost:8000/api/polls");
-}
-function* workerSaga() {
+// function fetchPolls() {
+//   return axios.get("http://localhost:8000/api/polls");
+// }
+function* getPollsSaga() {
   try {
-    const response = yield call(fetchPolls);
-    const polls = response.data.polls;
-    yield put({ type: GET_POLLS_SUCCESS, payload: { polls } });
-    console.log("Sent GET_POLLS_SUCCESS out");
+    const response = yield call(fetch, "https://localhost:8000/api/polls", {
+      method: "GET"
+    });
+    const responseBody = response.json();
+    const polls = responseBody.data.polls;
+    yield put({ type: actionTypes.GET_POLLS_SUCCESS, payload: { polls } });
   } catch (error) {
-    yield put({ type: GET_POLLS_ERROR, error });
+    yield put({ type: actionTypes.GET_POLLS_ERROR, error });
   }
 }
+// function postPolls() {
+//   return axios.post("http://localhost:8000/api/polls");
+// }
+// function* postPollsSaga() {
+//   try {
+//     const response = yield call(postPolls;
+//   }
+// }
 
 export function* watcherSaga() {
-  yield takeLatest(GET_POLLS_REQUEST, workerSaga);
+  yield [takeLatest(actionTypes.GET_POLLS_REQUEST, getPollsSaga)];
 }
