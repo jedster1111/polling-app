@@ -60,6 +60,8 @@
     "babel-loader": "^8.0.2"
   },
   "dependencies": {
+    "@types/storybook__addon-actions": "^3.4.1",
+    "@types/storybook__react": "^3.0.9",
     "axios": "^0.18.0",
     "body-parser": "^1.18.3",
     "express": "^4.16.3",
