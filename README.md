@@ -9,6 +9,7 @@
 	***Note you need to install [redux dev tools](https://goo.gl/n8NXXf) in order for the site to work at the moment!***
 
 ### Other Commands
+  * To start Storybook run: `npm run storybook` <br>
   * To build, run: `npm run build` <br>
 	To run in watch mode, run `npm run build -- -w` <br>
 	*Note as ts-node is installed there's no need to build during development*
