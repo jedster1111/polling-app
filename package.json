@@ -7,7 +7,9 @@
     "start": "webpack --display=minimal && ts-node server/server",
     "build": "webpack",
     "server": "ts-node ./server/server.ts",
-    "test": "jest"
+    "test": "jest",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "keywords": [],
   "author": "",
@@ -49,7 +51,13 @@
     "webpack": "^4.17.2",
     "webpack-cli": "^3.1.0",
     "webpack-dev-middleware": "^3.3.0",
-    "webpack-hot-middleware": "^2.23.1"
+    "webpack-hot-middleware": "^2.23.1",
+    "@storybook/react": "^4.0.0-alpha.21",
+    "@storybook/addon-actions": "^4.0.0-alpha.21",
+    "@storybook/addon-links": "^4.0.0-alpha.21",
+    "@storybook/addons": "^4.0.0-alpha.21",
+    "@babel/core": "^7.0.1",
+    "babel-loader": "^8.0.2"
   },
   "dependencies": {
     "axios": "^0.18.0",
