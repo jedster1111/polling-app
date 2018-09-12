@@ -22,7 +22,7 @@ export interface UpdatePollInput {
   pollName?: string;
   description?: string;
 }
-interface Option {
+export interface Option {
   optionId: string;
   value: string;
   votes: string[];

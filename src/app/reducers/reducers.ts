@@ -1,5 +1,5 @@
 import { AnyAction, combineReducers, Reducer } from "redux";
-import { PollInput } from "../../../server/models/database";
+import { Poll } from "../../../server/models/database";
 import {
   ADD_ARTICLE,
   GET_POLLS_ERROR,
@@ -23,7 +23,7 @@ interface ApiChecks {
   error: Error | null;
 }
 export interface PollsState {
-  polls: PollInput[];
+  polls: Poll[];
   getPolls: ApiChecks;
   postPolls: ApiChecks;
 }

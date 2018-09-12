@@ -26,7 +26,7 @@ class PollFormContainer extends React.Component<Props, State> {
         creatorName: "",
         pollName: "",
         description: "",
-        options: ["test"]
+        options: ["", "", ""]
       }
     };
     this.handleChange = this.handleChange.bind(this);
@@ -34,9 +34,28 @@ class PollFormContainer extends React.Component<Props, State> {
   }
   handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     e.persist();
-    this.setState(prevState => ({
-      pollData: { ...prevState.pollData, [e.target.id]: e.target.value }
-    }));
+    // optionInput changed
+    if (/^(optionInput)/.test(e.target.id)) {
+      this.setState(prevState => {
+        const newOptions = [...prevState.pollData.options];
+        const optionIndex = parseInt(
+          e.target.id.replace(/^(optionInput)/, ""),
+          10
+        );
+        newOptions[optionIndex] = e.target.value;
+        return {
+          pollData: {
+            ...prevState.pollData,
+            options: newOptions
+          }
+        };
+      });
+      // Others changed
+    } else {
+      this.setState(prevState => ({
+        pollData: { ...prevState.pollData, [e.target.id]: e.target.value }
+      }));
+    }
   }
   handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();

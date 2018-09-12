@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { PollInput } from "../../../server/models/database";
+import { Option, Poll } from "../../../server/models/database";
 import { Article, InitialState } from "../reducers/reducers";
 
 const mapStateToProps = (state: InitialState) => ({
@@ -13,7 +13,7 @@ const ConnectedList = ({
   polls
 }: {
   articles: Article[];
-  polls: PollInput[];
+  polls: Poll[];
 }) => (
   <div>
     <h3>Articles</h3>
@@ -29,9 +29,17 @@ const ConnectedList = ({
     <h3>Polls</h3>
     <ul>
       {polls.length ? (
-        polls.map((poll: PollInput, index) => (
-          <li key={index}>
-            {poll.creatorName}, {poll.pollName}, {poll.description}
+        polls.map((poll: Poll) => (
+          <li key={poll.pollId}>
+            <div>CreatorName: {poll.creatorName}</div>
+            <div>Poll name: {poll.pollName}</div>
+            <div>description: {poll.description}</div>
+            <div>
+              options:{" "}
+              {poll.options.map((option: Option) => (
+                <div key={option.optionId}>{option.value}</div>
+              ))}
+            </div>
           </li>
         ))
       ) : (
