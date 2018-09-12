@@ -28,6 +28,29 @@ interface Option {
   votes: string[];
 }
 class Database {
+  static checkValidPollInput(pollInput: PollInput) {
+    const necessaryProperties = [
+      "creatorName",
+      "description",
+      "pollName",
+      "options"
+    ];
+    const missingProperties: string[] = [];
+    necessaryProperties.forEach(property => {
+      if (!pollInput.hasOwnProperty(property) || !pollInput[property]) {
+        missingProperties.push(property);
+      }
+    });
+    const hasMissingProperties = missingProperties.length > 0;
+    if (hasMissingProperties) {
+      let errorMessage = `Poll Input data is incorrect! Unable to create a poll. Missing properties:`;
+      errorMessage +=
+        " " + missingProperties.toLocaleString().replace(/[,]/g, ", ");
+      const err = new Error(errorMessage) as ErrorWithStatusCode;
+      err.statusCode = 400;
+      throw err;
+    }
+  }
   db = new loki("polling-app.db");
   polls = this.db.addCollection("polls");
   pollsCount = 0;
@@ -43,27 +66,7 @@ class Database {
     return this.polls.findOne(query);
   }
   insertPoll(pollInput: PollInput): Poll {
-    const necessaryProperties = [
-      "creatorName",
-      "description",
-      "pollName",
-      "options"
-    ];
-    const missingProperties: string[] = [];
-    necessaryProperties.forEach(property => {
-      if (!pollInput.hasOwnProperty(property)) {
-        missingProperties.push(property);
-      }
-    });
-    const hasMissingProperties = missingProperties.length > 0;
-    if (hasMissingProperties) {
-      let errorMessage = `Poll Input data is incorrect! Unable to create a poll. Missing properties:`;
-      errorMessage +=
-        " " + missingProperties.toLocaleString().replace(/[,]/g, ", ");
-      const err = new Error(errorMessage) as ErrorWithStatusCode;
-      err.statusCode = 400;
-      throw err;
-    }
+    Database.checkValidPollInput(pollInput);
     const newOptions: Option[] = pollInput.options.map(
       (option: string, index: number) => {
         return {

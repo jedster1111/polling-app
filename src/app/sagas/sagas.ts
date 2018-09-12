@@ -24,7 +24,10 @@ function* postPollsSaga(action: any) {
     yield put({ type: actionTypes.POST_POLLS_SUCCESS, payload: { poll } });
     yield put({ type: actionTypes.GET_POLLS_REQUEST });
   } catch (error) {
-    yield put({ type: actionTypes.GET_POLLS_ERROR, payload: { error } });
+    yield put({
+      type: actionTypes.POST_POLLS_ERROR,
+      payload: { error: error.response }
+    });
   }
 }
 
