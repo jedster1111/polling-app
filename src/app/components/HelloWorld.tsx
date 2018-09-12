@@ -2,6 +2,7 @@ import * as React from "react";
 import ConnectedForm from "./ExampleForm";
 import List from "./List";
 import ConnectedPollForm from "./PollFormContainer";
+import Test from "./Test";
 
 interface Props {
   compiler: string;
@@ -19,6 +20,7 @@ export class Hello extends React.Component<Props, {}> {
         <List />
         <ConnectedForm />
         <ConnectedPollForm />
+        <Test />
       </div>
     );
   }

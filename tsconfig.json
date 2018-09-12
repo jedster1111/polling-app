@@ -11,7 +11,7 @@
         "forceConsistentCasingInFileNames": true,
         "noImplicitReturns": true,
         "noUnusedLocals": true,
-        "noImplicitAny": true
+        "noImplicitAny": true,
     },
     "include": [
         "./src/**/**/*", "./server/**/*", "./stories/**/**/*"
