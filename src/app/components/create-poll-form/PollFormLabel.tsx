@@ -6,8 +6,11 @@ interface PollFormLabelProps {
 }
 
 const PollFormLabel = styled.label<{}>`
+  text-align: left;
   font-size: 18px;
+  margin-top: 3px;
   margin-right: 3px;
+  width: 100px;
 `;
 
 const StyledPollFormLabel = (props: PollFormLabelProps) => (
