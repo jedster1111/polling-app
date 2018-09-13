@@ -1,10 +1,12 @@
 import * as React from "react";
 import styled from "styled-components";
 
-interface TextInputProps {
+export interface TextInputProps {
   placeholder?: string;
   valid?: boolean;
   error?: boolean;
+  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  value: string;
 }
 
 const TextInput = styled.input<TextInputProps>`
@@ -16,7 +18,7 @@ const TextInput = styled.input<TextInputProps>`
   border-color: ${props => props.error && "red"};
   width: 250px;
   height: 35px;
-  margin: 8px 4px;
+  margin: 3px 4px;
   padding: 5px 5px;
   box-sizing: border-box;
   &:focus {
@@ -25,7 +27,12 @@ const TextInput = styled.input<TextInputProps>`
 `;
 
 const StyledTextInput = (props: TextInputProps) => (
-  <TextInput type="text" {...props} />
+  <TextInput
+    type="text"
+    onChange={props.handleChange}
+    value={props.value}
+    {...props}
+  />
 );
 
 export default StyledTextInput;
