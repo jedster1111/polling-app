@@ -1,11 +1,15 @@
 ## Setup
   * To install dependencies run: `npm install`
-### Node Server
-  * To start the server run: `npm run server` <br>
-	By default server will run on port 8000, you can change this by setting a `PORT` environment variable. <br>
-	*Note that the server restarts on changes in the working directory*
+### Development Server
+  * To start the server run: `npm start` <br>
+	*By default server will run on port 8000, you can change this by setting a `PORT` environment variable.*
+	<br>
+	*Note that the server restarts on changes in the working directory and browser hot reloads* <br>
+  * Visit `localhost:8000` to see the website <br>
+	***Note you need to install [redux dev tools](https://goo.gl/n8NXXf) in order for the site to work at the moment!***
 
 ### Other Commands
+  * To start Storybook run: `npm run storybook` <br>
   * To build, run: `npm run build` <br>
 	To run in watch mode, run `npm run build -- -w` <br>
 	*Note as ts-node is installed there's no need to build during development*
@@ -22,16 +26,14 @@ Create a new poll.
 #### Expects
 ```
 { 
-	poll: {
-		creatorName: "Roy",
-		pollName: "What furniture?",
-		description: "We are going to get some new furniture in the office!",
-		options: [
-			"bean bags",
-			"rocking chairs",
-			"garden bench"
-		]
-	}
+	creatorName: "Roy",
+	pollName: "What furniture?",
+	description: "We are going to get some new furniture inthe office!",
+	options: [
+		"bean bags",
+		"rocking chairs",
+		"garden bench"
+	]
 }
 ```
 #### Returns

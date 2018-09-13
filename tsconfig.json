@@ -1,22 +1,24 @@
 {
     "compilerOptions": {
-		"outDir": "tsDist",
-		"rootDir": "src",
+        "outDir": "./build/",
+        "sourceMap": true,
         "allowJs": true,
         "strict" : true,
         "target": "es6",
+        "jsx": "react",
         "module": "commonjs",
         "moduleResolution": "node",
         "forceConsistentCasingInFileNames": true,
         "noImplicitReturns": true,
         "noUnusedLocals": true,
-        "noImplicitAny": true
+        "noImplicitAny": true,
     },
     "include": [
-        "./src/**/*"
+        "./src/**/**/*", "./server/**/*", "./stories/**/**/*", ".storybook/addons.js"
     ],
     "exclude": [
         "tsDist",
-        "src/coverage"
+        "src/coverage",
+        "./src/**/*.test.ts"
     ]
 }

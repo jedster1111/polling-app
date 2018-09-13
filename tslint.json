@@ -9,7 +9,8 @@
         "no-console": false,
         "prettier": true,
         "member-access": false,
-        "interface-name": false
+        "interface-name": false,
+        "object-literal-sort-keys": false
     },
     "rulesDirectory": ["tslint-plugin-prettier"]
 }
