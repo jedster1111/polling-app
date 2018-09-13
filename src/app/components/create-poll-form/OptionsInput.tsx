@@ -1,5 +1,6 @@
 import * as React from "react";
 import styled from "styled-components";
+import uuid = require("uuid/v1");
 import Label from "./PollFormLabel";
 import { SingleInputContainer } from "./SingleInput";
 import StyledTextInput from "./TextInput";
@@ -24,7 +25,7 @@ const OptionsInput = (props: OptionsInputProps) => {
       <StyledOptionsInputContainer>
         {props.values.map((value, index) => (
           <StyledTextInput
-            key={index}
+            key={uuid()}
             id={`optionInput${index + 1}`}
             value={value}
             handleChange={props.handleChange}

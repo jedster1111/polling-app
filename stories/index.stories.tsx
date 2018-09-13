@@ -78,7 +78,7 @@ storiesOf("Create Poll Form", module)
       handleSubmit={action("Poll submitted")}
       discardPoll={action("Discarded poll")}
       values={{
-        yourName: "Jed",
+        creatorName: "Jed",
         pollName: "New furniture guys!",
         description: "description",
         options: ["test", "test2", "test3"]

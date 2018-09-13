@@ -1,16 +1,12 @@
 import * as React from "react";
 import styled from "styled-components";
+import { PollInput } from "../../../../server/models/database";
 import Buttons from "./AddDiscardButtons";
 import OptionsInput from "./OptionsInput";
 import SingleInput from "./SingleInput";
 
 interface CreatePollFormProps {
-  values: {
-    yourName: string;
-    pollName: string;
-    description: string;
-    options: string[];
-  };
+  values: PollInput;
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   discardPoll: () => void;
@@ -27,7 +23,7 @@ const PollForm = (props: CreatePollFormProps) => (
   <FormContainer onSubmit={props.handleSubmit}>
     <SingleInput
       id="creatorName"
-      value={props.values.yourName}
+      value={props.values.creatorName}
       labelText="Your Name"
       handleChange={props.handleChange}
       placeholder="Enter your name"

@@ -1,9 +1,9 @@
 import * as React from "react";
-import { Hello } from "./HelloWorld";
+import ConnectedPollForm from "../components/create-poll-form/PollFormContainer";
 
 class PollingApp extends React.Component {
   render() {
-    return <Hello compiler="Typescript" framework="React" bundler="Webpack" />;
+    return <ConnectedPollForm />;
   }
 }
 
