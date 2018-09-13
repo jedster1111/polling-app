@@ -10,80 +10,99 @@ export interface Article {
   id: string;
   title: string;
 }
-interface ApiChecks {
+export interface PollsState {
+  polls: Poll[];
   isLoading: boolean;
   error: Error | null;
 }
-export interface PollsState {
-  polls: Poll[];
-  getPolls: ApiChecks;
-  postPolls: ApiChecks;
+export interface PollForm {
+  data: PollInput;
+  isLoading: boolean;
+  error: Error | null;
 }
 export interface InitialState {
-  [key: string]: any;
-  articles: ArticlesState;
-  polls: PollsState;
-  pollFormData: PollInput;
+  pollsState: PollsState;
+  pollForm: PollForm;
 }
 
 const initialState: InitialState = {
-  articles: {
-    articles: [],
-    isLoading: false
-  },
-  polls: {
+  pollsState: {
     polls: [],
-    getPolls: {
-      error: null,
-      isLoading: false
-    },
-    postPolls: {
-      error: null,
-      isLoading: false
-    }
+    isLoading: false,
+    error: null
   },
-  pollFormData: {
-    creatorName: "",
-    description: "",
-    options: ["", "", ""],
-    pollName: ""
+  pollForm: {
+    data: {
+      creatorName: "",
+      description: "",
+      options: ["", "", ""],
+      pollName: ""
+    },
+    isLoading: false,
+    error: null
   }
 };
 
-const pollFormData: Reducer = (
-  pollFormState: PollInput = initialState.pollFormData,
+const pollForm: Reducer = (
+  pollFormState: PollForm = initialState.pollForm,
   action: AnyAction
-): PollInput => {
+): PollForm => {
   switch (action.type) {
-    case actionTypes.POST_POLLS_REQUEST:
-      return {
-        ...pollFormState
-      };
     case actionTypes.CHANGE_FORM_DATA:
-      const e: React.ChangeEvent<HTMLInputElement> = action.payload.e;
-      if (/^(optionInput)/.test(e.target.id)) {
-        const newOptions = [...pollFormState.options];
-        const optionIndex = parseInt(
-          e.target.id.replace(/^(optionInput)/, ""),
-          10
-        );
-        newOptions[optionIndex] = e.target.value;
+      const { fieldId, value } = action.payload;
+      if (/^(optionInput)/.test(fieldId)) {
+        const newOptions = [...pollFormState.data.options];
+        const optionIndex = parseInt(fieldId.replace(/^(optionInput)/, ""), 10);
+        newOptions[optionIndex - 1] = value;
         return {
           ...pollFormState,
-          options: newOptions
+          data: {
+            ...pollFormState.data,
+            options: newOptions
+          }
         };
       } else {
         return {
           ...pollFormState,
-          [e.target.id]: e.target.value
+          data: {
+            ...pollFormState.data,
+            [fieldId]: value
+          }
         };
       }
     case actionTypes.DISCARD_FORM_DATA:
       return {
-        creatorName: "",
-        description: "",
-        options: ["", "", ""],
-        pollName: ""
+        ...pollFormState,
+        data: {
+          creatorName: "",
+          description: "",
+          pollName: "",
+          options: ["", "", ""]
+        }
+      };
+    case actionTypes.POST_POLLS_REQUEST:
+      return {
+        ...pollFormState,
+        isLoading: true,
+        error: null
+      };
+    case actionTypes.POST_POLLS_SUCCESS:
+      return {
+        ...pollFormState,
+        data: {
+          creatorName: "",
+          description: "",
+          options: ["", "", ""],
+          pollName: ""
+        },
+        isLoading: false,
+        error: null
+      };
+    case actionTypes.POST_POLLS_ERROR:
+      return {
+        ...pollFormState,
+        isLoading: false,
+        error: action.payload.error
       };
     default:
       return pollFormState;
@@ -91,67 +110,35 @@ const pollFormData: Reducer = (
 };
 
 const polls: Reducer = (
-  pollsState: PollsState = initialState.polls,
+  pollsState: PollsState = initialState.pollsState,
   action: AnyAction
 ): PollsState => {
   switch (action.type) {
     case actionTypes.GET_POLLS_REQUEST:
       return {
         ...pollsState,
-        getPolls: { ...pollsState.getPolls, isLoading: true, error: null }
+        isLoading: true
       };
     case actionTypes.GET_POLLS_SUCCESS:
       return {
         ...pollsState,
         polls: action.payload.polls,
-        getPolls: { ...pollsState.getPolls, isLoading: false }
+        isLoading: false
       };
     case actionTypes.GET_POLLS_ERROR:
       return {
         ...pollsState,
-        getPolls: {
-          ...pollsState.getPolls,
-          isLoading: false,
-          error: action.payload.error
-        }
-      };
-    case actionTypes.POST_POLLS_SUCCESS:
-      return {
-        ...pollsState,
-        polls: [...pollsState.polls, action.payload.poll],
-        postPolls: { ...pollsState.postPolls, isLoading: false }
-      };
-    case actionTypes.POST_POLLS_ERROR:
-      return {
-        ...pollsState,
-        postPolls: {
-          ...pollsState.postPolls,
-          isLoading: false,
-          error: action.payload.error
-        }
+        isLoading: false,
+        error: action.payload.error
       };
     default:
       return pollsState;
   }
 };
-const articles: Reducer = (
-  articleState: ArticlesState = initialState.articles,
-  action: AnyAction
-) => {
-  switch (action.type) {
-    case actionTypes.ADD_ARTICLE:
-      return {
-        ...articleState,
-        articles: [...articleState.articles, action.payload]
-      };
-    default:
-      return articleState;
-  }
-};
+
 const reducer = combineReducers({
-  articles,
   polls,
-  pollFormData
+  pollForm
 });
 
 export default reducer;
