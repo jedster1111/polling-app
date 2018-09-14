@@ -6,6 +6,7 @@ import { Fragment } from "react";
 import { Option } from "../server/models/database";
 import OptionDisplay from "../src/app/components/polls-list/OptionDisplay";
 import OptionsList from "../src/app/components/polls-list/OptionsContainer";
+import PollInfoContainer from "../src/app/components/polls-list/PollInfo";
 
 const createOptions: (n: number) => Option[] = n => {
   const options = new Array(n).fill(null).map((option, index) => ({
@@ -30,6 +31,17 @@ storiesOf("Polls List", module)
         <OptionsList options={createOptions(3)} />
         <OptionsList options={createOptions(5)} />
         <OptionsList options={createOptions(9)} />
+      </Fragment>
+    );
+  })
+  .add("Poll Info", () => {
+    return (
+      <Fragment>
+        <PollInfoContainer
+          creatorName="Jed"
+          description="What furniture do you guys want?"
+          pollName="New Furniture?"
+        />
       </Fragment>
     );
   });
