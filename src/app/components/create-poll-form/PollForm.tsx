@@ -13,10 +13,12 @@ interface CreatePollFormProps {
 }
 
 const FormContainer = styled.form<{}>`
+  flex: 1;
   min-width: 200px;
   border: black solid 1px;
   padding: 8px 5px;
   border-radius: 8px;
+  background-color: #c6dea6;
 `;
 
 const PollForm = (props: CreatePollFormProps) => (

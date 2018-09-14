@@ -11,7 +11,7 @@ export interface TextInputProps {
 }
 
 const TextInput = styled.input<{ valid?: boolean; error?: boolean }>`
-  flex: 1;
+  flex: 1 1;
   text-align: center;
   transition: all 0.2s;
   border: none;

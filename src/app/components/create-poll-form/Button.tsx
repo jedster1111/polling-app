@@ -8,8 +8,8 @@ interface ButtonProps {
 }
 
 const Button = styled.button<ButtonProps>`
+  box-sizing: border-box;
   flex: 1;
-  transition: all 0.2s;
   outline: none;
   border: none;
   display: flex;
@@ -24,7 +24,7 @@ const Button = styled.button<ButtonProps>`
   background-color: ${props => props.create && "lightgreen"};
   background-color: ${props => props.discard && "red"};
   &:hover {
-    border: 2px solid black;
+    outline: 1px solid black;
   }
 `;
 

@@ -16,8 +16,9 @@ interface SingleInputProps {
 export const SingleInputContainer = styled.div<{}>`
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   align-items: flex-start;
-  border-bottom: solid 1px lightgrey;
+  border-bottom: solid 1px #7a6263;
   margin: 3px 3px;
   padding: 2px 5px;
 `;

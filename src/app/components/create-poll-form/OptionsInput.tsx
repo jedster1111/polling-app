@@ -6,10 +6,13 @@ import StyledTextInput from "./TextInput";
 
 const StyledOptionsInputContainer = styled.div<{}>`
   flex: 1;
+  flex-wrap: wrap;
   display: flex;
-  flex-direction: column;
+  max-width: 600px;
 `;
-const StyledOptionTextInput = styled(StyledTextInput)``;
+const StyledOptionTextInput = styled(StyledTextInput)`
+  flex: 1 1 100%;
+`;
 interface OptionsInputProps {
   values: string[];
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
