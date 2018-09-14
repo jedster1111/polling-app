@@ -14,7 +14,7 @@
         "noImplicitAny": true,
     },
     "include": [
-        "./src/**/**/*", "./server/**/*", "./stories/**/**/*", ".storybook/addons.js", "tests/firstTest.js"
+        "./src/**/**/*", "./server/**/*", "./stories/**/**/*", ".storybook/addons.js", "tests/firstTest.js", "tests/navBar.test.ts", "tests/createPollForm.test.ts"
     ],
     "exclude": [
         "tsDist",

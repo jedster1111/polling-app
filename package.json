@@ -8,7 +8,7 @@
     "build": "webpack",
     "server": "nodemon --exec ./node_modules/.bin/ts-node --watch server/**/* server/server.ts",
     "test": "jest",
-    "testcafe": "testcafe opera tests/",
+    "testcafe": "testcafe chrome testcafe/",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },
@@ -93,6 +93,7 @@
       "json",
       "node"
     ],
+    "testPathIgnorePatterns": ["/node_modules/", "/testcafe/"],
     "collectCoverageFrom": [
       "**/*.{js,jsx,ts,tsx}"
     ],
