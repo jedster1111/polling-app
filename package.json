@@ -8,6 +8,7 @@
     "build": "webpack",
     "server": "nodemon --exec ./node_modules/.bin/ts-node --watch server/**/* server/server.ts",
     "test": "jest",
+    "testcafe": "testcafe chrome testcafe/",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },
@@ -46,8 +47,10 @@
     "react-dom": "^16.5.0",
     "react-redux": "^5.0.7",
     "redux": "^4.0.0",
+    "redux-devtools-extension": "^2.13.5",
     "source-map-loader": "^0.2.4",
     "supertest": "^3.2.0",
+    "testcafe": "^0.22.0",
     "ts-jest": "^23.1.4",
     "ts-loader": "^5.1.0",
     "ts-node": "^7.0.1",
@@ -90,12 +93,14 @@
       "json",
       "node"
     ],
+    "testPathIgnorePatterns": ["/node_modules/", "/testcafe/"],
     "collectCoverageFrom": [
       "**/*.{js,jsx,ts,tsx}"
     ],
     "coveragePathIgnorePatterns": [
       "/coverage/",
-      "/dist/"
+      "/dist/",
+      "/tests/"
     ]
   }
 }

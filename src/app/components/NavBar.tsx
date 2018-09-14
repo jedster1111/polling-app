@@ -38,12 +38,12 @@ const StyledLink = styled(NavLink)`
 const NavBar = () => (
   <NavBarContainer>
     <StyledList>
-      <StyledLink to="/" exact>
+      <StyledLink to="/" exact id="homeLink">
         Home
       </StyledLink>
     </StyledList>
     <StyledList>
-      <StyledLink to="/create-poll" exact>
+      <StyledLink to="/create-poll" exact id="createPollLink">
         Create a New Poll
       </StyledLink>
     </StyledList>
