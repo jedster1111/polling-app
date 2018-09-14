@@ -5,13 +5,11 @@ import { SingleInputContainer } from "./SingleInput";
 import StyledTextInput from "./TextInput";
 
 const StyledOptionsInputContainer = styled.div<{}>`
+  flex: 1;
   display: flex;
   flex-direction: column;
-  flex-wrap: wrap;
-  flex: 1;
-  max-width: 600px;
 `;
-
+const StyledOptionTextInput = styled(StyledTextInput)``;
 interface OptionsInputProps {
   values: string[];
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -23,7 +21,7 @@ const OptionsInput = (props: OptionsInputProps) => {
       <Label labelText="Options" />
       <StyledOptionsInputContainer>
         {props.values.map((value, index) => (
-          <StyledTextInput
+          <StyledOptionTextInput
             key={index}
             id={`optionInput${index + 1}`}
             placeholder={`Option ${index + 1}`}
