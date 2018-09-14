@@ -4,6 +4,7 @@ import { action } from "@storybook/addon-actions";
 import { storiesOf } from "@storybook/react";
 import { Fragment } from "react";
 import Button from "../src/app/components/create-poll-form/Button";
+import PollForm from "../src/app/components/create-poll-form/PollForm";
 import SingleInput from "../src/app/components/create-poll-form/SingleInput";
 import StyledTextInput from "../src/app/components/create-poll-form/TextInput";
 import Test from "../src/app/components/Test";
@@ -12,9 +13,13 @@ storiesOf("Test", module).add("first one", () => <Test />);
 storiesOf("Create Poll Form", module)
   .add("Buttons", () => (
     <Fragment>
-      <Button>Default</Button>
-      <Button create>Create</Button>
-      <Button discard>Discard</Button>
+      <Button onClick={action("click1")}>Default</Button>
+      <Button create onClick={action("click2")}>
+        Create
+      </Button>
+      <Button discard onClick={action("click3")}>
+        Discard
+      </Button>
     </Fragment>
   ))
   .add("Text Input Box", () => (
@@ -27,17 +32,20 @@ storiesOf("Create Poll Form", module)
       }}
     >
       <StyledTextInput
+        id="default"
         placeholder="default text input"
         value="test1"
         handleChange={action("changed")}
       />
       <StyledTextInput
+        id="valid"
         valid
         placeholder="valid text input"
         value="test2"
         handleChange={action("changed")}
       />
       <StyledTextInput
+        id="error"
         error
         placeholder="invalid text input"
         value="test3"
@@ -48,12 +56,14 @@ storiesOf("Create Poll Form", module)
   .add("Form Input with label", () => (
     <Fragment>
       <SingleInput
+        id="creatorName"
         placeholder="Enter your name"
         labelText="Your name"
         value="Jed Thompson"
         handleChange={action("changed")}
       />
       <SingleInput
+        id="pollName"
         valid
         placeholder="Enter the poll name"
         labelText="Poll name"
@@ -61,4 +71,17 @@ storiesOf("Create Poll Form", module)
         handleChange={action("changed")}
       />
     </Fragment>
+  ))
+  .add("Create poll form", () => (
+    <PollForm
+      handleChange={action("Value changed")}
+      handleSubmit={action("Poll submitted")}
+      discardPoll={action("Discarded poll")}
+      values={{
+        creatorName: "Jed",
+        pollName: "New furniture guys!",
+        description: "description",
+        options: ["test", "test2", "test3"]
+      }}
+    />
   ));

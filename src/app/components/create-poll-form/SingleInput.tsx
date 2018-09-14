@@ -4,20 +4,21 @@ import PollFormLabel from "./PollFormLabel";
 import TextInput from "./TextInput";
 
 interface SingleInputProps {
+  id: string;
   labelText: string;
-  placeholder: string;
+  placeholder?: string;
   value: string;
   valid?: boolean;
   error?: boolean;
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const SingleInputContainer = styled.div<{}>`
+export const SingleInputContainer = styled.div<{}>`
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
   justify-content: center;
-  border-bottom: solid 1px lightgrey;
+  align-items: flex-start;
+  border-bottom: solid 1px #7a6263;
   margin: 3px 3px;
   padding: 2px 5px;
 `;
