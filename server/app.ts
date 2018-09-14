@@ -24,14 +24,11 @@ const errorHandlerMiddleware: ErrorRequestHandler = (
   console.log("Carrying on then...");
 };
 
-app.use(express.static(path.resolve(__dirname, "dist")));
+app.use(express.static(path.resolve("dist")));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.get("/", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "..", "dist", "index.html"));
-});
 app.use("/api/polls", pollRouter);
 app.use(errorHandlerMiddleware);
 
