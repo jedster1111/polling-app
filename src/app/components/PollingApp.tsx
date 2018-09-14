@@ -8,7 +8,7 @@ import HomePage from "./pages/HomePage";
 const StyledContainer = styled.div<{}>`
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: center;
   align-content: flex-start;
   align-items: flex-start;
   position: fixed;
