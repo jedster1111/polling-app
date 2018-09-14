@@ -15,7 +15,7 @@ const Button = styled.button<ButtonProps>`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100px;
+  width: 150px;
   max-width: 200px;
   min-width: 100px;
   height: 40px;
