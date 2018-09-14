@@ -12,6 +12,8 @@ const StyledOptionsInputContainer = styled.div<{}>`
 `;
 const StyledOptionTextInput = styled(StyledTextInput)`
   flex: 1 1 100%;
+  margin-left: 0;
+  margin-right: 0;
 `;
 interface OptionsInputProps {
   values: string[];

@@ -8,6 +8,7 @@
     "build": "webpack",
     "server": "nodemon --exec ./node_modules/.bin/ts-node --watch server/**/* server/server.ts",
     "test": "jest",
+    "testcafe": "testcafe opera tests/",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },
@@ -48,6 +49,7 @@
     "redux": "^4.0.0",
     "source-map-loader": "^0.2.4",
     "supertest": "^3.2.0",
+    "testcafe": "^0.22.0",
     "ts-jest": "^23.1.4",
     "ts-loader": "^5.1.0",
     "ts-node": "^7.0.1",
@@ -95,7 +97,8 @@
     ],
     "coveragePathIgnorePatterns": [
       "/coverage/",
-      "/dist/"
+      "/dist/",
+      "/tests/"
     ]
   }
 }
