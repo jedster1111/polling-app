@@ -1,10 +1,16 @@
 import * as React from "react";
-import { Route } from "react-router";
-import ConnectedPollForm from "../components/create-poll-form/PollFormContainer";
+import { Route, Switch } from "react-router";
+import CreatePollPage from "./pages/CreatePollPage";
+import HomePage from "./pages/HomePage";
 
 class PollingApp extends React.Component {
   render() {
-    return <Route path="/" component={ConnectedPollForm} />;
+    return (
+      <Switch>
+        <Route exact path="/" component={HomePage} />
+        <Route path="/create-poll" component={CreatePollPage} />
+      </Switch>
+    );
   }
 }
 
