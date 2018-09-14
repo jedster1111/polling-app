@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 import { Poll, PollInput } from "../../../server/models/database";
-import pollForm from "../reducers/pollForm";
-import polls from "../reducers/pollsState";
+import pollForm from "./pollForm";
+import polls from "./pollsState";
 
 export interface ArticlesState {
   articles: Article[];
@@ -43,9 +43,9 @@ export const initialState: InitialState = {
   }
 };
 
-const reducer = combineReducers({
+const rootReducer = combineReducers({
   polls,
   pollForm
 });
 
-export default reducer;
+export default rootReducer;

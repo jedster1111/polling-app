@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { PollInput } from "../../../../server/models/database";
 import { changeFormData, createPoll, discardPoll } from "../../actions/actions";
-import { InitialState } from "../../reducers/reducers";
+import { InitialState } from "../../reducers/rootReducer";
 import PollForm from "./PollForm";
 
 interface PollFormContainerProps {

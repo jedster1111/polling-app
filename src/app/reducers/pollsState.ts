@@ -1,6 +1,6 @@
 import { AnyAction, Reducer } from "redux";
 import * as actionTypes from "../actions/action-types";
-import { initialState, PollsState } from "./reducers";
+import { initialState, PollsState } from "./rootReducer";
 
 const pollsStateReducer: Reducer = (
   pollsState: PollsState = initialState.pollsState,

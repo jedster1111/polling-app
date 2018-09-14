@@ -1,6 +1,6 @@
 import { Action, ActionCreator } from "redux";
 import { PollInput } from "../../../server/models/database";
-import { Article } from "../reducers/reducers";
+import { Article } from "../reducers/rootReducer";
 import * as actionTypes from "./action-types";
 export const addArticle: ActionCreator<Action> = (article: Article) => ({
   type: actionTypes.ADD_ARTICLE,
