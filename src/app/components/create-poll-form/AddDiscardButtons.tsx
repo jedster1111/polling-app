@@ -20,8 +20,15 @@ const ButtonsContainer = styled.div<{}>`
 
 const Buttons = (props: ButtonsProps) => (
   <ButtonsContainer>
-    <Button create>Create</Button>
-    <Button type="button" discard onClick={props.discardPoll}>
+    <Button id="createButton" create>
+      Create
+    </Button>
+    <Button
+      id="discardButton"
+      type="button"
+      discard
+      onClick={props.discardPoll}
+    >
       Discard
     </Button>
   </ButtonsContainer>

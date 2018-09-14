@@ -23,7 +23,7 @@ const FormContainer = styled.form<{}>`
 `;
 
 const PollForm = (props: CreatePollFormProps) => (
-  <FormContainer onSubmit={props.handleSubmit}>
+  <FormContainer onSubmit={props.handleSubmit} id="createPollForm">
     <SingleInput
       id="creatorName"
       value={props.values.creatorName}
