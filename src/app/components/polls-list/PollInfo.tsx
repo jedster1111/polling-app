@@ -1,38 +1,35 @@
 import * as React from "react";
 import styled from "styled-components";
 
-interface PollInfoContainerProps {
+interface PollInfoProps {
   creatorName: string;
   pollName: string;
   description: string;
 }
 
 const InfoContainer = styled.div<{}>`
-  align-items: flex-end;
-  display: inline-flex;
+  flex: 2 1 170px;
+  align-items: flex-start;
+  display: flex;
   flex-direction: column;
-  text-align: right;
-  /* border: solid 1px black; */
+  text-align: left;
+  border: solid 1px black;
   padding: 25px 8px;
 `;
 const PollTitleContainer = styled.div<{}>`
   font-size: 20px;
 `;
-const DescriptionContainer = styled.div<{}>`
-  padding: 0 5px;
-`;
-const CreatorContianer = styled.div<{}>`
-  padding: 0 13px;
-`;
+const DescriptionContainer = styled.div<{}>``;
+const CreatorContianer = styled.div<{}>``;
 
-const PollInfoContainer = (props: PollInfoContainerProps) => {
+const PollInfo = (props: PollInfoProps) => {
   return (
     <InfoContainer>
       <PollTitleContainer>{props.pollName}</PollTitleContainer>
       <DescriptionContainer>{props.description}</DescriptionContainer>
-      <CreatorContianer>{props.creatorName} -</CreatorContianer>
+      <CreatorContianer>{props.creatorName}</CreatorContianer>
     </InfoContainer>
   );
 };
 
-export default PollInfoContainer;
+export default PollInfo;
