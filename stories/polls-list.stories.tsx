@@ -10,6 +10,7 @@ import PollCard, {
   PollCardProps
 } from "../src/app/components/polls-list/PollCard";
 import PollInfo from "../src/app/components/polls-list/PollInfo";
+import PollsList from "../src/app/components/polls-list/PollsList";
 
 const createOptions: (n: number) => Option[] = n => {
   const options = new Array(n).fill(null).map((option, index) => ({
@@ -19,13 +20,22 @@ const createOptions: (n: number) => Option[] = n => {
   }));
   return options;
 };
-const examplePoll: PollCardProps = {
-  creatorName: "Jed",
-  description: "What furniture do people want for the office?",
-  options: createOptions(4),
-  pollId: "1",
-  pollName: "New Furniture?"
-};
+const examplePolls: PollCardProps[] = [
+  {
+    creatorName: "Jed",
+    description: "What furniture do people want for the office?",
+    options: createOptions(4),
+    pollId: "1",
+    pollName: "New Furniture?"
+  },
+  {
+    creatorName: "John",
+    description: "What to get for lunch today?",
+    options: createOptions(6),
+    pollId: "2",
+    pollName: "Lunch today?"
+  }
+];
 
 storiesOf("Polls List", module)
   .add("Option Display", () => (
@@ -56,5 +66,8 @@ storiesOf("Polls List", module)
     );
   })
   .add("Poll Card", () => {
-    return <PollCard {...examplePoll} />;
+    return <PollCard {...examplePolls[0]} />;
+  })
+  .add("Polls List", () => {
+    return <PollsList polls={[examplePolls[0], examplePolls[1]]} />;
   });

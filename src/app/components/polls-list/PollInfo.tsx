@@ -8,12 +8,12 @@ interface PollInfoProps {
 }
 
 const InfoContainer = styled.div<{}>`
-  flex: 2 1 170px;
+  flex: 1 1 170px;
   align-items: flex-start;
   display: flex;
   flex-direction: column;
   text-align: left;
-  border: solid 1px black;
+  /* border: solid 1px black; */
   padding: 25px 8px;
 `;
 const PollTitleContainer = styled.div<{}>`
