@@ -9,7 +9,6 @@ interface ViewResultsButtonProps {
 
 const StyledLink = styled(Link)<{}>`
   display: flex;
-  flex: 1 1;
   text-decoration: none;
   min-width: 140px;
 `;

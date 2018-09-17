@@ -18,7 +18,10 @@ const InfoContainer = styled.div<{}>`
   align-content: stretch;
   text-align: left;
   /* border: solid 1px black; */
-  padding: 25px 8px;
+  padding: 5px 8px;
+`;
+const TextContainer = styled.div<{}>`
+  padding: 5px;
 `;
 const PollTitleContainer = styled.div<{}>`
   font-size: 20px;
@@ -29,11 +32,11 @@ const CreatorContianer = styled.div<{}>``;
 const PollInfo = (props: PollInfoProps) => {
   return (
     <InfoContainer>
-      <div>
+      <TextContainer>
         <PollTitleContainer>{props.pollName}</PollTitleContainer>
         <DescriptionContainer>{props.description}</DescriptionContainer>
         <CreatorContianer>{props.creatorName}</CreatorContianer>
-      </div>
+      </TextContainer>
       <ViewResultsButton value={"Results"} to={`/polls/${props.pollId}`} />
     </InfoContainer>
   );

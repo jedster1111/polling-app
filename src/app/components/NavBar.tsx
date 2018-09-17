@@ -49,8 +49,8 @@ const NavBar = () => (
       </StyledLink>
     </StyledList>
     <StyledList>
-      <StyledLink to="/list-polls" exact id="listPollsLink">
-        See Polls
+      <StyledLink to="/list-polls" exact id="pollsListLink">
+        Polls
       </StyledLink>
     </StyledList>
   </NavBarContainer>

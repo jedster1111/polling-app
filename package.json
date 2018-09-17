@@ -51,6 +51,7 @@
     "source-map-loader": "^0.2.4",
     "supertest": "^3.2.0",
     "testcafe": "^0.22.0",
+    "testcafe-react-selectors": "^3.0.0",
     "ts-jest": "^23.1.4",
     "ts-loader": "^5.1.0",
     "ts-node": "^7.0.1",

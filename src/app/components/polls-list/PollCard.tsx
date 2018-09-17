@@ -22,7 +22,7 @@ const PollContainer = styled.div<{}>`
 `;
 
 const PollCard = (props: PollCardProps) => (
-  <PollContainer>
+  <PollContainer id={`poll${props.pollId}`}>
     <PollInfo
       pollId={props.pollId}
       creatorName={props.creatorName}
