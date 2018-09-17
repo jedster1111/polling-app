@@ -23,6 +23,9 @@ class PollsListContainer extends React.Component<PollsListContainerProps> {
   constructor(props: PollsListContainerProps) {
     super(props);
   }
+  componentDidMount() {
+    this.props.fetchPolls();
+  }
   render() {
     return (
       <PollsList polls={this.props.polls} fetchPolls={this.props.fetchPolls} />

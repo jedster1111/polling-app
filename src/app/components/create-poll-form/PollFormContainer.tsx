@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { PollInput } from "../../../../server/models/database";
 import { changeFormData, createPoll, discardPoll } from "../../actions/actions";
-import { InitialState } from "../../reducers/rootReducer";
+import { InitialState, PollFormInput } from "../../reducers/rootReducer";
 import PollForm from "./PollForm";
 
 interface PollFormContainerProps {
@@ -15,7 +15,7 @@ interface PollFormContainerProps {
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    submitPoll: (poll: PollInput) => dispatch(createPoll(poll)),
+    submitPoll: (poll: PollFormInput) => dispatch(createPoll(poll)),
     handleChange: (fieldId: string, value: string) =>
       dispatch(changeFormData(fieldId, value)),
     discardPoll: () => dispatch(discardPoll())
@@ -31,7 +31,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 
 const mapStateToProps = (state: InitialState) => {
   return {
-    pollFormData: state.pollForm.data
+    pollFormData: { ...state.pollForm.data, creatorName: state.userState.name }
   };
 };
 
@@ -42,7 +42,13 @@ class PollFormContainer extends React.Component<PollFormContainerProps> {
 
   handleSubmitPoll = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    this.props.submitPoll(this.props.pollFormData);
+    const inputData: PollInput = {
+      creatorName: this.props.pollFormData.creatorName,
+      description: this.props.pollFormData.description,
+      pollName: this.props.pollFormData.pollName,
+      options: this.props.pollFormData.options
+    };
+    this.props.submitPoll(inputData);
   };
 
   handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

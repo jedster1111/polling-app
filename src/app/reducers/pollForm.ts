@@ -33,7 +33,6 @@ const pollFormReducer: Reducer = (
       return {
         ...pollFormState,
         data: {
-          creatorName: "",
           description: "",
           pollName: "",
           options: ["", "", ""]
@@ -49,7 +48,6 @@ const pollFormReducer: Reducer = (
       return {
         ...pollFormState,
         data: {
-          creatorName: "",
           description: "",
           options: ["", "", ""],
           pollName: ""

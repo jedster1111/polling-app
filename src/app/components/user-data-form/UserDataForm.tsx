@@ -1,4 +1,5 @@
 import * as React from "react";
+import Button from "../create-poll-form/Button";
 import { FormContainer } from "../create-poll-form/PollForm";
 import SingleInput from "../create-poll-form/SingleInput";
 
@@ -21,6 +22,7 @@ const UserDataForm = (props: UserDataFormProps) => (
       placeholder="Enter your name"
       handleChange={props.handleChange}
     />
+    <Button create>Save Name</Button>
   </FormContainer>
 );
 

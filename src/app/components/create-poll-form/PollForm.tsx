@@ -25,13 +25,6 @@ export const FormContainer = styled.form<{}>`
 const PollForm = (props: CreatePollFormProps) => (
   <FormContainer onSubmit={props.handleSubmit} id="createPollForm">
     <SingleInput
-      id="creatorName"
-      value={props.values.creatorName}
-      labelText="Your Name"
-      handleChange={props.handleChange}
-      placeholder="Enter your name"
-    />
-    <SingleInput
       id="pollName"
       value={props.values.pollName}
       labelText="Poll Name"

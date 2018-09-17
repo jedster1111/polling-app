@@ -1,5 +1,5 @@
 import { combineReducers } from "redux";
-import { Poll, PollInput } from "../../../server/models/database";
+import { Poll } from "../../../server/models/database";
 import pollForm from "./pollForm";
 import pollsState from "./pollsState";
 import userFormState from "./userFormState";
@@ -18,8 +18,13 @@ export interface PollsState {
   isLoading: boolean;
   error: Error | null;
 }
+export interface PollFormInput {
+  description: string;
+  pollName: string;
+  options: string[];
+}
 export interface PollForm {
-  data: PollInput;
+  data: PollFormInput;
   isLoading: boolean;
   error: Error | null;
 }
@@ -43,7 +48,6 @@ export const initialState: InitialState = {
   },
   pollForm: {
     data: {
-      creatorName: "",
       description: "",
       options: ["", "", ""],
       pollName: ""
