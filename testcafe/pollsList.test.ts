@@ -2,7 +2,10 @@ import { Selector } from "testcafe";
 import { ReactSelector, waitForReact } from "testcafe-react-selectors";
 
 fixture("Polls List Page")
-  .page("localhost:8000/list-polls")
+  .page("localhost:8000")
+  .beforeEach(async t => {
+    await t.typeText("#name", "Jed").click("#pollsListLink");
+  })
   .beforeEach(async () => {
     await waitForReact();
   });
@@ -10,7 +13,6 @@ fixture("Polls List Page")
 test("Can create a poll, and it appears in the list of polls", async t => {
   await t
     .click("#createPollLink")
-    .typeText("#creatorName", "ListTest")
     .typeText("#pollName", "ListTest")
     .typeText("#description", "ListTest")
     .typeText("#optionInput1", "ListTest")
@@ -20,7 +22,7 @@ test("Can create a poll, and it appears in the list of polls", async t => {
     .click("#pollsListLink")
     .expect(
       ReactSelector("PollCard").withProps({
-        creatorName: "ListTest"
+        pollName: "ListTest"
       }).exists
     )
     .ok("There are no polls showing");
