@@ -1,7 +1,9 @@
 import * as React from "react";
 import styled from "styled-components";
+import ViewResultsButton from "./ViewResultsButton";
 
 interface PollInfoProps {
+  pollId: string;
   creatorName: string;
   pollName: string;
   description: string;
@@ -9,9 +11,10 @@ interface PollInfoProps {
 
 const InfoContainer = styled.div<{}>`
   flex: 1 1 170px;
-  align-items: flex-start;
+  flex-wrap: wrap;
+  align-items: center;
   display: flex;
-  flex-direction: column;
+  align-content: stretch;
   text-align: left;
   /* border: solid 1px black; */
   padding: 25px 8px;
@@ -25,9 +28,12 @@ const CreatorContianer = styled.div<{}>``;
 const PollInfo = (props: PollInfoProps) => {
   return (
     <InfoContainer>
-      <PollTitleContainer>{props.pollName}</PollTitleContainer>
-      <DescriptionContainer>{props.description}</DescriptionContainer>
-      <CreatorContianer>{props.creatorName}</CreatorContianer>
+      <div>
+        <PollTitleContainer>{props.pollName}</PollTitleContainer>
+        <DescriptionContainer>{props.description}</DescriptionContainer>
+        <CreatorContianer>{props.creatorName}</CreatorContianer>
+      </div>
+      <ViewResultsButton value={"Results"} to={`/polls/${props.pollId}`} />
     </InfoContainer>
   );
 };

@@ -4,6 +4,7 @@ import styled from "styled-components";
 import NavBar from "./NavBar";
 import CreatePollPage from "./pages/CreatePollPage";
 import HomePage from "./pages/HomePage";
+import PollsListPage from "./pages/PollsListPage";
 
 const StyledContainer = styled.div<{}>`
   display: flex;
@@ -22,6 +23,11 @@ const StyledContainer = styled.div<{}>`
   color: black;
   padding: 7px 10px;
 `;
+const StyledPageContainer = styled.div<{}>`
+  flex: 1;
+  max-width: 750px;
+  /* padding: 5px 5px; */
+`;
 
 class PollingApp extends React.Component {
   render() {
@@ -29,8 +35,11 @@ class PollingApp extends React.Component {
       <StyledContainer>
         <NavBar />
         <Switch>
-          <Route exact path="/" component={HomePage} />
-          <Route path="/create-poll" component={CreatePollPage} />
+          <StyledPageContainer>
+            <Route exact path="/" component={HomePage} />
+            <Route path="/create-poll" component={CreatePollPage} />
+            <Route path="/list-polls" component={PollsListPage} />
+          </StyledPageContainer>
         </Switch>
       </StyledContainer>
     );

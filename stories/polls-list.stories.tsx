@@ -3,7 +3,9 @@ import { action } from "@storybook/addon-actions";
 import { storiesOf } from "@storybook/react";
 import * as React from "react";
 import { Fragment } from "react";
+import { MemoryRouter } from "react-router";
 import { Option } from "../server/models/database";
+import FetchPollsButton from "../src/app/components/polls-list/FetchPollsButton";
 import OptionDisplay from "../src/app/components/polls-list/OptionDisplay";
 import OptionsList from "../src/app/components/polls-list/OptionsList";
 import PollCard, {
@@ -11,6 +13,7 @@ import PollCard, {
 } from "../src/app/components/polls-list/PollCard";
 import PollInfo from "../src/app/components/polls-list/PollInfo";
 import PollsList from "../src/app/components/polls-list/PollsList";
+import ViewResultsButton from "../src/app/components/polls-list/ViewResultsButton";
 
 const createOptions: (n: number) => Option[] = n => {
   const options = new Array(n).fill(null).map((option, index) => ({
@@ -38,6 +41,15 @@ const examplePolls: PollCardProps[] = [
 ];
 
 storiesOf("Polls List", module)
+  .addDecorator(story => (
+    <MemoryRouter initialEntries={["/"]}>{story()}</MemoryRouter>
+  ))
+  .add("Link to Poll Results button", () => (
+    <ViewResultsButton to={"/polls/1"} value={"Results"} />
+  ))
+  .add("Fetch Polls Button", () => (
+    <FetchPollsButton fetchPolls={action("fetching polls")} />
+  ))
   .add("Option Display", () => (
     <Fragment>
       <OptionDisplay onClick={action("option 1 clicked")}>
@@ -58,6 +70,7 @@ storiesOf("Polls List", module)
     return (
       <Fragment>
         <PollInfo
+          pollId="1"
           creatorName="Jed"
           description="What furniture do you guys want?"
           pollName="New Furniture?"
@@ -69,5 +82,10 @@ storiesOf("Polls List", module)
     return <PollCard {...examplePolls[0]} />;
   })
   .add("Polls List", () => {
-    return <PollsList polls={[examplePolls[0], examplePolls[1]]} />;
+    return (
+      <PollsList
+        polls={[examplePolls[0], examplePolls[1]]}
+        fetchPolls={action("fetching polls")}
+      />
+    );
   });

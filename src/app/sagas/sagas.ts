@@ -20,6 +20,7 @@ function* postPollsSaga(action: any) {
     const response = yield call(api.createPoll, action.payload);
     const poll: Poll = response.data.poll;
     yield put({ type: actionTypes.POST_POLLS_SUCCESS, payload: { poll } });
+    yield put({ type: actionTypes.GET_POLLS_REQUEST });
   } catch (error) {
     yield put({
       type: actionTypes.POST_POLLS_ERROR,

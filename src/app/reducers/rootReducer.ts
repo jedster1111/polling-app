@@ -44,7 +44,7 @@ export const initialState: InitialState = {
 };
 
 const rootReducer = combineReducers({
-  polls,
+  pollsState: polls,
   pollForm
 });
 

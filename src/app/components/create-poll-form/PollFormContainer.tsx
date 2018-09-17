@@ -22,22 +22,23 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   };
 };
 
+// To try
 // const mapDispatchToProps = {
 //   createPoll,
 //   changeFormData,
 //   discardPoll
 // };
 
-const mapStatetoProps = (state: InitialState) => {
+const mapStateToProps = (state: InitialState) => {
   return {
     pollFormData: state.pollForm.data
   };
 };
 
 class PollFormContainer extends React.Component<PollFormContainerProps> {
-  constructor(props: PollFormContainerProps) {
-    super(props);
-  }
+  // constructor(props: PollFormContainerProps) {
+  //   super(props);
+  // }
 
   handleSubmitPoll = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -47,7 +48,6 @@ class PollFormContainer extends React.Component<PollFormContainerProps> {
   handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.props.handleChange(e.target.id, e.target.value);
   };
-
   render() {
     return (
       <PollForm
@@ -61,7 +61,7 @@ class PollFormContainer extends React.Component<PollFormContainerProps> {
 }
 
 const ConnectedPollFormContainer = connect(
-  mapStatetoProps,
+  mapStateToProps,
   mapDispatchToProps
 )(PollFormContainer);
 

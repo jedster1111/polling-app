@@ -47,6 +47,11 @@ const NavBar = () => (
         Create a New Poll
       </StyledLink>
     </StyledList>
+    <StyledList>
+      <StyledLink to="/list-polls" exact id="listPollsLink">
+        See Polls
+      </StyledLink>
+    </StyledList>
   </NavBarContainer>
 );
 
