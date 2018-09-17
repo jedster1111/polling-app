@@ -1,7 +1,9 @@
 import { combineReducers } from "redux";
 import { Poll, PollInput } from "../../../server/models/database";
 import pollForm from "./pollForm";
-import polls from "./pollsState";
+import pollsState from "./pollsState";
+import userFormState from "./userFormState";
+import userState from "./userState";
 
 export interface ArticlesState {
   articles: Article[];
@@ -21,9 +23,17 @@ export interface PollForm {
   isLoading: boolean;
   error: Error | null;
 }
+export interface UserState {
+  name: string;
+}
+export interface UserFormState {
+  name: string;
+}
 export interface InitialState {
   pollsState: PollsState;
   pollForm: PollForm;
+  userState: UserState;
+  userFormState: UserFormState;
 }
 export const initialState: InitialState = {
   pollsState: {
@@ -40,12 +50,20 @@ export const initialState: InitialState = {
     },
     isLoading: false,
     error: null
+  },
+  userState: {
+    name: "Unnamed"
+  },
+  userFormState: {
+    name: ""
   }
 };
 
 const rootReducer = combineReducers({
-  pollsState: polls,
-  pollForm
+  pollsState,
+  pollForm,
+  userState,
+  userFormState
 });
 
 export default rootReducer;

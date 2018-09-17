@@ -7,7 +7,7 @@ import PollForm from "../src/app/components/create-poll-form/PollForm";
 import SingleInput from "../src/app/components/create-poll-form/SingleInput";
 import StyledTextInput from "../src/app/components/create-poll-form/TextInput";
 
-const mockSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+export const mockSubmit = (e: React.FormEvent<HTMLFormElement>) => {
   e.preventDefault();
   action("submitted form")(e);
 };

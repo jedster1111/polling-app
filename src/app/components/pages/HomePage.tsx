@@ -1,5 +1,6 @@
 import * as React from "react";
+import UserDataForm from "../user-data-form/UserDataFormContainer";
 
-const HomePage = () => <span>Welcome to my home page!</span>;
+const HomePage = () => <UserDataForm />;
 
 export default HomePage;

@@ -16,7 +16,9 @@
   * To start Storybook run: `npm run storybook` <br>
   * To build, run: `npm run build` <br>
 	To run in watch mode, run `npm run build -- -w` <br>
-	*Note as ts-node is installed there's no need to build during development*
+	*Note as ts-node is installed there's no need to build during development* <br>
+  * To launch a debug Chrome instance, run: `npm start chrome` <br>
+	Attach to port `9222` using your debugger and you can debug in your IDE now!
 
 
 

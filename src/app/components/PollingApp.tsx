@@ -22,6 +22,7 @@ const StyledContainer = styled.div<{}>`
   background-color: #dff2d8;
   color: black;
   padding: 7px 10px;
+  overflow: auto;
 `;
 const StyledPageContainer = styled.div<{}>`
   flex: 1;

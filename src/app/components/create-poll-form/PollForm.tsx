@@ -12,7 +12,7 @@ interface CreatePollFormProps {
   discardPoll: () => void;
 }
 
-const FormContainer = styled.form<{}>`
+export const FormContainer = styled.form<{}>`
   flex: 1;
   min-width: 200px;
   max-width: 750px;

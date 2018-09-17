@@ -10,7 +10,8 @@
     "test": "jest",
     "testcafe": "testcafe chrome testcafe/",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "chrome": "start chrome --remote-debugging-port=9222"
   },
   "keywords": [],
   "author": "",
