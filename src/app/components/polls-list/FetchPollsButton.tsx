@@ -12,13 +12,16 @@ const StyledButton = styled.button<{}>`
   border: 1px solid black;
   max-width: 175px;
   height: 35px;
+  align-self: flex-end;
   &:hover {
     background-color: lightcoral;
   }
 `;
 
 const FetchPollsButton = (props: FetchPollsButtonProps) => (
-  <StyledButton onClick={props.fetchPolls}>Refresh Polls</StyledButton>
+  <StyledButton onClick={props.fetchPolls} id="fetchPollsButton">
+    Refresh Polls
+  </StyledButton>
 );
 
 export default FetchPollsButton;

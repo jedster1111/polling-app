@@ -14,7 +14,7 @@ const PollsListContainer = styled.div<{}>`
   border: 1px solid black;
   padding: 5px 6px;
   justify-content: space-around;
-  align-items: flex-end;
+  align-items: center;
 `;
 
 const PollsList = (props: PollsListProps) => (

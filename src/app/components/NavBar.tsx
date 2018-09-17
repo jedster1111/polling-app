@@ -6,6 +6,7 @@ const NavBarContainer = styled.ul<{}>`
   list-style-type: none;
   width: 150px;
   margin: 0 8px;
+  margin-bottom: 3px;
   padding: 0;
   background-color: white;
   padding: 3px 2px;

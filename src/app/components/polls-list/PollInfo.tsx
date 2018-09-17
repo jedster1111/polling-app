@@ -11,7 +11,8 @@ interface PollInfoProps {
 
 const InfoContainer = styled.div<{}>`
   flex: 1 1 170px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  justify-items: space-between;
   align-items: center;
   display: flex;
   align-content: stretch;
