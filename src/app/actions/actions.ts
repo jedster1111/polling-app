@@ -48,6 +48,6 @@ export const voteOption: ActionCreator<Action> = (
   payload: { voterName, pollId, optionId }
 });
 export const toggleShowResults: ActionCreator<Action> = (pollId: string) => ({
-  type: actionTypes.TOGGLE_SHOW_RESULTS,
+  type: actionTypes.TOGGLE_SHOW_RESULTS_LOADING,
   payload: { pollId }
 });

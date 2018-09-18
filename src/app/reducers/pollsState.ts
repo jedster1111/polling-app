@@ -33,7 +33,7 @@ const pollsStateReducer: Reducer = (
         isLoading: true,
         error: null
       };
-    case actionTypes.VOTE_OPTION_SUCCESS:
+    case actionTypes.VOTE_OPTION_SUCCESS: {
       const newPolls = [...pollsState.polls];
       const indexOfUpdatedPoll = newPolls.findIndex(
         poll => poll.pollId === action.payload.poll.pollId
@@ -44,22 +44,44 @@ const pollsStateReducer: Reducer = (
         isLoading: false,
         polls: newPolls
       };
+    }
     case actionTypes.VOTE_OPTION_ERROR:
       return {
         ...pollsState,
         isLoading: false,
         error: action.payload.error
       };
-    case actionTypes.TOGGLE_SHOW_RESULTS:
-      const pollId = action.payload.pollId;
-      const pollShowResult = pollsState.showResults[pollId];
+    case actionTypes.TOGGLE_SHOW_RESULTS_LOADING: {
       return {
         ...pollsState,
+        isLoading: true,
+        error: null
+      };
+    }
+    case actionTypes.TOGGLE_SHOW_RESULTS_ERROR:
+      return {
+        ...pollsState,
+        isLoading: false,
+        error: action.payload.error
+      };
+    case actionTypes.TOGGLE_SHOW_RESULTS_SUCCESS: {
+      const pollId = action.payload.poll.pollId;
+      const pollShowResult = pollsState.showResults[pollId];
+      const indexOfUpdatedPoll = pollsState.polls.findIndex(
+        poll => poll.pollId === pollId
+      );
+      const newPolls = [...pollsState.polls];
+      newPolls[indexOfUpdatedPoll] = action.payload.poll;
+      return {
+        ...pollsState,
+        polls: newPolls,
         showResults: {
           ...pollsState.showResults,
           [pollId]: pollShowResult ? false : true
-        }
+        },
+        isLoading: false
       };
+    }
     default:
       return pollsState;
   }

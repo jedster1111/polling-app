@@ -1,7 +1,6 @@
 import { combineReducers } from "redux";
 import { Poll } from "../../../server/models/database";
 import pollForm from "./pollForm";
-import pollsListState from "./pollsListState";
 import pollsState from "./pollsState";
 import userFormState from "./userFormState";
 import userState from "./userState";
@@ -69,8 +68,7 @@ const rootReducer = combineReducers({
   pollsState,
   pollForm,
   userState,
-  userFormState,
-  pollsListState
+  userFormState
 });
 
 export default rootReducer;

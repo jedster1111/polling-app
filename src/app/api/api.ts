@@ -18,3 +18,6 @@ export function voteOption(payload: {
     optionId
   });
 }
+export function getPoll(pollId: string) {
+  return axios.get(`http://localhost:8000/api/polls/${pollId}`);
+}

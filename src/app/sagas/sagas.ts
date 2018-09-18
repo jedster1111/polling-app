@@ -44,11 +44,27 @@ function* voteOption(action: AnyAction) {
     });
   }
 }
+function* toggleShowResults(action: AnyAction) {
+  try {
+    const response = yield call(api.getPoll, action.payload.pollId);
+    const poll: Poll = response.data.poll;
+    yield put({
+      type: actionTypes.TOGGLE_SHOW_RESULTS_SUCCESS,
+      payload: { poll }
+    });
+  } catch (error) {
+    yield put({
+      type: actionTypes.TOGGLE_SHOW_RESULTS_ERROR,
+      payload: { error }
+    });
+  }
+}
 
 export function* mainSaga() {
   yield all([
     takeLatest(actionTypes.GET_POLLS_REQUEST, getPollsSaga),
     takeLatest(actionTypes.POST_POLLS_REQUEST, postPollsSaga),
-    takeLatest(actionTypes.VOTE_OPTION_LOADING, voteOption)
+    takeLatest(actionTypes.VOTE_OPTION_LOADING, voteOption),
+    takeLatest(actionTypes.TOGGLE_SHOW_RESULTS_LOADING, toggleShowResults)
   ]);
 }
