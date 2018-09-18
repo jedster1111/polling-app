@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npm run server",
+    "start": "webpack --display=minimal && npm run server",
     "build": "webpack",
     "server": "nodemon --exec ./node_modules/.bin/ts-node --watch server server/server.ts",
     "test": "jest",

@@ -113,7 +113,6 @@ class Database {
         poll.options.findIndex(option => option.optionId === voteInput.optionId)
       ] &&
       voteInput.voterName;
-    console.log(isValidVote);
     if (!isValidVote) {
       const err = new Error(
         `Invalid vote input, either vote/poll doesn't exist or username is empty`

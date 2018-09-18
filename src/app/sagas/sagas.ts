@@ -13,7 +13,10 @@ function* getPollsSaga() {
     const polls: Poll[] = response.data.polls;
     yield put({ type: actionTypes.GET_POLLS_SUCCESS, payload: { polls } });
   } catch (error) {
-    yield put({ type: actionTypes.GET_POLLS_ERROR, payload: { error } });
+    yield put({
+      type: actionTypes.GET_POLLS_ERROR,
+      payload: { error: error.response }
+    });
   }
 }
 function* postPollsSaga(action: any) {
@@ -25,7 +28,7 @@ function* postPollsSaga(action: any) {
   } catch (error) {
     yield put({
       type: actionTypes.POST_POLLS_ERROR,
-      payload: { error }
+      payload: { error: error.response }
     });
   }
 }
@@ -37,7 +40,7 @@ function* voteOption(action: AnyAction) {
   } catch (error) {
     yield put({
       type: actionTypes.VOTE_OPTION_ERROR,
-      payload: { error }
+      payload: { error: error.response }
     });
   }
 }
