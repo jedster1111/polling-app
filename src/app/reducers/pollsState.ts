@@ -19,14 +19,6 @@ const pollsStateReducer: Reducer = (
       return {
         ...pollsState,
         polls,
-        // TODO this deletes showResult every get request
-        showResults: polls.reduce(
-          (acc, poll) => {
-            acc[poll.pollId] = false;
-            return acc;
-          },
-          {} as { [key: string]: boolean }
-        ),
         isLoading: false
       };
     case actionTypes.GET_POLLS_ERROR:
