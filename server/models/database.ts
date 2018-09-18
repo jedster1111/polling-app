@@ -106,7 +106,21 @@ class Database {
     pollId: string,
     voteInput: { voterName: string; optionId: string }
   ): Poll {
-    const poll = db.getPoll({ pollId });
+    const poll: Poll = db.getPoll({ pollId });
+    const isValidVote =
+      poll &&
+      poll.options[
+        poll.options.findIndex(option => option.optionId === voteInput.optionId)
+      ] &&
+      voteInput.voterName;
+    console.log(isValidVote);
+    if (!isValidVote) {
+      const err = new Error(
+        `Invalid vote input, either vote/poll doesn't exist or username is empty`
+      ) as ErrorWithStatusCode;
+      err.statusCode = 400;
+      throw err;
+    }
     for (const option of poll.options) {
       if (option.optionId === voteInput.optionId) {
         const indexOfName: number = option.votes.findIndex(

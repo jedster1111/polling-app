@@ -38,11 +38,15 @@ pollRouter
     res.status(200).send();
   });
 
-pollRouter.route("/:pollId/vote").post((req, res) => {
-  const pollId: string = req.params.pollId;
-  const voteInput = req.body;
-  const poll = db.votePoll(pollId, voteInput);
-  res.status(200).json({ poll });
+pollRouter.route("/:pollId/vote").post((req, res, next) => {
+  try {
+    const pollId: string = req.params.pollId;
+    const voteInput = req.body;
+    const poll = db.votePoll(pollId, voteInput);
+    res.status(200).json({ poll });
+  } catch (error) {
+    next(error);
+  }
 });
 
 export default pollRouter;

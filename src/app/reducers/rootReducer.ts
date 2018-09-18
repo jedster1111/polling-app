@@ -56,7 +56,7 @@ export const initialState: InitialState = {
     error: null
   },
   userState: {
-    name: "Unnamed"
+    name: ""
   },
   userFormState: {
     name: ""

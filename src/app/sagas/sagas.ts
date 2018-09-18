@@ -31,7 +31,6 @@ function* postPollsSaga(action: any) {
 }
 function* voteOption(action: AnyAction) {
   try {
-    console.log("voting");
     const response = yield call(api.voteOption, action.payload);
     const poll: Poll = response.data.poll;
     yield put({ type: actionTypes.VOTE_OPTION_SUCCESS, payload: { poll } });
