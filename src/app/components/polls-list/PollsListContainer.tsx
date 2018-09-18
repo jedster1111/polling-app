@@ -39,6 +39,7 @@ class PollsListContainer extends React.Component<PollsListContainerProps> {
         polls={this.props.polls}
         fetchPolls={this.props.fetchPolls}
         handleVote={this.handleVote}
+        username={this.props.creatorName}
       />
     );
   }

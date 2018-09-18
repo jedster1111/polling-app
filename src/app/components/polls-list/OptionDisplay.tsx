@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
-const OptionDisplay = styled.button<{}>`
+const OptionDisplay = styled.button<{ voted: boolean }>`
+  transition: border 0.5s;
   text-overflow: ellipsis;
   overflow: hidden;
   word-wrap: break-word;
@@ -15,7 +16,8 @@ const OptionDisplay = styled.button<{}>`
   margin: 4px 8px;
   padding: 8px 2px;
   background-color: #edfff7;
-  border: solid 1px #636363;
+  border: ${props =>
+    props.voted ? "solid 2px #636363" : "solid 2px transparent"};
   &:hover {
     background-color: #defcee;
   }

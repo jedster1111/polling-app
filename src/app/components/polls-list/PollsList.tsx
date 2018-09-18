@@ -6,6 +6,7 @@ import PollCard from "./PollCard";
 
 export interface PollsListProps {
   polls: Poll[];
+  username: string;
   fetchPolls: () => any;
   handleVote: (pollId: string, optionId: string) => void;
 }
@@ -24,7 +25,12 @@ const PollsList = (props: PollsListProps) => (
     <FetchPollsButton fetchPolls={props.fetchPolls} />
     {props.polls.length > 0 ? (
       props.polls.map(poll => (
-        <PollCard {...poll} handleVote={props.handleVote} key={poll.pollId} />
+        <PollCard
+          {...poll}
+          handleVote={props.handleVote}
+          key={poll.pollId}
+          username={props.username}
+        />
       ))
     ) : (
       <span>No Polls Yet</span>

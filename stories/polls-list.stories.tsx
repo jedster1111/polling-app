@@ -50,7 +50,7 @@ storiesOf("Polls List", module)
   ))
   .add("Option Display", () => (
     <Fragment>
-      <OptionDisplay onClick={action("option 1 clicked")}>
+      <OptionDisplay onClick={action("option 1 clicked")} voted={false}>
         Option 1
       </OptionDisplay>
     </Fragment>
@@ -59,16 +59,19 @@ storiesOf("Polls List", module)
     return (
       <Fragment>
         <OptionsList
+          username="Jed"
           pollId="1"
           handleVote={action("clicked vote")}
           options={createOptions(3)}
         />
         <OptionsList
+          username="Jed"
           pollId="1"
           handleVote={action("clicked vote")}
           options={createOptions(5)}
         />
         <OptionsList
+          username="Jed"
           pollId="1"
           handleVote={action("clicked vote")}
           options={createOptions(9)}
@@ -90,7 +93,11 @@ storiesOf("Polls List", module)
   })
   .add("Poll Card", () => {
     return (
-      <PollCard {...examplePolls[0]} handleVote={action("clicked option")} />
+      <PollCard
+        {...examplePolls[0]}
+        handleVote={action("clicked option")}
+        username="Jed"
+      />
     );
   })
   .add("Polls List", () => {
@@ -99,6 +106,7 @@ storiesOf("Polls List", module)
         polls={[examplePolls[0], examplePolls[1]]}
         fetchPolls={action("fetching polls")}
         handleVote={action("clicked option")}
+        username="Jed"
       />
     );
   });

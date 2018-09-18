@@ -10,6 +10,7 @@ export interface PollCardProps {
   description: string;
   pollId: string;
   options: Option[];
+  username: string;
   handleVote: (pollId: string, optionId: string) => void;
 }
 
@@ -35,6 +36,7 @@ const PollCard = (props: PollCardProps) => (
       handleVote={props.handleVote}
       pollId={props.pollId}
       options={props.options}
+      username={props.username}
     />
   </PollContainer>
 );
