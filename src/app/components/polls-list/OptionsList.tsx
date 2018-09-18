@@ -4,7 +4,9 @@ import { Option } from "../../../../server/models/database";
 import OptionDisplay from "./OptionDisplay";
 
 interface OptionsListProps {
+  pollId: string;
   options: Option[];
+  handleVote: (pollId: string, optionId: string) => void;
 }
 
 const OptionsContainer = styled.div<{}>`
@@ -20,7 +22,12 @@ const OptionsList = (props: OptionsListProps) => {
   return (
     <OptionsContainer>
       {props.options.map(option => (
-        <OptionDisplay key={option.optionId}>{option.value}</OptionDisplay>
+        <OptionDisplay
+          key={option.optionId}
+          onClick={() => props.handleVote(props.pollId, option.optionId)}
+        >
+          {option.value}
+        </OptionDisplay>
       ))}
     </OptionsContainer>
   );

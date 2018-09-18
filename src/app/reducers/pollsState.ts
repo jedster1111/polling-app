@@ -10,7 +10,8 @@ const pollsStateReducer: Reducer = (
     case actionTypes.GET_POLLS_REQUEST:
       return {
         ...pollsState,
-        isLoading: true
+        isLoading: true,
+        error: null
       };
     case actionTypes.GET_POLLS_SUCCESS:
       return {
@@ -19,6 +20,29 @@ const pollsStateReducer: Reducer = (
         isLoading: false
       };
     case actionTypes.GET_POLLS_ERROR:
+      return {
+        ...pollsState,
+        isLoading: false,
+        error: action.payload.error
+      };
+    case actionTypes.VOTE_OPTION_LOADING:
+      return {
+        ...pollsState,
+        isLoading: true,
+        error: null
+      };
+    case actionTypes.VOTE_OPTION_SUCCESS:
+      const newPolls = [...pollsState.polls];
+      const indexOfUpdatedPoll = newPolls.findIndex(
+        poll => poll.pollId === action.payload.poll.pollId
+      );
+      newPolls[indexOfUpdatedPoll] = action.payload.poll;
+      return {
+        ...pollsState,
+        isLoading: false,
+        polls: newPolls
+      };
+    case actionTypes.VOTE_OPTION_ERROR:
       return {
         ...pollsState,
         isLoading: false,

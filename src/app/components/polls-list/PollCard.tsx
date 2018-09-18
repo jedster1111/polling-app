@@ -10,9 +10,11 @@ export interface PollCardProps {
   description: string;
   pollId: string;
   options: Option[];
+  handleVote: (pollId: string, optionId: string) => void;
 }
 
 const PollContainer = styled.div<{}>`
+  align-self: stretch;
   display: flex;
   flex-wrap: wrap;
   max-width: 800px;
@@ -29,7 +31,11 @@ const PollCard = (props: PollCardProps) => (
       description={props.description}
       pollName={props.pollName}
     />
-    <OptionsList options={props.options} />
+    <OptionsList
+      handleVote={props.handleVote}
+      pollId={props.pollId}
+      options={props.options}
+    />
   </PollContainer>
 );
 

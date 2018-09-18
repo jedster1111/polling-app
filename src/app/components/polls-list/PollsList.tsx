@@ -1,11 +1,13 @@
 import * as React from "react";
 import styled from "styled-components";
+import { Poll } from "../../../../server/models/database";
 import FetchPollsButton from "./FetchPollsButton";
-import PollCard, { PollCardProps } from "./PollCard";
+import PollCard from "./PollCard";
 
 export interface PollsListProps {
-  polls: PollCardProps[];
+  polls: Poll[];
   fetchPolls: () => any;
+  handleVote: (pollId: string, optionId: string) => void;
 }
 
 const PollsListContainer = styled.div<{}>`
@@ -20,9 +22,13 @@ const PollsListContainer = styled.div<{}>`
 const PollsList = (props: PollsListProps) => (
   <PollsListContainer>
     <FetchPollsButton fetchPolls={props.fetchPolls} />
-    {props.polls.map(poll => (
-      <PollCard {...poll} key={poll.pollId} />
-    ))}
+    {props.polls.length > 0 ? (
+      props.polls.map(poll => (
+        <PollCard {...poll} handleVote={props.handleVote} key={poll.pollId} />
+      ))
+    ) : (
+      <span>No Polls Yet</span>
+    )}
   </PollsListContainer>
 );
 

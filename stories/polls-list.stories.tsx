@@ -4,13 +4,11 @@ import { storiesOf } from "@storybook/react";
 import * as React from "react";
 import { Fragment } from "react";
 import { MemoryRouter } from "react-router";
-import { Option } from "../server/models/database";
+import { Option, Poll } from "../server/models/database";
 import FetchPollsButton from "../src/app/components/polls-list/FetchPollsButton";
 import OptionDisplay from "../src/app/components/polls-list/OptionDisplay";
 import OptionsList from "../src/app/components/polls-list/OptionsList";
-import PollCard, {
-  PollCardProps
-} from "../src/app/components/polls-list/PollCard";
+import PollCard from "../src/app/components/polls-list/PollCard";
 import PollInfo from "../src/app/components/polls-list/PollInfo";
 import PollsList from "../src/app/components/polls-list/PollsList";
 import ViewResultsButton from "../src/app/components/polls-list/ViewResultsButton";
@@ -23,7 +21,7 @@ const createOptions: (n: number) => Option[] = n => {
   }));
   return options;
 };
-const examplePolls: PollCardProps[] = [
+const examplePolls: Poll[] = [
   {
     creatorName: "Jed",
     description: "What furniture do people want for the office?",
@@ -60,9 +58,21 @@ storiesOf("Polls List", module)
   .add("Options Container", () => {
     return (
       <Fragment>
-        <OptionsList options={createOptions(3)} />
-        <OptionsList options={createOptions(5)} />
-        <OptionsList options={createOptions(9)} />
+        <OptionsList
+          pollId="1"
+          handleVote={action("clicked vote")}
+          options={createOptions(3)}
+        />
+        <OptionsList
+          pollId="1"
+          handleVote={action("clicked vote")}
+          options={createOptions(5)}
+        />
+        <OptionsList
+          pollId="1"
+          handleVote={action("clicked vote")}
+          options={createOptions(9)}
+        />
       </Fragment>
     );
   })
@@ -79,13 +89,16 @@ storiesOf("Polls List", module)
     );
   })
   .add("Poll Card", () => {
-    return <PollCard {...examplePolls[0]} />;
+    return (
+      <PollCard {...examplePolls[0]} handleVote={action("clicked option")} />
+    );
   })
   .add("Polls List", () => {
     return (
       <PollsList
         polls={[examplePolls[0], examplePolls[1]]}
         fetchPolls={action("fetching polls")}
+        handleVote={action("clicked option")}
       />
     );
   });

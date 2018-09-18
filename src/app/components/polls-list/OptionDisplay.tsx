@@ -1,7 +1,6 @@
 import styled from "styled-components";
 
-const OptionDisplay = styled.div<{}>`
-  flex: 1;
+const OptionDisplay = styled.button<{}>`
   text-overflow: ellipsis;
   overflow: hidden;
   word-wrap: break-word;
@@ -10,8 +9,9 @@ const OptionDisplay = styled.div<{}>`
   display: flex;
   justify-content: center;
   align-items: center;
-  max-width: 250px;
-  min-width: 140px;
+  width: 150px;
+  min-height: 50px;
+  padding: 4px 5px;
   margin: 4px 8px;
   padding: 8px 2px;
   background-color: #edfff7;

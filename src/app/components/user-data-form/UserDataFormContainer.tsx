@@ -29,11 +29,9 @@ class UserDataFormContainer extends React.Component<
 > {
   handleSubmitForm = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(this.props.values);
     this.props.saveUserData(this.props.values);
   };
   handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.id, e.target.value);
     this.props.changeInput(e.target.id, e.target.value);
   };
   render() {

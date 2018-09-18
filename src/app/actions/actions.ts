@@ -43,3 +43,11 @@ export const saveUserFormData: ActionCreator<Action> = (
   type: actionTypes.SAVE_USER_FORM_DATA,
   payload: formValues
 });
+export const voteOption: ActionCreator<Action> = (
+  voterName: string,
+  pollId: string,
+  optionId: string
+) => ({
+  type: actionTypes.VOTE_OPTION_LOADING,
+  payload: { voterName, pollId, optionId }
+});

@@ -1,3 +1,4 @@
+import { AnyAction } from "redux";
 import { all, call, put, takeLatest } from "redux-saga/effects";
 import { Poll } from "../../../server/models/database";
 import * as actionTypes from "../actions/action-types";
@@ -28,10 +29,24 @@ function* postPollsSaga(action: any) {
     });
   }
 }
+function* voteOption(action: AnyAction) {
+  try {
+    const response = yield call(api.voteOption, action.payload);
+    const poll: Poll = response.data.poll;
+    console.log(poll);
+    yield put({ type: actionTypes.VOTE_OPTION_SUCCESS, payload: { poll } });
+  } catch (error) {
+    yield put({
+      type: actionTypes.VOTE_OPTION_ERROR,
+      payload: { error }
+    });
+  }
+}
 
 export function* mainSaga() {
   yield all([
     takeLatest(actionTypes.GET_POLLS_REQUEST, getPollsSaga),
-    takeLatest(actionTypes.POST_POLLS_REQUEST, postPollsSaga)
+    takeLatest(actionTypes.POST_POLLS_REQUEST, postPollsSaga),
+    takeLatest(actionTypes.VOTE_OPTION_LOADING, voteOption)
   ]);
 }
