@@ -16,6 +16,9 @@ const OptionDisplay = styled.button<{}>`
   padding: 8px 2px;
   background-color: #edfff7;
   border: solid 1px #636363;
+  &:hover {
+    background-color: #defcee;
+  }
 `;
 
 export default OptionDisplay;

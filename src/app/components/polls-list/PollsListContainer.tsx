@@ -31,7 +31,6 @@ class PollsListContainer extends React.Component<PollsListContainerProps> {
     this.props.fetchPolls();
   }
   handleVote = (pollId: string, optionId: string) => {
-    console.log(pollId, optionId);
     this.props.voteOption(this.props.creatorName, pollId, optionId);
   };
   render() {
