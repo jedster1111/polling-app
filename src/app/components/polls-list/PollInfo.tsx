@@ -7,6 +7,7 @@ interface PollInfoProps {
   creatorName: string;
   pollName: string;
   description: string;
+  toggleShowResults: (pollId: string) => any;
 }
 
 const InfoContainer = styled.div<{}>`
@@ -27,7 +28,7 @@ const PollTitleContainer = styled.div<{}>`
   font-size: 20px;
 `;
 const DescriptionContainer = styled.div<{}>``;
-const CreatorContianer = styled.div<{}>``;
+const CreatorContainer = styled.div<{}>``;
 
 const PollInfo = (props: PollInfoProps) => {
   return (
@@ -35,9 +36,14 @@ const PollInfo = (props: PollInfoProps) => {
       <TextContainer>
         <PollTitleContainer>{props.pollName}</PollTitleContainer>
         <DescriptionContainer>{props.description}</DescriptionContainer>
-        <CreatorContianer>{props.creatorName}</CreatorContianer>
+        <CreatorContainer>{props.creatorName}</CreatorContainer>
       </TextContainer>
-      <ViewResultsButton value={"Results"} to={`/polls/${props.pollId}`} />
+      <ViewResultsButton
+        value={"Results"}
+        to={`/polls/${props.pollId}`}
+        pollId={props.pollId}
+        toggleShowResults={props.toggleShowResults}
+      />
     </InfoContainer>
   );
 };

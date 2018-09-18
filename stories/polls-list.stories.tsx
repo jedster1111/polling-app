@@ -11,13 +11,15 @@ import OptionsList from "../src/app/components/polls-list/OptionsList";
 import PollCard from "../src/app/components/polls-list/PollCard";
 import PollInfo from "../src/app/components/polls-list/PollInfo";
 import PollsList from "../src/app/components/polls-list/PollsList";
+import ResultsColumn from "../src/app/components/polls-list/ResultsColumn";
+import ResultsList from "../src/app/components/polls-list/ResultsList";
 import ViewResultsButton from "../src/app/components/polls-list/ViewResultsButton";
 
 const createOptions: (n: number) => Option[] = n => {
   const options = new Array(n).fill(null).map((option, index) => ({
     optionId: `${index + 1}`,
     value: `Bean bags, green and black asdfasdf asdfasd asdffdas asdfasdf`,
-    votes: [""]
+    votes: ["Jed", "John", "James"]
   }));
   return options;
 };
@@ -43,7 +45,12 @@ storiesOf("Polls List", module)
     <MemoryRouter initialEntries={["/"]}>{story()}</MemoryRouter>
   ))
   .add("Link to Poll Results button", () => (
-    <ViewResultsButton to={"/polls/1"} value={"Results"} />
+    <ViewResultsButton
+      pollId="1"
+      to={"/polls/1"}
+      value={"Results"}
+      toggleShowResults={action("toggled show")}
+    />
   ))
   .add("Fetch Polls Button", () => (
     <FetchPollsButton fetchPolls={action("fetching polls")} />
@@ -83,6 +90,7 @@ storiesOf("Polls List", module)
     return (
       <Fragment>
         <PollInfo
+          toggleShowResults={action("toggled show")}
           pollId="1"
           creatorName="Jed"
           description="What furniture do you guys want?"
@@ -93,20 +101,39 @@ storiesOf("Polls List", module)
   })
   .add("Poll Card", () => {
     return (
-      <PollCard
-        {...examplePolls[0]}
-        handleVote={action("clicked option")}
-        username="Jed"
-      />
+      <Fragment>
+        <PollCard
+          toggleShowResults={action("toggled show")}
+          {...examplePolls[0]}
+          handleVote={action("clicked option")}
+          username="Jed"
+          showResults={false}
+        />
+        <PollCard
+          toggleShowResults={action("toggled show")}
+          {...examplePolls[0]}
+          handleVote={action("clicked option")}
+          username="Jed"
+          showResults={false}
+        />
+      </Fragment>
     );
   })
   .add("Polls List", () => {
     return (
       <PollsList
+        toggleShowResults={action("toggled show")}
         polls={[examplePolls[0], examplePolls[1]]}
         fetchPolls={action("fetching polls")}
         handleVote={action("clicked option")}
         username="Jed"
+        showResults={{ 1: false, 2: true }}
       />
     );
-  });
+  })
+  .add("Result Column", () => (
+    <ResultsColumn
+      option={{ votes: ["Jed", "John"], value: "Bean bags", optionId: "1" }}
+    />
+  ))
+  .add("Result List", () => <ResultsList options={createOptions(4)} />);

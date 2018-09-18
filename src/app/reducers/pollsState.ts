@@ -1,5 +1,6 @@
 import { AnyAction, Reducer } from "redux";
 import * as actionTypes from "../actions/action-types";
+import { Poll } from "./../../../server/models/database";
 import { initialState, PollsState } from "./rootReducer";
 
 const pollsStateReducer: Reducer = (
@@ -14,9 +15,17 @@ const pollsStateReducer: Reducer = (
         error: null
       };
     case actionTypes.GET_POLLS_SUCCESS:
+      const polls: Poll[] = action.payload.polls;
       return {
         ...pollsState,
-        polls: action.payload.polls,
+        polls,
+        showResults: polls.reduce(
+          (acc, poll) => {
+            acc[poll.pollId] = false;
+            return acc;
+          },
+          {} as { [key: string]: boolean }
+        ),
         isLoading: false
       };
     case actionTypes.GET_POLLS_ERROR:
@@ -47,6 +56,16 @@ const pollsStateReducer: Reducer = (
         ...pollsState,
         isLoading: false,
         error: action.payload.error
+      };
+    case actionTypes.TOGGLE_SHOW_RESULTS:
+      const pollId = action.payload.pollId;
+      const pollShowResult = pollsState.showResults[pollId];
+      return {
+        ...pollsState,
+        showResults: {
+          ...pollsState.showResults,
+          [pollId]: pollShowResult ? false : true
+        }
       };
     default:
       return pollsState;

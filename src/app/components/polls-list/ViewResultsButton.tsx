@@ -1,17 +1,19 @@
 import * as React from "react";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 interface ViewResultsButtonProps {
   value: string;
   to: string;
+  toggleShowResults: (pollId: string) => any;
+  pollId: string;
 }
 
-const StyledLink = styled(Link)<{}>`
-  display: flex;
-  text-decoration: none;
-  min-width: 140px;
-`;
+// const StyledLink = styled(Link)<{}>`
+//   display: flex;
+//   text-decoration: none;
+//   min-width: 140px;
+// `;
 
 const StyledButton = styled.button<{}>`
   display: block;
@@ -28,9 +30,9 @@ const StyledButton = styled.button<{}>`
 `;
 
 const ViewResultsButton = (props: ViewResultsButtonProps) => (
-  <StyledLink {...props}>
-    <StyledButton>{props.value}</StyledButton>
-  </StyledLink>
+  <StyledButton onClick={() => props.toggleShowResults(props.pollId)}>
+    {props.value}
+  </StyledButton>
 );
 
 export default ViewResultsButton;

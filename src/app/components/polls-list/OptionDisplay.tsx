@@ -15,11 +15,11 @@ const OptionDisplay = styled.button<{ voted: boolean }>`
   padding: 4px 5px;
   margin: 4px 8px;
   padding: 8px 2px;
-  background-color: #edfff7;
+  background-color: #77ffd1;
   border: ${props =>
-    props.voted ? "solid 2px #636363" : "solid 2px transparent"};
+    props.voted ? "solid 2px #636363" : "solid 1px transparent"};
   &:hover {
-    background-color: #defcee;
+    background-color: #8cffd8;
   }
 `;
 

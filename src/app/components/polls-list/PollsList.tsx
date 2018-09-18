@@ -9,6 +9,8 @@ export interface PollsListProps {
   username: string;
   fetchPolls: () => any;
   handleVote: (pollId: string, optionId: string) => void;
+  toggleShowResults: (pollId: string) => any;
+  showResults: { [pollId: string]: boolean };
 }
 
 const PollsListContainer = styled.div<{}>`
@@ -30,6 +32,8 @@ const PollsList = (props: PollsListProps) => (
           handleVote={props.handleVote}
           key={poll.pollId}
           username={props.username}
+          showResults={props.showResults[poll.pollId]}
+          toggleShowResults={props.toggleShowResults}
         />
       ))
     ) : (

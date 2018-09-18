@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Option } from "../../../../server/models/database";
 import OptionsList from "./OptionsList";
 import PollInfo from "./PollInfo";
+import ResultsList from "./ResultsList";
 
 export interface PollCardProps {
   creatorName: string;
@@ -12,6 +13,8 @@ export interface PollCardProps {
   options: Option[];
   username: string;
   handleVote: (pollId: string, optionId: string) => void;
+  toggleShowResults: (pollId: string) => any;
+  showResults: boolean;
 }
 
 const PollContainer = styled.div<{}>`
@@ -22,6 +25,7 @@ const PollContainer = styled.div<{}>`
   min-width: 170px;
   border: solid 1px black;
   margin: 5px 0;
+  background-color: white;
 `;
 
 const PollCard = (props: PollCardProps) => (
@@ -31,6 +35,7 @@ const PollCard = (props: PollCardProps) => (
       creatorName={props.creatorName}
       description={props.description}
       pollName={props.pollName}
+      toggleShowResults={props.toggleShowResults}
     />
     <OptionsList
       handleVote={props.handleVote}
@@ -38,6 +43,7 @@ const PollCard = (props: PollCardProps) => (
       options={props.options}
       username={props.username}
     />
+    {props.showResults && <ResultsList options={props.options} />}
   </PollContainer>
 );
 
