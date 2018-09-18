@@ -20,7 +20,7 @@ interface PollsListContainerProps {
 
 const mapStateToProps = (state: InitialState) => {
   return {
-    polls: state.pollsState.polls,
+    polls: [...state.pollsState.polls].reverse(),
     creatorName: state.userState.name,
     showResults: state.pollsState.showResults
   };

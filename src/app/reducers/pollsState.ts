@@ -19,6 +19,7 @@ const pollsStateReducer: Reducer = (
       return {
         ...pollsState,
         polls,
+        // TODO this deletes showResult every get request
         showResults: polls.reduce(
           (acc, poll) => {
             acc[poll.pollId] = false;
