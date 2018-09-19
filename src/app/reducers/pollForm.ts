@@ -61,6 +61,22 @@ const pollFormReducer: Reducer = (
         isLoading: false,
         error: action.payload.error
       };
+    case actionTypes.ADD_POLL_FORM_OPTION: {
+      const newOptions = [...pollFormState.data.options, ""];
+      return {
+        ...pollFormState,
+        data: { ...pollFormState.data, options: newOptions }
+      };
+    }
+    case actionTypes.REMOVE_POLL_FORM_OPTION: {
+      const newOptions = [...pollFormState.data.options];
+      const indexToRemove = action.payload.index;
+      newOptions.splice(indexToRemove, 1);
+      return {
+        ...pollFormState,
+        data: { ...pollFormState.data, options: newOptions }
+      };
+    }
     default:
       return pollFormState;
   }

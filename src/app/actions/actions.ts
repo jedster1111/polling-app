@@ -65,3 +65,6 @@ export const toggleShowResults: ActionCreator<Action> = (pollId: string) => ({
 export const toggleChangingName: ActionCreator<Action> = () => ({
   type: actionTypes.TOGGLE_CHANGING_NAME
 });
+export const addPollOption: ActionCreator<Action> = () => ({
+  type: actionTypes.ADD_POLL_FORM_OPTION
+});
