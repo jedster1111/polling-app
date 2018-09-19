@@ -26,7 +26,9 @@ const UserDataDisplay = (props: UserDataDisplayProps) => (
       <Label>Name:</Label>
       <TextContainer>{props.confirmedValues.name}</TextContainer>
     </SingleInputContainer>
-    <Button onClick={props.toggleChangingName}>Change Name</Button>
+    <Button onClick={props.toggleChangingName} type="button">
+      Change Name
+    </Button>
   </FormContainer>
 );
 
