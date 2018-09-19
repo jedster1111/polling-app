@@ -15,7 +15,7 @@ interface UserDataFormContainerProps {
 const mapStateToProps = (state: InitialState) => {
   return {
     values: {
-      name: state.userFormState.name
+      name: state.userFormState.data.name
     }
   };
 };

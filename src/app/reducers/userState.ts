@@ -10,7 +10,10 @@ const userStateReducer: Reducer = (
     case actionTypes.SAVE_USER_FORM_DATA:
       return {
         ...userState,
-        name: action.payload.name
+        data: {
+          ...userState.data,
+          name: action.payload.name
+        }
       };
     default:
       return userState;

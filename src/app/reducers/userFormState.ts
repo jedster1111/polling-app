@@ -10,7 +10,10 @@ const userFormStateReducer: Reducer = (
     case actionTypes.CHANGE_USER_FORM_DATA:
       return {
         ...userFormState,
-        [action.payload.fieldId]: action.payload.value
+        data: {
+          ...userFormState.data,
+          [action.payload.fieldId]: action.payload.value
+        }
       };
     default:
       return userFormState;

@@ -22,10 +22,14 @@ export interface PollForm {
   error: Error | null;
 }
 export interface UserState {
-  name: string;
+  data: {
+    name: string;
+  };
 }
 export interface UserFormState {
-  name: string;
+  data: {
+    name: string;
+  };
 }
 export interface PollsListState {
   showResults: boolean;
@@ -54,10 +58,14 @@ export const initialState: InitialState = {
     error: null
   },
   userState: {
-    name: ""
+    data: {
+      name: ""
+    }
   },
   userFormState: {
-    name: ""
+    data: {
+      name: ""
+    }
   },
   pollsListState: {
     showResults: false

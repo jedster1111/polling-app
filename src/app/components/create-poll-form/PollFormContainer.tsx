@@ -31,7 +31,10 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 
 const mapStateToProps = (state: InitialState) => {
   return {
-    pollFormData: { ...state.pollForm.data, creatorName: state.userState.name }
+    pollFormData: {
+      ...state.pollForm.data,
+      creatorName: state.userState.data.name
+    }
   };
 };
 
