@@ -11,7 +11,7 @@ const StyledOptionButton = styled.button<OptionButtonProps>`
   outline: none;
   width: 22px;
   height: 22px;
-  box-sizing: border-box-box;
+  box-sizing: border-box;
   margin: 3px 8px;
   padding: 0;
   border-radius: 100%;
@@ -21,6 +21,7 @@ const StyledOptionButton = styled.button<OptionButtonProps>`
   align-items: center;
   font-size: 22px;
   font-weight: bold;
+  line-height: 20px;
   background-color: ${props =>
     props.add ? "lightgreen" : props.remove ? "lightcoral" : "lightgrey"};
   &:focus {
