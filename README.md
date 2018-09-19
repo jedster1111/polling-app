@@ -6,7 +6,6 @@
 	<br>
 	*Note that the server restarts on changes in the working directory and browser hot reloads* <br>
   * Visit `localhost:8000` to see the website <br>
-	***Note you need to install [redux dev tools](https://goo.gl/n8NXXf) in order for the site to work at the moment!***
 
 ### Testing
   * To execute tests with jest, run: `npm test` <br>
