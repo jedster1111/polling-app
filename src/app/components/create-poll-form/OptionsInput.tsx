@@ -20,7 +20,7 @@ const SingleOptionInputContainer = styled.div<{}>`
   flex: 1 1 100%;
   display: flex;
   flex-wrap: nowrap;
-  margin: 0 4px;
+  margin: 0;
   align-items: center;
 `;
 interface OptionsInputProps {
@@ -30,15 +30,18 @@ interface OptionsInputProps {
   removePollOption: (index: number) => void;
 }
 
+const StyledButton = styled(OptionButton)`
+  margin-left: auto;
+`;
+
 const OptionsInput = (props: OptionsInputProps) => {
   return (
     <SingleInputContainer>
       <Label>Options: </Label>
       <StyledOptionsInputContainer>
         {props.values.map((value, index) => (
-          <SingleOptionInputContainer>
+          <SingleOptionInputContainer key={index}>
             <StyledOptionTextInput
-              key={index}
               id={`optionInput${index + 1}`}
               placeholder={`Option ${index + 1}`}
               value={value}
@@ -50,7 +53,7 @@ const OptionsInput = (props: OptionsInputProps) => {
             />
           </SingleOptionInputContainer>
         ))}
-        <OptionButton add onClick={props.addPollOption} />
+        <StyledButton add onClick={props.addPollOption} />
       </StyledOptionsInputContainer>
     </SingleInputContainer>
   );

@@ -12,7 +12,7 @@ const StyledOptionButton = styled.button<OptionButtonProps>`
   width: 22px;
   height: 22px;
   box-sizing: border-box-box;
-  margin: 3px 3px;
+  margin: 3px 8px;
   padding: 0;
   border-radius: 100%;
   border: solid 2px black;
