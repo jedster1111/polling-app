@@ -10,6 +10,8 @@ interface CreatePollFormProps {
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   discardPoll: () => void;
+  addPollOption: () => void;
+  removePollOption: (index: number) => void;
 }
 
 export const FormContainer = styled.form<{}>`
@@ -41,6 +43,7 @@ const PollForm = (props: CreatePollFormProps) => (
     <OptionsInput
       handleChange={props.handleChange}
       values={props.values.options}
+      removePollOption={props.removePollOption}
     />
     <Buttons discardPoll={props.discardPoll} />
   </FormContainer>

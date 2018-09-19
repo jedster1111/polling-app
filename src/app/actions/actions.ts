@@ -68,3 +68,7 @@ export const toggleChangingName: ActionCreator<Action> = () => ({
 export const addPollOption: ActionCreator<Action> = () => ({
   type: actionTypes.ADD_POLL_FORM_OPTION
 });
+export const removePollOption: ActionCreator<Action> = (index: number) => ({
+  type: actionTypes.REMOVE_POLL_FORM_OPTION,
+  payload: { index }
+});

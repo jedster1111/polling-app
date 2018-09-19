@@ -17,7 +17,7 @@ export const SingleInputContainer = styled.div<{}>`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  align-items: baseline;
+  align-items: flex-end;
   border-bottom: solid 1px #7a6263;
   margin: 3px 3px;
   padding: 2px 5px;

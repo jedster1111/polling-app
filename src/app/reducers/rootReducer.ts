@@ -52,7 +52,7 @@ export const initialState: InitialState = {
   pollForm: {
     data: {
       description: "",
-      options: ["", "", ""],
+      options: ["", "", "", "", ""],
       pollName: ""
     },
     isLoading: false,

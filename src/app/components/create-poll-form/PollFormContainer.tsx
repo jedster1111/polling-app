@@ -1,9 +1,14 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { Dispatch } from "redux";
 import { PollInput } from "../../../../server/models/database";
-import { changeFormData, createPoll, discardPoll } from "../../actions/actions";
-import { InitialState, PollFormInput } from "../../reducers/rootReducer";
+import {
+  addPollOption,
+  changeFormData,
+  createPoll,
+  discardPoll,
+  removePollOption
+} from "../../actions/actions";
+import { InitialState } from "../../reducers/rootReducer";
 import PollForm from "./PollForm";
 
 interface PollFormContainerProps {
@@ -11,23 +16,17 @@ interface PollFormContainerProps {
   submitPoll: (poll: PollInput) => any;
   handleChange: (fieldId: string, value: string) => any;
   discardPoll: () => any;
+  addPollOption: () => any;
+  removePollOption: (index: number) => any;
 }
 
-const mapDispatchToProps = (dispatch: Dispatch) => {
-  return {
-    submitPoll: (poll: PollFormInput) => dispatch(createPoll(poll)),
-    handleChange: (fieldId: string, value: string) =>
-      dispatch(changeFormData(fieldId, value)),
-    discardPoll: () => dispatch(discardPoll())
-  };
+const mapDispatchToProps = {
+  submitPoll: createPoll,
+  handleChange: changeFormData,
+  discardPoll,
+  addPollOption,
+  removePollOption
 };
-
-// To try
-// const mapDispatchToProps = {
-//   createPoll,
-//   changeFormData,
-//   discardPoll
-// };
 
 const mapStateToProps = (state: InitialState) => {
   return {
@@ -39,10 +38,6 @@ const mapStateToProps = (state: InitialState) => {
 };
 
 class PollFormContainer extends React.Component<PollFormContainerProps> {
-  // constructor(props: PollFormContainerProps) {
-  //   super(props);
-  // }
-
   handleSubmitPoll = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const inputData: PollInput = {
@@ -64,6 +59,8 @@ class PollFormContainer extends React.Component<PollFormContainerProps> {
         handleSubmit={this.handleSubmitPoll}
         handleChange={this.handleChange}
         discardPoll={this.props.discardPoll}
+        addPollOption={this.props.addPollOption}
+        removePollOption={this.props.removePollOption}
       />
     );
   }

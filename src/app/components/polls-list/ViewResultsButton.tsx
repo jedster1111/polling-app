@@ -22,7 +22,7 @@ const StyledButton = styled.button<{}>`
   text-decoration: none;
   margin: 5px 5px;
   padding: 10px 0;
-  width: 100%;
+  width: 110px;
   &:hover {
     background-color: lightcoral;
   }
