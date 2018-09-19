@@ -26,6 +26,7 @@ const SingleOptionInputContainer = styled.div<{}>`
 interface OptionsInputProps {
   values: string[];
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  addPollOption: () => void;
   removePollOption: (index: number) => void;
 }
 
@@ -43,11 +44,13 @@ const OptionsInput = (props: OptionsInputProps) => {
               value={value}
               handleChange={props.handleChange}
             />
-            <OptionButton remove onClick={() => props.removePollOption(index)}>
-              -
-            </OptionButton>
+            <OptionButton
+              remove
+              onClick={() => props.removePollOption(index)}
+            />
           </SingleOptionInputContainer>
         ))}
+        <OptionButton add onClick={props.addPollOption} />
       </StyledOptionsInputContainer>
     </SingleInputContainer>
   );

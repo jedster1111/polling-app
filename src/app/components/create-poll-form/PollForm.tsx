@@ -43,6 +43,7 @@ const PollForm = (props: CreatePollFormProps) => (
     <OptionsInput
       handleChange={props.handleChange}
       values={props.values.options}
+      addPollOption={props.addPollOption}
       removePollOption={props.removePollOption}
     />
     <Buttons discardPoll={props.discardPoll} />
