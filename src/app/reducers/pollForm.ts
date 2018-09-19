@@ -50,7 +50,7 @@ const pollFormReducer: Reducer = (
         ...pollFormState,
         data: {
           description: "",
-          options: ["", "", ""],
+          options: initialState.pollForm.data.options,
           pollName: ""
         },
         isLoading: false,

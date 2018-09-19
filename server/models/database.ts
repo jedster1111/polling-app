@@ -51,9 +51,11 @@ class Database {
     if (pollInput.options.length === 0) {
       errorMessage += ` Can't create a poll with no options`;
     }
-    const err = new Error(errorMessage) as ErrorWithStatusCode;
-    err.statusCode = 400;
-    throw err;
+    if (errorMessage) {
+      const err = new Error(errorMessage) as ErrorWithStatusCode;
+      err.statusCode = 400;
+      throw err;
+    }
   }
   db = new loki("polling-app.db");
   polls = this.db.addCollection("polls");

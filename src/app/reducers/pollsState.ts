@@ -27,6 +27,11 @@ const pollsStateReducer: Reducer = (
         isLoading: false,
         error: action.payload.error
       };
+    case actionTypes.POST_POLLS_SUCCESS:
+      return {
+        ...pollsState,
+        polls: [...pollsState.polls, action.payload.poll]
+      };
     case actionTypes.VOTE_OPTION_LOADING:
       return {
         ...pollsState,
