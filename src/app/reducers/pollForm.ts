@@ -29,15 +29,16 @@ const pollFormReducer: Reducer = (
           }
         };
       }
-    case actionTypes.DISCARD_FORM_DATA:
+    case actionTypes.DISCARD_FORM_DATA: {
       return {
         ...pollFormState,
         data: {
           description: "",
           pollName: "",
-          options: ["", "", ""]
+          options: initialState.pollForm.data.options
         }
       };
+    }
     case actionTypes.POST_POLLS_REQUEST:
       return {
         ...pollFormState,

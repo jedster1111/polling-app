@@ -42,14 +42,18 @@ class Database {
       }
     });
     const hasMissingProperties = missingProperties.length > 0;
+    let errorMessage = "";
     if (hasMissingProperties) {
-      let errorMessage = `Poll Input data is incorrect! Unable to create a poll. Missing properties:`;
+      errorMessage = `Poll Input data is incorrect! Unable to create a poll. Missing properties:`;
       errorMessage +=
-        " " + missingProperties.toLocaleString().replace(/[,]/g, ", ");
-      const err = new Error(errorMessage) as ErrorWithStatusCode;
-      err.statusCode = 400;
-      throw err;
+        " " + missingProperties.toLocaleString().replace(/[,]/g, ", ") + ".";
     }
+    if (pollInput.options.length === 0) {
+      errorMessage += ` Can't create a poll with no options`;
+    }
+    const err = new Error(errorMessage) as ErrorWithStatusCode;
+    err.statusCode = 400;
+    throw err;
   }
   db = new loki("polling-app.db");
   polls = this.db.addCollection("polls");
