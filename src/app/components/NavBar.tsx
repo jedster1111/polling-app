@@ -18,6 +18,7 @@ const StyledList = styled.li<{}>`
 `;
 
 const StyledLink = styled(NavLink)`
+  color: black;
   transition: all 0.3s;
   text-align: right;
   text-decoration: none;

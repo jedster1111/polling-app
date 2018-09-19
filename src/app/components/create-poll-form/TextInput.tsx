@@ -30,7 +30,7 @@ const TextInput = styled.input<{ valid?: boolean; error?: boolean }>`
 `;
 
 const StyledTextInput = ({ handleChange, ...rest }: TextInputProps) => (
-  <TextInput {...rest} type="text" onChange={handleChange} />
+  <TextInput {...rest} type="text" onChange={handleChange} autoComplete="off" />
 );
 
 export default StyledTextInput;

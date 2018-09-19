@@ -14,12 +14,17 @@ export interface PollsListProps {
 }
 
 const PollsListContainer = styled.div<{}>`
+  flex: 1;
   display: flex;
   flex-direction: column;
-  border: 1px solid black;
-  padding: 5px 6px;
   justify-content: space-around;
   align-items: center;
+  min-width: 200px;
+  max-width: 750px;
+  border: black solid 1px;
+  padding: 8px 5px;
+  border-radius: 8px;
+  background-color: #c6dea6;
 `;
 
 const PollsList = (props: PollsListProps) => (

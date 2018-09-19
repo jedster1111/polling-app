@@ -8,10 +8,10 @@ interface ButtonProps {
 }
 
 const Button = styled.button<ButtonProps>`
-  transition: outline 0.15s;
+  transition: outline 0.25s;
   box-sizing: border-box;
   flex: 1;
-  outline: 1px solid transparent;
+  outline: 2px solid transparent;
   border: none;
   display: flex;
   justify-content: center;
@@ -25,7 +25,10 @@ const Button = styled.button<ButtonProps>`
   background-color: ${props => props.create && "lightgreen"};
   background-color: ${props => props.discard && "red"};
   &:hover {
-    outline: 1px solid black;
+    outline: 2px solid black;
+  }
+  &:focus {
+    outline: 2px solid lightskyblue;
   }
 `;
 
