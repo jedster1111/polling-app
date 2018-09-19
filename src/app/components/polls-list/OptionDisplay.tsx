@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 const OptionDisplay = styled.button<{ voted: boolean }>`
+  box-sizing: border-box;
   transition: border 0.5s;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -12,7 +13,8 @@ const OptionDisplay = styled.button<{ voted: boolean }>`
   align-items: center;
   width: 150px;
   min-height: 50px;
-  padding: 4px 5px;
+  max-height: 100px;
+  padding: 6px 5px;
   margin: 4px 8px;
   padding: 8px 2px;
   background-color: #77ffd1;

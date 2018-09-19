@@ -6,10 +6,15 @@ import * as actionTypes from "./action-types";
 export const fetchPolls: ActionCreator<Action> = () => ({
   type: actionTypes.GET_POLLS_REQUEST
 });
-export const createPoll: ActionCreator<Action> = (poll: PollInput) => ({
-  type: actionTypes.POST_POLLS_REQUEST,
-  payload: poll
-});
+export const createPoll: ActionCreator<Action> = (poll: PollInput) => {
+  const cleanedPoll = { ...poll };
+  const newOptions = cleanedPoll.options.filter(option => option);
+  cleanedPoll.options = newOptions;
+  return {
+    type: actionTypes.POST_POLLS_REQUEST,
+    payload: cleanedPoll
+  };
+};
 export const changeFormData: ActionCreator<Action> = (
   fieldId: string,
   value: string

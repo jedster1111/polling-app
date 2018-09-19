@@ -72,4 +72,13 @@ describe("Test Database class", () => {
     poll = db.votePoll("2", { voterName: "voter", optionId: "1" });
     expect(poll.options[0].votes).toEqual(["voter2"]);
   });
+  test("If you create a poll with an option with an empty string, empty string gets filtered", () => {
+    const poll = db.insertPoll({
+      creatorName: "Jed",
+      options: ["test1", "", "test3"],
+      description: "description",
+      pollName: "pollName"
+    });
+    expect(poll.options.length).toBe(2);
+  });
 });

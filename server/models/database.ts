@@ -67,7 +67,10 @@ class Database {
   }
   insertPoll(pollInput: PollInput): Poll {
     Database.checkValidPollInput(pollInput);
-    const newOptions: Option[] = pollInput.options.map(
+    const filteredOptions: string[] = pollInput.options.filter(
+      option => option
+    );
+    const newOptions: Option[] = filteredOptions.map(
       (option: string, index: number) => {
         return {
           optionId: `${index + 1}`,

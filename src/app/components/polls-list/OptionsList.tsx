@@ -14,6 +14,7 @@ const OptionsContainer = styled.div<{}>`
   flex: 2 1 200px;
   display: flex;
   justify-content: center;
+  align-items: center;
   flex-wrap: wrap;
   /* border: solid black 1px; */
   padding: 8px 5px;
