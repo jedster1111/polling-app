@@ -34,11 +34,13 @@ sagaMiddleware.run(mainSaga);
 let currentUserState: any;
 store.subscribe(() => {
   const previousUserState = currentUserState;
-  currentUserState = store.getState().userState;
+  const currentState = store.getState();
+  currentUserState = currentState.userState;
 
   if (previousUserState !== currentUserState) {
     saveState({
-      userState: currentUserState
+      userState: currentUserState,
+      userFormState: currentState.userFormState
     });
   }
 });

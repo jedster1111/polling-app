@@ -47,7 +47,11 @@ class UserDataFormContainer extends React.Component<
 > {
   handleSubmitForm = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    this.props.saveUserData(this.props.values);
+    if (this.props.values.name) {
+      this.props.saveUserData(this.props.values);
+    } else {
+      this.props.discardChanges(this.props.confirmedValues);
+    }
   };
   handleDiscardChanges = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -55,6 +59,9 @@ class UserDataFormContainer extends React.Component<
   };
   handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.props.changeInput(e.target.id, e.target.value);
+  };
+  handleToggleChangingName = () => {
+    this.props.toggleChangingName();
   };
   render() {
     return this.props.isChangingName ? (
@@ -67,7 +74,7 @@ class UserDataFormContainer extends React.Component<
     ) : (
       <UserDataDisplay
         confirmedValues={this.props.confirmedValues}
-        toggleChangingName={this.props.toggleChangingName}
+        toggleChangingName={this.handleToggleChangingName}
       />
     );
   }
