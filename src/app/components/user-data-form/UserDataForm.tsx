@@ -1,4 +1,5 @@
 import * as React from "react";
+import styled from "styled-components";
 import Button from "../create-poll-form/Button";
 import { FormContainer } from "../create-poll-form/PollForm";
 import SingleInput from "../create-poll-form/SingleInput";
@@ -13,6 +14,17 @@ interface UserDataFormProps {
   discardChanges: (e: React.MouseEvent<HTMLButtonElement>) => void;
   values: UserDataFormValues;
 }
+const ButtonsContainer = styled.div<{}>`
+  width: 80%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  border: 1px black solid;
+  border-radius: 5px;
+  padding: 5px 2px;
+  margin: 10px auto;
+  max-width: 350px;
+`;
 
 const UserDataForm = (props: UserDataFormProps) => (
   <FormContainer onSubmit={props.handleSubmit} id="userDataForm">
@@ -23,10 +35,12 @@ const UserDataForm = (props: UserDataFormProps) => (
       placeholder="Enter your name"
       handleChange={props.handleChange}
     />
-    <Button create>Save Name</Button>
-    <Button discard type="button" onClick={props.discardChanges}>
-      Discard Changes
-    </Button>
+    <ButtonsContainer>
+      <Button create>Save Name</Button>
+      <Button discard type="button" onClick={props.discardChanges}>
+        Discard Changes
+      </Button>
+    </ButtonsContainer>
   </FormContainer>
 );
 

@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 const OptionDisplay = styled.button<{ voted: boolean }>`
   box-sizing: border-box;
-  transition: border 0.5s;
+  transition: outline 0.5s;
   text-overflow: ellipsis;
   overflow: hidden;
   word-wrap: break-word;
@@ -17,11 +17,11 @@ const OptionDisplay = styled.button<{ voted: boolean }>`
   padding: 6px 5px;
   margin: 4px 8px;
   padding: 8px 2px;
-  background-color: #77ffd1;
-  border: ${props =>
-    props.voted ? "solid 2px #636363" : "solid 1px transparent"};
+  background-color: #f7d488;
+  outline: ${props =>
+    props.voted ? "solid 2px #636363" : "solid 2px transparent"};
   &:hover {
-    background-color: #8cffd8;
+    background-color: #f9a03f;
   }
 `;
 

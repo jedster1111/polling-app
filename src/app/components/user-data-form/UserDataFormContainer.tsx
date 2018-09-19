@@ -3,9 +3,11 @@ import { connect } from "react-redux";
 import {
   changeUserFormData,
   discardUserFormData,
-  saveUserFormData
+  saveUserFormData,
+  toggleChangingName
 } from "../../actions/actions";
 import { InitialState } from "../../reducers/rootReducer";
+import UserDataDisplay from "./UserDataDisplay";
 import UserDataForm from "./UserDataForm";
 
 interface UserDataFormContainerProps {
@@ -15,9 +17,11 @@ interface UserDataFormContainerProps {
   confirmedValues: {
     name: string;
   };
+  isChangingName: boolean;
   changeInput: (fieldId: string, value: string) => any;
   saveUserData: (values: { name: string }) => any;
   discardChanges: (confirmedValues: { [key: string]: string }) => any;
+  toggleChangingName: () => any;
 }
 
 const mapStateToProps = (state: InitialState) => {
@@ -27,13 +31,15 @@ const mapStateToProps = (state: InitialState) => {
     },
     confirmedValues: {
       name: state.userState.data.name
-    }
+    },
+    isChangingName: state.userFormState.isChangingName
   };
 };
 const mapDispatchToProps = {
   changeInput: changeUserFormData,
   saveUserData: saveUserFormData,
-  discardChanges: discardUserFormData
+  discardChanges: discardUserFormData,
+  toggleChangingName
 };
 
 class UserDataFormContainer extends React.Component<
@@ -51,12 +57,17 @@ class UserDataFormContainer extends React.Component<
     this.props.changeInput(e.target.id, e.target.value);
   };
   render() {
-    return (
+    return this.props.isChangingName ? (
       <UserDataForm
         discardChanges={this.handleDiscardChanges}
         handleChange={this.handleChange}
         handleSubmit={this.handleSubmitForm}
         values={this.props.values}
+      />
+    ) : (
+      <UserDataDisplay
+        confirmedValues={this.props.confirmedValues}
+        toggleChangingName={this.props.toggleChangingName}
       />
     );
   }

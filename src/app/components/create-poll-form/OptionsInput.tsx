@@ -23,7 +23,7 @@ interface OptionsInputProps {
 const OptionsInput = (props: OptionsInputProps) => {
   return (
     <SingleInputContainer>
-      <Label labelText="Options" />
+      <Label>Options: </Label>
       <StyledOptionsInputContainer>
         {props.values.map((value, index) => (
           <StyledOptionTextInput

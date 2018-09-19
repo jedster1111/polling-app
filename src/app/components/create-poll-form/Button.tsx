@@ -8,9 +8,10 @@ interface ButtonProps {
 }
 
 const Button = styled.button<ButtonProps>`
+  transition: outline 0.15s;
   box-sizing: border-box;
   flex: 1;
-  outline: none;
+  outline: 1px solid transparent;
   border: none;
   display: flex;
   justify-content: center;
