@@ -15,6 +15,24 @@ const userFormStateReducer: Reducer = (
           [action.payload.fieldId]: action.payload.value
         }
       };
+    case actionTypes.SAVE_USER_FORM_DATA:
+      return {
+        ...userFormState,
+        isChangingName: false
+      };
+    case actionTypes.DISCARD_USER_FORM_DATA:
+      return {
+        ...userFormState,
+        data: {
+          ...action.payload.confirmedValues
+        },
+        isChangingName: false
+      };
+    case actionTypes.TOGGLE_CHANGING_NAME:
+      return {
+        ...userFormState,
+        isChangingName: userFormState.isChangingName ? false : true
+      };
     default:
       return userFormState;
   }

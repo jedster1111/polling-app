@@ -10,6 +10,7 @@ export interface UserDataFormValues {
 interface UserDataFormProps {
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  discardChanges: (e: React.MouseEvent<HTMLButtonElement>) => void;
   values: UserDataFormValues;
 }
 
@@ -23,6 +24,9 @@ const UserDataForm = (props: UserDataFormProps) => (
       handleChange={props.handleChange}
     />
     <Button create>Save Name</Button>
+    <Button discard type="button" onClick={props.discardChanges}>
+      Discard Changes
+    </Button>
   </FormContainer>
 );
 

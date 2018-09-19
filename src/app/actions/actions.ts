@@ -44,6 +44,12 @@ export const saveUserFormData: ActionCreator<Action> = (
   type: actionTypes.SAVE_USER_FORM_DATA,
   payload: formValues
 });
+export const discardUserFormData: ActionCreator<Action> = (
+  confirmedValues: string
+) => ({
+  type: actionTypes.DISCARD_USER_FORM_DATA,
+  payload: { confirmedValues }
+});
 export const voteOption: ActionCreator<Action> = (
   voterName: string,
   pollId: string,
@@ -55,4 +61,7 @@ export const voteOption: ActionCreator<Action> = (
 export const toggleShowResults: ActionCreator<Action> = (pollId: string) => ({
   type: actionTypes.TOGGLE_SHOW_RESULTS_LOADING,
   payload: { pollId }
+});
+export const toggleChangingName: ActionCreator<Action> = () => ({
+  type: actionTypes.TOGGLE_CHANGING_NAME
 });

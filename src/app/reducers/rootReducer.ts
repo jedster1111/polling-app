@@ -30,6 +30,7 @@ export interface UserFormState {
   data: {
     name: string;
   };
+  isChangingName: boolean;
 }
 export interface PollsListState {
   showResults: boolean;
@@ -65,7 +66,8 @@ export const initialState: InitialState = {
   userFormState: {
     data: {
       name: ""
-    }
+    },
+    isChangingName: true
   },
   pollsListState: {
     showResults: false
