@@ -40,7 +40,6 @@ const PollInfo = (props: PollInfoProps) => {
       </TextContainer>
       <ViewResultsButton
         value={"Results"}
-        to={`/polls/${props.pollId}`}
         pollId={props.pollId}
         toggleShowResults={props.toggleShowResults}
       />

@@ -47,7 +47,6 @@ storiesOf("Polls List", module)
   .add("Link to Poll Results button", () => (
     <ViewResultsButton
       pollId="1"
-      to={"/polls/1"}
       value={"Results"}
       toggleShowResults={action("toggled show")}
     />

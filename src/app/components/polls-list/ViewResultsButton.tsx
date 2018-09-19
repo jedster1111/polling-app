@@ -4,7 +4,6 @@ import styled from "styled-components";
 
 interface ViewResultsButtonProps {
   value: string;
-  to: string;
   toggleShowResults: (pollId: string) => any;
   pollId: string;
 }
