@@ -53,7 +53,9 @@ const PollCard = (props: PollCardProps) => (
       username={props.username}
     />
     {props.showResults && <ResultsList options={props.options} />}
-    <DeletePollButton remove onClick={() => props.deletePoll(props.pollId)} />
+    {props.creatorName === props.username && (
+      <DeletePollButton remove onClick={() => props.deletePoll(props.pollId)} />
+    )}
   </PollContainer>
 );
 
