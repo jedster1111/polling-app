@@ -80,16 +80,21 @@ describe("Test Database class", () => {
       expect(changedPoll.options[0].value).toBe("changed");
       expect(changedPoll.options[1].value).toBe("I changed too");
     });
-    test("throw an error if an attempt to update a non existent option happens", () => {
-      expect(() =>
-        db.updatePoll(
-          { pollId: "1" },
-          {
-            pollName: "changed",
-            options: [{ optionId: "10", value: "changed" }]
-          }
-        )
-      ).toThrow("Option with optionId 10 does not exist");
+    test("updates but ignores invalid inputs", () => {
+      db.updatePoll(
+        { pollId: "1" },
+        {
+          pollNamed: "changed",
+          options: [
+            { optionId: "1", value: "changed" },
+            { optionId: "20", value: "I changed too" }
+          ]
+        }
+      );
+      const changedPoll = db.getPoll({ pollId: "1" });
+      expect(changedPoll.pollName).toBe("pollName1");
+      expect(changedPoll.options[0].value).toBe("changed");
+      expect(changedPoll.options[1].value).toBe("option2");
     });
   });
   test("test Database removeAllPollsData removes all polls", () => {

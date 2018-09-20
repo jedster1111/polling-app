@@ -112,12 +112,9 @@ class Database {
           const optionToUpdate = poll.options.find(
             option => option.optionId === optionInput.optionId
           );
-          if (optionToUpdate === undefined) {
-            throw new Error(
-              `Option with optionId ${optionInput.optionId} does not exist`
-            );
+          if (optionToUpdate !== undefined) {
+            optionToUpdate.value = optionInput.value;
           }
-          optionToUpdate.value = optionInput.value;
         });
       }
     });
