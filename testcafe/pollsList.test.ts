@@ -4,10 +4,10 @@ import { ReactSelector, waitForReact } from "testcafe-react-selectors";
 fixture("Polls List Page")
   .page("localhost:8000")
   .beforeEach(async t => {
-    await t.typeText("#name", "Jed").click("#pollsListLink");
-  })
-  .beforeEach(async () => {
-    await waitForReact();
+    await t
+      .typeText("#name", "Jed")
+      .pressKey("enter")
+      .click("#pollsListLink");
   });
 
 test("Can create a poll, and it appears in the list of polls", async t => {
@@ -20,6 +20,7 @@ test("Can create a poll, and it appears in the list of polls", async t => {
     .typeText("#optionInput3", "ListTest")
     .click("#createButton")
     .click("#pollsListLink")
+    .debug()
     .expect(
       ReactSelector("PollCard").withProps({
         pollName: "ListTest"

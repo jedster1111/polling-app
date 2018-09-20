@@ -3,7 +3,10 @@ import { Selector } from "testcafe";
 fixture("Create Poll Form")
   .page("localhost:8000")
   .beforeEach(async t => {
-    await t.typeText("#name", "Jed").click("#createPollLink");
+    await t
+      .typeText("#name", "Jed")
+      .pressKey("enter")
+      .click("#createPollLink");
   });
 test("If submit is missing a field text inputs should remain the same", async t => {
   await t
