@@ -30,6 +30,10 @@ const StyledOptionButton = styled.button<OptionButtonProps>`
   &:active {
     border-color: white;
   }
+  &:hover {
+    background-color: ${props =>
+      props.add ? "#9be89b" : props.remove ? "#ef9292" : "#dbdbdb"};
+  }
 `;
 
 export const OptionButton = (props: OptionButtonProps) => (

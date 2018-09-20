@@ -2,6 +2,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { Poll } from "../../../../server/models/database";
 import {
+  deletePoll,
   fetchPolls,
   toggleShowResults,
   voteOption
@@ -15,6 +16,7 @@ interface PollsListContainerProps {
   fetchPolls: () => any;
   voteOption: (name: string, pollId: string, optionId: string) => any;
   toggleShowResults: (pollId: string) => any;
+  deletePoll: (pollId: string) => any;
   showResults: { [pollId: string]: boolean };
 }
 
@@ -28,7 +30,8 @@ const mapStateToProps = (state: InitialState) => {
 const mapDispatchToProps = {
   fetchPolls,
   voteOption,
-  toggleShowResults
+  toggleShowResults,
+  deletePoll
 };
 
 class PollsListContainer extends React.Component<PollsListContainerProps> {
@@ -53,6 +56,7 @@ class PollsListContainer extends React.Component<PollsListContainerProps> {
         username={this.props.creatorName}
         showResults={this.props.showResults}
         toggleShowResults={this.handleToggleShowResults}
+        deletePoll={this.props.deletePoll}
       />
     );
   }

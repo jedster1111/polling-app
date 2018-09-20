@@ -10,6 +10,7 @@ export interface PollsListProps {
   fetchPolls: () => any;
   handleVote: (pollId: string, optionId: string) => void;
   toggleShowResults: (pollId: string) => any;
+  deletePoll: (pollId: string) => any;
   showResults: { [pollId: string]: boolean };
 }
 
@@ -39,6 +40,7 @@ const PollsList = (props: PollsListProps) => (
           username={props.username}
           showResults={props.showResults[poll.pollId]}
           toggleShowResults={props.toggleShowResults}
+          deletePoll={props.deletePoll}
         />
       ))
     ) : (

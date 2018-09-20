@@ -107,6 +107,7 @@ storiesOf("Polls List", module)
           handleVote={action("clicked option")}
           username="Jed"
           showResults={false}
+          deletePoll={action("deleted poll")}
         />
         <PollCard
           toggleShowResults={action("toggled show")}
@@ -114,6 +115,7 @@ storiesOf("Polls List", module)
           handleVote={action("clicked option")}
           username="Jed"
           showResults={false}
+          deletePoll={action("deleted poll")}
         />
       </Fragment>
     );
@@ -127,6 +129,7 @@ storiesOf("Polls List", module)
         handleVote={action("clicked option")}
         username="Jed"
         showResults={{ 1: false, 2: true }}
+        deletePoll={action("deleted poll")}
       />
     );
   })
