@@ -26,11 +26,15 @@ pollRouter
     const poll = db.getPoll({ pollId: req.params.pollId });
     res.json({ poll });
   })
-  .post((req, res) => {
-    const updatedPollInput: UpdatePollInput = req.body;
-    const pollId = req.params.pollId;
-    const poll = db.updatePoll(pollId, updatedPollInput);
-    res.status(200).json({ poll });
+  .post((req, res, next) => {
+    try {
+      const updatedPollInput: UpdatePollInput = req.body;
+      const pollId = req.params.pollId;
+      const poll = db.updatePoll(pollId, updatedPollInput);
+      res.status(200).json({ poll });
+    } catch (error) {
+      next(error);
+    }
   })
   .delete((req, res) => {
     const pollId = req.params.pollId;
@@ -38,11 +42,15 @@ pollRouter
     res.status(200).send();
   });
 
-pollRouter.route("/:pollId/vote").post((req, res) => {
-  const pollId: string = req.params.pollId;
-  const voteInput = req.body;
-  const poll = db.votePoll(pollId, voteInput);
-  res.status(200).json({ poll });
+pollRouter.route("/:pollId/vote").post((req, res, next) => {
+  try {
+    const pollId: string = req.params.pollId;
+    const voteInput = req.body;
+    const poll = db.votePoll(pollId, voteInput);
+    res.status(200).json({ poll });
+  } catch (error) {
+    next(error);
+  }
 });
 
 export default pollRouter;

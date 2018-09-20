@@ -41,15 +41,60 @@ describe("Test Database class", () => {
     ]);
   });
 
-  test("test Database updatePoll, does the name change", () => {
-    db.updatePoll(
-      { creatorName: "creatorName1" },
-      {
+  describe("When updating the poll, can it", () => {
+    test("update the name", () => {
+      db.updatePoll("1", {
         creatorName: "creatorNameChanged"
-      }
-    );
-    const changedPoll = db.getPoll({ creatorName: "creatorNameChanged" });
-    expect(changedPoll.creatorName).toBe("creatorNameChanged");
+      });
+      const changedPoll = db.getPoll({ creatorName: "creatorNameChanged" });
+      expect(changedPoll.creatorName).toBe("creatorNameChanged");
+    });
+    test("update a single option", () => {
+      db.updatePoll("1", {
+        pollName: "changed",
+        options: [{ optionId: "1", value: "changed" }]
+      });
+      const changedPoll = db.getPoll({ pollId: "1" });
+      expect(changedPoll.pollName).toBe("changed");
+      expect(changedPoll.options[0].value).toBe("changed");
+    });
+    test("update multiple options", () => {
+      db.updatePoll("1", {
+        pollName: "changed",
+        options: [
+          { optionId: "1", value: "changed" },
+          { optionId: "2", value: "I changed too" }
+        ]
+      });
+      const changedPoll = db.getPoll({ pollId: "1" });
+      expect(changedPoll.pollName).toBe("changed");
+      expect(changedPoll.options[0].value).toBe("changed");
+      expect(changedPoll.options[1].value).toBe("I changed too");
+    });
+    test("updates but ignores invalid inputs", () => {
+      db.updatePoll("1", {
+        pollNamed: "changed",
+        options: [
+          { optionId: "1", value: "changed" },
+          { optionId: "20", value: "I changed too" }
+        ]
+      });
+      const changedPoll = db.getPoll({ pollId: "1" });
+      expect(changedPoll.pollName).toBe("pollName1");
+      expect(changedPoll.options[0].value).toBe("changed");
+      expect(changedPoll.options[1].value).toBe("option2");
+    });
+    test("throw error if poll is not found", () => {
+      expect(() =>
+        db.updatePoll("10", {
+          pollNamed: "changed",
+          options: [
+            { optionId: "1", value: "changed" },
+            { optionId: "20", value: "I changed too" }
+          ]
+        })
+      ).toThrow("Poll with Id 10 could not be found");
+    });
   });
   test("test Database removeAllPollsData removes all polls", () => {
     db.removeAllPollsData();
@@ -71,5 +116,14 @@ describe("Test Database class", () => {
     expect(poll.options[1].votes).toEqual([]);
     poll = db.votePoll("2", { voterName: "voter", optionId: "1" });
     expect(poll.options[0].votes).toEqual(["voter2"]);
+  });
+  test("If you create a poll with an option with an empty string, empty string gets filtered", () => {
+    const poll = db.insertPoll({
+      creatorName: "Jed",
+      options: ["test1", "", "test3"],
+      description: "description",
+      pollName: "pollName"
+    });
+    expect(poll.options.length).toBe(2);
   });
 });

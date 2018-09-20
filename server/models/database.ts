@@ -16,11 +16,16 @@ export interface Poll {
   pollId: string;
   options: Option[];
 }
+interface UpdateOptionInput {
+  optionId: string;
+  value: string;
+}
 export interface UpdatePollInput {
-  [key: string]: string | undefined;
+  [key: string]: string | UpdateOptionInput[] | undefined;
   creatorName?: string;
   pollName?: string;
   description?: string;
+  options?: UpdateOptionInput[];
 }
 export interface Option {
   optionId: string;
@@ -42,10 +47,16 @@ class Database {
       }
     });
     const hasMissingProperties = missingProperties.length > 0;
+    let errorMessage = "";
     if (hasMissingProperties) {
-      let errorMessage = `Poll Input data is incorrect! Unable to create a poll. Missing properties:`;
+      errorMessage = `Poll Input data is incorrect! Unable to create a poll. Missing properties:`;
       errorMessage +=
-        " " + missingProperties.toLocaleString().replace(/[,]/g, ", ");
+        " " + missingProperties.toLocaleString().replace(/[,]/g, ", ") + ".";
+    }
+    if (pollInput.options.length === 0) {
+      errorMessage += ` Can't create a poll with no options`;
+    }
+    if (errorMessage) {
       const err = new Error(errorMessage) as ErrorWithStatusCode;
       err.statusCode = 400;
       throw err;
@@ -67,7 +78,10 @@ class Database {
   }
   insertPoll(pollInput: PollInput): Poll {
     Database.checkValidPollInput(pollInput);
-    const newOptions: Option[] = pollInput.options.map(
+    const filteredOptions: string[] = pollInput.options.filter(
+      option => option
+    );
+    const newOptions: Option[] = filteredOptions.map(
       (option: string, index: number) => {
         return {
           optionId: `${index + 1}`,
@@ -84,14 +98,25 @@ class Database {
     this.pollsCount++;
     return newPoll;
   }
-  updatePoll(
-    query: { [key: string]: string },
-    updatePollInput: UpdatePollInput
-  ): Poll {
-    const poll = this.getPoll(query);
+  updatePoll(pollId: string, updatePollInput: UpdatePollInput): Poll {
+    const poll = this.getPoll({ pollId });
+    if (poll === null) {
+      throw new Error(`Poll with Id ${pollId} could not be found`);
+    }
     const updateKeys: string[] = Object.keys(updatePollInput);
     updateKeys.forEach(key => {
-      poll[key] = updatePollInput[key] as string;
+      if (key !== "options") {
+        poll[key] = updatePollInput[key] as string;
+      } else if (key === "options") {
+        updatePollInput.options!.forEach((optionInput: UpdateOptionInput) => {
+          const optionToUpdate = poll.options.find(
+            option => option.optionId === optionInput.optionId
+          );
+          if (optionToUpdate !== undefined) {
+            optionToUpdate.value = optionInput.value;
+          }
+        });
+      }
     });
     // this.polls.update(poll);
     return poll;
@@ -106,7 +131,20 @@ class Database {
     pollId: string,
     voteInput: { voterName: string; optionId: string }
   ): Poll {
-    const poll = db.getPoll({ pollId });
+    const poll: Poll = db.getPoll({ pollId });
+    const isValidVote =
+      poll &&
+      poll.options[
+        poll.options.findIndex(option => option.optionId === voteInput.optionId)
+      ] &&
+      voteInput.voterName;
+    if (!isValidVote) {
+      const err = new Error(
+        `Invalid vote input, either vote/poll doesn't exist or username is empty`
+      ) as ErrorWithStatusCode;
+      err.statusCode = 400;
+      throw err;
+    }
     for (const option of poll.options) {
       if (option.optionId === voteInput.optionId) {
         const indexOfName: number = option.votes.findIndex(

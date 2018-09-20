@@ -29,16 +29,16 @@ const pollFormReducer: Reducer = (
           }
         };
       }
-    case actionTypes.DISCARD_FORM_DATA:
+    case actionTypes.DISCARD_FORM_DATA: {
       return {
         ...pollFormState,
         data: {
-          creatorName: "",
           description: "",
           pollName: "",
-          options: ["", "", ""]
+          options: initialState.pollForm.data.options
         }
       };
+    }
     case actionTypes.POST_POLLS_REQUEST:
       return {
         ...pollFormState,
@@ -49,9 +49,8 @@ const pollFormReducer: Reducer = (
       return {
         ...pollFormState,
         data: {
-          creatorName: "",
           description: "",
-          options: ["", "", ""],
+          options: initialState.pollForm.data.options,
           pollName: ""
         },
         isLoading: false,
@@ -63,6 +62,22 @@ const pollFormReducer: Reducer = (
         isLoading: false,
         error: action.payload.error
       };
+    case actionTypes.ADD_POLL_FORM_OPTION: {
+      const newOptions = [...pollFormState.data.options, ""];
+      return {
+        ...pollFormState,
+        data: { ...pollFormState.data, options: newOptions }
+      };
+    }
+    case actionTypes.REMOVE_POLL_FORM_OPTION: {
+      const newOptions = [...pollFormState.data.options];
+      const indexToRemove = action.payload.index;
+      newOptions.splice(indexToRemove, 1);
+      return {
+        ...pollFormState,
+        data: { ...pollFormState.data, options: newOptions }
+      };
+    }
     default:
       return pollFormState;
   }

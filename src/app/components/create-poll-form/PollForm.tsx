@@ -10,9 +10,11 @@ interface CreatePollFormProps {
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   discardPoll: () => void;
+  addPollOption: () => void;
+  removePollOption: (index: number) => void;
 }
 
-const FormContainer = styled.form<{}>`
+export const FormContainer = styled.form<{}>`
   flex: 1;
   min-width: 200px;
   max-width: 750px;
@@ -24,13 +26,6 @@ const FormContainer = styled.form<{}>`
 
 const PollForm = (props: CreatePollFormProps) => (
   <FormContainer onSubmit={props.handleSubmit} id="createPollForm">
-    <SingleInput
-      id="creatorName"
-      value={props.values.creatorName}
-      labelText="Your Name"
-      handleChange={props.handleChange}
-      placeholder="Enter your name"
-    />
     <SingleInput
       id="pollName"
       value={props.values.pollName}
@@ -48,6 +43,8 @@ const PollForm = (props: CreatePollFormProps) => (
     <OptionsInput
       handleChange={props.handleChange}
       values={props.values.options}
+      addPollOption={props.addPollOption}
+      removePollOption={props.removePollOption}
     />
     <Buttons discardPoll={props.discardPoll} />
   </FormContainer>

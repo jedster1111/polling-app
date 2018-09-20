@@ -6,14 +6,19 @@
 	<br>
 	*Note that the server restarts on changes in the working directory and browser hot reloads* <br>
   * Visit `localhost:8000` to see the website <br>
-	***Note you need to install [redux dev tools](https://goo.gl/n8NXXf) in order for the site to work at the moment!***
+
+### Testing
+  * To execute tests with jest, run: `npm test` <br>
+  * To execute tests using testcafe, first ensure development server is running and run: `npm run testcafe`
 
 ### Other Commands
   * To start Storybook run: `npm run storybook` <br>
   * To build, run: `npm run build` <br>
 	To run in watch mode, run `npm run build -- -w` <br>
-	*Note as ts-node is installed there's no need to build during development*
-  * To execute tests with jest, run: `npm test`
+	*Note as ts-node is installed there's no need to build during development* <br>
+  * To launch a debug Chrome instance, run: `npm start chrome` <br>
+	Attach to port `9222` using your debugger and you can debug in your IDE now!
+
 
 
 ## Api Design

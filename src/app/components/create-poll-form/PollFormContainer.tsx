@@ -1,8 +1,13 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { Dispatch } from "redux";
 import { PollInput } from "../../../../server/models/database";
-import { changeFormData, createPoll, discardPoll } from "../../actions/actions";
+import {
+  addPollOption,
+  changeFormData,
+  createPoll,
+  discardPoll,
+  removePollOption
+} from "../../actions/actions";
 import { InitialState } from "../../reducers/rootReducer";
 import PollForm from "./PollForm";
 
@@ -11,43 +16,42 @@ interface PollFormContainerProps {
   submitPoll: (poll: PollInput) => any;
   handleChange: (fieldId: string, value: string) => any;
   discardPoll: () => any;
+  addPollOption: () => any;
+  removePollOption: (index: number) => any;
 }
 
-const mapDispatchToProps = (dispatch: Dispatch) => {
-  return {
-    submitPoll: (poll: PollInput) => dispatch(createPoll(poll)),
-    handleChange: (fieldId: string, value: string) =>
-      dispatch(changeFormData(fieldId, value)),
-    discardPoll: () => dispatch(discardPoll())
-  };
+const mapDispatchToProps = {
+  submitPoll: createPoll,
+  handleChange: changeFormData,
+  discardPoll,
+  addPollOption,
+  removePollOption
 };
 
-// const mapDispatchToProps = {
-//   createPoll,
-//   changeFormData,
-//   discardPoll
-// };
-
-const mapStatetoProps = (state: InitialState) => {
+const mapStateToProps = (state: InitialState) => {
   return {
-    pollFormData: state.pollForm.data
+    pollFormData: {
+      ...state.pollForm.data,
+      creatorName: state.userState.data.name
+    }
   };
 };
 
 class PollFormContainer extends React.Component<PollFormContainerProps> {
-  constructor(props: PollFormContainerProps) {
-    super(props);
-  }
-
   handleSubmitPoll = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    this.props.submitPoll(this.props.pollFormData);
+    const inputData: PollInput = {
+      creatorName: this.props.pollFormData.creatorName,
+      description: this.props.pollFormData.description,
+      pollName: this.props.pollFormData.pollName,
+      options: this.props.pollFormData.options
+    };
+    this.props.submitPoll(inputData);
   };
 
   handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.props.handleChange(e.target.id, e.target.value);
   };
-
   render() {
     return (
       <PollForm
@@ -55,13 +59,15 @@ class PollFormContainer extends React.Component<PollFormContainerProps> {
         handleSubmit={this.handleSubmitPoll}
         handleChange={this.handleChange}
         discardPoll={this.props.discardPoll}
+        addPollOption={this.props.addPollOption}
+        removePollOption={this.props.removePollOption}
       />
     );
   }
 }
 
 const ConnectedPollFormContainer = connect(
-  mapStatetoProps,
+  mapStateToProps,
   mapDispatchToProps
 )(PollFormContainer);
 

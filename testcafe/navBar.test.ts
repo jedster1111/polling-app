@@ -7,9 +7,9 @@ test("Can navigate to create poll form, enter values, navigate away, back again 
     .click("#createPollLink")
     .expect(Selector("#createPollForm").exists)
     .ok("The create poll form hasn't appeared!?!?")
-    .typeText("#creatorName", "Jed")
+    .typeText("#pollName", "New Furniture?")
     .click("#homeLink")
     .click("#createPollLink")
-    .expect(Selector("#creatorName").value)
-    .eql("Jed");
+    .expect(Selector("#pollName").value)
+    .eql("New Furniture?");
 });

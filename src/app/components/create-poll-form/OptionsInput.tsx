@@ -1,5 +1,6 @@
 import * as React from "react";
 import styled from "styled-components";
+import OptionButton from "./AddRemoveOptionButton";
 import Label from "./PollFormLabel";
 import { SingleInputContainer } from "./SingleInput";
 import StyledTextInput from "./TextInput";
@@ -15,25 +16,44 @@ const StyledOptionTextInput = styled(StyledTextInput)`
   margin-left: 0;
   margin-right: 0;
 `;
+const SingleOptionInputContainer = styled.div<{}>`
+  flex: 1 1 100%;
+  display: flex;
+  flex-wrap: nowrap;
+  margin: 0;
+  align-items: center;
+`;
 interface OptionsInputProps {
   values: string[];
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  addPollOption: () => void;
+  removePollOption: (index: number) => void;
 }
+
+const StyledButton = styled(OptionButton)`
+  margin-left: auto;
+`;
 
 const OptionsInput = (props: OptionsInputProps) => {
   return (
     <SingleInputContainer>
-      <Label labelText="Options" />
+      <Label>Options: </Label>
       <StyledOptionsInputContainer>
         {props.values.map((value, index) => (
-          <StyledOptionTextInput
-            key={index}
-            id={`optionInput${index + 1}`}
-            placeholder={`Option ${index + 1}`}
-            value={value}
-            handleChange={props.handleChange}
-          />
+          <SingleOptionInputContainer key={index}>
+            <StyledOptionTextInput
+              id={`optionInput${index + 1}`}
+              placeholder={`Option ${index + 1}`}
+              value={value}
+              handleChange={props.handleChange}
+            />
+            <OptionButton
+              remove
+              onClick={() => props.removePollOption(index)}
+            />
+          </SingleOptionInputContainer>
         ))}
+        <StyledButton add onClick={props.addPollOption} />
       </StyledOptionsInputContainer>
     </SingleInputContainer>
   );

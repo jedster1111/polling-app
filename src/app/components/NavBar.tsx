@@ -6,6 +6,7 @@ const NavBarContainer = styled.ul<{}>`
   list-style-type: none;
   width: 150px;
   margin: 0 8px;
+  margin-bottom: 3px;
   padding: 0;
   background-color: white;
   padding: 3px 2px;
@@ -17,6 +18,7 @@ const StyledList = styled.li<{}>`
 `;
 
 const StyledLink = styled(NavLink)`
+  color: black;
   transition: all 0.3s;
   text-align: right;
   text-decoration: none;
@@ -45,6 +47,11 @@ const NavBar = () => (
     <StyledList>
       <StyledLink to="/create-poll" exact id="createPollLink">
         Create a New Poll
+      </StyledLink>
+    </StyledList>
+    <StyledList>
+      <StyledLink to="/list-polls" exact id="pollsListLink">
+        Polls
       </StyledLink>
     </StyledList>
   </NavBarContainer>

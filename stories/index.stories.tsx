@@ -1,15 +1,18 @@
-import * as React from "react";
-
 import { action } from "@storybook/addon-actions";
 import { storiesOf } from "@storybook/react";
+import * as React from "react";
 import { Fragment } from "react";
+import OptionButton from "../src/app/components/create-poll-form/AddRemoveOptionButton";
 import Button from "../src/app/components/create-poll-form/Button";
 import PollForm from "../src/app/components/create-poll-form/PollForm";
 import SingleInput from "../src/app/components/create-poll-form/SingleInput";
 import StyledTextInput from "../src/app/components/create-poll-form/TextInput";
-import Test from "../src/app/components/Test";
 
-storiesOf("Test", module).add("first one", () => <Test />);
+export const mockSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  action("submitted form")(e);
+};
+
 storiesOf("Create Poll Form", module)
   .add("Buttons", () => (
     <Fragment>
@@ -20,6 +23,9 @@ storiesOf("Create Poll Form", module)
       <Button discard onClick={action("click3")}>
         Discard
       </Button>
+      <OptionButton add>&#43;</OptionButton>
+      <OptionButton remove>&#8211;</OptionButton>
+      <OptionButton />
     </Fragment>
   ))
   .add("Text Input Box", () => (
@@ -75,7 +81,7 @@ storiesOf("Create Poll Form", module)
   .add("Create poll form", () => (
     <PollForm
       handleChange={action("Value changed")}
-      handleSubmit={action("Poll submitted")}
+      handleSubmit={mockSubmit}
       discardPoll={action("Discarded poll")}
       values={{
         creatorName: "Jed",
@@ -83,5 +89,7 @@ storiesOf("Create Poll Form", module)
         description: "description",
         options: ["test", "test2", "test3"]
       }}
+      addPollOption={action("added poll option input")}
+      removePollOption={action("removed poll option input")}
     />
   ));

@@ -1,11 +1,7 @@
-import * as React from "react";
 import styled from "styled-components";
 
-interface PollFormLabelProps {
-  labelText: string;
-}
-
 const PollFormLabel = styled.label<{}>`
+  align-self: flex-start;
   text-align: left;
   font-size: 18px;
   margin-top: 3px;
@@ -13,8 +9,4 @@ const PollFormLabel = styled.label<{}>`
   width: 100px;
 `;
 
-const StyledPollFormLabel = (props: PollFormLabelProps) => (
-  <PollFormLabel>{props.labelText}:</PollFormLabel>
-);
-
-export default StyledPollFormLabel;
+export default PollFormLabel;
