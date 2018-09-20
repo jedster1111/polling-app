@@ -96,6 +96,20 @@ describe("Test Database class", () => {
       expect(changedPoll.options[0].value).toBe("changed");
       expect(changedPoll.options[1].value).toBe("option2");
     });
+    test("throw error if poll is not found", () => {
+      expect(() =>
+        db.updatePoll(
+          { pollId: "10" },
+          {
+            pollNamed: "changed",
+            options: [
+              { optionId: "1", value: "changed" },
+              { optionId: "20", value: "I changed too" }
+            ]
+          }
+        )
+      ).toThrow("Poll could not be found");
+    });
   });
   test("test Database removeAllPollsData removes all polls", () => {
     db.removeAllPollsData();

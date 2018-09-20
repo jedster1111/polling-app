@@ -103,6 +103,9 @@ class Database {
     updatePollInput: UpdatePollInput
   ): Poll {
     const poll = this.getPoll(query);
+    if (poll === null) {
+      throw new Error(`Poll could not be found`);
+    }
     const updateKeys: string[] = Object.keys(updatePollInput);
     updateKeys.forEach(key => {
       if (key !== "options") {
