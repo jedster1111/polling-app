@@ -4,7 +4,7 @@ const inputData: PollInput[] = [
   {
     creatorName: "creatorName1",
     description: "description1",
-    options: ["option1"],
+    options: ["option1", "option2"],
     pollName: "pollName1"
   },
   {

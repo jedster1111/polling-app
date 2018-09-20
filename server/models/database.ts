@@ -16,11 +16,16 @@ export interface Poll {
   pollId: string;
   options: Option[];
 }
+interface UpdateOptionInput {
+  optionId: string;
+  value: string;
+}
 export interface UpdatePollInput {
-  [key: string]: string | undefined;
+  [key: string]: string | UpdateOptionInput[] | undefined;
   creatorName?: string;
   pollName?: string;
   description?: string;
+  options?: UpdateOptionInput[];
 }
 export interface Option {
   optionId: string;
@@ -100,7 +105,21 @@ class Database {
     const poll = this.getPoll(query);
     const updateKeys: string[] = Object.keys(updatePollInput);
     updateKeys.forEach(key => {
-      poll[key] = updatePollInput[key] as string;
+      if (key !== "options") {
+        poll[key] = updatePollInput[key] as string;
+      } else if (key === "options") {
+        updatePollInput.options!.forEach((optionInput: UpdateOptionInput) => {
+          const optionToUpdate = poll.options.find(
+            option => option.optionId === optionInput.optionId
+          );
+          if (optionToUpdate === undefined) {
+            throw new Error(
+              `Option with optionId ${optionInput.optionId} does not exist`
+            );
+          }
+          optionToUpdate.value = optionInput.value;
+        });
+      }
     });
     // this.polls.update(poll);
     return poll;

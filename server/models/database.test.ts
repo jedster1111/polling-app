@@ -41,15 +41,56 @@ describe("Test Database class", () => {
     ]);
   });
 
-  test("test Database updatePoll, does the name change", () => {
-    db.updatePoll(
-      { creatorName: "creatorName1" },
-      {
-        creatorName: "creatorNameChanged"
-      }
-    );
-    const changedPoll = db.getPoll({ creatorName: "creatorNameChanged" });
-    expect(changedPoll.creatorName).toBe("creatorNameChanged");
+  describe("When updating the poll, can I", () => {
+    test("update the name", () => {
+      db.updatePoll(
+        { creatorName: "creatorName1" },
+        {
+          creatorName: "creatorNameChanged"
+        }
+      );
+      const changedPoll = db.getPoll({ creatorName: "creatorNameChanged" });
+      expect(changedPoll.creatorName).toBe("creatorNameChanged");
+    });
+    test("update a single option", () => {
+      db.updatePoll(
+        { pollId: "1" },
+        {
+          pollName: "changed",
+          options: [{ optionId: "1", value: "changed" }]
+        }
+      );
+      const changedPoll = db.getPoll({ pollId: "1" });
+      expect(changedPoll.pollName).toBe("changed");
+      expect(changedPoll.options[0].value).toBe("changed");
+    });
+    test("update multiple options", () => {
+      db.updatePoll(
+        { pollId: "1" },
+        {
+          pollName: "changed",
+          options: [
+            { optionId: "1", value: "changed" },
+            { optionId: "2", value: "I changed too" }
+          ]
+        }
+      );
+      const changedPoll = db.getPoll({ pollId: "1" });
+      expect(changedPoll.pollName).toBe("changed");
+      expect(changedPoll.options[0].value).toBe("changed");
+      expect(changedPoll.options[1].value).toBe("I changed too");
+    });
+    test("throw an error if an attempt to update a non existent option happens", () => {
+      expect(() =>
+        db.updatePoll(
+          { pollId: "1" },
+          {
+            pollName: "changed",
+            options: [{ optionId: "10", value: "changed" }]
+          }
+        )
+      ).toThrow("Option with optionId 10 does not exist");
+    });
   });
   test("test Database removeAllPollsData removes all polls", () => {
     db.removeAllPollsData();
