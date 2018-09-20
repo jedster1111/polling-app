@@ -1,5 +1,5 @@
 import axios from "axios";
-import { PollInput } from "../../../server/models/database";
+import { PollInput, UpdatePollInput } from "../../../server/models/database";
 
 export function getPolls() {
   return axios.get(`/api/polls`);
@@ -23,4 +23,10 @@ export function getPoll(pollId: string) {
 }
 export function deletePoll(pollId: string) {
   return axios.delete(`/api/polls/${pollId}`);
+}
+export function updatePoll(payload: {
+  pollId: string;
+  updatePollInput: UpdatePollInput;
+}) {
+  return axios.post(`/api/polls/${payload.pollId}`, payload.updatePollInput);
 }

@@ -73,6 +73,21 @@ function* deletePoll(action: AnyAction) {
     });
   }
 }
+function* updatePoll(action: AnyAction) {
+  try {
+    const response = yield call(api.updatePoll, action.payload);
+    const poll: Poll = response.data.poll;
+    yield put({
+      type: actionTypes.UPDATE_POLL_SUCCESS,
+      payload: { poll }
+    });
+  } catch (error) {
+    yield put({
+      type: actionTypes.UPDATE_POLL_ERROR,
+      payload: { error }
+    });
+  }
+}
 
 export function* mainSaga() {
   yield all([
@@ -80,6 +95,7 @@ export function* mainSaga() {
     takeLatest(actionTypes.POST_POLLS_REQUEST, postPollsSaga),
     takeLatest(actionTypes.VOTE_OPTION_LOADING, voteOption),
     takeLatest(actionTypes.TOGGLE_SHOW_RESULTS_LOADING, toggleShowResults),
-    takeLatest(actionTypes.DELETE_POLL_LOADING, deletePoll)
+    takeLatest(actionTypes.DELETE_POLL_LOADING, deletePoll),
+    takeLatest(actionTypes.UPDATE_POLL_LOADING, updatePoll)
   ]);
 }

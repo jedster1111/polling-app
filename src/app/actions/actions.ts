@@ -1,5 +1,5 @@
 import { Action, ActionCreator } from "redux";
-import { PollInput } from "../../../server/models/database";
+import { PollInput, UpdatePollInput } from "../../../server/models/database";
 import { UserDataFormValues } from "../components/user-data-form/UserDataForm";
 import * as actionTypes from "./action-types";
 
@@ -75,4 +75,11 @@ export const removePollOption: ActionCreator<Action> = (index: number) => ({
 export const deletePoll: ActionCreator<Action> = (pollId: string) => ({
   type: actionTypes.DELETE_POLL_LOADING,
   payload: { pollId }
+});
+export const updatePoll: ActionCreator<Action> = (
+  pollId: string,
+  updatePollInput: UpdatePollInput
+) => ({
+  type: actionTypes.UPDATE_POLL_LOADING,
+  payload: { pollId, updatePollInput }
 });

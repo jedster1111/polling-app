@@ -98,13 +98,10 @@ class Database {
     this.pollsCount++;
     return newPoll;
   }
-  updatePoll(
-    query: { [key: string]: string },
-    updatePollInput: UpdatePollInput
-  ): Poll {
-    const poll = this.getPoll(query);
+  updatePoll(pollId: string, updatePollInput: UpdatePollInput): Poll {
+    const poll = this.getPoll({ pollId });
     if (poll === null) {
-      throw new Error(`Poll could not be found`);
+      throw new Error(`Poll with Id ${pollId} could not be found`);
     }
     const updateKeys: string[] = Object.keys(updatePollInput);
     updateKeys.forEach(key => {

@@ -39,11 +39,7 @@ const pollsStateReducer: Reducer = (
         error: null
       };
     case actionTypes.VOTE_OPTION_SUCCESS: {
-      const newPolls = [...pollsState.polls];
-      const indexOfUpdatedPoll = newPolls.findIndex(
-        poll => poll.pollId === action.payload.poll.pollId
-      );
-      newPolls[indexOfUpdatedPoll] = action.payload.poll;
+      const newPolls = calculateNewPolls(pollsState, action);
       return {
         ...pollsState,
         isLoading: false,
@@ -115,9 +111,24 @@ const pollsStateReducer: Reducer = (
         polls: newPolls
       };
     }
+    case actionTypes.UPDATE_POLL_SUCCESS: {
+      const newPolls = calculateNewPolls(pollsState, action);
+      return {
+        ...pollsState,
+        polls: newPolls
+      };
+    }
     default:
       return pollsState;
   }
 };
 
 export default pollsStateReducer;
+function calculateNewPolls(pollsState: PollsState, action: AnyAction) {
+  const newPolls = [...pollsState.polls];
+  const indexOfUpdatedPoll = newPolls.findIndex(
+    poll => poll.pollId === action.payload.poll.pollId
+  );
+  newPolls[indexOfUpdatedPoll] = action.payload.poll;
+  return newPolls;
+}

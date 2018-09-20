@@ -26,11 +26,15 @@ pollRouter
     const poll = db.getPoll({ pollId: req.params.pollId });
     res.json({ poll });
   })
-  .post((req, res) => {
-    const updatedPollInput: UpdatePollInput = req.body;
-    const pollId = req.params.pollId;
-    const poll = db.updatePoll(pollId, updatedPollInput);
-    res.status(200).json({ poll });
+  .post((req, res, next) => {
+    try {
+      const updatedPollInput: UpdatePollInput = req.body;
+      const pollId = req.params.pollId;
+      const poll = db.updatePoll(pollId, updatedPollInput);
+      res.status(200).json({ poll });
+    } catch (error) {
+      next(error);
+    }
   })
   .delete((req, res) => {
     const pollId = req.params.pollId;
