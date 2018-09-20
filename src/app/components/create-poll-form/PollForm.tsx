@@ -1,12 +1,12 @@
 import * as React from "react";
 import styled from "styled-components";
-import { PollInput } from "../../../../server/models/database";
+import { PollFormInput } from "../../reducers/rootReducer";
 import Buttons from "./AddDiscardButtons";
 import OptionsInput from "./OptionsInput";
 import SingleInput from "./SingleInput";
 
 interface CreatePollFormProps {
-  values: PollInput;
+  values: PollFormInput;
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   discardPoll: () => void;

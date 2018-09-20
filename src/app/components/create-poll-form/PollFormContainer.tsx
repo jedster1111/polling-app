@@ -8,11 +8,12 @@ import {
   discardPoll,
   removePollOption
 } from "../../actions/actions";
-import { InitialState } from "../../reducers/rootReducer";
+import { InitialState, PollFormInput } from "../../reducers/rootReducer";
 import PollForm from "./PollForm";
 
 interface PollFormContainerProps {
-  pollFormData: PollInput;
+  pollFormData: PollFormInput;
+  creatorName: string;
   submitPoll: (poll: PollInput) => any;
   handleChange: (fieldId: string, value: string) => any;
   discardPoll: () => any;
@@ -30,10 +31,8 @@ const mapDispatchToProps = {
 
 const mapStateToProps = (state: InitialState) => {
   return {
-    pollFormData: {
-      ...state.pollForm.data,
-      creatorName: state.userState.data.name
-    }
+    pollFormData: state.pollForm.data,
+    creatorName: state.userState.data.name
   };
 };
 
@@ -41,10 +40,10 @@ class PollFormContainer extends React.Component<PollFormContainerProps> {
   handleSubmitPoll = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const inputData: PollInput = {
-      creatorName: this.props.pollFormData.creatorName,
+      creatorName: this.props.creatorName,
       description: this.props.pollFormData.description,
       pollName: this.props.pollFormData.pollName,
-      options: this.props.pollFormData.options
+      options: this.props.pollFormData.options.map(option => option.value)
     };
     this.props.submitPoll(inputData);
   };

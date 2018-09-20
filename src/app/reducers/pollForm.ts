@@ -11,13 +11,15 @@ const pollFormReducer: Reducer = (
       const { fieldId, value } = action.payload;
       if (/^(optionInput)/.test(fieldId)) {
         const newOptions = [...pollFormState.data.options];
+        // need to deep clone options
+        const clonedNewOptions = newOptions.map(option => ({ ...option }));
         const optionIndex = parseInt(fieldId.replace(/^(optionInput)/, ""), 10);
-        newOptions[optionIndex - 1] = value;
+        clonedNewOptions[optionIndex - 1].value = value;
         return {
           ...pollFormState,
           data: {
             ...pollFormState.data,
-            options: newOptions
+            options: clonedNewOptions
           }
         };
       } else {
@@ -63,7 +65,10 @@ const pollFormReducer: Reducer = (
         error: action.payload.error
       };
     case actionTypes.ADD_POLL_FORM_OPTION: {
-      const newOptions = [...pollFormState.data.options, ""];
+      const newOptions = [
+        ...pollFormState.data.options,
+        { optionId: "", value: "" }
+      ];
       return {
         ...pollFormState,
         data: { ...pollFormState.data, options: newOptions }

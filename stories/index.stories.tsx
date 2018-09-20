@@ -84,10 +84,13 @@ storiesOf("Create Poll Form", module)
       handleSubmit={mockSubmit}
       discardPoll={action("Discarded poll")}
       values={{
-        creatorName: "Jed",
         pollName: "New furniture guys!",
         description: "description",
-        options: ["test", "test2", "test3"]
+        options: [
+          { value: "test", optionId: "1" },
+          { value: "test2", optionId: "2" },
+          { value: "test3", optionId: "3" }
+        ]
       }}
       addPollOption={action("added poll option input")}
       removePollOption={action("removed poll option input")}
