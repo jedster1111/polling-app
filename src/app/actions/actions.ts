@@ -72,3 +72,7 @@ export const removePollOption: ActionCreator<Action> = (index: number) => ({
   type: actionTypes.REMOVE_POLL_FORM_OPTION,
   payload: { index }
 });
+export const deletePoll: ActionCreator<Action> = (pollId: string) => ({
+  type: actionTypes.DELETE_POLL_LOADING,
+  payload: { pollId }
+});

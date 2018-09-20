@@ -87,6 +87,34 @@ const pollsStateReducer: Reducer = (
         isLoading: false
       };
     }
+    case actionTypes.DELETE_POLL_LOADING: {
+      return {
+        ...pollsState,
+        error: null,
+        isLoading: true
+      };
+    }
+    case actionTypes.DELETE_POLL_ERROR: {
+      return {
+        ...pollsState,
+        error: action.payload.error,
+        isLoading: false
+      };
+    }
+    case actionTypes.DELETE_POLL_SUCCESS: {
+      const indexToRemove = pollsState.polls.findIndex(
+        poll => poll.pollId === action.payload.pollId
+      );
+      const newPolls = [...pollsState.polls];
+      if (indexToRemove !== -1) {
+        newPolls.splice(indexToRemove, 1);
+      }
+      return {
+        ...pollsState,
+        isLoading: false,
+        polls: newPolls
+      };
+    }
     default:
       return pollsState;
   }

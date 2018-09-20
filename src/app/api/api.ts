@@ -21,3 +21,6 @@ export function voteOption(payload: {
 export function getPoll(pollId: string) {
   return axios.get(`/api/polls/${pollId}`);
 }
+export function deletePoll(pollId: string) {
+  return axios.delete(`/api/polls/${pollId}`);
+}
