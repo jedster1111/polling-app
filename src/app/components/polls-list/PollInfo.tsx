@@ -1,13 +1,14 @@
 import * as React from "react";
 import styled from "styled-components";
-import ViewResultsButton from "./ViewResultsButton";
+import ViewResultsButton, { StyledButton } from "./ViewResultsButton";
 
 interface PollInfoProps {
   pollId: string;
   creatorName: string;
   pollName: string;
   description: string;
-  toggleShowResults: (pollId: string) => any;
+  toggleShowResults: (pollId: string) => void;
+  showEditForm: (pollId: string) => void;
 }
 
 const InfoContainer = styled.div<{}>`
@@ -43,6 +44,9 @@ const PollInfo = (props: PollInfoProps) => {
         pollId={props.pollId}
         toggleShowResults={props.toggleShowResults}
       />
+      <StyledButton onClick={() => props.showEditForm(props.pollId)}>
+        Edit
+      </StyledButton>
     </InfoContainer>
   );
 };

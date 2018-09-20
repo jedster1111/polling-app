@@ -15,7 +15,7 @@ interface PollsListContainerProps {
   polls: Poll[];
   fetchPolls: () => any;
   voteOption: (name: string, pollId: string, optionId: string) => any;
-  toggleShowResults: (pollId: string) => any;
+  toggleShowResults: (pollId: string) => void;
   deletePoll: (pollId: string) => any;
   showResults: { [pollId: string]: boolean };
 }
@@ -47,6 +47,9 @@ class PollsListContainer extends React.Component<PollsListContainerProps> {
   handleToggleShowResults = (pollId: string) => {
     this.props.toggleShowResults(pollId);
   };
+  showEditForm = (pollId: string) => {
+    console.log(`Show pollId${pollId}'s edit form`);
+  };
   render() {
     return (
       <PollsList
@@ -57,6 +60,7 @@ class PollsListContainer extends React.Component<PollsListContainerProps> {
         showResults={this.props.showResults}
         toggleShowResults={this.handleToggleShowResults}
         deletePoll={this.props.deletePoll}
+        showEditForm={this.showEditForm}
       />
     );
   }

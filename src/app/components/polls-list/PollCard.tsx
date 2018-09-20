@@ -15,8 +15,9 @@ export interface PollCardProps {
   username: string;
   handleVote: (pollId: string, optionId: string) => void;
   deletePoll: (pollId: string) => void;
-  toggleShowResults: (pollId: string) => any;
+  toggleShowResults: (pollId: string) => void;
   showResults: boolean;
+  showEditForm: (pollId: string) => void;
 }
 
 const PollContainer = styled.div<{}>`
@@ -45,6 +46,7 @@ const PollCard = (props: PollCardProps) => (
       description={props.description}
       pollName={props.pollName}
       toggleShowResults={props.toggleShowResults}
+      showEditForm={props.showEditForm}
     />
     <OptionsList
       handleVote={props.handleVote}

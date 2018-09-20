@@ -12,6 +12,7 @@ export interface PollsListProps {
   toggleShowResults: (pollId: string) => any;
   deletePoll: (pollId: string) => any;
   showResults: { [pollId: string]: boolean };
+  showEditForm: (pollId: string) => void;
 }
 
 const PollsListContainer = styled.div<{}>`
@@ -41,6 +42,7 @@ const PollsList = (props: PollsListProps) => (
           showResults={props.showResults[poll.pollId]}
           toggleShowResults={props.toggleShowResults}
           deletePoll={props.deletePoll}
+          showEditForm={props.showEditForm}
         />
       ))
     ) : (

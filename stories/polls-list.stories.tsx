@@ -94,6 +94,7 @@ storiesOf("Polls List", module)
           creatorName="Jed"
           description="What furniture do you guys want?"
           pollName="New Furniture?"
+          showEditForm={action("showEditForm")}
         />
       </Fragment>
     );
@@ -108,6 +109,7 @@ storiesOf("Polls List", module)
           username="Jed"
           showResults={false}
           deletePoll={action("deleted poll")}
+          showEditForm={action("showEditForm")}
         />
         <PollCard
           toggleShowResults={action("toggled show")}
@@ -116,6 +118,7 @@ storiesOf("Polls List", module)
           username="Jed"
           showResults={false}
           deletePoll={action("deleted poll")}
+          showEditForm={action("showEditForm")}
         />
       </Fragment>
     );
@@ -130,6 +133,7 @@ storiesOf("Polls List", module)
         username="Jed"
         showResults={{ 1: false, 2: true }}
         deletePoll={action("deleted poll")}
+        showEditForm={action("showEditForm")}
       />
     );
   })

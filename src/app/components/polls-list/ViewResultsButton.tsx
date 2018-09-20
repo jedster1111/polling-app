@@ -14,7 +14,7 @@ interface ViewResultsButtonProps {
 //   min-width: 140px;
 // `;
 
-const StyledButton = styled.button<{}>`
+export const StyledButton = styled.button<{}>`
   display: block;
   transition: background-color 0.15s;
   border: 1px solid black;
