@@ -1,13 +1,14 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { PollInput } from "../../../../server/models/database";
+import { PollInput, UpdatePollInput } from "../../../../server/models/database";
 import {
   addPollOption,
   changeFormData,
   createPoll,
   discardPoll,
   discardUpdatePollForm,
-  removePollOption
+  removePollOption,
+  updatePoll
 } from "../../actions/actions";
 import { InitialState, PollFormInput } from "../../reducers/rootReducer";
 import PollForm from "./PollForm";
@@ -21,6 +22,7 @@ interface PollFormContainerProps {
   addPollOption: () => any;
   removePollOption: (index: number) => any;
   discardUpdatePollForm: () => any;
+  updatePoll: (pollId: string, updatePollInput: UpdatePollInput) => any;
 }
 interface OwnProps {
   edit?: boolean;
@@ -33,7 +35,8 @@ const mapDispatchToProps = {
   discardPoll,
   addPollOption,
   removePollOption,
-  discardUpdatePollForm
+  discardUpdatePollForm,
+  updatePoll
 };
 
 const mapStateToProps = (state: InitialState, ownProps: OwnProps) => {
@@ -48,13 +51,17 @@ class PollFormContainer extends React.Component<
 > {
   handleSubmitPoll = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const inputData: PollInput = {
-      creatorName: this.props.creatorName,
-      description: this.props.pollFormData.description,
-      pollName: this.props.pollFormData.pollName,
-      options: this.props.pollFormData.options.map(option => option.value)
-    };
-    this.props.submitPoll(inputData);
+    if (!this.props.edit) {
+      const inputData: PollInput = {
+        creatorName: this.props.creatorName,
+        description: this.props.pollFormData.description,
+        pollName: this.props.pollFormData.pollName,
+        options: this.props.pollFormData.options.map(option => option.value)
+      };
+      this.props.submitPoll(inputData);
+    } else if (this.props.edit && this.props.pollId) {
+      this.props.updatePoll(this.props.pollId, { ...this.props.pollFormData });
+    }
   };
   handleEditPoll = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -74,9 +81,7 @@ class PollFormContainer extends React.Component<
     return (
       <PollForm
         values={this.props.pollFormData}
-        handleSubmit={
-          this.props.edit ? this.handleEditPoll : this.handleSubmitPoll
-        }
+        handleSubmit={this.handleSubmitPoll}
         handleChange={this.handleChange}
         discardPoll={this.handleDiscardPoll}
         addPollOption={this.props.addPollOption}

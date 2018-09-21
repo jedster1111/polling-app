@@ -116,11 +116,27 @@ const pollsStateReducer: Reducer = (
         polls: newPolls
       };
     }
+    case actionTypes.UPDATE_POLL_LOADING: {
+      return {
+        ...pollsState,
+        isLoading: true,
+        error: null
+      };
+    }
     case actionTypes.UPDATE_POLL_SUCCESS: {
       const newPolls = calculateNewPolls(pollsState, action);
       return {
         ...pollsState,
-        polls: newPolls
+        polls: newPolls,
+        editingPoll: null,
+        isLoading: false
+      };
+    }
+    case actionTypes.UPDATE_POLL_ERROR: {
+      return {
+        ...pollsState,
+        isLoading: false,
+        error: action.payload.error
       };
     }
     case actionTypes.SHOW_UPDATE_POLL_FORM: {
