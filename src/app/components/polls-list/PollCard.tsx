@@ -20,6 +20,7 @@ export interface PollCardProps {
   showResults: boolean;
   showEditForm: (pollId: string) => void;
   isEditing?: boolean;
+  canEdit?: boolean;
 }
 
 const PollContainer = styled.div<{}>`
@@ -49,6 +50,7 @@ const PollCard = (props: PollCardProps) => (
       pollName={props.pollName}
       toggleShowResults={props.toggleShowResults}
       showEditForm={props.showEditForm}
+      canEdit={props.canEdit}
     />
     <OptionsList
       handleVote={props.handleVote}
@@ -56,9 +58,10 @@ const PollCard = (props: PollCardProps) => (
       options={props.options}
       username={props.username}
     />
-    {props.isEditing && (
-      <ConnectedPollFormContainer edit pollId={props.pollId} />
-    )}
+    {props.isEditing &&
+      props.canEdit && (
+        <ConnectedPollFormContainer edit pollId={props.pollId} />
+      )}
     {props.showResults && <ResultsList options={props.options} />}
     {props.creatorName === props.username && (
       <DeletePollButton remove onClick={() => props.deletePoll(props.pollId)} />

@@ -109,11 +109,22 @@ class Database {
         poll[key] = updatePollInput[key] as string;
       } else if (key === "options") {
         updatePollInput.options!.forEach((optionInput: UpdateOptionInput) => {
-          const optionToUpdate = poll.options.find(
-            option => option.optionId === optionInput.optionId
-          );
-          if (optionToUpdate !== undefined) {
-            optionToUpdate.value = optionInput.value;
+          if (optionInput.optionId) {
+            const optionToUpdate = poll.options.find(
+              option => option.optionId === optionInput.optionId
+            );
+            if (optionToUpdate !== undefined) {
+              optionToUpdate.value = optionInput.value;
+            }
+          } else {
+            poll.options.push({
+              optionId: `${parseInt(
+                poll.options[poll.options.length - 1].optionId,
+                10
+              ) + 1}`,
+              value: optionInput.value,
+              votes: []
+            });
           }
         });
       }

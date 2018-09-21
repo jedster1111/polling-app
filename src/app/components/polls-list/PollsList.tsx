@@ -45,6 +45,7 @@ const PollsList = (props: PollsListProps) => (
           deletePoll={props.deletePoll}
           showEditForm={props.showEditForm}
           isEditing={props.editingPoll === poll.pollId}
+          canEdit={props.username === poll.creatorName}
         />
       ))
     ) : (

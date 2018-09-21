@@ -9,6 +9,7 @@ interface PollInfoProps {
   description: string;
   toggleShowResults: (pollId: string) => void;
   showEditForm: (pollId: string) => void;
+  canEdit?: boolean;
 }
 
 const InfoContainer = styled.div<{}>`
@@ -44,9 +45,11 @@ const PollInfo = (props: PollInfoProps) => {
         pollId={props.pollId}
         toggleShowResults={props.toggleShowResults}
       />
-      <StyledButton onClick={() => props.showEditForm(props.pollId)}>
-        Edit
-      </StyledButton>
+      {props.canEdit && (
+        <StyledButton onClick={() => props.showEditForm(props.pollId)}>
+          Edit
+        </StyledButton>
+      )}
     </InfoContainer>
   );
 };
