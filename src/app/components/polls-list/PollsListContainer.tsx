@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { Poll } from "../../../../server/models/database";
 import {
   deletePoll,
+  discardUpdatePollForm,
   fetchPolls,
   showUpdatePollForm,
   toggleShowResults,
@@ -21,6 +22,7 @@ interface PollsListContainerProps {
   showResults: { [pollId: string]: boolean };
   showUpdatePollForm: (pollId: string, poll: Poll) => any;
   editingPoll: null | string;
+  discardUpdatePollForm: () => any;
 }
 
 const mapStateToProps = (state: InitialState) => {
@@ -36,7 +38,8 @@ const mapDispatchToProps = {
   voteOption,
   toggleShowResults,
   deletePoll,
-  showUpdatePollForm
+  showUpdatePollForm,
+  discardUpdatePollForm
 };
 
 class PollsListContainer extends React.Component<PollsListContainerProps> {
@@ -53,11 +56,14 @@ class PollsListContainer extends React.Component<PollsListContainerProps> {
     this.props.toggleShowResults(pollId);
   };
   showEditForm = (pollId: string) => {
-    console.log(`Show pollId${pollId}'s edit form`);
-    const pollToUpdate = this.props.polls.find(
-      poll => poll.pollId === pollId
-    ) as Poll;
-    this.props.showUpdatePollForm(pollId, pollToUpdate);
+    if (this.props.editingPoll !== pollId) {
+      const pollToUpdate = this.props.polls.find(
+        poll => poll.pollId === pollId
+      ) as Poll;
+      this.props.showUpdatePollForm(pollId, pollToUpdate);
+    } else {
+      this.props.discardUpdatePollForm();
+    }
   };
   render() {
     return (
