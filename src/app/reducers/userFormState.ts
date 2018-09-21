@@ -7,6 +7,11 @@ const userFormStateReducer: Reducer = (
   action: AnyAction
 ): UserFormState => {
   switch (action.type) {
+    case actionTypes.LOCATION_CHANGED:
+      return {
+        ...userFormState,
+        isChangingName: userFormState.data.name ? false : true
+      };
     case actionTypes.CHANGE_USER_FORM_DATA:
       return {
         ...userFormState,
