@@ -12,6 +12,7 @@ interface CreatePollFormProps {
   discardPoll: () => void;
   addPollOption: () => void;
   removePollOption: (index: number) => void;
+  edit?: boolean;
 }
 
 export const FormContainer = styled.form<{}>`
@@ -45,6 +46,7 @@ const PollForm = (props: CreatePollFormProps) => (
       values={props.values.options}
       addPollOption={props.addPollOption}
       removePollOption={props.removePollOption}
+      edit={props.edit}
     />
     <Buttons discardPoll={props.discardPoll} />
   </FormContainer>

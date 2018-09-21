@@ -6,6 +6,7 @@ import {
   changeFormData,
   createPoll,
   discardPoll,
+  discardUpdatePollForm,
   removePollOption
 } from "../../actions/actions";
 import { InitialState, PollFormInput } from "../../reducers/rootReducer";
@@ -19,6 +20,11 @@ interface PollFormContainerProps {
   discardPoll: () => any;
   addPollOption: () => any;
   removePollOption: (index: number) => any;
+  discardUpdatePollForm: () => any;
+}
+interface OwnProps {
+  edit?: boolean;
+  pollId?: string;
 }
 
 const mapDispatchToProps = {
@@ -26,17 +32,20 @@ const mapDispatchToProps = {
   handleChange: changeFormData,
   discardPoll,
   addPollOption,
-  removePollOption
+  removePollOption,
+  discardUpdatePollForm
 };
 
-const mapStateToProps = (state: InitialState) => {
+const mapStateToProps = (state: InitialState, ownProps: OwnProps) => {
   return {
     pollFormData: state.pollForm.data,
     creatorName: state.userState.data.name
   };
 };
 
-class PollFormContainer extends React.Component<PollFormContainerProps> {
+class PollFormContainer extends React.Component<
+  PollFormContainerProps & OwnProps
+> {
   handleSubmitPoll = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const inputData: PollInput = {
@@ -47,19 +56,32 @@ class PollFormContainer extends React.Component<PollFormContainerProps> {
     };
     this.props.submitPoll(inputData);
   };
+  handleEditPoll = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log("submit edit");
+  };
 
   handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.props.handleChange(e.target.id, e.target.value);
+  };
+  handleDiscardPoll = () => {
+    if (this.props.edit) {
+      this.props.discardUpdatePollForm();
+    }
+    this.props.discardPoll();
   };
   render() {
     return (
       <PollForm
         values={this.props.pollFormData}
-        handleSubmit={this.handleSubmitPoll}
+        handleSubmit={
+          this.props.edit ? this.handleEditPoll : this.handleSubmitPoll
+        }
         handleChange={this.handleChange}
-        discardPoll={this.props.discardPoll}
+        discardPoll={this.handleDiscardPoll}
         addPollOption={this.props.addPollOption}
         removePollOption={this.props.removePollOption}
+        edit={this.props.edit}
       />
     );
   }

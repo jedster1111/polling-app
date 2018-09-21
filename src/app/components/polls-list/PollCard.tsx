@@ -2,6 +2,7 @@ import * as React from "react";
 import styled from "styled-components";
 import { Option } from "../../../../server/models/database";
 import OptionButton from "../create-poll-form/AddRemoveOptionButton";
+import ConnectedPollFormContainer from "../create-poll-form/PollFormContainer";
 import OptionsList from "./OptionsList";
 import PollInfo from "./PollInfo";
 import ResultsList from "./ResultsList";
@@ -55,7 +56,9 @@ const PollCard = (props: PollCardProps) => (
       options={props.options}
       username={props.username}
     />
-    {props.isEditing && <span>editing</span>}
+    {props.isEditing && (
+      <ConnectedPollFormContainer edit pollId={props.pollId} />
+    )}
     {props.showResults && <ResultsList options={props.options} />}
     {props.creatorName === props.username && (
       <DeletePollButton remove onClick={() => props.deletePoll(props.pollId)} />

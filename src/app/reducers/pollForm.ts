@@ -7,6 +7,12 @@ const pollFormReducer: Reducer = (
   action: AnyAction
 ): PollForm => {
   switch (action.type) {
+    case actionTypes.LOCATION_CHANGED: {
+      return {
+        ...pollFormState,
+        data: { ...initialState.pollForm.data }
+      };
+    }
     case actionTypes.CHANGE_FORM_DATA:
       const { fieldId, value } = action.payload;
       if (/^(optionInput)/.test(fieldId)) {
@@ -81,6 +87,13 @@ const pollFormReducer: Reducer = (
       return {
         ...pollFormState,
         data: { ...pollFormState.data, options: newOptions }
+      };
+    }
+    case actionTypes.SHOW_UPDATE_POLL_FORM: {
+      const poll = action.payload.poll;
+      return {
+        ...pollFormState,
+        data: { ...poll }
       };
     }
     default:

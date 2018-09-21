@@ -1,4 +1,4 @@
-export const ADD_ARTICLE = "ADD_ARTICLE";
+export const LOCATION_CHANGED = "@@router/LOCATION_CHANGE";
 
 export const GET_POLLS_REQUEST = "GET_POLLS_REQUEST";
 export const GET_POLLS_SUCCESS = "GET_POLLS_SUCCESS";

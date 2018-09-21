@@ -19,7 +19,7 @@ interface PollsListContainerProps {
   toggleShowResults: (pollId: string) => void;
   deletePoll: (pollId: string) => any;
   showResults: { [pollId: string]: boolean };
-  showUpdatePollForm: (pollId: string) => any;
+  showUpdatePollForm: (pollId: string, poll: Poll) => any;
   editingPoll: null | string;
 }
 
@@ -54,7 +54,10 @@ class PollsListContainer extends React.Component<PollsListContainerProps> {
   };
   showEditForm = (pollId: string) => {
     console.log(`Show pollId${pollId}'s edit form`);
-    this.props.showUpdatePollForm(pollId);
+    const pollToUpdate = this.props.polls.find(
+      poll => poll.pollId === pollId
+    ) as Poll;
+    this.props.showUpdatePollForm(pollId, pollToUpdate);
   };
   render() {
     return (

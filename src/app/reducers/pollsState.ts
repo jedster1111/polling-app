@@ -8,6 +8,11 @@ const pollsStateReducer: Reducer = (
   action: AnyAction
 ): PollsState => {
   switch (action.type) {
+    case actionTypes.LOCATION_CHANGED:
+      return {
+        ...pollsState,
+        editingPoll: null
+      };
     case actionTypes.GET_POLLS_REQUEST:
       return {
         ...pollsState,
@@ -122,6 +127,12 @@ const pollsStateReducer: Reducer = (
       return {
         ...pollsState,
         editingPoll: action.payload.pollId
+      };
+    }
+    case actionTypes.DISCARD_UPDATE_POLL_FORM: {
+      return {
+        ...pollsState,
+        editingPoll: null
       };
     }
     default:
