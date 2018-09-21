@@ -116,7 +116,7 @@ class Database {
             if (optionToUpdate !== undefined) {
               optionToUpdate.value = optionInput.value;
             }
-          } else {
+          } else if (optionInput.value) {
             poll.options.push({
               optionId: `${parseInt(
                 poll.options[poll.options.length - 1].optionId,
