@@ -18,6 +18,7 @@ export interface PollCardProps {
   toggleShowResults: (pollId: string) => void;
   showResults: boolean;
   showEditForm: (pollId: string) => void;
+  isEditing?: boolean;
 }
 
 const PollContainer = styled.div<{}>`
@@ -54,6 +55,7 @@ const PollCard = (props: PollCardProps) => (
       options={props.options}
       username={props.username}
     />
+    {props.isEditing && <span>editing</span>}
     {props.showResults && <ResultsList options={props.options} />}
     {props.creatorName === props.username && (
       <DeletePollButton remove onClick={() => props.deletePoll(props.pollId)} />

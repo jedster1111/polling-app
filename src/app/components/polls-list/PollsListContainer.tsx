@@ -20,13 +20,15 @@ interface PollsListContainerProps {
   deletePoll: (pollId: string) => any;
   showResults: { [pollId: string]: boolean };
   showUpdatePollForm: (pollId: string) => any;
+  editingPoll: null | string;
 }
 
 const mapStateToProps = (state: InitialState) => {
   return {
     polls: [...state.pollsState.polls].reverse(),
     creatorName: state.userState.data.name,
-    showResults: state.pollsState.showResults
+    showResults: state.pollsState.showResults,
+    editingPoll: state.pollsState.editingPoll
   };
 };
 const mapDispatchToProps = {
@@ -65,6 +67,7 @@ class PollsListContainer extends React.Component<PollsListContainerProps> {
         toggleShowResults={this.handleToggleShowResults}
         deletePoll={this.props.deletePoll}
         showEditForm={this.showEditForm}
+        editingPoll={this.props.editingPoll}
       />
     );
   }

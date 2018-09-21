@@ -134,6 +134,7 @@ storiesOf("Polls List", module)
         showResults={{ 1: false, 2: true }}
         deletePoll={action("deleted poll")}
         showEditForm={action("showEditForm")}
+        editingPoll="1"
       />
     );
   })

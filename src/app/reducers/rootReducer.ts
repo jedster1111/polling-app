@@ -10,7 +10,7 @@ export interface PollsState {
   isLoading: boolean;
   error: Error | null;
   showResults: { [pollId: string]: boolean };
-  editingPoll: null | boolean;
+  editingPoll: null | string;
 }
 export interface PollFormInput {
   description: string;
