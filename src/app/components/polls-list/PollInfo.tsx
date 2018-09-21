@@ -9,7 +9,7 @@ interface PollInfoProps {
   description: string;
   toggleShowResults: (pollId: string) => void;
   showEditForm: (pollId: string) => void;
-  canEdit?: boolean;
+  isOwner?: boolean;
 }
 
 const InfoContainer = styled.div<{}>`
@@ -31,7 +31,11 @@ const PollTitleContainer = styled.div<{}>`
 `;
 const DescriptionContainer = styled.div<{}>``;
 const CreatorContainer = styled.div<{}>``;
-
+const ButtonsContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+`;
 const PollInfo = (props: PollInfoProps) => {
   return (
     <InfoContainer>
@@ -40,16 +44,18 @@ const PollInfo = (props: PollInfoProps) => {
         <DescriptionContainer>{props.description}</DescriptionContainer>
         <CreatorContainer>{props.creatorName}</CreatorContainer>
       </TextContainer>
-      <ViewResultsButton
-        value={"Results"}
-        pollId={props.pollId}
-        toggleShowResults={props.toggleShowResults}
-      />
-      {props.canEdit && (
-        <StyledButton onClick={() => props.showEditForm(props.pollId)}>
-          Edit
-        </StyledButton>
-      )}
+      <ButtonsContainer>
+        {props.isOwner && (
+          <StyledButton onClick={() => props.showEditForm(props.pollId)}>
+            Edit
+          </StyledButton>
+        )}
+        <ViewResultsButton
+          value={"Results"}
+          pollId={props.pollId}
+          toggleShowResults={props.toggleShowResults}
+        />
+      </ButtonsContainer>
     </InfoContainer>
   );
 };

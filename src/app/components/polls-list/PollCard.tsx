@@ -20,15 +20,14 @@ export interface PollCardProps {
   showResults: boolean;
   showEditForm: (pollId: string) => void;
   isEditing?: boolean;
-  canEdit?: boolean;
+  isOwner?: boolean;
 }
 
 const PollContainer = styled.div<{}>`
   position: relative;
   align-self: stretch;
-  display: flex;
-  flex-wrap: wrap;
-  max-width: 800px;
+  display: block;
+  max-width: 1000px;
   min-width: 170px;
   border: solid 1px black;
   margin: 5px 0;
@@ -40,30 +39,35 @@ const DeletePollButton = styled(OptionButton)`
   right: 4px;
   top: 3px;
 `;
+const InnerContainer = styled.div`
+  display: flex;
+`;
 
 const PollCard = (props: PollCardProps) => (
   <PollContainer id={`poll${props.pollId}`}>
-    <PollInfo
-      pollId={props.pollId}
-      creatorName={props.creatorName}
-      description={props.description}
-      pollName={props.pollName}
-      toggleShowResults={props.toggleShowResults}
-      showEditForm={props.showEditForm}
-      canEdit={props.canEdit}
-    />
-    <OptionsList
-      handleVote={props.handleVote}
-      pollId={props.pollId}
-      options={props.options}
-      username={props.username}
-    />
+    <InnerContainer>
+      <PollInfo
+        pollId={props.pollId}
+        creatorName={props.creatorName}
+        description={props.description}
+        pollName={props.pollName}
+        toggleShowResults={props.toggleShowResults}
+        showEditForm={props.showEditForm}
+        isOwner={props.isOwner}
+      />
+      <OptionsList
+        handleVote={props.handleVote}
+        pollId={props.pollId}
+        options={props.options}
+        username={props.username}
+      />
+    </InnerContainer>
     {props.isEditing &&
-      props.canEdit && (
+      props.isOwner && (
         <ConnectedPollFormContainer edit pollId={props.pollId} />
       )}
     {props.showResults && <ResultsList options={props.options} />}
-    {props.creatorName === props.username && (
+    {props.isOwner && (
       <DeletePollButton remove onClick={() => props.deletePoll(props.pollId)} />
     )}
   </PollContainer>

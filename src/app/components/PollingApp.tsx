@@ -26,7 +26,7 @@ const StyledContainer = styled.div<{}>`
 `;
 const StyledPageContainer = styled.div<{}>`
   flex: 1;
-  max-width: 750px;
+  max-width: 1000px;
   /* padding: 5px 5px; */
 `;
 

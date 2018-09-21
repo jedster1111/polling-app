@@ -11,9 +11,8 @@ const ResultsListContainer = styled.div<{}>`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   grid-gap: 5px;
-  justify-content: space-between;
   padding: 5px 8px;
-  width: 100%;
+  flex: 0;
 `;
 
 const sortOptions = (options: Option[]) => {

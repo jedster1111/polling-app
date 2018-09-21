@@ -17,14 +17,14 @@ export interface PollsListProps {
 }
 
 const PollsListContainer = styled.div<{}>`
-  flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
   min-width: 200px;
-  max-width: 750px;
+  max-width: 1000px;
   border: black solid 1px;
+  margin: 0 auto;
   padding: 8px 5px;
   border-radius: 8px;
   background-color: #c6dea6;
@@ -45,7 +45,7 @@ const PollsList = (props: PollsListProps) => (
           deletePoll={props.deletePoll}
           showEditForm={props.showEditForm}
           isEditing={props.editingPoll === poll.pollId}
-          canEdit={props.username === poll.creatorName}
+          isOwner={props.username === poll.creatorName}
         />
       ))
     ) : (
