@@ -109,12 +109,16 @@ Json:
 Updates a specific poll <br>
 You are only required to enter in the information that you wish to change. <br>
 Id can not be changed, it can only be used for identification. <br>
-***Note: Options can not currently be updated***
 #### Expects
 ```
 {
 	description: "What furniture do you want?",
-	pollName: "Changed Name"
+	pollName: "Changed Name",
+	options: [
+		{optionId: "1", value: "new option value"},
+		{optionId: "3", value: "updated option 3"},
+		{optionId: "", value: "new option!"}
+	]
 }
 ```
 #### Returns
@@ -129,9 +133,10 @@ JSON:
 		pollName: "What furniture?",
 		description: "What furniture do you want?",
 		options: [
-			{optionId: 1, value: "bean bags", votes: ["Jed", "James"]},
+			{optionId: 1, value: "new option value", votes: ["Jed", "James"]},
 			{optionId: 2, value: "rocking chairs", votes: ["Roy"]},
-			{optionId: 3, value: "garden bench", votes: []},
+			{optionId: 3, value: "updated option 3", votes: []},
+			{optionId: 4, value: "new option!", votes: []}
 		]
 	}
 }
