@@ -28,6 +28,9 @@ const StyledLink = styled(NavLink)`
   height: 30px;
   background-color: #efefef;
   box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   &:hover {
     padding-right: 10px;
     border-bottom: solid grey 1px;

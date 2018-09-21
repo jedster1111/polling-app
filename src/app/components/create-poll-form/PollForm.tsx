@@ -17,7 +17,7 @@ interface CreatePollFormProps {
 
 export const FormContainer = styled.form<{}>`
   flex: 1;
-  min-width: 200px;
+  min-width: 240px;
   max-width: 750px;
   border: black solid 1px;
   margin: 0 auto;

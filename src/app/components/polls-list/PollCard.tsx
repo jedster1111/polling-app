@@ -42,6 +42,7 @@ const DeletePollButton = styled(OptionButton)`
 `;
 const InnerContainer = styled.div`
   display: flex;
+  flex-wrap: wrap;
 `;
 
 const PollCard = (props: PollCardProps) => (
