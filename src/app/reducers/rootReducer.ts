@@ -10,6 +10,7 @@ export interface PollsState {
   isLoading: boolean;
   error: Error | null;
   showResults: { [pollId: string]: boolean };
+  editingPoll: null | boolean;
 }
 export interface PollFormInput {
   description: string;
@@ -52,7 +53,8 @@ export const initialState: InitialState = {
     polls: [],
     isLoading: false,
     error: null,
-    showResults: {}
+    showResults: {},
+    editingPoll: null
   },
   pollForm: {
     data: {

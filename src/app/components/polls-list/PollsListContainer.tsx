@@ -4,6 +4,7 @@ import { Poll } from "../../../../server/models/database";
 import {
   deletePoll,
   fetchPolls,
+  showUpdatePollForm,
   toggleShowResults,
   voteOption
 } from "../../actions/actions";
@@ -18,6 +19,7 @@ interface PollsListContainerProps {
   toggleShowResults: (pollId: string) => void;
   deletePoll: (pollId: string) => any;
   showResults: { [pollId: string]: boolean };
+  showUpdatePollForm: (pollId: string) => any;
 }
 
 const mapStateToProps = (state: InitialState) => {
@@ -31,7 +33,8 @@ const mapDispatchToProps = {
   fetchPolls,
   voteOption,
   toggleShowResults,
-  deletePoll
+  deletePoll,
+  showUpdatePollForm
 };
 
 class PollsListContainer extends React.Component<PollsListContainerProps> {
@@ -49,6 +52,7 @@ class PollsListContainer extends React.Component<PollsListContainerProps> {
   };
   showEditForm = (pollId: string) => {
     console.log(`Show pollId${pollId}'s edit form`);
+    this.props.showUpdatePollForm(pollId);
   };
   render() {
     return (

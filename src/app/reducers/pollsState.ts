@@ -118,6 +118,12 @@ const pollsStateReducer: Reducer = (
         polls: newPolls
       };
     }
+    case actionTypes.SHOW_UPDATE_POLL_FORM: {
+      return {
+        ...pollsState,
+        editingPoll: action.payload.pollId
+      };
+    }
     default:
       return pollsState;
   }

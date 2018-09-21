@@ -76,6 +76,10 @@ export const deletePoll: ActionCreator<Action> = (pollId: string) => ({
   type: actionTypes.DELETE_POLL_LOADING,
   payload: { pollId }
 });
+export const showUpdatePollForm: ActionCreator<Action> = (pollId: string) => ({
+  type: actionTypes.SHOW_UPDATE_POLL_FORM,
+  payload: { pollId }
+});
 export const updatePoll: ActionCreator<Action> = (
   pollId: string,
   updatePollInput: UpdatePollInput
