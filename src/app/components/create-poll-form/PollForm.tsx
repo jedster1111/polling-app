@@ -20,6 +20,8 @@ export const FormContainer = styled.form<{}>`
   min-width: 200px;
   max-width: 750px;
   border: black solid 1px;
+  margin: 0 auto;
+  margin-bottom: 10px;
   padding: 8px 5px;
   border-radius: 8px;
   background-color: #c6dea6;
@@ -48,7 +50,7 @@ const PollForm = (props: CreatePollFormProps) => (
       removePollOption={props.removePollOption}
       edit={props.edit}
     />
-    <Buttons discardPoll={props.discardPoll} />
+    <Buttons edit={props.edit} discardPoll={props.discardPoll} />
   </FormContainer>
 );
 

@@ -4,6 +4,7 @@ import Button from "./Button";
 
 interface ButtonsProps {
   discardPoll: () => void;
+  edit?: boolean;
 }
 
 const ButtonsContainer = styled.div<{}>`
@@ -21,7 +22,7 @@ const ButtonsContainer = styled.div<{}>`
 const Buttons = (props: ButtonsProps) => (
   <ButtonsContainer>
     <Button id="createButton" create>
-      Create
+      {props.edit ? "Save" : "Create"}
     </Button>
     <Button
       id="discardButton"

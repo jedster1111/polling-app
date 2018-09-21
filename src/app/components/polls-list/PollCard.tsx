@@ -31,6 +31,7 @@ const PollContainer = styled.div<{}>`
   min-width: 170px;
   border: solid 1px black;
   margin: 5px 0;
+  padding: 4px 3px;
   background-color: white;
 `;
 const DeletePollButton = styled(OptionButton)`

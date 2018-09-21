@@ -11,7 +11,8 @@ const pollsStateReducer: Reducer = (
     case actionTypes.LOCATION_CHANGED:
       return {
         ...pollsState,
-        editingPoll: null
+        editingPoll: null,
+        showResults: {}
       };
     case actionTypes.GET_POLLS_REQUEST:
       return {

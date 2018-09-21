@@ -12,9 +12,9 @@ export const loadState = () => {
 export const saveState = (state: any) => {
   try {
     const serialisedState = JSON.stringify(state);
-    console.log(serialisedState);
+    // console.log(serialisedState);
     sessionStorage.setItem("state", serialisedState);
   } catch (error) {
-    console.log(error);
+    // console.log(error);
   }
 };
