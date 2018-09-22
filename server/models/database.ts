@@ -105,7 +105,7 @@ class Database {
     }
     const updateKeys: string[] = Object.keys(updatePollInput);
     updateKeys.forEach(key => {
-      if (key !== "options") {
+      if (key !== "options" && updatePollInput[key]) {
         poll[key] = updatePollInput[key] as string;
       } else if (key === "options") {
         updatePollInput.options!.forEach((optionInput: UpdateOptionInput) => {

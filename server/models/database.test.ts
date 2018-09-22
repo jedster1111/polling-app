@@ -95,6 +95,11 @@ describe("Test Database class", () => {
         })
       ).toThrow("Poll with Id 10 could not be found");
     });
+    test("updating pollname or description with empty string doesn't replace value", () => {
+      const poll = db.updatePoll("1", { pollName: "", description: "" });
+      expect(poll.pollName).toBe("pollName1");
+      expect(poll.description).toBe("description1");
+    });
   });
   test("test Database removeAllPollsData removes all polls", () => {
     db.removeAllPollsData();
