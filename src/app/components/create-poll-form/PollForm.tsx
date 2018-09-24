@@ -1,4 +1,5 @@
 import * as React from "react";
+import posed from "react-pose";
 import styled from "styled-components";
 import { PollFormInput } from "../../reducers/rootReducer";
 import Buttons from "./AddDiscardButtons";
@@ -15,14 +16,19 @@ interface CreatePollFormProps {
   edit?: boolean;
 }
 
-export const FormContainer = styled.form<{}>`
+export const FormContainer = styled(
+  posed.form({
+    enter: { opacity: 1, height: "auto", padding: 5 },
+    exit: { opacity: 0, height: 0, padding: 0 }
+  })
+)`
   flex: 1;
   min-width: 240px;
   max-width: 750px;
   border: black solid 1px;
   margin: 0 auto;
   margin-bottom: 10px;
-  padding: 8px 5px;
+  padding: 0px 5px;
   border-radius: 8px;
   background-color: #c6dea6;
 `;
