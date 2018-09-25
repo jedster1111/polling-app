@@ -1,4 +1,5 @@
 import * as React from "react";
+import posed from "react-pose";
 import styled from "styled-components";
 import PollFormLabel from "./PollFormLabel";
 import TextInput from "./TextInput";
@@ -13,7 +14,12 @@ interface SingleInputProps {
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export const SingleInputContainer = styled.div<{}>`
+export const SingleInputContainer = styled(
+  posed.div({
+    enter: { opacity: 1, x: 0 },
+    exit: { opacity: 0, x: 50 }
+  })
+)<{}>`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;

@@ -1,5 +1,4 @@
 import * as React from "react";
-import posed from "react-pose";
 import styled from "styled-components";
 
 export interface TextInputProps {
@@ -12,12 +11,7 @@ export interface TextInputProps {
 }
 
 // const TextInput = styled.input<{ valid?: boolean; error?: boolean }>`
-const TextInput = styled(
-  posed.input({
-    enter: { opacity: 1 },
-    exit: { opacity: 0 }
-  })
-)<{ valid?: boolean; error?: boolean }>`
+const TextInput = styled.input<{ valid?: boolean; error?: boolean }>`
   flex: 1 1;
   text-align: center;
   transition: all 0.2s;

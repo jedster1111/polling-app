@@ -1,5 +1,5 @@
 import * as React from "react";
-import { PoseGroup } from "react-pose";
+import posed, { PoseGroup } from "react-pose";
 import styled from "styled-components";
 import Button from "../create-poll-form/Button";
 import { FormContainer } from "../create-poll-form/PollForm";
@@ -15,7 +15,12 @@ interface UserDataFormProps {
   discardChanges: (e: React.MouseEvent<HTMLButtonElement>) => void;
   values: UserDataFormValues;
 }
-const ButtonsContainer = styled.div`
+const ButtonsContainer = styled(
+  posed.div({
+    enter: { opacity: 1 },
+    exit: { opacity: 0 }
+  })
+)`
   width: 80%;
   display: flex;
   flex-wrap: wrap;

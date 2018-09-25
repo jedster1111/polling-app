@@ -18,8 +18,8 @@ interface CreatePollFormProps {
 
 export const FormContainer = styled(
   posed.form({
-    enter: { opacity: 1, height: "auto", padding: 5 },
-    exit: { opacity: 0, height: 0, padding: 0 }
+    enter: { opacity: 1, y: 0, delayChildren: 150, staggerChildren: 150 },
+    exit: { opacity: 0, y: 30 }
   })
 )`
   flex: 1;
