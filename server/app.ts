@@ -1,7 +1,7 @@
 import bodyParser = require("body-parser");
-import express = require("express");
-// import cookieParser = require("cookie-parser");
+import cookieParser = require("cookie-parser");
 import { ErrorRequestHandler } from "express";
+import express = require("express");
 import session = require("express-session");
 import morgan = require("morgan");
 export import passport = require("passport");
@@ -16,6 +16,12 @@ import pollRouter from "./routes/pollRouter";
 export interface ErrorWithStatusCode extends Error {
   statusCode?: number;
 }
+const ensureAuthenticated: express.Handler = (req, res, next) => {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.redirect("/login");
+};
 const errorHandlerMiddleware: ErrorRequestHandler = (
   err: ErrorWithStatusCode,
   req,
@@ -36,11 +42,11 @@ passport.use(
     {
       clientID: secrets.clientId,
       clientSecret: secrets.clientSecret,
-      callbackURL: "http://127.0.0.1:8000/api/auth/github/callback"
+      callbackURL: "http://127.0.0.1:8000/auth/github/callback"
     },
-    (accessToken, refreshToken, profile, cb) => {
+    (accessToken, refreshToken, profile, done) => {
       const user = db.getUser(profile.id) || db.insertUser(profile);
-      return cb(null, user);
+      return done(null, user);
     }
   )
 );
@@ -59,12 +65,13 @@ const app = express();
 
 app.use(
   session({
-    secret: "secret",
+    secret: secrets.secret,
     resave: true,
     saveUninitialized: true
   })
 );
 app.use(morgan("combined"));
+app.use(cookieParser());
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(path.resolve("dist")));
@@ -74,16 +81,19 @@ app.use(bodyParser.json());
 app.use("/api/polls", pollRouter);
 
 app.get(
-  "/api/auth/github",
+  "/auth/github",
   passport.authenticate("github", { scope: ["user:email"] })
 );
 app.get(
-  "/api/auth/github/callback",
+  "/auth/github/callback",
   passport.authenticate("github", { failureRedirect: "/login" }),
   (req, res) => {
     res.redirect("/");
   }
 );
+app.get("/test", ensureAuthenticated, (req, res, next) => {
+  res.render("you are authenticated");
+});
 
 app.use(errorHandlerMiddleware);
 
