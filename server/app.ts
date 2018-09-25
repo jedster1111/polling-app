@@ -1,6 +1,7 @@
 import bodyParser = require("body-parser");
 import express = require("express");
 import { ErrorRequestHandler } from "express";
+import morgan = require("morgan");
 import path = require("path");
 import pollRouter from "./routes/pollRouter";
 
@@ -24,6 +25,7 @@ const errorHandlerMiddleware: ErrorRequestHandler = (
   console.log("Carrying on then...");
 };
 
+app.use(morgan("combined"));
 app.use(express.static(path.resolve("dist")));
 
 app.use(bodyParser.urlencoded({ extended: true }));
