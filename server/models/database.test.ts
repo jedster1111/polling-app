@@ -22,12 +22,12 @@ describe("Test Database class", () => {
         pollName: "pollName3"
       }
     ];
-    db.reset();
+    db.resetPolls();
     pollInputs.forEach(pollInput => db.insertPoll(pollInput));
     // test
   });
   afterEach(() => {
-    db.reset();
+    db.resetPolls();
   });
 
   test("test Database insertPoll and getPoll", () => {

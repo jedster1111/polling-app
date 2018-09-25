@@ -4,12 +4,12 @@ import importData from "../inputData";
 import db, { Poll, PollInput, UpdatePollInput } from "../models/database";
 
 beforeEach(() => {
-  db.reset();
+  db.resetPolls();
   // have to create copy as lokiJs will add properties to object when added to collection
   importData.forEach(pollInput => db.insertPoll(Object.assign({}, pollInput)));
 });
 afterEach(() => {
-  db.reset();
+  db.resetPolls();
 });
 
 test("Should respond with array of polls", async () => {

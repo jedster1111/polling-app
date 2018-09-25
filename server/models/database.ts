@@ -16,6 +16,11 @@ export interface Poll {
   pollId: string;
   options: Option[];
 }
+export interface User {
+  name: string;
+  userId: string;
+  updated_at: Date;
+}
 interface UpdateOptionInput {
   optionId: string;
   value: string;
@@ -64,6 +69,7 @@ class Database {
   }
   db = new loki("polling-app.db");
   polls = this.db.addCollection("polls");
+  users = this.db.addCollection("users");
   pollsCount = 0;
 
   /**
@@ -185,9 +191,15 @@ class Database {
   resetCount(): void {
     this.pollsCount = 0;
   }
-  reset(): void {
+  resetPolls(): void {
     this.removeAllPollsData();
     this.resetCount();
+  }
+  getUser(userId: string): User {
+    return this.users.findOne({ id: userId });
+  }
+  insertUser(userInput: any): User {
+    return this.users.insert(userInput);
   }
 }
 

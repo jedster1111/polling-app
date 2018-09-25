@@ -1,15 +1,21 @@
 import bodyParser = require("body-parser");
 import express = require("express");
+// import cookieParser = require("cookie-parser");
 import { ErrorRequestHandler } from "express";
+import session = require("express-session");
 import morgan = require("morgan");
+export import passport = require("passport");
+import passport = require("passport");
+import { Strategy } from "passport-github";
 import path = require("path");
+import * as secrets from "../secret/github";
+import db from "./models/database";
+// import authRouter from "./routes/authRouter";
 import pollRouter from "./routes/pollRouter";
 
 export interface ErrorWithStatusCode extends Error {
   statusCode?: number;
 }
-
-const app = express();
 const errorHandlerMiddleware: ErrorRequestHandler = (
   err: ErrorWithStatusCode,
   req,
@@ -25,13 +31,60 @@ const errorHandlerMiddleware: ErrorRequestHandler = (
   console.log("Carrying on then...");
 };
 
-app.use(morgan("combined"));
-app.use(express.static(path.resolve("dist")));
+passport.use(
+  new Strategy(
+    {
+      clientID: secrets.clientId,
+      clientSecret: secrets.clientSecret,
+      callbackURL: "http://127.0.0.1:8000/api/auth/github/callback"
+    },
+    (accessToken, refreshToken, profile, cb) => {
+      const user = db.getUser(profile.id) || db.insertUser(profile);
+      return cb(null, user);
+    }
+  )
+);
+passport.serializeUser<any, any>((user, done) => {
+  done(null, user.id);
+});
+passport.deserializeUser<any, string>((id, done) => {
+  const user = db.getUser(id);
+  if (!user) {
+    return done(new Error(`User with id of ${id} was not found`));
+  }
+  done(null, user);
+});
 
+const app = express();
+
+app.use(
+  session({
+    secret: "secret",
+    resave: true,
+    saveUninitialized: true
+  })
+);
+app.use(morgan("combined"));
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(express.static(path.resolve("dist")));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.use("/api/polls", pollRouter);
+
+app.get(
+  "/api/auth/github",
+  passport.authenticate("github", { scope: ["user:email"] })
+);
+app.get(
+  "/api/auth/github/callback",
+  passport.authenticate("github", { failureRedirect: "/login" }),
+  (req, res) => {
+    res.redirect("/");
+  }
+);
+
 app.use(errorHandlerMiddleware);
 
 export default app;

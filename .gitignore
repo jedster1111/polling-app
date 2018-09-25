@@ -3,6 +3,7 @@
 /tsDist
 /src/coverage
 /dist
+/secret
 
 # dependencies
 /node_modules
