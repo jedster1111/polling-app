@@ -5,7 +5,7 @@ import session = require("express-session");
 // import morgan = require("morgan");
 export import passport = require("passport");
 import passport = require("passport");
-import { Strategy } from "passport-github";
+import { Strategy } from "passport-github2";
 import path = require("path");
 import * as secrets from "../secret/github";
 import db from "./models/database";
@@ -44,10 +44,12 @@ passport.use(
       clientSecret: secrets.clientSecret,
       callbackURL: "http://127.0.0.1:8000/auth/github/callback"
     },
-    (accessToken, refreshToken, profile, done) => {
+    (accessToken: any, refreshToken: any, profile: any, done: any) => {
       const cleanedProfile = {
         id: profile.id,
-        displayName: profile.displayName
+        displayName: profile.displayName,
+        userName: profile.username,
+        emails: profile.emails
       };
       const user = db.getUser(profile.id) || db.insertUser(cleanedProfile);
       console.log(user);
@@ -71,8 +73,8 @@ const app = express();
 app.use(
   session({
     secret: secrets.secret,
-    resave: true,
-    saveUninitialized: true
+    resave: false,
+    saveUninitialized: false
   })
 );
 // app.use(morgan("combined"));
@@ -96,6 +98,16 @@ app.get(
     res.redirect("/");
   }
 );
+app.get("/auth/logout", (req, res) => {
+  req.logout();
+  res
+    .status(200)
+    .clearCookie("connect.sid")
+    .json({ status: "Success" });
+
+  // req.logOut();
+  // res.redirect("/");
+});
 app.get("/auth", ensureAuthenticated, (req, res, next) => {
   res.status(200).json({ userData: req.user });
 });

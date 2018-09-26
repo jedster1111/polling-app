@@ -17,5 +17,14 @@ userRouter.route("/:id").get((req, res) => {
   const user = db.getUser(id);
   res.json({ user });
 });
+// userRouter.route("/:id").get((req, res) => {
+//   const id = req.params.id;
+//   if (req.user && req.user.id === id) {
+//     const user = db.getUser(id);
+//     res.json({ user });
+//   } else {
+//     res.status(401).json({ value: "not your account" });
+//   }
+// });
 
 export default userRouter;
