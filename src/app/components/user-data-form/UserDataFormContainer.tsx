@@ -70,11 +70,13 @@ class UserDataFormContainer extends React.Component<
         handleChange={this.handleChange}
         handleSubmit={this.handleSubmitForm}
         values={this.props.values}
+        key="userDataForm"
       />
     ) : (
       <UserDataDisplay
         confirmedValues={this.props.confirmedValues}
         toggleChangingName={this.handleToggleChangingName}
+        key="userDataDisplay"
       />
     );
   }

@@ -76,6 +76,7 @@
     "express": "^4.16.3",
     "lokijs": "^1.5.5",
     "morgan": "^1.9.1",
+    "react-pose": "^3.3.4",
     "react-router-dom": "^4.3.1",
     "redux-saga": "^0.16.0",
     "redux-saga-effects": "^1.1.0",
