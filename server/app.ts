@@ -45,7 +45,12 @@ passport.use(
       callbackURL: "http://127.0.0.1:8000/auth/github/callback"
     },
     (accessToken, refreshToken, profile, done) => {
-      const user = db.getUser(profile.id) || db.insertUser(profile);
+      const cleanedProfile = {
+        id: profile.id,
+        displayName: profile.displayName
+      };
+      const user = db.getUser(profile.id) || db.insertUser(cleanedProfile);
+      console.log(user);
       return done(null, user);
     }
   )
@@ -92,7 +97,7 @@ app.get(
   }
 );
 app.get("/test", ensureAuthenticated, (req, res, next) => {
-  res.render("you are authenticated");
+  res.json({ status: "Logged in!", user: req.user });
 });
 
 app.use(errorHandlerMiddleware);
