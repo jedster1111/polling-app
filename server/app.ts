@@ -1,5 +1,4 @@
 import bodyParser = require("body-parser");
-import cookieParser = require("cookie-parser");
 import { ErrorRequestHandler } from "express";
 import express = require("express");
 import session = require("express-session");
@@ -76,7 +75,6 @@ app.use(
   })
 );
 app.use(morgan("combined"));
-app.use(cookieParser());
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(path.resolve("dist")));
