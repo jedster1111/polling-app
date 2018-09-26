@@ -20,7 +20,7 @@ const ensureAuthenticated: express.Handler = (req, res, next) => {
   if (req.isAuthenticated()) {
     return next();
   }
-  res.redirect("/");
+  res.send("Not logged in!");
 };
 const errorHandlerMiddleware: ErrorRequestHandler = (
   err: ErrorWithStatusCode,
@@ -103,7 +103,7 @@ app.get("/auth/logout", (req, res) => {
   res
     .status(200)
     .clearCookie("connect.sid")
-    .json({ status: "Success" });
+    .send("Logged out!");
 
   // req.logOut();
   // res.redirect("/");

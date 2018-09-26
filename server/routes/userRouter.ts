@@ -17,6 +17,7 @@ userRouter.route("/:id").get((req, res) => {
   const user = db.getUser(id);
   res.json({ user });
 });
+// An example of how to authenticate an api request
 // userRouter.route("/:id").get((req, res) => {
 //   const id = req.params.id;
 //   if (req.user && req.user.id === id) {
