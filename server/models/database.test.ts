@@ -132,3 +132,34 @@ describe("Test Database class", () => {
     expect(poll.options.length).toBe(2);
   });
 });
+describe("Testing User methods", () => {
+  const result = [
+    { id: "1", displayName: "Jed Thompson" },
+    { id: "2", displayName: "Josh Lee" }
+  ];
+  beforeEach(() => {
+    db.insertUser({ id: "1", displayName: "Jed Thompson" });
+    db.insertUser({ id: "2", displayName: "Josh Lee" });
+  });
+  afterEach(() => {
+    db.resetUsers();
+  });
+  test("Can create and get a user", () => {
+    const user = db.getUser("1");
+    expect(user.displayName).toBe("Jed Thompson");
+    expect(user.id).toBe("1");
+  });
+  test("Can get all users in database", () => {
+    const users = db.getAllUsers();
+    expect(users).toMatchObject(result);
+  });
+  test("Can get array of users by array of ids", () => {
+    const users = db.getUsers(["1", "2"]);
+    expect(users).toMatchObject(result);
+  });
+  test("Can remove all users from db", () => {
+    db.resetUsers();
+    const users = db.getAllUsers();
+    expect(users).toMatchObject([]);
+  });
+});

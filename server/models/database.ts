@@ -17,9 +17,8 @@ export interface Poll {
   options: Option[];
 }
 export interface User {
-  name: string;
-  userId: string;
-  updated_at: Date;
+  displayName: string;
+  id: string;
 }
 interface UpdateOptionInput {
   optionId: string;
@@ -198,11 +197,20 @@ class Database {
   getUser(userId: string): User {
     return this.users.findOne({ id: userId });
   }
-  getUsers(): User[] {
+  getUsers(userIds: string[]): User[] {
+    const users: User[] = userIds.map(userId =>
+      this.users.findOne({ id: userId })
+    );
+    return users;
+  }
+  getAllUsers(): User[] {
     return this.users.find();
   }
   insertUser(userInput: any): User {
     return this.users.insert(userInput);
+  }
+  resetUsers(): void {
+    this.users.clear();
   }
 }
 
