@@ -198,6 +198,9 @@ class Database {
   getUser(userId: string): User {
     return this.users.findOne({ id: userId });
   }
+  getUsers(): User[] {
+    return this.users.find();
+  }
   insertUser(userInput: any): User {
     return this.users.insert(userInput);
   }

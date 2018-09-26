@@ -11,6 +11,7 @@ import * as secrets from "../secret/github";
 import db from "./models/database";
 // import authRouter from "./routes/authRouter";
 import pollRouter from "./routes/pollRouter";
+import userRouter from "./routes/userRouter";
 
 export interface ErrorWithStatusCode extends Error {
   statusCode?: number;
@@ -19,7 +20,7 @@ const ensureAuthenticated: express.Handler = (req, res, next) => {
   if (req.isAuthenticated()) {
     return next();
   }
-  res.redirect("/login");
+  res.redirect("/");
 };
 const errorHandlerMiddleware: ErrorRequestHandler = (
   err: ErrorWithStatusCode,
@@ -82,6 +83,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.use("/api/polls", pollRouter);
+app.use("/api/users", userRouter);
 
 app.get(
   "/auth/github",
@@ -94,6 +96,9 @@ app.get(
     res.redirect("/");
   }
 );
+app.get("/auth", ensureAuthenticated, (req, res, next) => {
+  res.status(200).json({ userData: req.user });
+});
 app.get("/test", ensureAuthenticated, (req, res, next) => {
   res.json({ status: "Logged in!", user: req.user });
 });
