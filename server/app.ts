@@ -2,7 +2,7 @@ import bodyParser = require("body-parser");
 import { ErrorRequestHandler } from "express";
 import express = require("express");
 import session = require("express-session");
-import morgan = require("morgan");
+// import morgan = require("morgan");
 export import passport = require("passport");
 import passport = require("passport");
 import { Strategy } from "passport-github";
@@ -75,7 +75,7 @@ app.use(
     saveUninitialized: true
   })
 );
-app.use(morgan("combined"));
+// app.use(morgan("combined"));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(path.resolve("dist")));

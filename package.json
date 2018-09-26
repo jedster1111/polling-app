@@ -109,7 +109,8 @@
     ],
     "testPathIgnorePatterns": [
       "/node_modules/",
-      "/testcafe/"
+      "/testcafe/",
+      "/stories/"
     ],
     "collectCoverageFrom": [
       "**/*.{js,jsx,ts,tsx}"
