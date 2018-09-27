@@ -37,6 +37,9 @@ describe("Testing user api endpoints", () => {
       expect(users).toMatchObject([result[0], result[2]]);
     });
   });
+  // describe("/api/users/me", () => {
+  // TODO: Test OAUTH authentication
+  // });
   describe("/api/users/:id", () => {
     test("Can get a user's data by id", async () => {
       const response = await request(app).get("/api/users/1");

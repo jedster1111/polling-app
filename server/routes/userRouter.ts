@@ -13,8 +13,12 @@ userRouter.route("/").get((req, res) => {
   res.json({ users });
 });
 userRouter.route("/me").get((req, res) => {
-  const data = req.user;
-  res.json({ data });
+  if (req.isAuthenticated()) {
+    const user = req.user;
+    res.json({ user });
+  } else {
+    res.json("Not logged in");
+  }
 });
 userRouter.route("/:id").get((req, res) => {
   const id = req.params.id;

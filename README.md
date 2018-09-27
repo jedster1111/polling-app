@@ -367,3 +367,34 @@ JSON:
 ```
 
 ---
+
+### `GET /api/users/me`
+
+#### Usage
+
+Gets the currently logged in user's data
+
+#### Expects
+
+N/A
+
+#### Returns
+
+Response Code: `200` <br>
+Description: Got a user <br>
+JSON:
+
+```
+{
+	user: {
+		id: "25291974",
+		displayName: "Jed Thompson",
+		userName: "jedster1111",
+		emails: [
+			{
+				value: "jedster1111@hotmail.co.uk"
+			}
+		],
+	}
+}
+```
