@@ -10,6 +10,29 @@ import {
   VoteInput
 } from "../types";
 
+const expectedResults: PollResponse[] = [
+  {
+    pollId: "1",
+    pollName: "pollName1",
+    description: "description1",
+    creator: { displayName: "displayName1", id: "1" },
+    options: [
+      { optionId: "1", value: "option1", votes: [] },
+      { optionId: "2", value: "option2", votes: [] }
+    ]
+  },
+  {
+    pollId: "2",
+    pollName: "pollName2",
+    creator: { displayName: "displayName2", id: "2" },
+    description: "description2",
+    options: [
+      { optionId: "1", value: "option1", votes: [] },
+      { optionId: "2", value: "option2", votes: [] }
+    ]
+  }
+];
+
 beforeEach(() => {
   db.resetPolls();
   // have to create copy as lokiJs will add properties to object when added to collection
@@ -28,29 +51,7 @@ afterEach(() => {
 test("Should respond with array of polls", async () => {
   const response = await request(app).get("/api/polls");
   const polls: PollResponse[] = response.body.polls;
-  const expectedPolls: PollResponse[] = [
-    {
-      pollId: "1",
-      pollName: "pollName1",
-      description: "description1",
-      creator: { displayName: "displayName1", id: "1" },
-      options: [
-        { optionId: "1", value: "option1", votes: [] },
-        { optionId: "2", value: "option2", votes: [] }
-      ]
-    },
-    {
-      pollId: "2",
-      pollName: "pollName2",
-      creator: { displayName: "displayName2", id: "2" },
-      description: "description2",
-      options: [
-        { optionId: "1", value: "option1", votes: [] },
-        { optionId: "2", value: "option2", votes: [] }
-      ]
-    }
-  ];
-  expect(polls).toMatchObject(expectedPolls);
+  expect(polls).toMatchObject([expectedResults[0], expectedResults[1]]);
   expect(polls[0].pollId).toBeTruthy();
 });
 
@@ -61,9 +62,10 @@ test("Creates and then returns new poll", async () => {
     options: ["option1", "option2"],
     pollName: "pollNamePOST"
   };
-  const expectedResponse = {
-    creatorId: "1",
+  const expectedResponse: PollResponse = {
     description: "descriptionPOST",
+    creator: { displayName: "displayName1", id: "1" },
+    pollId: "3",
     options: [
       { optionId: "1", value: "option1", votes: [] },
       { optionId: "2", value: "option2", votes: [] }
@@ -78,14 +80,12 @@ test("Creates and then returns new poll", async () => {
   const postResponse = JSON.parse(payload.text).poll;
   // console.log(payload);
   expect(postResponse).toMatchObject(expectedResponse);
-  expect(postResponse).toMatchObject(db.getPoll({ pollName: "pollNamePOST" }));
 });
 
 test("Returns a specific poll identified with pollId", async () => {
   const response = await request(app).get("/api/polls/2");
   const responsePoll: StoredPoll = response.body.poll;
-  const dbPoll: StoredPoll = db.getPoll({ pollId: "2" });
-  expect(responsePoll).toMatchObject(dbPoll);
+  expect(responsePoll).toMatchObject(expectedResults[1]);
 });
 
 test("Voting endpoint is working", async () => {
@@ -107,6 +107,7 @@ test("Voting endpoint is working", async () => {
     .set("Accept", "application/json")
     .expect(200);
   postResponse = JSON.parse(response.text).poll;
+  expect(postResponse).toMatchObject(expectedResults[1]);
   expect(postResponse.options[0].votes).toEqual([]);
   expect(postResponse.options[1].votes).toEqual([]);
 });

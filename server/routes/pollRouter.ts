@@ -43,7 +43,7 @@ pollRouter
   .post((req, res, next) => {
     try {
       const newPoll = req.body;
-      const poll = db.insertPoll(newPoll);
+      const poll = getResponsePoll(db.insertPoll(newPoll));
       res.status(201);
       res.json({ poll });
     } catch (error) {
@@ -54,7 +54,7 @@ pollRouter
 pollRouter
   .route("/:pollId")
   .get((req, res) => {
-    const poll = db.getPoll({ pollId: req.params.pollId });
+    const poll = getResponsePoll(db.getPoll({ pollId: req.params.pollId }));
     res.json({ poll });
   })
   .post((req, res, next) => {
