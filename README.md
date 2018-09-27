@@ -54,9 +54,9 @@ Create a new poll.
 
 ```
 {
-	creatorName: "Roy",
+	creatorId: "1234",
 	pollName: "What furniture?",
-	description: "We are going to get some new furniture inthe office!",
+	description: "We are going to get some new furniture in the office!",
 	options: [
 		"bean bags",
 		"rocking chairs",
@@ -75,12 +75,12 @@ Json:
 {
 	poll: {
 		pollId: "1",
-		creatorName: "Roy",
+		creator: {displayName: "Roy", id: "1234"},
 		pollName: "What furniture?",
 		description: "We are going to get some new furniture in the office!",
 		options: [
-			{optionId: 1, value: "bean bags", votes: ["Jed", "James"]},
-			{optionId: 2, value: "rocking chairs", votes: ["Roy"]},
+			{optionId: 1, value: "bean bags", votes: []},
+			{optionId: 2, value: "rocking chairs", votes: []},
 			{optionId: 3, value: "garden bench", votes: []},
 		]
 	}

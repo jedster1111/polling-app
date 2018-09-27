@@ -1,6 +1,6 @@
 import * as React from "react";
 import styled from "styled-components";
-import { Poll } from "../../../../server/models/database";
+import { Poll } from "../../types";
 import FetchPollsButton from "./FetchPollsButton";
 import PollCard from "./PollCard";
 

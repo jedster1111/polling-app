@@ -1,18 +1,27 @@
-import { PollInput } from "./models/database";
+import { PollInput, StoredUser } from "./types";
 
-const inputData: PollInput[] = [
+export const inputPollData: PollInput[] = [
   {
-    creatorName: "creatorName1",
+    creatorId: "1",
     description: "description1",
     options: ["option1", "option2"],
     pollName: "pollName1"
   },
   {
-    creatorName: "creatorName2",
+    creatorId: "2",
     description: "description2",
     options: ["option1", "option2"],
     pollName: "pollName2"
   }
 ];
 
-export default inputData;
+export const inputUserData: StoredUser[] = [
+  {
+    id: "1",
+    displayName: "displayName1"
+  },
+  {
+    id: "2",
+    displayName: "displayName2"
+  }
+];

@@ -1,12 +1,43 @@
 import express = require("express");
-import db, { UpdatePollInput } from "../models/database";
+import db from "../models/database";
+import {
+  PollResponse,
+  PollResponseOption,
+  PollResponseUser,
+  StoredPoll,
+  UpdatePollInput,
+  VoteInput
+} from "../types";
 
 const pollRouter = express.Router();
-
+const getResponsePolls = (storedPolls: StoredPoll[]): PollResponse[] => {
+  return storedPolls.map<PollResponse>(storedPoll => {
+    return getResponsePoll(storedPoll);
+  });
+};
+const getResponsePoll = (storedPoll: StoredPoll): PollResponse => {
+  const { creatorId, options, description, pollName, pollId } = storedPoll;
+  const creator = db.getUser(creatorId);
+  return {
+    description,
+    pollId,
+    pollName,
+    creator: { displayName: creator.displayName, id: creator.id },
+    options: options.map<PollResponseOption>(option => ({
+      optionId: option.optionId,
+      value: option.value,
+      votes: option.votes.map<PollResponseUser>(userId => {
+        const user = db.getUser(userId);
+        return { id: userId, displayName: user.displayName };
+      })
+    }))
+  };
+};
 pollRouter
   .route("/")
   .get((req, res) => {
-    const polls = db.getPolls();
+    const storedPolls = db.getPolls();
+    const polls = getResponsePolls(storedPolls);
     res.json({ polls });
   })
   .post((req, res, next) => {
@@ -30,7 +61,7 @@ pollRouter
     try {
       const updatedPollInput: UpdatePollInput = req.body;
       const pollId = req.params.pollId;
-      const poll = db.updatePoll(pollId, updatedPollInput);
+      const poll = getResponsePoll(db.updatePoll(pollId, updatedPollInput));
       res.status(200).json({ poll });
     } catch (error) {
       next(error);
@@ -45,8 +76,8 @@ pollRouter
 pollRouter.route("/:pollId/vote").post((req, res, next) => {
   try {
     const pollId: string = req.params.pollId;
-    const voteInput = req.body;
-    const poll = db.votePoll(pollId, voteInput);
+    const voteInput: VoteInput = req.body;
+    const poll = getResponsePoll(db.votePoll(pollId, voteInput));
     res.status(200).json({ poll });
   } catch (error) {
     next(error);

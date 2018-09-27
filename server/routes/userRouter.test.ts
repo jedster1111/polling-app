@@ -1,6 +1,7 @@
 import request = require("supertest");
 import app from "../app";
-import db, { User } from "../models/database";
+import db from "../models/database";
+import { StoredUser } from "../types";
 
 describe("Testing user api endpoints", () => {
   const result = [
@@ -17,7 +18,7 @@ describe("Testing user api endpoints", () => {
   describe("/api/users", () => {
     test("Can get all user data", async () => {
       const response = await request(app).get("/api/users");
-      const users: User[] = response.body.users;
+      const users: StoredUser[] = response.body.users;
       expect(users).toMatchObject(result);
     });
     test("Can get specific user data with params", async () => {

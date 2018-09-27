@@ -20,7 +20,7 @@ const ensureAuthenticated: express.Handler = (req, res, next) => {
   if (req.isAuthenticated()) {
     return next();
   }
-  res.send("Not logged in!");
+  res.redirect("/");
 };
 const errorHandlerMiddleware: ErrorRequestHandler = (
   err: ErrorWithStatusCode,
