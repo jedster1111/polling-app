@@ -12,6 +12,10 @@ userRouter.route("/").get((req, res) => {
     : db.getAllUsers();
   res.json({ users });
 });
+userRouter.route("/me").get((req, res) => {
+  const data = req.user;
+  res.json({ data });
+});
 userRouter.route("/:id").get((req, res) => {
   const id = req.params.id;
   const user = db.getUser(id);
