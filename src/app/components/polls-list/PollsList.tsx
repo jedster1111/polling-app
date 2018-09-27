@@ -6,7 +6,7 @@ import PollCard from "./PollCard";
 
 export interface PollsListProps {
   polls: Poll[];
-  username: string;
+  userId: string;
   fetchPolls: () => any;
   handleVote: (pollId: string, optionId: string) => void;
   toggleShowResults: (pollId: string) => any;
@@ -36,16 +36,16 @@ const PollsList = (props: PollsListProps) => (
     {props.polls.length > 0 ? (
       props.polls.map(poll => (
         <PollCard
-          {...poll}
+          poll={poll}
           handleVote={props.handleVote}
           key={poll.pollId}
-          username={props.username}
+          userId={props.userId}
           showResults={props.showResults[poll.pollId]}
           toggleShowResults={props.toggleShowResults}
           deletePoll={props.deletePoll}
           showEditForm={props.showEditForm}
           isEditing={props.editingPoll === poll.pollId}
-          isOwner={props.username === poll.creatorName}
+          isOwner={props.userId === poll.creator.id}
         />
       ))
     ) : (

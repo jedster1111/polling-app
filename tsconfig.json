@@ -14,10 +14,10 @@
     "noImplicitAny": true
   },
   "include": [
-    "./src/**/**/*",
-    "./server/**/*",
-    "./stories/**/**/*",
-    ".storybook/addons.js",
+    "src/**/*.ts",
+    "server/**/*.ts",
+    "stories/**/*.ts",
+    "storybook/addons.js",
     "tests/firstTest.js",
     "tests/navBar.test.ts",
     "tests/createPollForm.test.ts",
