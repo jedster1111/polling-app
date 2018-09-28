@@ -21,7 +21,8 @@
     "tests/firstTest.js",
     "tests/navBar.test.ts",
     "tests/createPollForm.test.ts",
-    "secret/github.ts"
+    "secret/github.ts",
+    "src/app/components/login-form/AuthButtons.tsx"
   ],
   "exclude": ["tsDist", "src/coverage", "./src/**/*.test.ts"]
 }

@@ -1,12 +1,12 @@
 import * as React from "react";
 import styled from "styled-components";
-import { Option } from "../../../../server/models/database";
+import { PollOption } from "../../types";
 import OptionDisplay from "./OptionDisplay";
 
 interface OptionsListProps {
   pollId: string;
-  username: string;
-  options: Option[];
+  userId: string;
+  options: PollOption[];
   handleVote: (pollId: string, optionId: string) => void;
 }
 
@@ -24,7 +24,7 @@ const OptionsList = (props: OptionsListProps) => {
   return (
     <OptionsContainer>
       {props.options.map(option => {
-        const hasVotedOn = option.votes.indexOf(props.username) !== -1;
+        const hasVotedOn = option.votes.indexOf(props.userId) !== -1;
         return (
           <OptionDisplay
             key={option.optionId}

@@ -214,12 +214,12 @@ class Database {
   removeAllPollsData(): void {
     this.polls.clear();
   }
-  resetCount(): void {
+  resetPollsCount(): void {
     this.pollsCount = 0;
   }
   resetPolls(): void {
     this.removeAllPollsData();
-    this.resetCount();
+    this.resetPollsCount();
   }
   getUser(userId: string): StoredUser {
     return this.users.findOne({ id: userId });

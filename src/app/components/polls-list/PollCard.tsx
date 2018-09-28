@@ -1,6 +1,6 @@
 import * as React from "react";
 import styled from "styled-components";
-import { Poll } from "../../types";
+import { Poll, User } from "../../types";
 import OptionButton from "../create-poll-form/AddRemoveOptionButton";
 import ConnectedPollFormContainer from "../create-poll-form/PollFormContainer";
 import OptionsList from "./OptionsList";
@@ -9,7 +9,7 @@ import ResultsList from "./ResultsList";
 
 export interface PollCardProps {
   poll: Poll;
-  userId: string;
+  creator: User;
   handleVote: (pollId: string, optionId: string) => void;
   deletePoll: (pollId: string) => void;
   toggleShowResults: (pollId: string) => void;
@@ -57,7 +57,7 @@ const PollCard = (props: PollCardProps) => (
         handleVote={props.handleVote}
         pollId={props.poll.pollId}
         options={props.poll.options}
-        username={props.userId}
+        userId={props.creator.id}
       />
     </InnerContainer>
     {props.isEditing &&

@@ -1,12 +1,12 @@
 import * as React from "react";
 import styled from "styled-components";
-import { Poll } from "../../types";
+import { Poll, User } from "../../types";
 import FetchPollsButton from "./FetchPollsButton";
 import PollCard from "./PollCard";
 
 export interface PollsListProps {
   polls: Poll[];
-  userId: string;
+  creator: User;
   fetchPolls: () => any;
   handleVote: (pollId: string, optionId: string) => void;
   toggleShowResults: (pollId: string) => any;
@@ -39,13 +39,13 @@ const PollsList = (props: PollsListProps) => (
           poll={poll}
           handleVote={props.handleVote}
           key={poll.pollId}
-          userId={props.userId}
+          creator={props.creator}
           showResults={props.showResults[poll.pollId]}
           toggleShowResults={props.toggleShowResults}
           deletePoll={props.deletePoll}
           showEditForm={props.showEditForm}
           isEditing={props.editingPoll === poll.pollId}
-          isOwner={props.userId === poll.creator.id}
+          isOwner={props.creator.id === poll.creator.id}
         />
       ))
     ) : (
