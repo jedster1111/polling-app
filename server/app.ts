@@ -74,7 +74,11 @@ app.use(
   session({
     secret: secrets.secret,
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    cookie: {
+      secure: true,
+      httpOnly: true
+    }
   })
 );
 // app.use(morgan("combined"));
