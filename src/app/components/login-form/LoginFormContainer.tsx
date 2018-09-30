@@ -7,4 +7,9 @@ interface LoginFormContainerProps {
   handleLogout: () => void;
 }
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+  login,
+  logout
+};
+
+

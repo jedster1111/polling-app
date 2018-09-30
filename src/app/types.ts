@@ -14,6 +14,13 @@ export interface PollOption {
   value: string;
   votes: User[];
 }
+export interface PollInput {
+  // [key: string]: string | string[];
+  creatorId: string;
+  pollName: string;
+  description: string;
+  options: string[];
+}
 export interface UpdatePollInput {
   pollName?: string;
   description?: string;

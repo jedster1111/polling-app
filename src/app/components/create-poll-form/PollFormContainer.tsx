@@ -1,6 +1,5 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { PollInput, UpdatePollInput } from "../../../../server/models/database";
 import {
   addPollOption,
   changeFormData,
@@ -11,6 +10,7 @@ import {
   updatePoll
 } from "../../actions/actions";
 import { InitialState, PollFormInput } from "../../reducers/rootReducer";
+import { PollInput, UpdatePollInput } from "../../types";
 import PollForm from "./PollForm";
 
 interface PollFormContainerProps {
