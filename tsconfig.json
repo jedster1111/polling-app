@@ -3,7 +3,7 @@
     "outDir": "./build/",
     "sourceMap": true,
     "allowJs": true,
-    "strict": true,
+    "strict": false,
     "target": "es6",
     "jsx": "react",
     "module": "commonjs",

@@ -1,4 +1,5 @@
 import express = require("express");
+import { passport } from "../app";
 import db from "../models/database";
 
 const userRouter = express.Router();
@@ -12,14 +13,11 @@ userRouter.route("/").get((req, res) => {
     : db.getAllUsers();
   res.json({ users });
 });
-userRouter.route("/me").get((req, res) => {
-  if (req.isAuthenticated()) {
-    const user = req.user;
-    res.json({ user });
-  } else {
-    res.json("Not logged in");
-  }
-});
+userRouter
+  .route("/me")
+  .get(passport.authenticate(["jwt"], { session: false }), (req, res) => {
+    res.send(`Secure response from ${JSON.stringify(req.user)}`);
+  });
 userRouter.route("/:id").get((req, res) => {
   const id = req.params.id;
   const user = db.getUser(id);

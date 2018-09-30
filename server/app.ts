@@ -1,11 +1,13 @@
 import bodyParser = require("body-parser");
 import { ErrorRequestHandler } from "express";
 import express = require("express");
-import session = require("express-session");
-// import morgan = require("morgan");
-export import passport = require("passport");
+import jwt = require("jsonwebtoken");
 import passport = require("passport");
+export import passport = require("passport");
 import { Strategy } from "passport-github2";
+// import session = require("express-session");
+// import morgan = require("morgan");
+import passportJwt = require("passport-jwt");
 import path = require("path");
 import * as secrets from "../secret/github";
 import db from "./models/database";
@@ -36,7 +38,31 @@ const errorHandlerMiddleware: ErrorRequestHandler = (
   res.status(err.statusCode).json({ error: err.message });
   console.log("Carrying on then...");
 };
-
+const jwtOptions: passportJwt.StrategyOptions = {
+  jwtFromRequest: passportJwt.ExtractJwt.fromAuthHeader(),
+  secretOrKey: secrets.secret
+  // issuer: config.get('authentication.token.issuer'),
+  // audience: config.get('authentication.token.audience')
+};
+const generateAccessToken = (userId: string) => {
+  const expiresIn = "1 hour";
+  const secret = secrets.secret;
+  const token = jwt.sign({}, secret, {
+    expiresIn,
+    subject: userId
+  });
+  return token;
+};
+passport.use(
+  new passportJwt.Strategy(jwtOptions, (payload, done) => {
+    const user = db.getUser(payload.sub);
+    if (user) {
+      return done(null, user, payload);
+    } else {
+      return done(new Error("No user found"));
+    }
+  })
+);
 passport.use(
   new Strategy(
     {
@@ -70,20 +96,20 @@ passport.deserializeUser<any, string>((id, done) => {
 
 const app = express();
 
-app.use(
-  session({
-    secret: secrets.secret,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      secure: true,
-      httpOnly: true
-    }
-  })
-);
+// app.use(
+//   session({
+//     secret: secrets.secret,
+//     resave: false,
+//     saveUninitialized: false,
+//     cookie: {
+//       secure: true,
+//       httpOnly: true
+//     }
+//   })
+// );
 // app.use(morgan("combined"));
 app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.session());
 app.use(express.static(path.resolve("dist")));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -93,13 +119,16 @@ app.use("/api/users", userRouter);
 
 app.get(
   "/auth/github",
-  passport.authenticate("github", { scope: ["user:email"] })
+  passport.authenticate("github", { scope: ["user:email"], session: false })
 );
 app.get(
   "/auth/github/callback",
-  passport.authenticate("github", { failureRedirect: "/login" }),
+  passport.authenticate("github", {
+    session: false
+  }),
   (req, res) => {
-    res.redirect("/");
+    const token = generateAccessToken(req.user.id);
+    res.send({ token });
   }
 );
 app.get("/auth/logout", (req, res) => {
