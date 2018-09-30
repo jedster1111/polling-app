@@ -56,4 +56,10 @@ describe("Testing user api endpoints", () => {
       expect(user).toBeNull();
     });
   });
+  describe("/api/users/me", () => {
+    test("Request with no auth results in 401", async () => {
+      const response = await request(app).get("/api/users/me");
+      expect(response.status).toBe(401);
+    });
+  });
 });

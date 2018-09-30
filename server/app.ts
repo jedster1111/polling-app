@@ -39,7 +39,7 @@ const errorHandlerMiddleware: ErrorRequestHandler = (
   console.log("Carrying on then...");
 };
 const jwtOptions: passportJwt.StrategyOptions = {
-  jwtFromRequest: passportJwt.ExtractJwt.fromAuthHeader(),
+  jwtFromRequest: passportJwt.ExtractJwt.fromAuthHeaderWithScheme("jwt"),
   secretOrKey: secrets.secret
   // issuer: config.get('authentication.token.issuer'),
   // audience: config.get('authentication.token.audience')
