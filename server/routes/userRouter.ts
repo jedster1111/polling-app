@@ -16,7 +16,7 @@ userRouter.route("/").get((req, res) => {
 userRouter
   .route("/me")
   .get(passport.authenticate(["jwt"], { session: false }), (req, res) => {
-    res.send(`Secure response from ${JSON.stringify(req.user)}`);
+    res.send({ user: req.user });
   });
 userRouter.route("/:id").get((req, res) => {
   const id = req.params.id;

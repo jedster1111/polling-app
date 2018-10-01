@@ -1,6 +1,7 @@
 import bodyParser = require("body-parser");
-import { ErrorRequestHandler } from "express";
+import cookieParser = require("cookie-parser");
 import express = require("express");
+import { ErrorRequestHandler } from "express";
 import jwt = require("jsonwebtoken");
 import passport = require("passport");
 export import passport = require("passport");
@@ -18,12 +19,6 @@ import userRouter from "./routes/userRouter";
 export interface ErrorWithStatusCode extends Error {
   statusCode?: number;
 }
-const ensureAuthenticated: express.Handler = (req, res, next) => {
-  if (req.isAuthenticated()) {
-    return next();
-  }
-  res.redirect("/");
-};
 const errorHandlerMiddleware: ErrorRequestHandler = (
   err: ErrorWithStatusCode,
   req,
@@ -38,8 +33,15 @@ const errorHandlerMiddleware: ErrorRequestHandler = (
   res.status(err.statusCode).json({ error: err.message });
   console.log("Carrying on then...");
 };
+const jwtCookieExtractor = (req: express.Request) => {
+  let token = null;
+  if (req && req.cookies) {
+    token = req.cookies.jwt;
+  }
+  return token;
+};
 const jwtOptions: passportJwt.StrategyOptions = {
-  jwtFromRequest: passportJwt.ExtractJwt.fromAuthHeaderWithScheme("jwt"),
+  jwtFromRequest: jwtCookieExtractor,
   secretOrKey: secrets.secret
   // issuer: config.get('authentication.token.issuer'),
   // audience: config.get('authentication.token.audience')
@@ -108,11 +110,12 @@ const app = express();
 //   })
 // );
 // app.use(morgan("combined"));
-app.use(passport.initialize());
 // app.use(passport.session());
+app.use(cookieParser());
 app.use(express.static(path.resolve("dist")));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(passport.initialize());
 
 app.use("/api/polls", pollRouter);
 app.use("/api/users", userRouter);
@@ -128,6 +131,7 @@ app.get(
   }),
   (req, res) => {
     const token = generateAccessToken(req.user.id);
+    res.cookie("jwt", token, { httpOnly: true });
     res.send({ token });
   }
 );
@@ -135,18 +139,26 @@ app.get("/auth/logout", (req, res) => {
   req.logout();
   res
     .status(200)
-    .clearCookie("connect.sid")
+    .clearCookie("jwt")
     .send("Logged out!");
 
   // req.logOut();
   // res.redirect("/");
 });
-app.get("/auth", ensureAuthenticated, (req, res, next) => {
-  res.status(200).json({ userData: req.user });
-});
-app.get("/test", ensureAuthenticated, (req, res, next) => {
-  res.json({ status: "Logged in!", user: req.user });
-});
+app.get(
+  "/auth",
+  passport.authenticate("jwt", { session: false }),
+  (req, res, next) => {
+    res.status(200).json({ userData: req.user });
+  }
+);
+app.get(
+  "/test",
+  passport.authenticate("jwt", { session: false }),
+  (req, res, next) => {
+    res.json({ status: "Logged in!", user: req.user });
+  }
+);
 
 app.use(errorHandlerMiddleware);
 
