@@ -3,6 +3,9 @@ import app from "../app";
 import db from "../models/database";
 import { StoredUser } from "../types";
 
+const jedCookie =
+  "jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJPbmxpbmUgSldUIEJ1aWxkZXIiLCJpYXQiOjE1MzgzODk1OTYsImV4cCI6MTU2OTkyNTU5NiwiYXVkIjoid3d3LmV4YW1wbGUuY29tIiwic3ViIjoiMjUyOTE5NzQifQ.xbGUMYxS4JegEAg3r5VqcyaFsQqZ0wBBnE5So5sOElc";
+
 describe("Testing user api endpoints", () => {
   const result = [
     { id: "1", displayName: "Jed Thompson" },
@@ -60,6 +63,14 @@ describe("Testing user api endpoints", () => {
     test("Request with no auth results in 401", async () => {
       const response = await request(app).get("/api/users/me");
       expect(response.status).toBe(401);
+    });
+    test("Can send a request with jwt in cookie and get user data", async () => {
+      db.insertUser({ id: "25291974", displayName: "Jed" });
+      const response = await request(app)
+        .get("/api/users/me")
+        .set("Cookie", jedCookie);
+      expect(response.body.user.id).toBe("25291974");
+      expect(response.body.user.displayName).toBe("Jed");
     });
   });
 });
