@@ -44,14 +44,14 @@ describe("Test Database class", () => {
 
   describe("When updating the poll, can it", () => {
     test("update the description", () => {
-      db.updatePoll("1", {
+      db.updatePoll("creatorId1", "1", {
         description: "descriptionChanged"
       });
       const changedPoll = db.getPoll({ pollId: "1" });
       expect(changedPoll.description).toBe("descriptionChanged");
     });
     test("update a single option", () => {
-      db.updatePoll("1", {
+      db.updatePoll("creatorId1", "1", {
         pollName: "changed",
         options: [{ optionId: "1", value: "changed" }]
       });
@@ -60,7 +60,7 @@ describe("Test Database class", () => {
       expect(changedPoll.options[0].value).toBe("changed");
     });
     test("update multiple options", () => {
-      db.updatePoll("1", {
+      db.updatePoll("creatorId1", "1", {
         pollName: "changed",
         options: [
           { optionId: "1", value: "changed" },
@@ -87,7 +87,7 @@ describe("Test Database class", () => {
     // });
     test("throw error if poll is not found", () => {
       expect(() =>
-        db.updatePoll("10", {
+        db.updatePoll("creatorId1", "10", {
           pollName: "changed",
           options: [
             { optionId: "1", value: "changed" },
@@ -97,7 +97,10 @@ describe("Test Database class", () => {
       ).toThrow("Poll with Id 10 could not be found");
     });
     test("updating pollname or description with empty string doesn't replace value", () => {
-      const poll = db.updatePoll("1", { pollName: "", description: "" });
+      const poll = db.updatePoll("creatorId1", "1", {
+        pollName: "",
+        description: ""
+      });
       expect(poll.pollName).toBe("pollName1");
       expect(poll.description).toBe("description1");
     });
@@ -108,7 +111,7 @@ describe("Test Database class", () => {
     expect(result).toEqual([]);
   });
   test("Database can remove a poll by Id", () => {
-    db.removePollById("1");
+    db.removePollById("creatorId1", "1");
     expect(db.getPoll({ pollId: "1" })).toBeNull();
   });
   test("Database votePoll succesfully votes for an option", () => {

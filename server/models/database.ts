@@ -126,10 +126,21 @@ class Database {
     this.pollsCount++;
     return newPoll;
   }
-  updatePoll(pollId: string, updatePollInput: UpdatePollInput): StoredPoll {
+  updatePoll(
+    userId: string,
+    pollId: string,
+    updatePollInput: UpdatePollInput
+  ): StoredPoll {
     const poll = this.getPoll({ pollId });
     if (poll === null) {
       throw new Error(`Poll with Id ${pollId} could not be found`);
+    }
+    if (poll.creatorId !== userId) {
+      const error = new Error(
+        `Can't edit a poll that you didn't create!`
+      ) as ErrorWithStatusCode;
+      error.statusCode = 401;
+      throw error;
     }
     const updateKeys = Object.keys(updatePollInput) as Array<
       keyof UpdatePollInput
@@ -208,8 +219,18 @@ class Database {
    * Removes a poll with the specified Id.
    * @param pollId Id of the poll you wish to remove from the database.
    */
-  removePollById(pollId: string): void {
-    this.polls.findAndRemove({ pollId });
+  removePollById(userId: string, pollId: string): void {
+    // this.polls.findAndRemove({ pollId });
+    const poll: StoredPoll = this.polls.findOne({ pollId });
+    if (poll.creatorId !== userId) {
+      const error = new Error(
+        `Can't delete a poll that you didn't create!`
+      ) as ErrorWithStatusCode;
+      error.statusCode = 401;
+      throw error;
+    } else {
+      this.polls.remove(poll);
+    }
   }
   removeAllPollsData(): void {
     this.polls.clear();

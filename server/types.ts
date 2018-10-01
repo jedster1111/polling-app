@@ -1,5 +1,11 @@
+export interface CreatePollRequest {
+  pollName: string;
+  description: string;
+  options: string[];
+}
+
 /**
- * The format the database is expecting polls to be in.
+ * The format the database is expecting polls' data to be in.
  * @param options should be an array of the text values for the options.
  */
 export interface PollInput {
@@ -54,6 +60,9 @@ export interface UpdatePollInput {
 export interface UpdatePollInputOption {
   optionId: string;
   value: string;
+}
+export interface VoteInputRequest {
+  optionId: string;
 }
 export interface VoteInput {
   voterId: string;
