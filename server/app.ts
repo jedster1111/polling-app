@@ -141,9 +141,6 @@ app.get("/auth/logout", (req, res) => {
     .status(200)
     .clearCookie("jwt")
     .send("Logged out!");
-
-  // req.logOut();
-  // res.redirect("/");
 });
 app.get(
   "/auth",
