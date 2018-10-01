@@ -1,4 +1,5 @@
 import express = require("express");
+import { passport } from "../app";
 import db from "../models/database";
 import {
   PollResponse,
@@ -33,6 +34,7 @@ const getResponsePoll = (storedPoll: StoredPoll): PollResponse => {
     }))
   };
 };
+
 pollRouter
   .route("/")
   .get((req, res) => {
@@ -40,16 +42,19 @@ pollRouter
     const polls = getResponsePolls(storedPolls);
     res.json({ polls });
   })
-  .post((req, res, next) => {
-    try {
-      const newPoll = req.body;
-      const poll = getResponsePoll(db.insertPoll(newPoll));
-      res.status(201);
-      res.json({ poll });
-    } catch (error) {
-      next(error);
+  .post(
+    passport.authenticate(["jwt"], { session: false }),
+    (req, res, next) => {
+      try {
+        const newPoll = req.body;
+        const poll = getResponsePoll(db.insertPoll(newPoll));
+        res.status(201);
+        res.json({ poll });
+      } catch (error) {
+        next(error);
+      }
     }
-  });
+  );
 
 pollRouter
   .route("/:pollId")
@@ -57,31 +62,39 @@ pollRouter
     const poll = getResponsePoll(db.getPoll({ pollId: req.params.pollId }));
     res.json({ poll });
   })
-  .post((req, res, next) => {
-    try {
-      const updatedPollInput: UpdatePollInput = req.body;
-      const pollId = req.params.pollId;
-      const poll = getResponsePoll(db.updatePoll(pollId, updatedPollInput));
-      res.status(200).json({ poll });
-    } catch (error) {
-      next(error);
+  .post(
+    passport.authenticate(["jwt"], { session: false }),
+    (req, res, next) => {
+      try {
+        const updatedPollInput: UpdatePollInput = req.body;
+        const pollId = req.params.pollId;
+        const poll = getResponsePoll(db.updatePoll(pollId, updatedPollInput));
+        res.status(200).json({ poll });
+      } catch (error) {
+        next(error);
+      }
     }
-  })
-  .delete((req, res) => {
+  )
+  .delete(passport.authenticate(["jwt"], { session: false }), (req, res) => {
     const pollId = req.params.pollId;
     db.removePollById(pollId);
     res.status(200).send();
   });
 
-pollRouter.route("/:pollId/vote").post((req, res, next) => {
-  try {
-    const pollId: string = req.params.pollId;
-    const voteInput: VoteInput = req.body;
-    const poll = getResponsePoll(db.votePoll(pollId, voteInput));
-    res.status(200).json({ poll });
-  } catch (error) {
-    next(error);
-  }
-});
+pollRouter
+  .route("/:pollId/vote")
+  .post(
+    passport.authenticate(["jwt"], { session: false }),
+    (req, res, next) => {
+      try {
+        const pollId: string = req.params.pollId;
+        const voteInput: VoteInput = req.body;
+        const poll = getResponsePoll(db.votePoll(pollId, voteInput));
+        res.status(200).json({ poll });
+      } catch (error) {
+        next(error);
+      }
+    }
+  );
 
 export default pollRouter;
