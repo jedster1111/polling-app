@@ -1,9 +1,12 @@
+import { ConnectedRouter } from "connected-react-router";
 import * as React from "react";
 import { connect } from "react-redux";
 import { Route, Switch } from "react-router";
 import styled from "styled-components";
 import { getUserData } from "../actions/actions";
 import { InitialState } from "../reducers/rootReducer";
+import { history } from "../store/index";
+import { User } from "../types";
 import NavBar from "./NavBar";
 import CreatePollPage from "./pages/CreatePollPage";
 import HomePage from "./pages/HomePage";
@@ -36,29 +39,51 @@ const StyledPageContainer = styled.div<{}>`
 
 interface PollingAppProps {
   getUserData: () => any;
+  userData: User;
+  isLoggedIn: boolean;
 }
 const mapDispatchToProps = {
   getUserData
 };
 const mapStateToProps = (state: InitialState) => ({
-  userState: state.userState
+  userData: state.userState.data,
+  isLoggedIn: state.userState.isLoggedIn
 });
 class PollingApp extends React.Component<PollingAppProps> {
   componentDidMount() {
     this.props.getUserData();
   }
+  handleLogin = () => {
+    window.location.href = "/auth/github";
+  };
+  handleLogout = () => {
+    window.location.href = "/auth/logout";
+  };
   render() {
     return (
-      <StyledContainer>
-        <NavBar />
-        <Switch>
-          <StyledPageContainer>
-            <Route exact path="/" component={HomePage} />
-            <Route path="/create-poll" component={CreatePollPage} />
-            <Route path="/list-polls" component={PollsListPage} />
-          </StyledPageContainer>
-        </Switch>
-      </StyledContainer>
+      <ConnectedRouter history={history}>
+        <StyledContainer>
+          <NavBar />
+          <Switch>
+            <StyledPageContainer>
+              <Route
+                exact
+                path="/"
+                render={() => (
+                  <HomePage
+                    handleLogin={this.handleLogin}
+                    handleLogout={this.handleLogout}
+                    isLoggedIn={this.props.isLoggedIn}
+                    userData={this.props.userData}
+                  />
+                )}
+              />
+              <Route path="/create-poll" component={CreatePollPage} />
+              <Route path="/list-polls" component={PollsListPage} />
+            </StyledPageContainer>
+          </Switch>
+        </StyledContainer>
+      </ConnectedRouter>
     );
   }
 }
@@ -66,5 +91,4 @@ const ConnectedPollingApp = connect(
   mapStateToProps,
   mapDispatchToProps
 )(PollingApp);
-
 export default ConnectedPollingApp;

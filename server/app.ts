@@ -132,7 +132,7 @@ app.get(
   (req, res) => {
     const token = generateAccessToken(req.user.id);
     res.cookie("jwt", token, { httpOnly: true });
-    res.send({ token });
+    res.redirect("/");
   }
 );
 app.get("/auth/logout", (req, res) => {
@@ -140,7 +140,7 @@ app.get("/auth/logout", (req, res) => {
   res
     .status(200)
     .clearCookie("jwt")
-    .send("Logged out!");
+    .redirect("/");
 });
 app.get(
   "/auth",

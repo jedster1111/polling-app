@@ -6,12 +6,7 @@ import webpackConfig = require("../webpack.config.js");
 import app from "./app";
 
 const compiler = webpack(webpackConfig as any);
-app.use(
-  webpackDevMiddleware(compiler, {
-    logLevel: "warn",
-    publicPath: webpackConfig.output.path
-  })
-);
+app.use(webpackDevMiddleware(compiler));
 app.use(webpackHotMiddleware(compiler));
 app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "..", "dist", "index.html"));

@@ -1,10 +1,9 @@
 import * as React from "react";
-import { Fragment } from "react";
 import styled from "styled-components";
 import { User } from "../../types";
 import { LoginButton, LogoutButton } from "./AuthButtons";
 
-interface LoginFormProps {
+export interface LoginFormProps {
   isLoggedIn: boolean;
   userData: User;
   handleLogin: () => void;
@@ -44,3 +43,5 @@ const LoginForm = (props: LoginFormProps) => {
     </LoginFormContainer>
   );
 };
+
+export default LoginForm;
