@@ -9,6 +9,7 @@ import {
   UpdatePollInput,
   VoteInput
 } from "../types";
+import jedCookie from "./jedCookie";
 
 const expectedResults: PollResponse[] = [
   {
@@ -42,6 +43,7 @@ beforeEach(() => {
   inputUserData.forEach(userInput =>
     db.insertUser(Object.assign({}, userInput))
   );
+  db.insertUser({ id: "25291974", displayName: "Jed" });
 });
 afterEach(() => {
   db.resetPolls();
@@ -76,6 +78,7 @@ test("Creates and then returns new poll", async () => {
     .post("/api/polls")
     .send(inputData)
     .set("Accept", "application/json")
+    .set("Cookie", jedCookie)
     .expect(201);
   const postResponse = JSON.parse(payload.text).poll;
   // console.log(payload);
@@ -94,6 +97,7 @@ test("Voting endpoint is working", async () => {
     .post("/api/polls/2/vote")
     .send(voteInput)
     .set("Accept", "application/json")
+    .set("Cookie", jedCookie)
     .expect(200);
   let postResponse: PollResponse = JSON.parse(response.text).poll;
   expect(postResponse.options[0].votes).toEqual([
@@ -105,6 +109,7 @@ test("Voting endpoint is working", async () => {
     .post("/api/polls/2/vote")
     .send(voteInput)
     .set("Accept", "application/json")
+    .set("Cookie", jedCookie)
     .expect(200);
   postResponse = JSON.parse(response.text).poll;
   expect(postResponse).toMatchObject(expectedResults[1]);
@@ -138,11 +143,13 @@ test("Changes the properties of a poll and doesn't lose votes", async () => {
     .post("/api/polls/1/vote")
     .send({ voterId: "1", optionId: "2" })
     .set("Accept", "application/json")
+    .set("Cookie", jedCookie)
     .expect(200);
   const payload = await request(app)
     .post("/api/polls/1")
     .send(inputData)
     .set("Accept", "application/json")
+    .set("Cookie", jedCookie)
     .expect(200);
   const postResponse = JSON.parse(payload.text).poll;
   expect(postResponse).toMatchObject(expectedResponse);
@@ -151,6 +158,7 @@ test("Poll with Id 1 is removed", async () => {
   expect(db.getPoll({ pollId: "1" }).description).toBe("description1");
   await request(app)
     .delete("/api/polls/1")
+    .set("Cookie", jedCookie)
     .expect(200);
   expect(db.getPoll({ pollId: 1 })).toBeNull();
 });

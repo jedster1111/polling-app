@@ -2,9 +2,7 @@ import request = require("supertest");
 import app from "../app";
 import db from "../models/database";
 import { StoredUser } from "../types";
-
-const jedCookie =
-  "jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJPbmxpbmUgSldUIEJ1aWxkZXIiLCJpYXQiOjE1MzgzODk1OTYsImV4cCI6MTU2OTkyNTU5NiwiYXVkIjoid3d3LmV4YW1wbGUuY29tIiwic3ViIjoiMjUyOTE5NzQifQ.xbGUMYxS4JegEAg3r5VqcyaFsQqZ0wBBnE5So5sOElc";
+import jedCookie from "./jedCookie";
 
 describe("Testing user api endpoints", () => {
   const result = [
