@@ -24,7 +24,8 @@ const OptionsList = (props: OptionsListProps) => {
   return (
     <OptionsContainer>
       {props.options.map(option => {
-        const hasVotedOn = option.votes.indexOf(props.userId) !== -1;
+        const hasVotedOn =
+          option.votes.findIndex(vote => props.userId === vote.id) !== -1;
         return (
           <OptionDisplay
             key={option.optionId}

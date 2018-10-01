@@ -1,9 +1,9 @@
 import * as React from "react";
 import styled from "styled-components";
-import { Option } from "../../../../server/models/database";
+import { PollOption } from "../../types";
 
 interface ResultsColumnProps {
-  option: Option;
+  option: PollOption;
 }
 
 const ResultsColumnContainer = styled.div<{}>`
@@ -29,7 +29,7 @@ const ResultsColumn = (props: ResultsColumnProps) => {
     <ResultsColumnContainer>
       <TitleText>{props.option.value + voteText}</TitleText>
       {props.option.votes.map(voter => (
-        <VoterText key={voter}>{voter}</VoterText>
+        <VoterText key={voter.id}>{voter.displayName}</VoterText>
       ))}
     </ResultsColumnContainer>
   );

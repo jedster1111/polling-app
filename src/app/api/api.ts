@@ -1,5 +1,5 @@
 import axios from "axios";
-import { PollInput, UpdatePollInput } from "../../../server/models/database";
+import { PollInput, UpdatePollInput } from "../types";
 
 export function getPolls() {
   return axios.get(`/api/polls`);

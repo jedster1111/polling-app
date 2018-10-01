@@ -9,7 +9,7 @@ const compiler = webpack(webpackConfig as any);
 app.use(
   webpackDevMiddleware(compiler, {
     logLevel: "warn",
-    publicPath: webpackConfig.output.publicPath
+    publicPath: webpackConfig.output.path
   })
 );
 app.use(webpackHotMiddleware(compiler));

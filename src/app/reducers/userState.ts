@@ -1,5 +1,5 @@
 import { AnyAction, Reducer } from "redux";
-import * as actionTypes from "../actions/action-types";
+// import * as actionTypes from "../actions/action-types";
 import { initialState, UserState } from "./rootReducer";
 
 const userStateReducer: Reducer = (
@@ -7,14 +7,14 @@ const userStateReducer: Reducer = (
   action: AnyAction
 ): UserState => {
   switch (action.type) {
-    case actionTypes.SAVE_USER_FORM_DATA:
-      return {
-        ...userState,
-        data: {
-          ...userState.data,
-          name: action.payload.name
-        }
-      };
+    // case actionTypes.SAVE_USER_FORM_DATA:
+    //   return {
+    //     ...userState,
+    //     data: {
+    //       ...userState.data,
+    //       name: action.payload.name
+    //     }
+    //   };
     default:
       return userState;
   }

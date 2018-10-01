@@ -1,10 +1,10 @@
 import * as React from "react";
 import styled from "styled-components";
-import { Option } from "../../../../server/models/database";
+import { PollOption } from "../../types";
 import ResultsColumn from "./ResultsColumn";
 
 interface ResultsListProps {
-  options: Option[];
+  options: PollOption[];
 }
 
 const ResultsListContainer = styled.div<{}>`
@@ -15,7 +15,7 @@ const ResultsListContainer = styled.div<{}>`
   flex: 0;
 `;
 
-const sortOptions = (options: Option[]) => {
+const sortOptions = (options: PollOption[]) => {
   return [...options].sort((a, b) => b.votes.length - a.votes.length);
 };
 

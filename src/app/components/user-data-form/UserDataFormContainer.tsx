@@ -30,7 +30,7 @@ const mapStateToProps = (state: InitialState) => {
       name: state.userFormState.data.name
     },
     confirmedValues: {
-      name: state.userState.data.name
+      name: state.userState.data.displayName
     },
     isChangingName: state.userFormState.isChangingName
   };

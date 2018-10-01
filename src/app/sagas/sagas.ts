@@ -1,8 +1,8 @@
 import { AnyAction } from "redux";
 import { all, call, put, takeLatest } from "redux-saga/effects";
-import { Poll } from "../../../server/models/database";
 import * as actionTypes from "../actions/action-types";
 import * as api from "../api/api";
+import { Poll } from "../types";
 
 // function fetchPolls() {
 //   return axios.get("http://localhost:8000/api/polls");

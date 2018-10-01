@@ -1,10 +1,6 @@
 import { Action, ActionCreator } from "redux";
-import {
-  Poll,
-  PollInput,
-  UpdatePollInput
-} from "../../../server/models/database";
 import { UserDataFormValues } from "../components/user-data-form/UserDataForm";
+import { Poll, PollInput, UpdatePollInput } from "../types";
 import * as actionTypes from "./action-types";
 
 export const fetchPolls: ActionCreator<Action> = () => ({
