@@ -93,3 +93,6 @@ export const updatePoll: ActionCreator<Action> = (
   type: actionTypes.UPDATE_POLL_LOADING,
   payload: { pollId, updatePollInput }
 });
+export const getUserData: ActionCreator<Action> = () => ({
+  type: actionTypes.GET_USER_DATA_LOADING
+});

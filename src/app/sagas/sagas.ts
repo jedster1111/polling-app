@@ -1,3 +1,4 @@
+import { AxiosResponse } from "axios";
 import { AnyAction } from "redux";
 import { all, call, put, takeLatest } from "redux-saga/effects";
 import * as actionTypes from "../actions/action-types";
@@ -88,6 +89,27 @@ function* updatePoll(action: AnyAction) {
     });
   }
 }
+function* getUserData(action: AnyAction) {
+  try {
+    const response: AxiosResponse = yield call(api.getUserData);
+    const user = response.data.user;
+    if (response.status === 200) {
+      yield put({
+        type: actionTypes.GET_USER_DATA_SUCCESS,
+        payload: { user }
+      });
+    } else if (response.status === 401) {
+      yield put({
+        type: actionTypes.GET_USER_DATA_NOT_LOGGED_IN
+      });
+    }
+  } catch (error) {
+    yield put({
+      type: actionTypes.GET_USER_DATA_ERROR,
+      payload: { error }
+    });
+  }
+}
 
 export function* mainSaga() {
   yield all([
@@ -96,6 +118,7 @@ export function* mainSaga() {
     takeLatest(actionTypes.VOTE_OPTION_LOADING, voteOption),
     takeLatest(actionTypes.TOGGLE_SHOW_RESULTS_LOADING, toggleShowResults),
     takeLatest(actionTypes.DELETE_POLL_LOADING, deletePoll),
-    takeLatest(actionTypes.UPDATE_POLL_LOADING, updatePoll)
+    takeLatest(actionTypes.UPDATE_POLL_LOADING, updatePoll),
+    takeLatest(actionTypes.GET_USER_DATA_LOADING, getUserData)
   ]);
 }

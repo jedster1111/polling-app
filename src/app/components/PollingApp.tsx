@@ -1,6 +1,9 @@
 import * as React from "react";
+import { connect } from "react-redux";
 import { Route, Switch } from "react-router";
 import styled from "styled-components";
+import { getUserData } from "../actions/actions";
+import { InitialState } from "../reducers/rootReducer";
 import NavBar from "./NavBar";
 import CreatePollPage from "./pages/CreatePollPage";
 import HomePage from "./pages/HomePage";
@@ -31,7 +34,19 @@ const StyledPageContainer = styled.div<{}>`
   /* padding: 5px 5px; */
 `;
 
-class PollingApp extends React.Component {
+interface PollingAppProps {
+  getUserData: () => any;
+}
+const mapDispatchToProps = {
+  getUserData
+};
+const mapStateToProps = (state: InitialState) => ({
+  userState: state.userState
+});
+class PollingApp extends React.Component<PollingAppProps> {
+  componentDidMount() {
+    this.props.getUserData();
+  }
   render() {
     return (
       <StyledContainer>
@@ -47,5 +62,9 @@ class PollingApp extends React.Component {
     );
   }
 }
+const ConnectedPollingApp = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(PollingApp);
 
-export default PollingApp;
+export default ConnectedPollingApp;

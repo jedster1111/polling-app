@@ -30,3 +30,6 @@ export function updatePoll(payload: {
 }) {
   return axios.post(`/api/polls/${payload.pollId}`, payload.updatePollInput);
 }
+export function getUserData() {
+  return axios.get(`/api/users/me`);
+}

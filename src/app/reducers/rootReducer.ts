@@ -27,6 +27,9 @@ export interface UserState {
     id: string;
     displayName: string;
   };
+  isLoading: boolean;
+  error: Error | null;
+  isLoggedIn: boolean;
 }
 export interface UserFormState {
   data: {
@@ -75,7 +78,10 @@ export const initialState: InitialState = {
     data: {
       id: "",
       displayName: ""
-    }
+    },
+    isLoading: false,
+    error: null,
+    isLoggedIn: false
   },
   userFormState: {
     data: {
