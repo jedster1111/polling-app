@@ -51,12 +51,12 @@ export const discardUserFormData: ActionCreator<Action> = (
   payload: { confirmedValues }
 });
 export const voteOption: ActionCreator<Action> = (
-  userId: string,
+  voterId: string,
   pollId: string,
   optionId: string
 ) => ({
   type: actionTypes.VOTE_OPTION_LOADING,
-  payload: { userId, pollId, optionId }
+  payload: { voterId, pollId, optionId }
 });
 export const toggleShowResults: ActionCreator<Action> = (pollId: string) => ({
   type: actionTypes.TOGGLE_SHOW_RESULTS_LOADING,
