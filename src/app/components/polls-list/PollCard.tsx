@@ -1,6 +1,6 @@
 import * as React from "react";
 import styled from "styled-components";
-import { Option } from "../../../../server/models/database";
+import { Poll, User } from "../../types";
 import OptionButton from "../create-poll-form/AddRemoveOptionButton";
 import ConnectedPollFormContainer from "../create-poll-form/PollFormContainer";
 import OptionsList from "./OptionsList";
@@ -8,12 +8,8 @@ import PollInfo from "./PollInfo";
 import ResultsList from "./ResultsList";
 
 export interface PollCardProps {
-  creatorName: string;
-  pollName: string;
-  description: string;
-  pollId: string;
-  options: Option[];
-  username: string;
+  poll: Poll;
+  creator: User;
   handleVote: (pollId: string, optionId: string) => void;
   deletePoll: (pollId: string) => void;
   toggleShowResults: (pollId: string) => void;
@@ -46,31 +42,34 @@ const InnerContainer = styled.div`
 `;
 
 const PollCard = (props: PollCardProps) => (
-  <PollContainer id={`poll${props.pollId}`}>
+  <PollContainer id={`poll${props.poll.pollId}`}>
     <InnerContainer>
       <PollInfo
-        pollId={props.pollId}
-        creatorName={props.creatorName}
-        description={props.description}
-        pollName={props.pollName}
+        pollId={props.poll.pollId}
+        creatorName={props.poll.creator.displayName}
+        description={props.poll.description}
+        pollName={props.poll.pollName}
         toggleShowResults={props.toggleShowResults}
         showEditForm={props.showEditForm}
         isOwner={props.isOwner}
       />
       <OptionsList
         handleVote={props.handleVote}
-        pollId={props.pollId}
-        options={props.options}
-        username={props.username}
+        pollId={props.poll.pollId}
+        options={props.poll.options}
+        userId={props.creator.id}
       />
     </InnerContainer>
     {props.isEditing &&
       props.isOwner && (
-        <ConnectedPollFormContainer edit pollId={props.pollId} />
+        <ConnectedPollFormContainer edit pollId={props.poll.pollId} />
       )}
-    {props.showResults && <ResultsList options={props.options} />}
+    {props.showResults && <ResultsList options={props.poll.options} />}
     {props.isOwner && (
-      <DeletePollButton remove onClick={() => props.deletePoll(props.pollId)} />
+      <DeletePollButton
+        remove
+        onClick={() => props.deletePoll(props.poll.pollId)}
+      />
     )}
   </PollContainer>
 );

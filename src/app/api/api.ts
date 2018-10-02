@@ -1,5 +1,5 @@
 import axios from "axios";
-import { PollInput, UpdatePollInput } from "../../../server/models/database";
+import { PollInput, UpdatePollInput } from "../types";
 
 export function getPolls() {
   return axios.get(`/api/polls`);
@@ -7,14 +7,9 @@ export function getPolls() {
 export function createPoll(payload: { poll: PollInput }) {
   return axios.post(`/api/polls`, payload);
 }
-export function voteOption(payload: {
-  voterName: string;
-  optionId: string;
-  pollId: string;
-}) {
-  const { pollId, optionId, voterName } = payload;
+export function voteOption(payload: { optionId: string; pollId: string }) {
+  const { pollId, optionId } = payload;
   return axios.post(`/api/polls/${pollId}/vote`, {
-    voterName,
     optionId
   });
 }
@@ -29,4 +24,7 @@ export function updatePoll(payload: {
   updatePollInput: UpdatePollInput;
 }) {
   return axios.post(`/api/polls/${payload.pollId}`, payload.updatePollInput);
+}
+export function getUserData() {
+  return axios.get(`/api/users/me`);
 }

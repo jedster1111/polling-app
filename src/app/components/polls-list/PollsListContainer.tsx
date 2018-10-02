@@ -1,6 +1,5 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { Poll } from "../../../../server/models/database";
 import {
   deletePoll,
   discardUpdatePollForm,
@@ -10,13 +9,14 @@ import {
   voteOption
 } from "../../actions/actions";
 import { InitialState } from "../../reducers/rootReducer";
+import { Poll, User } from "../../types";
 import PollsList from "./PollsList";
 
 interface PollsListContainerProps {
-  creatorName: string;
+  creator: User;
   polls: Poll[];
   fetchPolls: () => any;
-  voteOption: (name: string, pollId: string, optionId: string) => any;
+  voteOption: (pollId: string, optionId: string) => any;
   toggleShowResults: (pollId: string) => void;
   deletePoll: (pollId: string) => any;
   showResults: { [pollId: string]: boolean };
@@ -28,7 +28,7 @@ interface PollsListContainerProps {
 const mapStateToProps = (state: InitialState) => {
   return {
     polls: [...state.pollsState.polls].reverse(),
-    creatorName: state.userState.data.name,
+    creator: state.userState.data,
     showResults: state.pollsState.showResults,
     editingPoll: state.pollsState.editingPoll
   };
@@ -50,7 +50,7 @@ class PollsListContainer extends React.Component<PollsListContainerProps> {
     this.props.fetchPolls();
   }
   handleVote = (pollId: string, optionId: string) => {
-    this.props.voteOption(this.props.creatorName, pollId, optionId);
+    this.props.voteOption(pollId, optionId);
   };
   handleToggleShowResults = (pollId: string) => {
     this.props.toggleShowResults(pollId);
@@ -71,7 +71,7 @@ class PollsListContainer extends React.Component<PollsListContainerProps> {
         polls={this.props.polls}
         fetchPolls={this.props.fetchPolls}
         handleVote={this.handleVote}
-        username={this.props.creatorName}
+        creator={this.props.creator}
         showResults={this.props.showResults}
         toggleShowResults={this.handleToggleShowResults}
         deletePoll={this.props.deletePoll}

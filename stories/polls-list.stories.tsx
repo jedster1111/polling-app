@@ -4,7 +4,6 @@ import { storiesOf } from "@storybook/react";
 import * as React from "react";
 import { Fragment } from "react";
 import { MemoryRouter } from "react-router";
-import { Option, Poll } from "../server/models/database";
 import FetchPollsButton from "../src/app/components/polls-list/FetchPollsButton";
 import OptionDisplay from "../src/app/components/polls-list/OptionDisplay";
 import OptionsList from "../src/app/components/polls-list/OptionsList";
@@ -14,25 +13,32 @@ import PollsList from "../src/app/components/polls-list/PollsList";
 import ResultsColumn from "../src/app/components/polls-list/ResultsColumn";
 import ResultsList from "../src/app/components/polls-list/ResultsList";
 import ViewResultsButton from "../src/app/components/polls-list/ViewResultsButton";
+import { Poll, PollOption } from "../src/app/types";
 
-const createOptions: (n: number) => Option[] = n => {
-  const options = new Array(n).fill(null).map((option, index) => ({
-    optionId: `${index + 1}`,
-    value: `Bean bags, green and black asdfasdf asdfasd asdffdas asdfasdf`,
-    votes: ["Jed", "John", "James"]
-  }));
+const createOptions = (n: number) => {
+  const options: PollOption[] = new Array(n)
+    .fill(null)
+    .map<PollOption>((option, index) => ({
+      optionId: `${index + 1}`,
+      value: `Bean bags, green and black asdfasdf asdfasd asdffdas asdfasdf`,
+      votes: [
+        { id: "1", displayName: "Jed" },
+        { id: "2", displayName: "Joy" },
+        { id: "3", displayName: "Josh" }
+      ]
+    }));
   return options;
 };
 const examplePolls: Poll[] = [
   {
-    creatorName: "Jed",
     description: "What furniture do people want for the office?",
     options: createOptions(4),
     pollId: "1",
-    pollName: "New Furniture?"
+    pollName: "New Furniture?",
+    creator: { id: "1", displayName: "Jed" }
   },
   {
-    creatorName: "John",
+    creator: { id: "2", displayName: "Joy" },
     description: "What to get for lunch today?",
     options: createOptions(6),
     pollId: "2",
@@ -65,19 +71,19 @@ storiesOf("Polls List", module)
     return (
       <Fragment>
         <OptionsList
-          username="Jed"
+          userId="1"
           pollId="1"
           handleVote={action("clicked vote")}
           options={createOptions(3)}
         />
         <OptionsList
-          username="Jed"
+          userId="2"
           pollId="1"
           handleVote={action("clicked vote")}
           options={createOptions(5)}
         />
         <OptionsList
-          username="Jed"
+          userId="3"
           pollId="1"
           handleVote={action("clicked vote")}
           options={createOptions(9)}
@@ -103,19 +109,19 @@ storiesOf("Polls List", module)
     return (
       <Fragment>
         <PollCard
+          creator={{ displayName: "Jed", id: "1" }}
           toggleShowResults={action("toggled show")}
-          {...examplePolls[0]}
+          poll={examplePolls[0]}
           handleVote={action("clicked option")}
-          username="Jed"
           showResults={false}
           deletePoll={action("deleted poll")}
           showEditForm={action("showEditForm")}
         />
         <PollCard
+          creator={{ displayName: "Jed", id: "1" }}
           toggleShowResults={action("toggled show")}
-          {...examplePolls[0]}
+          poll={examplePolls[0]}
           handleVote={action("clicked option")}
-          username="Jed"
           showResults={false}
           deletePoll={action("deleted poll")}
           showEditForm={action("showEditForm")}
@@ -130,7 +136,7 @@ storiesOf("Polls List", module)
         polls={[examplePolls[0], examplePolls[1]]}
         fetchPolls={action("fetching polls")}
         handleVote={action("clicked option")}
-        username="Jed"
+        creator={{ displayName: "Jed", id: "123" }}
         showResults={{ 1: false, 2: true }}
         deletePoll={action("deleted poll")}
         showEditForm={action("showEditForm")}
@@ -140,7 +146,14 @@ storiesOf("Polls List", module)
   })
   .add("Result Column", () => (
     <ResultsColumn
-      option={{ votes: ["Jed", "John"], value: "Bean bags", optionId: "1" }}
+      option={{
+        votes: [
+          { displayName: "Jed", id: "1" },
+          { displayName: "Joy", id: "2" }
+        ],
+        value: "Bean bags",
+        optionId: "1"
+      }}
     />
   ))
   .add("Result List", () => <ResultsList options={createOptions(4)} />);

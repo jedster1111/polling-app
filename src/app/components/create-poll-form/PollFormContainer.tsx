@@ -1,6 +1,5 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { PollInput, UpdatePollInput } from "../../../../server/models/database";
 import {
   addPollOption,
   changeFormData,
@@ -11,11 +10,15 @@ import {
   updatePoll
 } from "../../actions/actions";
 import { InitialState, PollFormInput } from "../../reducers/rootReducer";
+import { PollInput, UpdatePollInput } from "../../types";
 import PollForm from "./PollForm";
 
 interface PollFormContainerProps {
   pollFormData: PollFormInput;
-  creatorName: string;
+  creator: {
+    id: string;
+    displayName: string;
+  };
   submitPoll: (poll: PollInput) => any;
   handleChange: (fieldId: string, value: string) => any;
   discardPoll: () => any;
@@ -42,7 +45,7 @@ const mapDispatchToProps = {
 const mapStateToProps = (state: InitialState, ownProps: OwnProps) => {
   return {
     pollFormData: state.pollForm.data,
-    creatorName: state.userState.data.name
+    creator: state.userState.data
   };
 };
 
@@ -53,7 +56,6 @@ class PollFormContainer extends React.Component<
     e.preventDefault();
     if (!this.props.edit) {
       const inputData: PollInput = {
-        creatorName: this.props.creatorName,
         description: this.props.pollFormData.description,
         pollName: this.props.pollFormData.pollName,
         options: this.props.pollFormData.options.map(option => option.value)

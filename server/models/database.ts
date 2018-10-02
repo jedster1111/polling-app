@@ -1,41 +1,19 @@
 import loki = require("lokijs");
 import { ErrorWithStatusCode } from "../app";
+import {
+  PollInput,
+  StoredPoll,
+  StoredPollOptions,
+  StoredUser,
+  UpdatePollInput,
+  UpdatePollInputOption,
+  VoteInput
+} from "../types";
 
-export interface PollInput {
-  [key: string]: string | string[];
-  creatorName: string;
-  pollName: string;
-  description: string;
-  options: string[];
-}
-export interface Poll {
-  [key: string]: string | Option[];
-  creatorName: string;
-  pollName: string;
-  description: string;
-  pollId: string;
-  options: Option[];
-}
-interface UpdateOptionInput {
-  optionId: string;
-  value: string;
-}
-export interface UpdatePollInput {
-  [key: string]: string | UpdateOptionInput[] | undefined;
-  creatorName?: string;
-  pollName?: string;
-  description?: string;
-  options?: UpdateOptionInput[];
-}
-export interface Option {
-  optionId: string;
-  value: string;
-  votes: string[];
-}
 class Database {
   static checkValidPollInput(pollInput: PollInput) {
-    const necessaryProperties = [
-      "creatorName",
+    const necessaryProperties: Array<keyof PollInput> = [
+      "creatorId",
       "description",
       "pollName",
       "options"
@@ -62,26 +40,28 @@ class Database {
       throw err;
     }
   }
+
   db = new loki("polling-app.db");
   polls = this.db.addCollection("polls");
+  users = this.db.addCollection("users");
   pollsCount = 0;
 
   /**
    * Gets current polls
    * @returns returns an array of polls
    */
-  getPolls(): Poll[] {
+  getPolls(): StoredPoll[] {
     return this.polls.find();
   }
-  getPoll(query: object): Poll {
-    return this.polls.findOne(query);
+  getPoll(pollId: string): StoredPoll {
+    return this.polls.findOne({ pollId });
   }
-  insertPoll(pollInput: PollInput): Poll {
+  insertPoll(pollInput: PollInput): StoredPoll {
     Database.checkValidPollInput(pollInput);
     const filteredOptions: string[] = pollInput.options.filter(
       option => option
     );
-    const newOptions: Option[] = filteredOptions.map(
+    const newOptions: StoredPollOptions[] = filteredOptions.map(
       (option: string, index: number) => {
         return {
           optionId: `${index + 1}`,
@@ -94,39 +74,54 @@ class Database {
       options: newOptions,
       pollId: `${this.pollsCount + 1}`
     });
-    const newPoll: Poll = this.polls.insert(cleanedPollInput);
+    const newPoll: StoredPoll = this.polls.insert(cleanedPollInput);
     this.pollsCount++;
     return newPoll;
   }
-  updatePoll(pollId: string, updatePollInput: UpdatePollInput): Poll {
-    const poll = this.getPoll({ pollId });
+  updatePoll(
+    userId: string,
+    pollId: string,
+    updatePollInput: UpdatePollInput
+  ): StoredPoll {
+    const poll = this.getPoll(pollId);
     if (poll === null) {
       throw new Error(`Poll with Id ${pollId} could not be found`);
     }
-    const updateKeys: string[] = Object.keys(updatePollInput);
-    updateKeys.forEach(key => {
+    if (poll.creatorId !== userId) {
+      const error = new Error(
+        `Can't edit a poll that you didn't create!`
+      ) as ErrorWithStatusCode;
+      error.statusCode = 401;
+      throw error;
+    }
+    const updateKeys = Object.keys(updatePollInput) as Array<
+      keyof UpdatePollInput
+    >;
+    updateKeys.forEach((key: keyof UpdatePollInput) => {
       if (key !== "options" && updatePollInput[key]) {
         poll[key] = updatePollInput[key] as string;
       } else if (key === "options") {
-        updatePollInput.options!.forEach((optionInput: UpdateOptionInput) => {
-          if (optionInput.optionId) {
-            const optionToUpdate = poll.options.find(
-              option => option.optionId === optionInput.optionId
-            );
-            if (optionToUpdate !== undefined) {
-              optionToUpdate.value = optionInput.value;
+        updatePollInput.options!.forEach(
+          (optionInput: UpdatePollInputOption) => {
+            if (optionInput.optionId) {
+              const optionToUpdate = poll.options.find(
+                option => option.optionId === optionInput.optionId
+              );
+              if (optionToUpdate !== undefined && optionInput.value) {
+                optionToUpdate.value = optionInput.value;
+              }
+            } else if (optionInput.value) {
+              poll.options.push({
+                optionId: `${parseInt(
+                  poll.options[poll.options.length - 1].optionId,
+                  10
+                ) + 1}`,
+                value: optionInput.value,
+                votes: []
+              });
             }
-          } else if (optionInput.value) {
-            poll.options.push({
-              optionId: `${parseInt(
-                poll.options[poll.options.length - 1].optionId,
-                10
-              ) + 1}`,
-              value: optionInput.value,
-              votes: []
-            });
           }
-        });
+        );
       }
     });
     // this.polls.update(poll);
@@ -138,33 +133,33 @@ class Database {
    * @param voteInput An object containing name of person voting and the Id of the option they're voting on
    * @returns Returns the poll that was updated
    */
-  votePoll(
-    pollId: string,
-    voteInput: { voterName: string; optionId: string }
-  ): Poll {
-    const poll: Poll = db.getPoll({ pollId });
+  votePoll(pollId: string, voteInput: VoteInput): StoredPoll {
+    const poll: StoredPoll = db.getPoll(pollId);
     const isValidVote =
       poll &&
       poll.options[
         poll.options.findIndex(option => option.optionId === voteInput.optionId)
       ] &&
-      voteInput.voterName;
+      voteInput.voterId;
     if (!isValidVote) {
       const err = new Error(
-        `Invalid vote input, either vote/poll doesn't exist or username is empty`
+        `Invalid vote input, either vote/poll doesn't exist
+        or username is empty. PollId: ${pollId}, OptionId: ${
+          voteInput.optionId
+        }, VoterId: ${voteInput.voterId}`
       ) as ErrorWithStatusCode;
       err.statusCode = 400;
       throw err;
     }
     for (const option of poll.options) {
       if (option.optionId === voteInput.optionId) {
-        const indexOfName: number = option.votes.findIndex(
-          vote => voteInput.voterName === vote
+        const indexOfId: number = option.votes.findIndex(
+          vote => voteInput.voterId === vote
         );
-        if (indexOfName !== -1) {
-          option.votes.splice(indexOfName, 1);
+        if (indexOfId !== -1) {
+          option.votes.splice(indexOfId, 1);
         } else {
-          option.votes.push(voteInput.voterName);
+          option.votes.push(voteInput.voterId);
         }
         // if you've found the needed option then break
         break;
@@ -176,18 +171,46 @@ class Database {
    * Removes a poll with the specified Id.
    * @param pollId Id of the poll you wish to remove from the database.
    */
-  removePollById(pollId: string): void {
-    this.polls.findAndRemove({ pollId });
+  removePoll(userId: string, pollId: string): void {
+    // this.polls.findAndRemove({ pollId });
+    const poll: StoredPoll = this.polls.findOne({ pollId });
+    if (poll.creatorId !== userId) {
+      const error = new Error(
+        `Can't delete a poll that you didn't create!`
+      ) as ErrorWithStatusCode;
+      error.statusCode = 401;
+      throw error;
+    } else {
+      this.polls.remove(poll);
+    }
   }
-  removeAllPollsData(): void {
+  resetPolls(): void {
+    this.removeAllPollsData();
+    this.resetPollsCount();
+  }
+  getUser(userId: string): StoredUser {
+    return this.users.findOne({ id: userId });
+  }
+  getUsers(userIds: string[]): StoredUser[] {
+    const users: StoredUser[] = userIds.map(userId =>
+      this.users.findOne({ id: userId })
+    );
+    return users;
+  }
+  getAllUsers(): StoredUser[] {
+    return this.users.find();
+  }
+  insertUser(userInput: any): StoredUser {
+    return this.users.insert(userInput);
+  }
+  resetUsers(): void {
+    this.users.clear();
+  }
+  private removeAllPollsData(): void {
     this.polls.clear();
   }
-  resetCount(): void {
+  private resetPollsCount(): void {
     this.pollsCount = 0;
-  }
-  reset(): void {
-    this.removeAllPollsData();
-    this.resetCount();
   }
 }
 

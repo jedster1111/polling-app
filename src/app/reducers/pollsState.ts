@@ -1,6 +1,6 @@
 import { AnyAction, Reducer } from "redux";
 import * as actionTypes from "../actions/action-types";
-import { Poll } from "./../../../server/models/database";
+import { Poll } from "../types";
 import { initialState, PollsState } from "./rootReducer";
 
 const pollsStateReducer: Reducer = (

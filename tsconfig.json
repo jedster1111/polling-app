@@ -1,24 +1,27 @@
 {
-    "compilerOptions": {
-        "outDir": "./build/",
-        "sourceMap": true,
-        "allowJs": true,
-        "strict" : true,
-        "target": "es6",
-        "jsx": "react",
-        "module": "commonjs",
-        "moduleResolution": "node",
-        "forceConsistentCasingInFileNames": true,
-        "noImplicitReturns": true,
-        "noUnusedLocals": true,
-        "noImplicitAny": true,
-    },
-    "include": [
-        "./src/**/**/*", "./server/**/*", "./stories/**/**/*", ".storybook/addons.js", "tests/firstTest.js", "tests/navBar.test.ts", "tests/createPollForm.test.ts"
-    ],
-    "exclude": [
-        "tsDist",
-        "src/coverage",
-        "./src/**/*.test.ts"
-    ]
+  "compilerOptions": {
+    "outDir": "./build/",
+    "sourceMap": true,
+    "allowJs": true,
+    "strict": true,
+    "target": "es6",
+    "jsx": "react",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "noImplicitAny": true
+  },
+  "include": [
+    "src/**/*.ts",
+    "server/**/*.ts",
+    "stories/**/*.ts",
+    "storybook/addons.js",
+    "tests/firstTest.js",
+    "tests/navBar.test.ts",
+    "tests/createPollForm.test.ts",
+    "secret/github.ts"
+  ],
+  "exclude": ["tsDist", "src/coverage", "./src/**/*.test.ts"]
 }

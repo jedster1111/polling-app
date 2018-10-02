@@ -1,10 +1,6 @@
 import { Action, ActionCreator } from "redux";
-import {
-  Poll,
-  PollInput,
-  UpdatePollInput
-} from "../../../server/models/database";
 import { UserDataFormValues } from "../components/user-data-form/UserDataForm";
+import { Poll, PollInput, UpdatePollInput } from "../types";
 import * as actionTypes from "./action-types";
 
 export const fetchPolls: ActionCreator<Action> = () => ({
@@ -55,12 +51,11 @@ export const discardUserFormData: ActionCreator<Action> = (
   payload: { confirmedValues }
 });
 export const voteOption: ActionCreator<Action> = (
-  voterName: string,
   pollId: string,
   optionId: string
 ) => ({
   type: actionTypes.VOTE_OPTION_LOADING,
-  payload: { voterName, pollId, optionId }
+  payload: { pollId, optionId }
 });
 export const toggleShowResults: ActionCreator<Action> = (pollId: string) => ({
   type: actionTypes.TOGGLE_SHOW_RESULTS_LOADING,
@@ -96,4 +91,7 @@ export const updatePoll: ActionCreator<Action> = (
 ) => ({
   type: actionTypes.UPDATE_POLL_LOADING,
   payload: { pollId, updatePollInput }
+});
+export const getUserData: ActionCreator<Action> = () => ({
+  type: actionTypes.GET_USER_DATA_LOADING
 });
