@@ -12,6 +12,7 @@ const generateUsers = (n: number) => {
 
 describe("Testing user related database methods:", () => {
   const numberOfUsers = 3;
+
   beforeEach(() => {
     const users = generateUsers(numberOfUsers);
     db.resetUsers();
@@ -20,6 +21,7 @@ describe("Testing user related database methods:", () => {
   afterEach(() => {
     db.resetUsers();
   });
+
   describe("Testing getUser and insertUser:", () => {
     test("Can I add a user?", () => {
       const user = db.insertUser(generateUsers(1)[0]);
@@ -30,6 +32,7 @@ describe("Testing user related database methods:", () => {
       expect(user).toMatchObject(generateUsers(1)[0]);
     });
   });
+
   describe("Testing getUsers:", () => {
     test("Can I get an array of users by ids?", () => {
       const ids = ["1", "2"];
@@ -37,12 +40,14 @@ describe("Testing user related database methods:", () => {
       expect(users).toMatchObject(generateUsers(2));
     });
   });
+
   describe("Testing getAllUsers", () => {
     test("Can I get all users?", () => {
       const users = db.getAllUsers();
       expect(users).toMatchObject(generateUsers(numberOfUsers));
     });
   });
+
   describe("Testing resetUsers:", () => {
     test("Can I remove all existing users?", () => {
       db.resetUsers();

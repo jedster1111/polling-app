@@ -42,6 +42,7 @@ describe("Testing poll related database methods:", () => {
   afterEach(() => {
     db.resetPolls();
   });
+
   describe("Testing insertPoll and getPoll:", () => {
     const expectedPoll = generateExpectedPolls(1)[0];
     expectedPoll.pollId = `${numberOfPolls + 1}`;
@@ -65,6 +66,7 @@ describe("Testing poll related database methods:", () => {
       expect(poll).toMatchObject(expectedPoll);
     });
   });
+
   describe("Testing getPolls:", () => {
     test("Can I get all the polls?", () => {
       const expectedPolls = generateExpectedPolls(numberOfPolls);
@@ -72,6 +74,7 @@ describe("Testing poll related database methods:", () => {
       expect(polls).toMatchObject(expectedPolls);
     });
   });
+
   describe("Testing updatePoll:", () => {
     test("Can I update a poll's name, option value and description?", () => {
       const expectedPoll = generateExpectedPolls(1)[0];
@@ -103,6 +106,7 @@ describe("Testing poll related database methods:", () => {
       expect(poll).toMatchObject(generateExpectedPolls(1)[0]);
     });
   });
+
   describe("Testing votePoll:", () => {
     test("Can I vote on a poll?", () => {
       const expectedPoll = generateExpectedPolls(1)[0];
@@ -111,6 +115,7 @@ describe("Testing poll related database methods:", () => {
       expect(poll).toMatchObject(expectedPoll);
     });
   });
+
   describe("Testing removePoll:", () => {
     test("Can I remove a poll?", () => {
       db.removePoll("1", "1");
