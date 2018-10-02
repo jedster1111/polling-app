@@ -16,7 +16,6 @@ export interface PollOption {
 }
 export interface PollInput {
   // [key: string]: string | string[];
-  creatorId: string;
   pollName: string;
   description: string;
   options: string[];

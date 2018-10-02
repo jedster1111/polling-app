@@ -56,7 +56,6 @@ class PollFormContainer extends React.Component<
     e.preventDefault();
     if (!this.props.edit) {
       const inputData: PollInput = {
-        creatorId: this.props.creator.id,
         description: this.props.pollFormData.description,
         pollName: this.props.pollFormData.pollName,
         options: this.props.pollFormData.options.map(option => option.value)

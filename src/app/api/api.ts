@@ -7,14 +7,9 @@ export function getPolls() {
 export function createPoll(payload: { poll: PollInput }) {
   return axios.post(`/api/polls`, payload);
 }
-export function voteOption(payload: {
-  voterId: string;
-  optionId: string;
-  pollId: string;
-}) {
-  const { pollId, optionId, voterId } = payload;
+export function voteOption(payload: { optionId: string; pollId: string }) {
+  const { pollId, optionId } = payload;
   return axios.post(`/api/polls/${pollId}/vote`, {
-    voterId,
     optionId
   });
 }
