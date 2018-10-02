@@ -3,7 +3,7 @@
 - To install dependencies run: `yarn install`
 - In order for the github authentication to work, you must
   - Follow [this tutorial](https://developer.github.com/apps/building-oauth-apps/creating-an-oauth-app/)
-    to create a github OAuth app.
+    to create a github OAuth app.  
     ![github OAuth example](http://puu.sh/BExqF/c1e010896b.png)
     - Homepage Url might be `http://127.0.0.1:8000` while developing locally
     - Authorization callback URL would then be
