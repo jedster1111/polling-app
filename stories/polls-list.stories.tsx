@@ -136,7 +136,7 @@ storiesOf("Polls List", module)
         polls={[examplePolls[0], examplePolls[1]]}
         fetchPolls={action("fetching polls")}
         handleVote={action("clicked option")}
-        creator={{ displayName: "Jed", id: "1" }}
+        creator={{ displayName: "Jed", id: "123" }}
         showResults={{ 1: false, 2: true }}
         deletePoll={action("deleted poll")}
         showEditForm={action("showEditForm")}
