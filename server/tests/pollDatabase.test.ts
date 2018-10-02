@@ -1,5 +1,5 @@
+import db from "../models/database";
 import { PollInput, StoredPoll } from "../types";
-import db from "./database";
 
 const numberOfPolls = 3;
 const generatePollInputs = (n: number) => {

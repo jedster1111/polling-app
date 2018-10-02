@@ -1,5 +1,5 @@
+import db from "../models/database";
 import { StoredUser } from "../types";
-import db from "./database";
 
 const generateUsers = (n: number) => {
   const users: StoredUser[] = [];
