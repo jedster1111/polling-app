@@ -3,7 +3,7 @@
 /tsDist
 /src/coverage
 /dist
-/secret
+/secret/github.ts
 
 # dependencies
 /node_modules
