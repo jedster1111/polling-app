@@ -10,54 +10,6 @@ import {
   VoteInput
 } from "../types";
 
-// export interface PollInput {
-//   [key: string]: string | string[];
-//   creatorId: string;
-//   pollName: string;
-//   description: string;
-//   options: string[];
-// }
-// export interface Poll {
-//   [key: string]: string | Option[];
-//   creatorId: string;
-//   pollName: string;
-//   description: string;
-//   pollId: string;
-//   options: Option[];
-// }
-// export interface PollResponse {
-//   creator: { name: string; id: string };
-//   pollName: string;
-//   description: string;
-//   pollId: string;
-//   options: OptionResponse[];
-// }
-// export interface User {
-//   displayName: string;
-//   id: string;
-//   emails?: Array<{ value: string }>;
-// }
-// interface UpdateOptionInput {
-//   optionId: string;
-//   value: string;
-// }
-// export interface UpdatePollInput {
-//   [key: string]: string | UpdateOptionInput[] | undefined;
-//   creatorName?: string;
-//   pollName?: string;
-//   description?: string;
-//   options?: UpdateOptionInput[];
-// }
-// export interface Option {
-//   optionId: string;
-//   value: string;
-//   votes: string[];
-// }
-// export interface OptionResponse {
-//   optionId: string;
-//   value: string;
-//   votes: User[];
-// }
 class Database {
   static checkValidPollInput(pollInput: PollInput) {
     const necessaryProperties: Array<keyof PollInput> = [
@@ -101,8 +53,8 @@ class Database {
   getPolls(): StoredPoll[] {
     return this.polls.find();
   }
-  getPoll(query: object): StoredPoll {
-    return this.polls.findOne(query);
+  getPoll(pollId: string): StoredPoll {
+    return this.polls.findOne({ pollId });
   }
   insertPoll(pollInput: PollInput): StoredPoll {
     Database.checkValidPollInput(pollInput);
@@ -131,7 +83,7 @@ class Database {
     pollId: string,
     updatePollInput: UpdatePollInput
   ): StoredPoll {
-    const poll = this.getPoll({ pollId });
+    const poll = this.getPoll(pollId);
     if (poll === null) {
       throw new Error(`Poll with Id ${pollId} could not be found`);
     }
@@ -155,7 +107,7 @@ class Database {
               const optionToUpdate = poll.options.find(
                 option => option.optionId === optionInput.optionId
               );
-              if (optionToUpdate !== undefined) {
+              if (optionToUpdate !== undefined && optionInput.value) {
                 optionToUpdate.value = optionInput.value;
               }
             } else if (optionInput.value) {
@@ -182,7 +134,7 @@ class Database {
    * @returns Returns the poll that was updated
    */
   votePoll(pollId: string, voteInput: VoteInput): StoredPoll {
-    const poll: StoredPoll = db.getPoll({ pollId });
+    const poll: StoredPoll = db.getPoll(pollId);
     const isValidVote =
       poll &&
       poll.options[
@@ -219,7 +171,7 @@ class Database {
    * Removes a poll with the specified Id.
    * @param pollId Id of the poll you wish to remove from the database.
    */
-  removePollById(userId: string, pollId: string): void {
+  removePoll(userId: string, pollId: string): void {
     // this.polls.findAndRemove({ pollId });
     const poll: StoredPoll = this.polls.findOne({ pollId });
     if (poll.creatorId !== userId) {
@@ -231,12 +183,6 @@ class Database {
     } else {
       this.polls.remove(poll);
     }
-  }
-  removeAllPollsData(): void {
-    this.polls.clear();
-  }
-  resetPollsCount(): void {
-    this.pollsCount = 0;
   }
   resetPolls(): void {
     this.removeAllPollsData();
@@ -259,6 +205,12 @@ class Database {
   }
   resetUsers(): void {
     this.users.clear();
+  }
+  private removeAllPollsData(): void {
+    this.polls.clear();
+  }
+  private resetPollsCount(): void {
+    this.pollsCount = 0;
   }
 }
 

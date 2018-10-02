@@ -168,12 +168,12 @@ test("Changes the properties of a poll and doesn't lose votes", async () => {
   expect(postResponse).toMatchObject(expectedResponse);
 });
 test("Poll with Id 3 is removed", async () => {
-  expect(db.getPoll({ pollId: "3" }).description).toBe("description3");
+  expect(db.getPoll("3").description).toBe("description3");
   await request(app)
     .delete("/api/polls/3")
     .set("Cookie", jedCookie)
     .expect(200);
-  expect(db.getPoll({ pollId: "3" })).toBeNull();
+  expect(db.getPoll("3")).toBeNull();
 });
 test("Can't edit poll that you didn't create", async () => {
   await request(app)

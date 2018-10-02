@@ -62,7 +62,7 @@ pollRouter
 pollRouter
   .route("/:pollId")
   .get((req, res) => {
-    const poll = getResponsePoll(db.getPoll({ pollId: req.params.pollId }));
+    const poll = getResponsePoll(db.getPoll(req.params.pollId));
     res.json({ poll });
   })
   .post(
@@ -84,7 +84,7 @@ pollRouter
   .delete(passport.authenticate(["jwt"], { session: false }), (req, res) => {
     const userId: string = req.user.id;
     const pollId = req.params.pollId;
-    db.removePollById(userId, pollId);
+    db.removePoll(userId, pollId);
     res.status(200).send();
   });
 
