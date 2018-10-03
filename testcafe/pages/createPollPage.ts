@@ -8,9 +8,10 @@ export default class CreatePollPage {
   createPollButton = Selector("#createButton");
   discardPollButton = Selector("#discardButton");
   removeOptionButtons = ReactSelector("OptionsInput")
-    .child("button")
+    .find("button")
     .withText("-");
-  AddOptionButton = ReactSelector("OptionsInput")
-    .child("button")
+  addOptionButton = ReactSelector("OptionsInput")
+    .find("button")
     .withText("+");
+  allInputs = ReactSelector("PollForm").find("input[type='text']");
 }

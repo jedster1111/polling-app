@@ -23,3 +23,14 @@ test("If I'm not logged in submitting the form should result in no changes", asy
     .expect(page.optionInputs.nth(1).value)
     .eql("option2");
 });
+
+test("When a poll is submitted succesfully, the text inputs should reset", async t => {
+  await t.useRole(githubTestUser);
+  await t
+    .typeText(page.pollNameInput, "pollName")
+    .typeText(page.descriptionInput, "description")
+    .typeText(page.optionInputs.nth(0), "option1")
+    .typeText(page.optionInputs.nth(1), "option2")
+    .pressKey("enter");
+  await t.expect(page.allInputs.value).eql("");
+});
