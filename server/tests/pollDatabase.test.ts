@@ -51,6 +51,7 @@ describe("Testing poll related database methods:", () => {
       const poll = db.insertPoll(insertPollData);
       expect(poll).toMatchObject(expectedPoll);
     });
+
     test("If I create a poll with options containing empty strings, do the empty strings get filtered?", () => {
       const pollInput = generatePollInputs(1)[0];
       pollInput.options.push("", "");
@@ -59,6 +60,7 @@ describe("Testing poll related database methods:", () => {
       result.pollId = `${numberOfPolls + 1}`;
       expect(poll).toMatchObject(result);
     });
+
     test("Can I get a poll by Id?", () => {
       const insertPollData = generatePollInputs(1)[0];
       db.insertPoll(insertPollData);
@@ -92,11 +94,13 @@ describe("Testing poll related database methods:", () => {
       });
       expect(poll).toMatchObject(expectedPoll);
     });
+
     test("If I try and update a non existent poll, is an error thrown?", () => {
       expect(() => {
         db.updatePoll("1", "10", { description: "changed" });
       }).toThrow("Poll with Id 10 could not be found");
     });
+
     test("If I try and update a poll using empty strings, are the changes ignored?", () => {
       const poll = db.updatePoll("1", "1", {
         pollName: "",

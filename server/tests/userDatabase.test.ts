@@ -27,6 +27,7 @@ describe("Testing user related database methods:", () => {
       const user = db.insertUser(generateUsers(1)[0]);
       expect(user).toMatchObject(generateUsers(1)[0]);
     });
+
     test("Can I get a user by Id?", () => {
       const user = db.getUser("1");
       expect(user).toMatchObject(generateUsers(1)[0]);
