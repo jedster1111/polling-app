@@ -23,6 +23,7 @@ const InfoContainer = styled.div<{}>`
   /* border: solid 1px black; */
   padding: 5px 8px;
 `;
+
 const TextContainer = styled.div<{}>`
   padding: 5px;
 `;
@@ -36,6 +37,14 @@ const ButtonsContainer = styled.div`
   flex-wrap: wrap;
   justify-content: center;
 `;
+
+InfoContainer.displayName = "InfoContainer";
+TextContainer.displayName = "TextContainer";
+PollTitleContainer.displayName = "PollTitleContainer";
+DescriptionContainer.displayName = "DescriptionContainer";
+CreatorContainer.displayName = "CreatorContainer";
+ButtonsContainer.displayName = "ButtonsContainer";
+
 const PollInfo = (props: PollInfoProps) => {
   return (
     <InfoContainer>
