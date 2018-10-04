@@ -57,9 +57,16 @@ test("I can delete a poll that I created", async t => {
   const pollInput = createPollInput();
   await createPoll(t, pollInput);
 
+  // TODO Check that all polls with my name have edit and delete buttons instead of just the most recent
   await t
     .expect(pollsListPage.pollDeleteButton(pollInput.pollName).exists)
     .ok("You should see a delete button")
     .expect(pollsListPage.pollEditButton(pollInput.pollName).exists)
     .ok("You should see an edit button");
+
+  await t.click(pollsListPage.pollDeleteButton(pollInput.pollName));
+
+  await t
+    .expect(pollsListPage.getPollCard(pollInput.pollName).exists)
+    .notOk("Poll should be deleted");
 });
