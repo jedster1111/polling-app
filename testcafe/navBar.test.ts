@@ -1,15 +1,20 @@
-import { Selector } from "testcafe";
+import { ReactSelector } from "testcafe-react-selectors";
+import Navbar from "./pages/navbar";
+const navbar = new Navbar();
 
-fixture("Does navbar navigate properly").page("localhost:8000");
+fixture("Can you navigate properly using the navbar?").page("localhost:8000");
 
-test("Can navigate to create poll form, enter values, navigate away, back again and values should be reset", async t => {
+test("Each nav link works", async t => {
   await t
-    .click("#createPollLink")
-    .expect(Selector("#createPollForm").exists)
-    .ok("The create poll form hasn't appeared!?!?")
-    .typeText("#pollName", "New Furniture?")
-    .click("#homeLink")
-    .click("#createPollLink")
-    .expect(Selector("#pollName").value)
-    .eql("");
+    .click(navbar.createPoll)
+    .expect(ReactSelector("CreatePollPage").exists)
+    .ok("Create poll page isn't showing");
+  await t
+    .click(navbar.pollsList)
+    .expect(ReactSelector("PollsListPage").exists)
+    .ok("Polls list page isn't showing");
+  await t
+    .click(navbar.home)
+    .expect(ReactSelector("HomePage").exists)
+    .ok("Home page isn't showing");
 });
