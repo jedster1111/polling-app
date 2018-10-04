@@ -42,7 +42,7 @@ const checkFormInputs = async (t: TestController, pollInput: PollInput) => {
 fixture("Testing the create a poll form").page(
   "http://127.0.0.1:8000/create-poll"
 );
-test.only("If I'm not logged in submitting the form should result in no changes", async t => {
+test("If I'm not logged in submitting the form should result in no changes", async t => {
   await fillFormInputs(t, defaultPollInput);
   await t.pressKey("enter");
   await checkFormInputs(t, defaultPollInput);
@@ -91,8 +91,8 @@ test("Clicking the discard button should reset all the fields", async t => {
   await t.expect(page.allInputs.value).eql("");
 });
 
-test.only("Should be able to add and remove options", async t => {
-  // Remove options
+test("Should be able to add and remove options", async t => {
+  // Remove options first 2 options
   await fillFormInputs(t, defaultPollInput);
   await t.click(page.removeOptionButton(0)).click(page.removeOptionButton(0));
   await t
@@ -105,11 +105,11 @@ test.only("Should be able to add and remove options", async t => {
 
   const newInputs = ["newOption1", "newOption2"];
 
+  // Add two new options and fill with text
   await t.click(page.addOptionButton).click(page.addOptionButton);
   await t
     .typeText(page.optionInputs.nth(2), newInputs[0])
     .typeText(page.optionInputs.nth(3), newInputs[1]);
-
   await checkFormInputs(t, {
     ...defaultPollInput,
     options: [
@@ -119,9 +119,14 @@ test.only("Should be able to add and remove options", async t => {
     ]
   });
 
-  // await t.click(page.removeOptionButton(0));
-  // await checkFormInputs(t, {
-  //   ...defaultPollInput,
-  //   options: [defaultPollInput[2], defaultPollInput[3], newInputs[1]]
-  // });
+  // Remove the third option
+  await t.click(page.removeOptionButton(2));
+  await checkFormInputs(t, {
+    ...defaultPollInput,
+    options: [
+      defaultPollInput.options[2],
+      defaultPollInput.options[3],
+      newInputs[1]
+    ]
+  });
 });
