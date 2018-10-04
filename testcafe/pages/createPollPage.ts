@@ -14,4 +14,6 @@ export default class CreatePollPage {
     .find("button")
     .withText("+");
   allInputs = ReactSelector("PollForm").find("input[type='text']");
+
+  removeOptionButton = (index: number) => this.removeOptionButtons.nth(index);
 }
