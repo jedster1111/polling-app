@@ -1,5 +1,5 @@
 import { ReactSelector } from "testcafe-react-selectors";
-import Navbar from "./pages/navbar";
+import Navbar from "../pages/navbar";
 const navbar = new Navbar();
 
 fixture("Can you navigate properly using the navbar?").page("localhost:8000");

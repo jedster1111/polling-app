@@ -1,6 +1,6 @@
-import { PollInput } from "../src/app/types";
-import Page from "./pages/createPollPage";
-import { githubTestUser } from "./roles/roles";
+import { PollInput } from "../../src/app/types";
+import Page from "../pages/createPollPage";
+import { githubTestUser } from "../roles/roles";
 
 const page = new Page();
 
@@ -10,49 +10,21 @@ const defaultPollInput: PollInput = {
   options: ["option1", "option2", "option3", "option4"]
 };
 
-const typeText = async (t: TestController, input: Selector, text: string) => {
-  text
-    ? await t.typeText(input, text, { replace: true })
-    : await t.selectText(input).pressKey("delete");
-};
-
-const fillFormInputs = async (t: TestController, pollInput: PollInput) => {
-  await typeText(t, page.pollNameInput, pollInput.pollName);
-  await typeText(t, page.descriptionInput, pollInput.description);
-  pollInput.options.forEach(
-    async (option, index) =>
-      await typeText(t, page.optionInputs.nth(index), option)
-  );
-};
-
-const checkInput = async (t: TestController, input: Selector, value: string) =>
-  await t.expect(input.value).eql(value);
-
-const checkFormInputs = async (t: TestController, pollInput: PollInput) => {
-  await checkInput(t, page.pollNameInput, pollInput.pollName);
-  await checkInput(t, page.descriptionInput, pollInput.description);
-  // need to use this as foreach loop doesn't hadnle async callbacks!
-  for (const [index, option] of pollInput.options.entries()) {
-    await checkInput(t, page.optionInputs.nth(index), option);
-  }
-};
-
-// const removeOption = (t: TestController, index: number) => await t.click(page.removeOptionButton(index))
-
 fixture("Testing the create a poll form").page(
   "http://127.0.0.1:8000/create-poll"
 );
-test("If I'm not logged in submitting the form should result in no changes", async t => {
-  await fillFormInputs(t, defaultPollInput);
-  await t.pressKey("enter");
-  await checkFormInputs(t, defaultPollInput);
-});
 
 test("When a poll is submitted succesfully, the text inputs should reset", async t => {
   await t.useRole(githubTestUser);
-  await fillFormInputs(t, defaultPollInput);
-  await t.pressKey("enter");
+  await page.fillFormInputs(t, defaultPollInput);
+  await t.click(page.createPollButton);
   await t.expect(page.allInputs.value).eql("");
+});
+
+test("If I'm not logged in submitting the form should result in no changes", async t => {
+  await page.fillFormInputs(t, defaultPollInput);
+  await t.click(page.createPollButton);
+  await page.checkFormInputs(t, defaultPollInput);
 });
 
 test("Trying to submit a poll with empty fields should result in no change", async t => {
@@ -66,34 +38,34 @@ test("Trying to submit a poll with empty fields should result in no change", asy
   // Empty options
   let pollInput = deepCopyPollInput();
   pollInput.options = [];
-  await fillFormInputs(t, pollInput);
-  await t.pressKey("enter");
-  await checkFormInputs(t, pollInput);
+  await page.fillFormInputs(t, pollInput);
+  await t.click(page.createPollButton);
+  await page.checkFormInputs(t, pollInput);
 
   // Empty pollName
   pollInput = deepCopyPollInput();
   pollInput.pollName = "";
-  await fillFormInputs(t, pollInput);
-  await t.pressKey("enter");
-  await checkFormInputs(t, pollInput);
+  await page.fillFormInputs(t, pollInput);
+  await t.click(page.createPollButton);
+  await page.checkFormInputs(t, pollInput);
 
   // Empty description
   pollInput = deepCopyPollInput();
   pollInput.description = "";
-  await fillFormInputs(t, pollInput);
-  await t.pressKey("enter");
-  await checkFormInputs(t, pollInput);
+  await page.fillFormInputs(t, pollInput);
+  await t.click(page.createPollButton);
+  await page.checkFormInputs(t, pollInput);
 });
 
 test("Clicking the discard button should reset all the fields", async t => {
-  await fillFormInputs(t, defaultPollInput);
+  await page.fillFormInputs(t, defaultPollInput);
   await t.click(page.discardPollButton);
   await t.expect(page.allInputs.value).eql("");
 });
 
 test("Should be able to add and remove options", async t => {
   // Remove options first 2 options
-  await fillFormInputs(t, defaultPollInput);
+  await page.fillFormInputs(t, defaultPollInput);
   await t.click(page.removeOptionButton(0)).click(page.removeOptionButton(0));
   await t
     .expect(page.removeOptionButtons.count)
@@ -110,7 +82,7 @@ test("Should be able to add and remove options", async t => {
   await t
     .typeText(page.optionInputs.nth(2), newInputs[0])
     .typeText(page.optionInputs.nth(3), newInputs[1]);
-  await checkFormInputs(t, {
+  await page.checkFormInputs(t, {
     ...defaultPollInput,
     options: [
       defaultPollInput.options[2],
@@ -121,7 +93,7 @@ test("Should be able to add and remove options", async t => {
 
   // Remove the third option
   await t.click(page.removeOptionButton(2));
-  await checkFormInputs(t, {
+  await page.checkFormInputs(t, {
     ...defaultPollInput,
     options: [
       defaultPollInput.options[2],

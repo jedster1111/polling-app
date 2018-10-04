@@ -38,6 +38,15 @@ const ButtonsContainer = styled.div`
   justify-content: center;
 `;
 
+const EditButton: React.SFC<{
+  showEditForm: (pollId: string) => void;
+  pollId: string;
+}> = props => (
+  <StyledButton onClick={() => props.showEditForm(props.pollId)}>
+    Edit
+  </StyledButton>
+);
+
 InfoContainer.displayName = "InfoContainer";
 TextContainer.displayName = "TextContainer";
 PollTitleContainer.displayName = "PollTitleContainer";
@@ -55,9 +64,7 @@ const PollInfo = (props: PollInfoProps) => {
       </TextContainer>
       <ButtonsContainer>
         {props.isOwner && (
-          <StyledButton onClick={() => props.showEditForm(props.pollId)}>
-            Edit
-          </StyledButton>
+          <EditButton pollId={props.pollId} showEditForm={props.showEditForm} />
         )}
         <ViewResultsButton
           value={"Results"}

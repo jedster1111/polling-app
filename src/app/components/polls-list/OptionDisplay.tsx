@@ -25,4 +25,6 @@ const OptionDisplay = styled.button<{ voted: boolean }>`
   }
 `;
 
+OptionDisplay.displayName = "OptionDisplay";
+
 export default OptionDisplay;
