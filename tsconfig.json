@@ -21,8 +21,7 @@
     "tests/firstTest.js",
     "tests/navBar.test.ts",
     "tests/createPollForm.test.ts",
-    "secret/github.ts",
-    "testcafe/**/*.ts"
+    "secret/github.ts"
   ],
   "exclude": ["tsDist", "src/coverage", "./src/**/*.test.ts"]
 }
