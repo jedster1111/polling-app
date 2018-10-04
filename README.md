@@ -1,14 +1,15 @@
-# Setup
+# Polling App
+
+## Setup
 
 - To install dependencies run: `yarn install`
 - In order for the github authentication to work, you must
-  - Follow [this tutorial](https://developer.github.com/apps/building-oauth-apps/creating-an-oauth-app/)
-    to create a github OAuth app.  
-    ![github OAuth example](http://puu.sh/BExqF/c1e010896b.png)
+  - Follow  [github's tutorial for creating an OAuth app](https://developer.github.com/apps/building-oauth-apps/creating-an-oauth-app/)  
     - Homepage Url might be `http://127.0.0.1:8000` while developing locally
     - Authorization callback URL would then be
       `http://127.0.0.1:8000/auth/github/callback`  
-      You will then be provided with a clientId and a clientSecret.
+      ![github OAuth example](http://puu.sh/BExqF/c1e010896b.png)
+  - You will then be provided with a clientId and a clientSecret.
   - create a secret file in `${rootDirectory}/secret/github.ts`.
     It must contain the following constants:
     ```json
