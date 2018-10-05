@@ -5,6 +5,8 @@
 /dist
 /secret
 
+jedCookie.ts
+
 # dependencies
 /node_modules
 
