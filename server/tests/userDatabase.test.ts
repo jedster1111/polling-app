@@ -29,16 +29,18 @@ describe("Testing user related database methods:", () => {
     });
 
     test("Can I get a user by Id?", () => {
-      const user = db.getUser("1");
-      expect(user).toMatchObject(generateUsers(1)[0]);
+      const userToGet = db.getAllUsers()[0];
+      const user = db.getUser(userToGet.id);
+      expect(user).toMatchObject(userToGet);
     });
   });
 
   describe("Testing getUsers:", () => {
     test("Can I get an array of users by ids?", () => {
-      const ids = ["1", "2"];
+      const storedUsers = db.getAllUsers();
+      const ids = [storedUsers[0].id, storedUsers[1].id];
       const users = db.getUsers(ids);
-      expect(users).toMatchObject(generateUsers(2));
+      expect(users).toMatchObject([storedUsers[0], storedUsers[1]]);
     });
   });
 

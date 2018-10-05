@@ -112,6 +112,7 @@ describe("Testing poll related database methods:", () => {
       };
 
       const expectedPollOptions = generateExpectedOptions(updateInput);
+
       const expectedPoll: StoredPoll = {
         creatorId: pollToUpdate.creatorId,
         pollId: pollToUpdate.pollId,
