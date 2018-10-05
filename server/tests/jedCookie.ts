@@ -1,4 +1,0 @@
-const jedCookie =
-  "jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJQb2xsaW5nIEFwcCIsImlhdCI6MTUzODU2MDUyNiwiZXhwIjoxNTcwMDk2NTI2LCJhdWQiOiJ3d3cuZXhhbXBsZS5jb20iLCJzdWIiOiJqZWQifQ.5Q9Ljj5cNP3atKEZ99dXqc4O4fvvNE3b4MsoE1plDME";
-
-export default jedCookie;
