@@ -1,5 +1,5 @@
 import request = require("supertest");
-import app, { generateAccessToken } from "../app";
+import app from "../app";
 import db from "../models/database";
 import { getResponsePoll, getResponsePolls } from "../routes/pollRouter";
 import {
@@ -10,6 +10,7 @@ import {
   User,
   VoteInputRequest
 } from "../types";
+import createJwtCookie from "./createJwtCookie";
 
 const generateInputPolls = (n: number) => {
   const polls: PollInput[] = [];
@@ -39,10 +40,6 @@ const generateInputUsers = (n: number) => {
 
 const getAnotherUser = (pollToRemove: Poll) => {
   return db.getAllUsers().find(user => user.id !== pollToRemove.creatorId)!;
-};
-
-const createJwtCookie = (userId: string) => {
-  return `jwt=${generateAccessToken(userId)}`;
 };
 
 describe("Testing poll related routes:", () => {
