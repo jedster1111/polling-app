@@ -1,6 +1,6 @@
 import uuid = require("uuid/v1");
 import db from "../models/database";
-import { PollInput, StoredPoll } from "../types";
+import { Poll, PollInput } from "../types";
 
 const numberOfPolls = 3;
 const generatePollInputs = (n: number) => {
@@ -113,7 +113,7 @@ describe("Testing poll related database methods:", () => {
 
       const expectedPollOptions = generateExpectedOptions(updateInput);
 
-      const expectedPoll: StoredPoll = {
+      const expectedPoll: Poll = {
         creatorId: pollToUpdate.creatorId,
         pollId: pollToUpdate.pollId,
         pollName: updateInput.pollName,
@@ -151,6 +151,15 @@ describe("Testing poll related database methods:", () => {
     test("Can I vote on a poll?", () => {
       const expectedPoll = generateExpectedPolls(1)[0];
       expectedPoll.options[0].votes = ["1"];
+      const poll = db.votePoll("1", {
+        optionId: "1",
+        voterId: expectedPoll.creatorId
+      });
+      expect(poll).toMatchObject(expectedPoll);
+    });
+    test("Can I vote on a poll and then remove the vote", () => {
+      const expectedPoll = generateExpectedPolls(1)[0];
+      db.votePoll("1", { optionId: "1", voterId: "1" });
       const poll = db.votePoll("1", { optionId: "1", voterId: "1" });
       expect(poll).toMatchObject(expectedPoll);
     });
@@ -165,4 +174,8 @@ describe("Testing poll related database methods:", () => {
       expect(polls).toMatchObject(expectedPolls);
     });
   });
+
+  // describe("Testing votePoll and updatePoll", () => {
+  //   test("Can I vote and then update a")
+  // });
 });

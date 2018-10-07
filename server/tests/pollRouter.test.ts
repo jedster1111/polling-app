@@ -1,15 +1,15 @@
 import request = require("supertest");
-import app from "../app";
+import app, { generateAccessToken } from "../app";
 import db from "../models/database";
+import { getResponsePoll, getResponsePolls } from "../routes/pollRouter";
 import {
+  Poll,
   PollInput,
   PollResponse,
-  StoredPoll,
-  StoredUser,
   UpdatePollInput,
+  User,
   VoteInputRequest
 } from "../types";
-import jedCookie from "./jedCookie";
 
 const generateInputPolls = (n: number) => {
   const polls: PollInput[] = [];
@@ -24,25 +24,9 @@ const generateInputPolls = (n: number) => {
   }
   return polls;
 };
-const generateExpectedPolls = (n: number) => {
-  const polls: PollResponse[] = [];
-  for (let i = 0; i < n; i++) {
-    const index = i + 1;
-    polls.push({
-      pollId: `${index}`,
-      pollName: `pollName${index}`,
-      description: `description${index}`,
-      creator: { displayName: `displayName${index}`, id: `${index}` },
-      options: [
-        { optionId: "1", value: "option1", votes: [] },
-        { optionId: "2", value: "option2", votes: [] }
-      ]
-    });
-  }
-  return polls;
-};
+
 const generateInputUsers = (n: number) => {
-  const users: StoredUser[] = [];
+  const users: User[] = [];
   for (let i = 0; i < n; i++) {
     const index = i + 1;
     users.push({
@@ -53,34 +37,23 @@ const generateInputUsers = (n: number) => {
   return users;
 };
 
-describe("Testing poll related routes:", () => {
-  const noOfPolls = 3;
-  const expectedPolls = generateExpectedPolls(noOfPolls);
-  expectedPolls.push({
-    creator: { id: "jed", displayName: "Jed" },
-    description: "descriptionJed",
-    options: [
-      { optionId: "1", value: "option1", votes: [] },
-      { optionId: "2", value: "option2", votes: [] }
-    ],
-    pollName: "pollNameJed",
-    pollId: `${noOfPolls + 1}`
-  });
+const getAnotherUser = (pollToRemove: Poll) => {
+  return db.getAllUsers().find(user => user.id !== pollToRemove.creatorId)!;
+};
 
+const createJwtCookie = (userId: string) => {
+  return `jwt=${generateAccessToken(userId)}`;
+};
+
+describe("Testing poll related routes:", () => {
   beforeEach(() => {
+    const noOfPolls = 5;
     db.resetPolls();
     db.resetUsers();
     const inputPolls = generateInputPolls(noOfPolls);
     const inputUsers = generateInputUsers(noOfPolls);
     inputPolls.forEach(pollInput => db.insertPoll(pollInput));
-    db.insertPoll({
-      creatorId: "jed",
-      description: "descriptionJed",
-      options: ["option1", "option2"],
-      pollName: "pollNameJed"
-    });
     inputUsers.forEach(userInput => db.insertUser(userInput));
-    db.insertUser({ id: "jed", displayName: "Jed" });
   });
 
   afterEach(() => {
@@ -90,47 +63,65 @@ describe("Testing poll related routes:", () => {
 
   describe("Testing /api/polls:", () => {
     test("Can I get a list of all polls?", async () => {
+      const storedPolls = db.getPolls();
+      const responsePolls = getResponsePolls(storedPolls);
+
       const response = await request(app).get("/api/polls");
+
       const polls: PollResponse[] = response.body.polls;
-      expect(polls).toMatchObject(expectedPolls);
-      expect(polls[0].pollId).toBeTruthy();
+
+      expect(polls).toMatchObject(responsePolls);
     });
     test("Can I create a poll and will I get it back in the response?", async () => {
+      const userToUse = db.getAllUsers()[0];
+
       const inputData: PollInput = {
-        creatorId: "jed",
+        creatorId: userToUse.id,
         description: "descriptionPOST",
         options: ["option1", "option2"],
         pollName: "pollNamePOST"
       };
-      const expectedResponse: PollResponse = {
+
+      const expectedResponse = {
         description: "descriptionPOST",
-        creator: { displayName: "Jed", id: "jed" },
-        pollId: `${noOfPolls + 2}`,
+        creator: userToUse,
         options: [
           { optionId: "1", value: "option1", votes: [] },
           { optionId: "2", value: "option2", votes: [] }
         ],
         pollName: "pollNamePOST"
       };
+
+      const token = createJwtCookie(userToUse.id);
+
       const payload = await request(app)
         .post("/api/polls")
         .send(inputData)
         .set("Accept", "application/json")
-        .set("Cookie", jedCookie)
+        .set("Cookie", token)
         .expect(201);
+
       const postResponse = JSON.parse(payload.text).poll;
+
       expect(postResponse).toMatchObject(expectedResponse);
     });
   });
 
   describe("Testing /api/polls/:id:", () => {
     test("Can I get a specific poll?", async () => {
-      const response = await request(app).get("/api/polls/2");
-      const responsePoll: StoredPoll = response.body.poll;
-      expect(responsePoll).toMatchObject(expectedPolls[1]);
+      const pollToUse = db.getPolls()[0];
+      const expectedPoll = getResponsePoll(pollToUse);
+
+      const response = await request(app).get(`/api/polls/${pollToUse.pollId}`);
+      const responsePoll: Poll = response.body.poll;
+
+      expect(responsePoll).toMatchObject(expectedPoll);
     });
 
     test("Can I change the properties of a poll without losing votes?", async () => {
+      const pollToUse = db.getPolls()[0];
+      const creator = db.getUser(pollToUse.creatorId);
+
       const inputData: UpdatePollInput = {
         pollName: "pollNameChanged",
         options: [
@@ -138,55 +129,70 @@ describe("Testing poll related routes:", () => {
           { optionId: "2", value: "changed2" }
         ]
       };
+
       const expectedResponse: PollResponse = {
-        description: "descriptionJed",
-        creator: { id: "jed", displayName: "Jed" },
+        description: pollToUse.description,
+        creator,
         options: [
           { optionId: "1", value: "changed1", votes: [] },
           {
             optionId: "2",
             value: "changed2",
-            votes: [{ displayName: "Jed", id: "jed" }]
+            votes: [creator]
           }
         ],
-        pollId: `${noOfPolls + 1}`,
+        pollId: pollToUse.pollId,
         pollName: "pollNameChanged"
       };
+
+      const token = createJwtCookie(creator.id);
+
       await request(app)
-        .post(`/api/polls/${noOfPolls + 1}/vote`)
-        .send({ voterId: "jed", optionId: "2" })
+        .post(`/api/polls/${pollToUse.pollId}/vote`)
+        .send({ voterId: creator.id, optionId: "2" })
         .set("Accept", "application/json")
-        .set("Cookie", jedCookie)
+        .set("Cookie", token)
         .expect(200);
+
       const payload = await request(app)
-        .post(`/api/polls/${noOfPolls + 1}`)
+        .post(`/api/polls/${pollToUse.pollId}`)
         .send(inputData)
         .set("Accept", "application/json")
-        .set("Cookie", jedCookie)
+        .set("Cookie", token)
         .expect(200);
+
       const postResponse = JSON.parse(payload.text).poll;
+
       expect(postResponse).toMatchObject(expectedResponse);
     });
 
     test("Can I remove a specific poll?", async () => {
-      expect(db.getPoll(`${noOfPolls + 1}`).description).toBe("descriptionJed");
+      const pollToRemove = db.getPolls()[0];
+      const pollId = pollToRemove.pollId;
+      // expect(db.getPoll(`${noOfPolls + 1}`).description).toBe("descriptionJed");
       await request(app)
-        .delete(`/api/polls/${noOfPolls + 1}`)
-        .set("Cookie", jedCookie)
+        .delete(`/api/polls/${pollId}`)
+        .set("Cookie", createJwtCookie(pollToRemove.creatorId))
         .expect(200);
-      expect(db.getPoll(`${noOfPolls + 1}`)).toBeNull();
+
+      expect(db.getPoll(`${pollId}`)).toBeNull();
     });
 
     test("Am I unable to remove a poll that I didn't create?", async () => {
+      const pollToRemove = db.getPolls()[0];
+      const userToUse = getAnotherUser(pollToRemove);
+
       await request(app)
-        .delete(`/api/polls/1`)
-        .set("Cookie", jedCookie)
+        .delete(`/api/polls/${pollToRemove.pollId}`)
+        .set("Cookie", createJwtCookie(userToUse.id))
         .expect(401);
     });
 
     test("Am I unable to edit a poll that I didn't create?", async () => {
+      const pollToEdit = db.getPolls()[0];
+      const userToUse = getAnotherUser(pollToEdit);
       await request(app)
-        .post(`/api/polls/1`)
+        .post(`/api/polls/${pollToEdit.pollId}`)
         .send({
           pollName: "pollNameChanged",
           options: [
@@ -194,36 +200,44 @@ describe("Testing poll related routes:", () => {
             { optionId: "2", value: "changed2" }
           ]
         })
-        .set("Cookie", jedCookie)
+        .set("Cookie", createJwtCookie(userToUse.id))
         .expect(401);
     });
   });
 
   describe("Testing /api/polls/:id/vote:", () => {
-    test("Can I vote on a poll and then remove it?", async () => {
+    test("Can I vote on a poll and then remove the vote?", async () => {
+      const pollToVote = db.getPolls()[0];
+      const userToUse = db.getUser(pollToVote.creatorId);
       const voteInput: VoteInputRequest = { optionId: "1" };
-      let response = await request(app)
-        .post("/api/polls/2/vote")
+
+      const token = createJwtCookie(userToUse.id);
+
+      // console.log(object);
+
+      const response = await request(app)
+        .post(`/api/polls/${pollToVote.pollId}/vote`)
         .send(voteInput)
         .set("Accept", "application/json")
-        .set("Cookie", jedCookie)
+        .set("Cookie", token)
         .expect(200);
-      let postResponse: PollResponse = JSON.parse(response.text).poll;
-      expect(postResponse.options[0].votes).toEqual([
-        { id: "jed", displayName: "Jed" }
-      ]);
+      const postResponse: PollResponse = JSON.parse(response.text).poll;
+
+      expect(postResponse.options[0].votes).toEqual([userToUse]);
       expect(postResponse.options[0].votes.length).toBe(1);
       expect(postResponse.options[1].votes).toEqual([]);
-      response = await request(app)
-        .post("/api/polls/2/vote")
+
+      const response2 = await request(app)
+        .post(`/api/polls/${pollToVote.pollId}/vote`)
         .send(voteInput)
         .set("Accept", "application/json")
-        .set("Cookie", jedCookie)
+        .set("Cookie", token)
         .expect(200);
-      postResponse = JSON.parse(response.text).poll;
-      expect(postResponse).toMatchObject(expectedPolls[1]);
-      expect(postResponse.options[0].votes).toEqual([]);
-      expect(postResponse.options[1].votes).toEqual([]);
+      const postResponse2 = JSON.parse(response2.text).poll;
+
+      // expect(postResponse.options[0]).toMatchObject(expectedPolls[1]);
+      expect(postResponse2.options[0].votes).toEqual([]);
+      expect(postResponse2.options[1].votes).toEqual([]);
     });
   });
 });

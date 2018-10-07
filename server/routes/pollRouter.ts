@@ -3,20 +3,20 @@ import { passport } from "../app";
 import db from "../models/database";
 import { CreatePollRequest, VoteInputRequest } from "../types";
 import {
+  Poll,
   PollResponse,
   PollResponseOption,
   PollResponseUser,
-  StoredPoll,
   UpdatePollInput
 } from "../types";
 
 const pollRouter = express.Router();
-const getResponsePolls = (storedPolls: StoredPoll[]): PollResponse[] => {
+export const getResponsePolls = (storedPolls: Poll[]): PollResponse[] => {
   return storedPolls.map<PollResponse>(storedPoll => {
     return getResponsePoll(storedPoll);
   });
 };
-const getResponsePoll = (storedPoll: StoredPoll): PollResponse => {
+export const getResponsePoll = (storedPoll: Poll): PollResponse => {
   const { creatorId, options, description, pollName, pollId } = storedPoll;
   const creator = db.getUser(creatorId);
   return {

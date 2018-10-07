@@ -1,7 +1,7 @@
 import request = require("supertest");
 import app from "../app";
 import db from "../models/database";
-import { StoredUser } from "../types";
+import { User } from "../types";
 import jedCookie from "./jedCookie";
 
 describe("Testing user related routes:", () => {
@@ -20,7 +20,7 @@ describe("Testing user related routes:", () => {
   describe("Testing /api/users:", () => {
     test("Can I get a list of all users?", async () => {
       const response = await request(app).get("/api/users");
-      const users: StoredUser[] = response.body.users;
+      const users: User[] = response.body.users;
       expect(users).toMatchObject(result);
     });
 

@@ -46,7 +46,7 @@ const jwtOptions: passportJwt.StrategyOptions = {
   // issuer: config.get('authentication.token.issuer'),
   // audience: config.get('authentication.token.audience')
 };
-const generateAccessToken = (userId: string) => {
+export const generateAccessToken = (userId: string) => {
   const expiresIn = "1 hour";
   const secret = secrets.secret;
   const token = jwt.sign({}, secret, {

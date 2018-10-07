@@ -1,8 +1,8 @@
 import db from "../models/database";
-import { StoredUser } from "../types";
+import { User } from "../types";
 
 const generateUsers = (n: number) => {
-  const users: StoredUser[] = [];
+  const users: User[] = [];
   for (let i = 0; i < n; i++) {
     const index = i + 1;
     users.push({ id: `${index}`, displayName: `displayName${index}` });
