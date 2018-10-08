@@ -4,6 +4,9 @@
 /src/coverage
 /dist
 /secret/github.ts
+/secret/githubTestAuth.ts
+
+jedCookie.ts
 
 # dependencies
 /node_modules

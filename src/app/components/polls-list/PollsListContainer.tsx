@@ -13,12 +13,12 @@ import { Poll, User } from "../../types";
 import PollsList from "./PollsList";
 
 interface PollsListContainerProps {
-  creator: User;
+  user: User;
   polls: Poll[];
   fetchPolls: () => any;
-  voteOption: (pollId: string, optionId: string) => any;
+  voteOption: (userId: string, pollId: string, optionId: string) => any;
   toggleShowResults: (pollId: string) => void;
-  deletePoll: (pollId: string) => any;
+  deletePoll: (userId: string, pollId: string) => any;
   showResults: { [pollId: string]: boolean };
   showUpdatePollForm: (pollId: string, poll: Poll) => any;
   editingPoll: null | string;
@@ -28,7 +28,7 @@ interface PollsListContainerProps {
 const mapStateToProps = (state: InitialState) => {
   return {
     polls: [...state.pollsState.polls].reverse(),
-    creator: state.userState.data,
+    user: state.userState.data,
     showResults: state.pollsState.showResults,
     editingPoll: state.pollsState.editingPoll
   };
@@ -50,7 +50,7 @@ class PollsListContainer extends React.Component<PollsListContainerProps> {
     this.props.fetchPolls();
   }
   handleVote = (pollId: string, optionId: string) => {
-    this.props.voteOption(pollId, optionId);
+    this.props.voteOption(this.props.user.id, pollId, optionId);
   };
   handleToggleShowResults = (pollId: string) => {
     this.props.toggleShowResults(pollId);
@@ -71,7 +71,7 @@ class PollsListContainer extends React.Component<PollsListContainerProps> {
         polls={this.props.polls}
         fetchPolls={this.props.fetchPolls}
         handleVote={this.handleVote}
-        creator={this.props.creator}
+        user={this.props.user}
         showResults={this.props.showResults}
         toggleShowResults={this.handleToggleShowResults}
         deletePoll={this.props.deletePoll}

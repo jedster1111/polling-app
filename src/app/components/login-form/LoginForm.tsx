@@ -14,20 +14,34 @@ interface UserDataDisplayProps {
 }
 
 const UserDataDisplayContainer = styled.div`
-  border: solid 1px black;
+  /* border: solid 1px black; */
   padding: 5px 7px;
 `;
-const TextContainer = styled.div``;
+const TextContainer = styled.div`
+  text-align: center;
+`;
 const LoginFormContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  align-content: center;
   border: solid 1px black;
-  background-color: lightskyblue;
-  padding: 5px 7px;
+  /* background-color: lightskyblue; */
+  margin: 6px 2px;
+  margin-bottom: 3px;
+  padding: 3px;
+`;
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
 `;
 
 const UserDataDisplay = (props: UserDataDisplayProps) => (
   <UserDataDisplayContainer>
-    <TextContainer>Id: {props.userData.id}</TextContainer>
-    <TextContainer>Name: {props.userData.displayName}</TextContainer>
+    {/* <TextContainer>Id: {props.userData.id}</TextContainer> */}
+    <TextContainer>
+      {props.userData.displayName || props.userData.userName}
+    </TextContainer>
   </UserDataDisplayContainer>
 );
 
@@ -35,11 +49,13 @@ const LoginForm = (props: LoginFormProps) => {
   return (
     <LoginFormContainer>
       {props.isLoggedIn && <UserDataDisplay userData={props.userData} />}
-      {props.isLoggedIn ? (
-        <LogoutButton handleLogout={props.handleLogout} />
-      ) : (
-        <LoginButton handleLogin={props.handleLogin} />
-      )}
+      <ButtonContainer>
+        {props.isLoggedIn ? (
+          <LogoutButton handleLogout={props.handleLogout} />
+        ) : (
+          <LoginButton handleLogin={props.handleLogin} />
+        )}
+      </ButtonContainer>
     </LoginFormContainer>
   );
 };

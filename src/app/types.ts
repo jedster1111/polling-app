@@ -7,7 +7,8 @@ export interface Poll {
 }
 export interface User {
   id: string;
-  displayName: string;
+  displayName?: string;
+  userName: string;
 }
 export interface PollOption {
   optionId: string;
@@ -16,6 +17,7 @@ export interface PollOption {
 }
 export interface PollInput {
   // [key: string]: string | string[];
+  creatorId?: string;
   pollName: string;
   description: string;
   options: string[];

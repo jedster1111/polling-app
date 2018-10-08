@@ -13,23 +13,27 @@ interface LogoutButtonProps {
 }
 
 const StyledButton = styled.button<StyledButtonProps>`
+  flex: 1;
   border: none;
   border: solid black 1px;
   outline: none;
   background: ${props =>
     props.login ? "green" : props.logout ? "red" : "grey"};
   height: 45px;
-  width: 140px;
+  max-width: 140px;
   margin: 5px;
 `;
+StyledButton.displayName = "StyledButton";
 
-export const LoginButton = (props: LoginButtonProps) => (
+export const LoginButton: React.SFC<LoginButtonProps> = props => (
   <StyledButton type="button" onClick={props.handleLogin} login>
     Login
   </StyledButton>
 );
-export const LogoutButton = (props: LogoutButtonProps) => (
+export const LogoutButton: React.SFC<LogoutButtonProps> = props => (
   <StyledButton type="button" onClick={props.handleLogout} logout>
     Logout
   </StyledButton>
 );
+LoginButton.displayName = "LoginButton";
+LogoutButton.displayName = "LogoutButton";

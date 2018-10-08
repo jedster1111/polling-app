@@ -16,14 +16,17 @@ export interface PollInput {
   options: string[];
 }
 /**
- * The format a poll is actually stored in the database as.
+ * The format a poll is actually stored in the database as, not including Loki property.
  */
-export interface StoredPoll {
+export interface Poll {
   creatorId: string;
   pollName: string;
   description: string;
   pollId: string;
   options: StoredPollOptions[];
+}
+export interface StoredPoll extends Poll {
+  $loki: string;
 }
 /**
  * @param votes refers to the id of the user that voted.
@@ -50,7 +53,8 @@ export interface PollResponseOption {
 }
 export interface PollResponseUser {
   id: string;
-  displayName: string;
+  displayName?: string;
+  userName: string;
 }
 export interface UpdatePollInput {
   pollName?: string;
@@ -68,8 +72,13 @@ export interface VoteInput {
   voterId: string;
   optionId: string;
 }
-export interface StoredUser {
-  displayName: string;
+export interface User {
+  displayName?: string;
+  userName: string;
   id: string;
   emails?: Array<{ value: string }>;
+}
+
+export interface StoredUser extends User {
+  $loki: string;
 }

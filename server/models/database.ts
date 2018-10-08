@@ -1,12 +1,14 @@
 import loki = require("lokijs");
 import { ErrorWithStatusCode } from "../app";
 import {
+  Poll,
   PollInput,
   StoredPoll,
   StoredPollOptions,
   StoredUser,
   UpdatePollInput,
   UpdatePollInputOption,
+  User,
   VoteInput
 } from "../types";
 
@@ -42,21 +44,21 @@ class Database {
   }
 
   db = new loki("polling-app.db");
-  polls = this.db.addCollection("polls");
-  users = this.db.addCollection("users");
+  polls = this.db.addCollection("polls", { clone: true, disableMeta: true });
+  users = this.db.addCollection("users", { clone: true, disableMeta: true });
   pollsCount = 0;
 
   /**
    * Gets current polls
    * @returns returns an array of polls
    */
-  getPolls(): StoredPoll[] {
-    return this.polls.find();
+  getPolls(): Poll[] {
+    return this.stripResultsMetadata<Poll>(this.polls.find());
   }
-  getPoll(pollId: string): StoredPoll {
-    return this.polls.findOne({ pollId });
+  getPoll(pollId: string): Poll {
+    return this.stripMeta<Poll>(this.polls.findOne({ pollId }));
   }
-  insertPoll(pollInput: PollInput): StoredPoll {
+  insertPoll(pollInput: PollInput): Poll {
     Database.checkValidPollInput(pollInput);
     const filteredOptions: string[] = pollInput.options.filter(
       option => option
@@ -76,14 +78,14 @@ class Database {
     });
     const newPoll: StoredPoll = this.polls.insert(cleanedPollInput);
     this.pollsCount++;
-    return newPoll;
+    return this.stripMeta<Poll>(newPoll);
   }
   updatePoll(
     userId: string,
     pollId: string,
     updatePollInput: UpdatePollInput
-  ): StoredPoll {
-    const poll = this.getPoll(pollId);
+  ): Poll {
+    const poll: StoredPoll = this.polls.findOne({ pollId });
     if (poll === null) {
       throw new Error(`Poll with Id ${pollId} could not be found`);
     }
@@ -124,8 +126,8 @@ class Database {
         );
       }
     });
-    // this.polls.update(poll);
-    return poll;
+    this.polls.update(poll);
+    return this.stripMeta<Poll>(poll);
   }
   /**
    * Casts a vote on a specific poll. If the name already exists on the option the vote will be removed.
@@ -133,8 +135,8 @@ class Database {
    * @param voteInput An object containing name of person voting and the Id of the option they're voting on
    * @returns Returns the poll that was updated
    */
-  votePoll(pollId: string, voteInput: VoteInput): StoredPoll {
-    const poll: StoredPoll = db.getPoll(pollId);
+  votePoll(pollId: string, voteInput: VoteInput): Poll {
+    const poll: StoredPoll = this.polls.findOne({ pollId });
     const isValidVote =
       poll &&
       poll.options[
@@ -165,7 +167,8 @@ class Database {
         break;
       }
     }
-    return poll;
+    this.polls.update(poll);
+    return this.stripMeta<Poll>(poll);
   }
   /**
    * Removes a poll with the specified Id.
@@ -173,7 +176,7 @@ class Database {
    */
   removePoll(userId: string, pollId: string): void {
     // this.polls.findAndRemove({ pollId });
-    const poll: StoredPoll = this.polls.findOne({ pollId });
+    const poll: Poll = this.polls.findOne({ pollId });
     if (poll.creatorId !== userId) {
       const error = new Error(
         `Can't delete a poll that you didn't create!`
@@ -188,24 +191,46 @@ class Database {
     this.removeAllPollsData();
     this.resetPollsCount();
   }
-  getUser(userId: string): StoredUser {
-    return this.users.findOne({ id: userId });
+  getUser(userId: string): User {
+    return this.stripMeta<User>(this.users.findOne({ id: userId }));
   }
-  getUsers(userIds: string[]): StoredUser[] {
+  getUsers(userIds: string[]): User[] {
     const users: StoredUser[] = userIds.map(userId =>
       this.users.findOne({ id: userId })
     );
-    return users;
+    const filteredUsers = users.filter(user => user);
+    return this.stripResultsMetadata<User>(filteredUsers);
   }
-  getAllUsers(): StoredUser[] {
-    return this.users.find();
+  getAllUsers(): User[] {
+    return this.stripResultsMetadata<User>(this.users.find());
   }
-  insertUser(userInput: any): StoredUser {
-    return this.users.insert(userInput);
+  insertUser(userInput: any): User {
+    return this.stripMeta<User>(this.users.insert(userInput));
   }
   resetUsers(): void {
     this.users.clear();
   }
+
+  private stripResultsMetadata<T>(results: Array<T & { $loki: string }>) {
+    const records = [];
+    for (const result of results) {
+      const cleanRec = this.stripMeta(result);
+      records.push(cleanRec);
+    }
+    return records;
+  }
+  private stripMeta<T>(result: T & { $loki: string }) {
+    const lokiRec = result;
+    let cleanRec;
+    if (result) {
+      cleanRec = Object.assign({}, lokiRec);
+      delete cleanRec.$loki;
+    } else {
+      cleanRec = result;
+    }
+    return cleanRec as T;
+  }
+
   private removeAllPollsData(): void {
     this.polls.clear();
   }

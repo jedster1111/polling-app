@@ -9,9 +9,9 @@ import ResultsList from "./ResultsList";
 
 export interface PollCardProps {
   poll: Poll;
-  creator: User;
+  user: User;
   handleVote: (pollId: string, optionId: string) => void;
-  deletePoll: (pollId: string) => void;
+  deletePoll: (userId: string, pollId: string) => void;
   toggleShowResults: (pollId: string) => void;
   showResults: boolean;
   showEditForm: (pollId: string) => void;
@@ -41,12 +41,16 @@ const InnerContainer = styled.div`
   flex-wrap: wrap;
 `;
 
+DeletePollButton.displayName = "DeletePollButton";
+
 const PollCard = (props: PollCardProps) => (
   <PollContainer id={`poll${props.poll.pollId}`}>
     <InnerContainer>
       <PollInfo
         pollId={props.poll.pollId}
-        creatorName={props.poll.creator.displayName}
+        creatorName={
+          props.poll.creator.displayName || props.poll.creator.userName
+        }
         description={props.poll.description}
         pollName={props.poll.pollName}
         toggleShowResults={props.toggleShowResults}
@@ -57,7 +61,7 @@ const PollCard = (props: PollCardProps) => (
         handleVote={props.handleVote}
         pollId={props.poll.pollId}
         options={props.poll.options}
-        userId={props.creator.id}
+        userId={props.user.id}
       />
     </InnerContainer>
     {props.isEditing &&
@@ -68,7 +72,7 @@ const PollCard = (props: PollCardProps) => (
     {props.isOwner && (
       <DeletePollButton
         remove
-        onClick={() => props.deletePoll(props.poll.pollId)}
+        onClick={() => props.deletePoll(props.user.id, props.poll.pollId)}
       />
     )}
   </PollContainer>

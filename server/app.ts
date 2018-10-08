@@ -28,10 +28,10 @@ const errorHandlerMiddleware: ErrorRequestHandler = (
   if (!err.statusCode) {
     err.statusCode = 500;
   }
-  console.log("Something went wrong!");
+  // console.log("Something went wrong!");
   // console.error(err);
   res.status(err.statusCode).json({ error: err.message });
-  console.log("Carrying on then...");
+  // console.log("Carrying on then...");
 };
 const jwtCookieExtractor = (req: express.Request) => {
   let token = null;
@@ -46,7 +46,7 @@ const jwtOptions: passportJwt.StrategyOptions = {
   // issuer: config.get('authentication.token.issuer'),
   // audience: config.get('authentication.token.audience')
 };
-const generateAccessToken = (userId: string) => {
+export const generateAccessToken = (userId: string) => {
   const expiresIn = "1 hour";
   const secret = secrets.secret;
   const token = jwt.sign({}, secret, {
@@ -80,7 +80,7 @@ passport.use(
         emails: profile.emails
       };
       const user = db.getUser(profile.id) || db.insertUser(cleanedProfile);
-      console.log(user);
+      // console.log(user);
       return done(null, user);
     }
   )
