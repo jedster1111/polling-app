@@ -198,7 +198,8 @@ class Database {
     const users: StoredUser[] = userIds.map(userId =>
       this.users.findOne({ id: userId })
     );
-    return this.stripResultsMetadata<User>(users);
+    const filteredUsers = users.filter(user => user);
+    return this.stripResultsMetadata<User>(filteredUsers);
   }
   getAllUsers(): User[] {
     return this.stripResultsMetadata<User>(this.users.find());

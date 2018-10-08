@@ -1,3 +1,4 @@
+import uuid = require("uuid/v1");
 import db from "../models/database";
 import { User } from "../types";
 
@@ -45,6 +46,13 @@ describe("Testing user related database methods:", () => {
       const ids = [storedUsers[0].id, storedUsers[1].id];
       const users = db.getUsers(ids);
       expect(users).toMatchObject([storedUsers[0], storedUsers[1]]);
+    });
+    test("Can I filter out null values from the search?", () => {
+      const storedUsers = db.getAllUsers();
+      const ids = [storedUsers[0].id, storedUsers[0].id, uuid()];
+      const users = db.getUsers(ids);
+      expect(users.length).toBe(2);
+      expect(users).not.toContainEqual(null);
     });
   });
 
