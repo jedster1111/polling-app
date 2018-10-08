@@ -114,7 +114,8 @@
     "testPathIgnorePatterns": [
       "/node_modules/",
       "/testcafe/",
-      "/stories/"
+      "/stories/",
+      "/build/"
     ],
     "collectCoverageFrom": [
       "**/*.{js,jsx,ts,tsx}"

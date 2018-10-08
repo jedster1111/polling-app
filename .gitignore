@@ -5,6 +5,8 @@
 /dist
 /secret/github.ts
 
+jedCookie.ts
+
 # dependencies
 /node_modules
 

@@ -1,4 +1,4 @@
-import { PollInput, StoredUser } from "./types";
+import { PollInput, User } from "./types";
 
 export const inputPollData: PollInput[] = [
   {
@@ -21,7 +21,7 @@ export const inputPollData: PollInput[] = [
   }
 ];
 
-export const inputUserData: StoredUser[] = [
+export const inputUserData: User[] = [
   {
     id: "1",
     displayName: "displayName1"
