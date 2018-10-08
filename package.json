@@ -124,7 +124,8 @@
     "coveragePathIgnorePatterns": [
       "/coverage/",
       "/dist/",
-      "/tests/"
+      "/tests/",
+      "/build/"
     ]
   }
 }

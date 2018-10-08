@@ -13,8 +13,4 @@ test("Each nav link works", async t => {
     .click(navbar.pollsList)
     .expect(ReactSelector("PollsListPage").exists)
     .ok("Polls list page isn't showing");
-  await t
-    .click(navbar.home)
-    .expect(ReactSelector("HomePage").exists)
-    .ok("Home page isn't showing");
 });
