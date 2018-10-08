@@ -77,7 +77,7 @@ function* toggleShowResults(action: AnyAction) {
 }
 function* deletePoll(action: AnyAction) {
   try {
-    yield call(api.deletePoll, action.payload.pollId);
+    yield call(api.deletePoll, action.payload);
     yield put({
       type: actionTypes.DELETE_POLL_SUCCESS,
       payload: action.payload
