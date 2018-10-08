@@ -1,20 +1,6 @@
 import * as React from "react";
-import LoginForm, { LoginFormProps } from "../login-form/LoginForm";
+import LoginForm from "../login-form/LoginFormContainer";
 
-type HomePageProps = LoginFormProps;
-
-const HomePage = ({
-  isLoggedIn,
-  userData,
-  handleLogin,
-  handleLogout
-}: HomePageProps) => (
-  <LoginForm
-    isLoggedIn={isLoggedIn}
-    userData={userData}
-    handleLogin={handleLogin}
-    handleLogout={handleLogout}
-  />
-);
+const HomePage = () => <LoginForm />;
 
 export default HomePage;
