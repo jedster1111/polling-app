@@ -41,6 +41,8 @@ const InnerContainer = styled.div`
   flex-wrap: wrap;
 `;
 
+DeletePollButton.displayName = "DeletePollButton";
+
 const PollCard = (props: PollCardProps) => (
   <PollContainer id={`poll${props.poll.pollId}`}>
     <InnerContainer>

@@ -16,6 +16,7 @@ const StyledOptionTextInput = styled(StyledTextInput)`
   margin-left: 0;
   margin-right: 0;
 `;
+StyledOptionTextInput.displayName = "StyledOptionTextInput";
 const SingleOptionInputContainer = styled.div<{}>`
   flex: 1 1 100%;
   display: flex;

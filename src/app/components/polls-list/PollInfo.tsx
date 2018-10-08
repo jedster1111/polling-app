@@ -23,6 +23,7 @@ const InfoContainer = styled.div<{}>`
   /* border: solid 1px black; */
   padding: 5px 8px;
 `;
+
 const TextContainer = styled.div<{}>`
   padding: 5px;
 `;
@@ -36,6 +37,23 @@ const ButtonsContainer = styled.div`
   flex-wrap: wrap;
   justify-content: center;
 `;
+
+const EditButton: React.SFC<{
+  showEditForm: (pollId: string) => void;
+  pollId: string;
+}> = props => (
+  <StyledButton onClick={() => props.showEditForm(props.pollId)}>
+    Edit
+  </StyledButton>
+);
+
+InfoContainer.displayName = "InfoContainer";
+TextContainer.displayName = "TextContainer";
+PollTitleContainer.displayName = "PollTitleContainer";
+DescriptionContainer.displayName = "DescriptionContainer";
+CreatorContainer.displayName = "CreatorContainer";
+ButtonsContainer.displayName = "ButtonsContainer";
+
 const PollInfo = (props: PollInfoProps) => {
   return (
     <InfoContainer>
@@ -46,9 +64,7 @@ const PollInfo = (props: PollInfoProps) => {
       </TextContainer>
       <ButtonsContainer>
         {props.isOwner && (
-          <StyledButton onClick={() => props.showEditForm(props.pollId)}>
-            Edit
-          </StyledButton>
+          <EditButton pollId={props.pollId} showEditForm={props.showEditForm} />
         )}
         <ViewResultsButton
           value={"Results"}
