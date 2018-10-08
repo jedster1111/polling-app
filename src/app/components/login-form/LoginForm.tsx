@@ -39,7 +39,9 @@ const ButtonContainer = styled.div`
 const UserDataDisplay = (props: UserDataDisplayProps) => (
   <UserDataDisplayContainer>
     {/* <TextContainer>Id: {props.userData.id}</TextContainer> */}
-    <TextContainer>{props.userData.displayName}</TextContainer>
+    <TextContainer>
+      {props.userData.displayName || props.userData.userName}
+    </TextContainer>
   </UserDataDisplayContainer>
 );
 

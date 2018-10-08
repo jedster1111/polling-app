@@ -48,7 +48,9 @@ const PollCard = (props: PollCardProps) => (
     <InnerContainer>
       <PollInfo
         pollId={props.poll.pollId}
-        creatorName={props.poll.creator.displayName}
+        creatorName={
+          props.poll.creator.displayName || props.poll.creator.userName
+        }
         description={props.poll.description}
         pollName={props.poll.pollName}
         toggleShowResults={props.toggleShowResults}

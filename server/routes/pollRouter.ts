@@ -23,13 +23,21 @@ export const getResponsePoll = (storedPoll: Poll): PollResponse => {
     description,
     pollId,
     pollName,
-    creator: { displayName: creator.displayName, id: creator.id },
+    creator: {
+      displayName: creator.displayName,
+      id: creator.id,
+      userName: creator.userName
+    },
     options: options.map<PollResponseOption>(option => ({
       optionId: option.optionId,
       value: option.value,
       votes: option.votes.map<PollResponseUser>(userId => {
         const user = db.getUser(userId);
-        return { id: userId, displayName: user.displayName };
+        return {
+          id: userId,
+          displayName: user.displayName,
+          userName: user.userName
+        };
       })
     }))
   };

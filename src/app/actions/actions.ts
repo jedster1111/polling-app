@@ -1,5 +1,4 @@
 import { Action, ActionCreator } from "redux";
-import { UserDataFormValues } from "../components/user-data-form/UserDataForm";
 import { Poll, PollInput, UpdatePollInput } from "../types";
 import * as actionTypes from "./action-types";
 
@@ -37,12 +36,6 @@ export const changeUserFormData: ActionCreator<Action> = (
     fieldId,
     value
   }
-});
-export const saveUserFormData: ActionCreator<Action> = (
-  formValues: UserDataFormValues
-) => ({
-  type: actionTypes.SAVE_USER_FORM_DATA,
-  payload: formValues
 });
 export const discardUserFormData: ActionCreator<Action> = (
   confirmedValues: string

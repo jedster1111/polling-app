@@ -10,15 +10,12 @@ import {
   updatePoll
 } from "../../actions/actions";
 import { InitialState, PollFormInput } from "../../reducers/rootReducer";
-import { PollInput, UpdatePollInput } from "../../types";
+import { PollInput, UpdatePollInput, User } from "../../types";
 import PollForm from "./PollForm";
 
 interface PollFormContainerProps {
   pollFormData: PollFormInput;
-  user: {
-    id: string;
-    displayName: string;
-  };
+  user: User;
   submitPoll: (poll: PollInput) => any;
   handleChange: (fieldId: string, value: string) => any;
   discardPoll: () => any;

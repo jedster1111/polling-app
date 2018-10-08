@@ -25,7 +25,8 @@ export interface PollForm {
 export interface UserState {
   data: {
     id: string;
-    displayName: string;
+    displayName?: string;
+    userName: string;
   };
   isLoading: boolean;
   error: Error | null;
@@ -77,7 +78,8 @@ export const initialState: InitialState = {
   userState: {
     data: {
       id: "",
-      displayName: ""
+      displayName: "",
+      userName: ""
     },
     isLoading: false,
     error: null,

@@ -53,7 +53,8 @@ export interface PollResponseOption {
 }
 export interface PollResponseUser {
   id: string;
-  displayName: string;
+  displayName?: string;
+  userName: string;
 }
 export interface UpdatePollInput {
   pollName?: string;
@@ -72,7 +73,8 @@ export interface VoteInput {
   optionId: string;
 }
 export interface User {
-  displayName: string;
+  displayName?: string;
+  userName: string;
   id: string;
   emails?: Array<{ value: string }>;
 }

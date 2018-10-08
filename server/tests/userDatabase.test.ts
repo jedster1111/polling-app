@@ -5,7 +5,11 @@ const generateUsers = (n: number) => {
   const users: User[] = [];
   for (let i = 0; i < n; i++) {
     const index = i + 1;
-    users.push({ id: `${index}`, displayName: `displayName${index}` });
+    users.push({
+      id: `${index}`,
+      displayName: `displayName${index}`,
+      userName: `userName${index}`
+    });
   }
   return users;
 };

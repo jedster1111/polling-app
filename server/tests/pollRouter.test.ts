@@ -32,7 +32,8 @@ const generateInputUsers = (n: number) => {
     const index = i + 1;
     users.push({
       id: `${index}`,
-      displayName: `displayName${index}`
+      displayName: `displayName${index}`,
+      userName: `userName${index}`
     });
   }
   return users;
