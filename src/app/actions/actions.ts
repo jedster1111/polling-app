@@ -51,11 +51,12 @@ export const discardUserFormData: ActionCreator<Action> = (
   payload: { confirmedValues }
 });
 export const voteOption: ActionCreator<Action> = (
+  userId: string,
   pollId: string,
   optionId: string
 ) => ({
   type: actionTypes.VOTE_OPTION_LOADING,
-  payload: { pollId, optionId }
+  payload: { userId, pollId, optionId }
 });
 export const toggleShowResults: ActionCreator<Action> = (pollId: string) => ({
   type: actionTypes.TOGGLE_SHOW_RESULTS_LOADING,
@@ -71,9 +72,12 @@ export const removePollOption: ActionCreator<Action> = (index: number) => ({
   type: actionTypes.REMOVE_POLL_FORM_OPTION,
   payload: { index }
 });
-export const deletePoll: ActionCreator<Action> = (pollId: string) => ({
+export const deletePoll: ActionCreator<Action> = (
+  userId: string,
+  pollId: string
+) => ({
   type: actionTypes.DELETE_POLL_LOADING,
-  payload: { pollId }
+  payload: { userId, pollId }
 });
 export const showUpdatePollForm: ActionCreator<Action> = (
   pollId: string,
@@ -86,11 +90,12 @@ export const discardUpdatePollForm: ActionCreator<Action> = () => ({
   type: actionTypes.DISCARD_UPDATE_POLL_FORM
 });
 export const updatePoll: ActionCreator<Action> = (
+  userId: string,
   pollId: string,
   updatePollInput: UpdatePollInput
 ) => ({
   type: actionTypes.UPDATE_POLL_LOADING,
-  payload: { pollId, updatePollInput }
+  payload: { userId, pollId, updatePollInput }
 });
 export const getUserData: ActionCreator<Action> = () => ({
   type: actionTypes.GET_USER_DATA_LOADING

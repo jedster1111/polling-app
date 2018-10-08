@@ -15,7 +15,7 @@ import PollForm from "./PollForm";
 
 interface PollFormContainerProps {
   pollFormData: PollFormInput;
-  creator: {
+  user: {
     id: string;
     displayName: string;
   };
@@ -25,7 +25,11 @@ interface PollFormContainerProps {
   addPollOption: () => any;
   removePollOption: (index: number) => any;
   discardUpdatePollForm: () => any;
-  updatePoll: (pollId: string, updatePollInput: UpdatePollInput) => any;
+  updatePoll: (
+    userId: string,
+    pollId: string,
+    updatePollInput: UpdatePollInput
+  ) => any;
 }
 interface OwnProps {
   edit?: boolean;
@@ -45,7 +49,7 @@ const mapDispatchToProps = {
 const mapStateToProps = (state: InitialState, ownProps: OwnProps) => {
   return {
     pollFormData: state.pollForm.data,
-    creator: state.userState.data
+    user: state.userState.data
   };
 };
 
@@ -56,20 +60,18 @@ class PollFormContainer extends React.Component<
     e.preventDefault();
     if (!this.props.edit) {
       const inputData: PollInput = {
+        creatorId: this.props.user.id,
         description: this.props.pollFormData.description,
         pollName: this.props.pollFormData.pollName,
         options: this.props.pollFormData.options.map(option => option.value)
       };
       this.props.submitPoll(inputData);
     } else if (this.props.edit && this.props.pollId) {
-      this.props.updatePoll(this.props.pollId, { ...this.props.pollFormData });
+      this.props.updatePoll(this.props.user.id, this.props.pollId, {
+        ...this.props.pollFormData
+      });
     }
   };
-  handleEditPoll = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log("submit edit");
-  };
-
   handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.props.handleChange(e.target.id, e.target.value);
   };

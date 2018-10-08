@@ -6,11 +6,11 @@ import PollCard from "./PollCard";
 
 export interface PollsListProps {
   polls: Poll[];
-  creator: User;
+  user: User;
   fetchPolls: () => any;
   handleVote: (pollId: string, optionId: string) => void;
   toggleShowResults: (pollId: string) => any;
-  deletePoll: (pollId: string) => any;
+  deletePoll: (userId: string, pollId: string) => any;
   showResults: { [pollId: string]: boolean };
   showEditForm: (pollId: string) => void;
   editingPoll: null | string;
@@ -39,13 +39,13 @@ const PollsList = (props: PollsListProps) => (
           poll={poll}
           handleVote={props.handleVote}
           key={poll.pollId}
-          creator={props.creator}
+          user={props.user}
           showResults={props.showResults[poll.pollId]}
           toggleShowResults={props.toggleShowResults}
           deletePoll={props.deletePoll}
           showEditForm={props.showEditForm}
           isEditing={props.editingPoll === poll.pollId}
-          isOwner={props.creator.id === poll.creator.id}
+          isOwner={props.user.id === poll.creator.id}
         />
       ))
     ) : (

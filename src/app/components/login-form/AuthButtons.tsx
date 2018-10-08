@@ -13,13 +13,14 @@ interface LogoutButtonProps {
 }
 
 const StyledButton = styled.button<StyledButtonProps>`
+  flex: 1;
   border: none;
   border: solid black 1px;
   outline: none;
   background: ${props =>
     props.login ? "green" : props.logout ? "red" : "grey"};
   height: 45px;
-  width: 140px;
+  max-width: 140px;
   margin: 5px;
 `;
 StyledButton.displayName = "StyledButton";
