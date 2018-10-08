@@ -1,6 +1,7 @@
 import * as React from "react";
 import { NavLink } from "react-router-dom";
 import styled from "styled-components";
+import LoginForm from "./login-form/LoginFormContainer";
 
 const NavBarContainer = styled.ul<{}>`
   list-style-type: none;
@@ -14,7 +15,7 @@ const NavBarContainer = styled.ul<{}>`
 `;
 
 const StyledList = styled.li<{}>`
-  margin: 3px 2px;
+  margin: 3px 0;
 `;
 
 const StyledLink = styled(NavLink)`
@@ -43,8 +44,8 @@ const StyledLink = styled(NavLink)`
 const NavBar = () => (
   <NavBarContainer>
     <StyledList>
-      <StyledLink to="/" exact id="homeLink">
-        Home
+      <StyledLink to="/" exact id="pollsListLink">
+        Polls
       </StyledLink>
     </StyledList>
     <StyledList>
@@ -52,11 +53,7 @@ const NavBar = () => (
         Create a New Poll
       </StyledLink>
     </StyledList>
-    <StyledList>
-      <StyledLink to="/list-polls" exact id="pollsListLink">
-        Polls
-      </StyledLink>
-    </StyledList>
+    <LoginForm />
   </NavBarContainer>
 );
 

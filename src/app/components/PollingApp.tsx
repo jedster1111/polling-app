@@ -7,7 +7,7 @@ import { getUserData } from "../actions/actions";
 import { history } from "../store/index";
 import NavBar from "./NavBar";
 import CreatePollPage from "./pages/CreatePollPage";
-import HomePage from "./pages/HomePage";
+// import HomePage from "./pages/HomePage";
 import PollsListPage from "./pages/PollsListPage";
 
 const StyledContainer = styled.div<{}>`
@@ -58,9 +58,8 @@ class PollingApp extends React.Component<PollingAppProps> {
           <NavBar />
           <Switch>
             <StyledPageContainer>
-              <Route exact path="/" component={HomePage} />
+              <Route path="/" exact component={PollsListPage} />
               <Route path="/create-poll" component={CreatePollPage} />
-              <Route path="/list-polls" component={PollsListPage} />
             </StyledPageContainer>
           </Switch>
         </StyledContainer>
