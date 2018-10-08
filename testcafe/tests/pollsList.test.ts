@@ -22,7 +22,7 @@ const createPollInput = (): PollInput => ({
   options: ["option1", "option2", "option3", "option4"]
 });
 
-fixture("Testing the polls list page").page("http://127.0.0.1:8000/list-polls");
+fixture("Testing the polls list page").page("http://127.0.0.1:8000");
 
 test("Can I create a poll, then see it in the list of polls?", async t => {
   await t.useRole(githubTestUser);
