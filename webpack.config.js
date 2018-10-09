@@ -45,8 +45,10 @@ module.exports = {
           //   }
           // }
         ]
-      },
-      { enforce: "pre", test: /\.js$/, loader: "source-map-loader" }
+      }
+
+      // { enforce: "pre", test: /\.js$/, loader: "source-map-loader" }
+
       // {
       //   loader: "style-loader"
       // },
