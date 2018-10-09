@@ -1,3 +1,4 @@
+import { Button } from "antd";
 import * as React from "react";
 import styled from "styled-components";
 import { Poll, User } from "../../types";
@@ -32,6 +33,7 @@ const PollsListContainer = styled.div<{}>`
 
 const PollsList = (props: PollsListProps) => (
   <PollsListContainer>
+    <Button>Hello</Button>
     <FetchPollsButton fetchPolls={props.fetchPolls} />
     {props.polls.length > 0 ? (
       props.polls.map(poll => (
