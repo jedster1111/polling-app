@@ -4,8 +4,10 @@ import { connect } from "react-redux";
 import { Route, Switch } from "react-router";
 import styled from "styled-components";
 import { getUserData } from "../actions/actions";
+import { InitialState } from "../reducers/rootReducer";
 import { history } from "../store/index";
-import NavBar from "./NavBar";
+import OldNavBar from "./NavBar";
+import NavBar from "./navbar/NavbarContainer";
 import CreatePollPage from "./pages/CreatePollPage";
 // import HomePage from "./pages/HomePage";
 import PollsListPage from "./pages/PollsListPage";
@@ -37,7 +39,11 @@ const StyledPageContainer = styled.div<{}>`
 
 interface PollingAppProps {
   getUserData: () => any;
+  isLoggedIn: boolean;
 }
+const mapStateToProps = (state: InitialState) => ({
+  isLoggedIn: state.userState.isLoggedIn
+});
 const mapDispatchToProps = {
   getUserData
 };
@@ -56,6 +62,7 @@ class PollingApp extends React.Component<PollingAppProps> {
       <ConnectedRouter history={history}>
         <StyledContainer>
           <NavBar />
+          <OldNavBar />
           <Switch>
             <StyledPageContainer>
               <Route path="/" exact component={PollsListPage} />
@@ -68,7 +75,7 @@ class PollingApp extends React.Component<PollingAppProps> {
   }
 }
 const ConnectedPollingApp = connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(PollingApp);
 

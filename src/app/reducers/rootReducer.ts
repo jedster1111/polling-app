@@ -1,5 +1,5 @@
 import { combineReducers } from "redux";
-import { Poll, UpdatePollInput } from "../types";
+import { Poll, UpdatePollInput, User } from "../types";
 import pollForm from "./pollForm";
 import pollsState from "./pollsState";
 import userFormState from "./userFormState";
@@ -23,11 +23,7 @@ export interface PollForm {
   error: Error | null;
 }
 export interface UserState {
-  data: {
-    id: string;
-    displayName?: string;
-    userName: string;
-  };
+  data: User;
   isLoading: boolean;
   error: Error | null;
   isLoggedIn: boolean;

@@ -9,6 +9,7 @@ export interface User {
   id: string;
   displayName?: string;
   userName: string;
+  photos?: Array<{ value: string }>;
 }
 export interface PollOption {
   optionId: string;

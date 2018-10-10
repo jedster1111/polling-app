@@ -77,7 +77,8 @@ passport.use(
         id: profile.id,
         displayName: profile.displayName,
         userName: profile.username,
-        emails: profile.emails
+        emails: profile.emails,
+        photos: profile.photos
       };
       const user = db.getUser(profile.id) || db.insertUser(cleanedProfile);
       // console.log(user);
