@@ -17,15 +17,11 @@ const checkInput = async (
 export default class CreatePollPage {
   pollNameInput = Selector("#pollName");
   descriptionInput = Selector("#description");
-  optionInputs = ReactSelector("StyledOptionTextInput");
+  optionInputs = Selector(".optionInput input");
   createPollButton = Selector("#createButton");
   discardPollButton = Selector("#discardButton");
-  removeOptionButtons = ReactSelector("OptionsInput")
-    .find("button")
-    .withText("-");
-  addOptionButton = ReactSelector("OptionsInput")
-    .find("button")
-    .withText("+");
+  removeOptionButtons = Selector("button.removeOption");
+  addOptionButton = Selector("#addOption");
   allInputs = ReactSelector("PollForm").find("input[type='text']");
   removeOptionButton = (index: number) => this.removeOptionButtons.nth(index);
 

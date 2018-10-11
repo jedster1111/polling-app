@@ -88,12 +88,23 @@ const PollForm: React.SFC<CreatePollFormProps> = props => {
       />
       <Form.Item wrapperCol={{ xs: { span: 16 }, sm: { span: 16, offset: 4 } }}>
         <Button
+          id="createButton"
           type="primary"
           htmlType="submit"
           loading={props.isLoading}
           block
         >
           Submit
+        </Button>
+      </Form.Item>
+      <Form.Item wrapperCol={{ xs: { span: 16 }, sm: { span: 16, offset: 4 } }}>
+        <Button
+          id="discardButton"
+          type="danger"
+          block
+          onClick={props.discardPoll}
+        >
+          Discard
         </Button>
       </Form.Item>
     </Form>
