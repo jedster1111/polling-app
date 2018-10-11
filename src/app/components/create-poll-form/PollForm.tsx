@@ -1,6 +1,7 @@
 import { Button, Form, Input } from "antd";
 import * as React from "react";
 import { PollFormInput } from "../../reducers/rootReducer";
+import "./antd-override.css";
 import OptionsInput from "./OptionsInput";
 
 interface CreatePollFormProps {
