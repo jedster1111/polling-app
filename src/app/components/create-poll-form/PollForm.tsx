@@ -32,10 +32,9 @@ interface CreatePollFormProps {
 // `;
 
 const itemLayout = {
-  labelCol: { span: 3 },
-  wrapperCol: { span: 19 }
+  labelCol: { span: 4 },
+  wrapperCol: { span: 16 }
 };
-const inputStyle = { width: "90%" };
 
 const PollForm: React.SFC<CreatePollFormProps> = props => {
   return (
@@ -69,7 +68,6 @@ const PollForm: React.SFC<CreatePollFormProps> = props => {
           value={props.values.pollName}
           onChange={props.handleChange}
           id="pollName"
-          style={inputStyle}
           placeholder="poll name"
         />
       </Form.Item>
@@ -78,7 +76,6 @@ const PollForm: React.SFC<CreatePollFormProps> = props => {
           value={props.values.description}
           onChange={props.handleChange}
           id="description"
-          style={inputStyle}
           placeholder="description"
         />
       </Form.Item>
@@ -88,13 +85,12 @@ const PollForm: React.SFC<CreatePollFormProps> = props => {
         handleChange={props.handleChange}
         values={props.values.options}
       />
-      <Form.Item wrapperCol={{ span: 19, offset: 3 }}>
+      <Form.Item wrapperCol={{ xs: { span: 16 }, sm: { span: 16, offset: 4 } }}>
         <Button
           type="primary"
-          block
           htmlType="submit"
-          style={{ width: "90%" }}
           loading={props.isLoading}
+          block
         >
           Submit
         </Button>
