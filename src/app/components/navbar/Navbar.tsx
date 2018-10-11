@@ -37,10 +37,12 @@ const NavBar: React.SFC<NavBarProps> = ({
     </Menu.Item>
     {isLoggedIn && (
       <Menu.Item>
-        <Avatar
-          src={userData.photos && userData.photos[0].value}
-          alt={userData.userName}
-        />
+        <a href={userData.profileUrl} target="_blank">
+          <Avatar
+            src={userData.photos && userData.photos[0].value}
+            alt={userData.userName}
+          />
+        </a>
       </Menu.Item>
     )}
   </Menu>
