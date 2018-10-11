@@ -64,12 +64,12 @@ const PollForm: React.SFC<CreatePollFormProps> = props => {
     //   <Buttons edit={props.edit} discardPoll={props.discardPoll} />
     // </FormContainer>
     <Form onSubmit={props.handleSubmit} id="createPollForm" layout="vertical">
-      <Form.Item {...itemLayout} label="Poll Name">
+      <Form.Item {...itemLayout} label="Poll name">
         <Input
           value={props.values.pollName}
           onChange={props.handleChange}
           id="pollName"
-          placeholder="poll name"
+          placeholder="Poll name"
         />
       </Form.Item>
       <Form.Item label="Description" {...itemLayout}>
@@ -77,7 +77,7 @@ const PollForm: React.SFC<CreatePollFormProps> = props => {
           value={props.values.description}
           onChange={props.handleChange}
           id="description"
-          placeholder="description"
+          placeholder="Description"
         />
       </Form.Item>
       <OptionsInput

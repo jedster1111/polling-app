@@ -40,7 +40,7 @@ const OptionsInput = (props: OptionsInputProps) => {
             id={`optionInput${index + 1}`}
             className="optionInput"
             value={option.value}
-            placeholder={option.optionId ? "existing option" : "new option"}
+            placeholder={option.optionId ? "Existing option" : "New option"}
             onChange={props.handleChange}
             suffix={
               !option.optionId && (

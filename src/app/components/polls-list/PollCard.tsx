@@ -1,11 +1,12 @@
+import { Avatar, Button, Icon, List } from "antd";
 import * as React from "react";
 import styled from "styled-components";
 import { Poll, User } from "../../types";
 import OptionButton from "../create-poll-form/AddRemoveOptionButton";
-import ConnectedPollFormContainer from "../create-poll-form/PollFormContainer";
-import OptionsList from "./OptionsList";
-import PollInfo from "./PollInfo";
-import ResultsList from "./ResultsList";
+// import ConnectedPollFormContainer from "../create-poll-form/PollFormContainer";
+// import OptionsList from "./OptionsList";
+// import PollInfo from "./PollInfo";
+// import ResultsList from "./ResultsList";
 
 export interface PollCardProps {
   poll: Poll;
@@ -19,63 +20,64 @@ export interface PollCardProps {
   isOwner?: boolean;
 }
 
-const PollContainer = styled.div<{}>`
-  position: relative;
-  align-self: stretch;
-  display: block;
-  max-width: 1000px;
-  min-width: 170px;
-  border: solid 1px black;
-  margin: 5px 0;
-  padding: 4px 3px;
-  background-color: white;
-`;
+// const PollContainer = styled.div<{}>`
+//   position: relative;
+//   align-self: stretch;
+//   display: block;
+//   max-width: 1000px;
+//   min-width: 170px;
+//   border: solid 1px black;
+//   margin: 5px 0;
+//   padding: 4px 3px;
+//   background-color: white;
+// `;
 const DeletePollButton = styled(OptionButton)`
   position: absolute;
   margin: 0;
   right: 4px;
   top: 3px;
 `;
-const InnerContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-`;
+// const InnerContainer = styled.div`
+//   display: flex;
+//   flex-wrap: wrap;
+// `;
 
 DeletePollButton.displayName = "DeletePollButton";
 
-const PollCard = (props: PollCardProps) => (
-  <PollContainer id={`poll${props.poll.pollId}`}>
-    <InnerContainer>
-      <PollInfo
-        pollId={props.poll.pollId}
-        creatorName={
-          props.poll.creator.displayName || props.poll.creator.userName
-        }
-        description={props.poll.description}
-        pollName={props.poll.pollName}
-        toggleShowResults={props.toggleShowResults}
-        showEditForm={props.showEditForm}
-        isOwner={props.isOwner}
-      />
-      <OptionsList
-        handleVote={props.handleVote}
-        pollId={props.poll.pollId}
-        options={props.poll.options}
-        userId={props.user.id}
-      />
-    </InnerContainer>
-    {props.isEditing &&
-      props.isOwner && (
-        <ConnectedPollFormContainer edit pollId={props.poll.pollId} />
-      )}
-    {props.showResults && <ResultsList options={props.poll.options} />}
-    {props.isOwner && (
-      <DeletePollButton
-        remove
-        onClick={() => props.deletePoll(props.user.id, props.poll.pollId)}
-      />
-    )}
-  </PollContainer>
+const IconText: React.SFC<{ type?: string; text: string }> = ({
+  type,
+  text
+}) => (
+  <Button>
+    {text}
+    {type && <Icon type={type} style={{ marginRight: 8 }} />}
+  </Button>
 );
+
+const PollCard = (props: PollCardProps) => {
+  const actions = props.isOwner
+    ? [<IconText type="edit" text="Edit" />, <IconText text="Vote" />]
+    : [<IconText type="check" text="Vote" />];
+  return (
+    <List.Item key={props.poll.pollId} actions={actions}>
+      <List.Item.Meta
+        avatar={
+          props.poll.creator.photos && (
+            <Avatar src={props.poll.creator.photos[0].value} />
+          )
+        }
+        title={<p>{props.poll.pollName}</p>}
+        description={
+          <span>
+            <p>{props.poll.description}</p>
+            <p>
+              {props.poll.creator.displayName || props.poll.creator.userName}
+            </p>
+          </span>
+        }
+      />
+    </List.Item>
+  );
+};
 
 export default PollCard;
