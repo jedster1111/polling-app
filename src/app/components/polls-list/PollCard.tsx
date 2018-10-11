@@ -44,20 +44,27 @@ const DeletePollButton = styled(OptionButton)`
 
 DeletePollButton.displayName = "DeletePollButton";
 
-const IconText: React.SFC<{ type?: string; text: string }> = ({
-  type,
-  text
-}) => (
-  <Button>
+const ActionButton: React.SFC<{
+  type: string;
+  text: string;
+  handleClick?: () => void;
+}> = ({ type, text, handleClick }) => (
+  <Button onClick={handleClick}>
     {text}
-    {type && <Icon type={type} style={{ marginRight: 8 }} />}
+    {<Icon type={type} style={{ marginRight: 8 }} />}
   </Button>
 );
 
 const PollCard = (props: PollCardProps) => {
-  const actions = props.isOwner
-    ? [<IconText type="edit" text="Edit" />, <IconText text="Vote" />]
-    : [<IconText type="check" text="Vote" />];
+  const voteButton = <ActionButton type="check" text="Vote" />;
+  const editButton = (
+    <ActionButton
+      type="edit"
+      text="Edit"
+      handleClick={() => props.showEditForm(props.poll.pollId)}
+    />
+  );
+  const actions = props.isOwner ? [editButton, voteButton] : [voteButton];
   return (
     <List.Item key={props.poll.pollId} actions={actions}>
       <List.Item.Meta
