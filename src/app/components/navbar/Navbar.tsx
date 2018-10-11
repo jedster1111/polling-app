@@ -38,7 +38,6 @@ const NavBar: React.SFC<NavBarProps> = ({
     {isLoggedIn && (
       <Menu.Item>
         <Avatar
-          size="large"
           src={userData.photos && userData.photos[0].value}
           alt={userData.userName}
         />
