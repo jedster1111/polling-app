@@ -1,3 +1,4 @@
+import { message } from "antd";
 import { AxiosError, AxiosResponse } from "axios";
 import { AnyAction } from "redux";
 import { all, call, put, takeLatest } from "redux-saga/effects";
@@ -29,6 +30,7 @@ function* postPollsSaga(action: any) {
   try {
     const response = yield call(api.createPoll, action.payload);
     const poll: Poll = response.data.poll;
+    message.success("Poll Created!");
     yield put({ type: actionTypes.POST_POLLS_SUCCESS, payload: { poll } });
     // yield put({ type: actionTypes.GET_POLLS_REQUEST });
   } catch (error) {
@@ -37,6 +39,7 @@ function* postPollsSaga(action: any) {
       err.response && err.response.data.error
         ? err.response.data.error
         : err.message;
+    message.error("Something went wrong!");
     yield put({
       type: actionTypes.POST_POLLS_ERROR,
       payload: { error: errorMessage }

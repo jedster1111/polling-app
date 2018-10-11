@@ -1,4 +1,4 @@
-import { Button, Form, Input } from "antd";
+import { Button, Form, Icon, Input } from "antd";
 import * as React from "react";
 
 interface OptionsInputProps {
@@ -38,18 +38,29 @@ const OptionsInput = (props: OptionsInputProps) => {
             value={option.value}
             placeholder={option.optionId ? "existing option" : "new option"}
             onChange={props.handleChange}
-            style={{ marginRight: 8 }}
+            style={{ width: "90%", marginRight: 8 }}
           />
           {!option.optionId && (
             <Button
               key={index}
               icon="minus-circle"
               shape="circle"
+              type="dashed"
               onClick={() => props.removePollOption(index)}
             />
           )}
         </Form.Item>
       ))}
+      <Form.Item wrapperCol={{ span: 19, offset: 3 }}>
+        <Button
+          type="dashed"
+          onClick={props.addPollOption}
+          style={{ width: "90%" }}
+        >
+          <Icon type="plus" />
+          Add Option
+        </Button>
+      </Form.Item>
     </React.Fragment>
   );
 };
