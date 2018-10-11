@@ -36,7 +36,7 @@ class PollingApp extends React.Component<PollingAppProps> {
   render() {
     return (
       <ConnectedRouter history={history}>
-        <Layout>
+        <Layout style={{ maxWidth: 1200, margin: "0 auto" }}>
           <Header style={{ background: "#fff" }}>
             <NavBar />
           </Header>
