@@ -1,8 +1,9 @@
-import { Avatar, Button, Icon, List } from "antd";
+import { Avatar, Button, Icon, List, Modal } from "antd";
 import * as React from "react";
 import styled from "styled-components";
 import { Poll, User } from "../../types";
 import OptionButton from "../create-poll-form/AddRemoveOptionButton";
+import PollForm from "../create-poll-form/PollFormContainer";
 // import ConnectedPollFormContainer from "../create-poll-form/PollFormContainer";
 // import OptionsList from "./OptionsList";
 // import PollInfo from "./PollInfo";
@@ -83,6 +84,13 @@ const PollCard = (props: PollCardProps) => {
           </span>
         }
       />
+      <Modal
+        visible={props.isEditing}
+        onCancel={() => props.showEditForm(props.poll.pollId)}
+        footer={null}
+      >
+        <PollForm edit pollId={props.poll.pollId} />
+      </Modal>
     </List.Item>
   );
 };
