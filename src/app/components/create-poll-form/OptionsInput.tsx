@@ -30,33 +30,32 @@ const OptionsInput = (props: OptionsInputProps) => {
         <Form.Item
           key={index}
           label={index === 0 ? "Options" : ""}
-          labelCol={{ span: 3 }}
-          wrapperCol={{ span: 19, offset: index === 0 ? 0 : 3 }}
+          labelCol={{ span: 4 }}
+          wrapperCol={{
+            xs: { span: 16 },
+            sm: { span: 16, offset: index === 0 ? 0 : 4 }
+          }}
         >
           <Input
             id={`optionInput${index + 1}`}
             value={option.value}
             placeholder={option.optionId ? "existing option" : "new option"}
             onChange={props.handleChange}
-            style={{ width: "90%", marginRight: 8 }}
+            suffix={
+              !option.optionId && (
+                <Button
+                  icon="minus"
+                  shape="circle"
+                  size="small"
+                  onClick={() => props.removePollOption(index)}
+                />
+              )
+            }
           />
-          {!option.optionId && (
-            <Button
-              key={index}
-              icon="minus-circle"
-              shape="circle"
-              type="dashed"
-              onClick={() => props.removePollOption(index)}
-            />
-          )}
         </Form.Item>
       ))}
-      <Form.Item wrapperCol={{ span: 19, offset: 3 }}>
-        <Button
-          type="dashed"
-          onClick={props.addPollOption}
-          style={{ width: "90%" }}
-        >
+      <Form.Item wrapperCol={{ xs: { span: 16 }, sm: { span: 16, offset: 4 } }}>
+        <Button type="dashed" onClick={props.addPollOption} block>
           <Icon type="plus" />
           Add Option
         </Button>
