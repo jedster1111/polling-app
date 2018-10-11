@@ -1,4 +1,4 @@
-import { Button } from "antd";
+import { Button, Icon } from "antd";
 import * as React from "react";
 
 interface LoginButtonProps {
@@ -9,7 +9,10 @@ interface LogoutButtonProps {
 }
 
 export const LoginButton: React.SFC<LoginButtonProps> = props => (
-  <Button onClick={props.handleLogin}>Login</Button>
+  <Button onClick={props.handleLogin}>
+    Login
+    <Icon type="github" />
+  </Button>
 );
 export const LogoutButton: React.SFC<LogoutButtonProps> = props => (
   <Button onClick={props.handleLogout} type="danger">
