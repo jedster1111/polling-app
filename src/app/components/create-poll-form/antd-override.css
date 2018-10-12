@@ -9,3 +9,11 @@
 #createPollForm .ant-form-item-label::after {
   content: ":";
 }
+#createPollForm .ant-form-item {
+  margin-bottom: 14px;
+}
+@media (max-width: 575px) {
+  #createPollForm .ant-form-item-label {
+    text-align: left;
+  }
+}

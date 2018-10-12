@@ -1,4 +1,5 @@
 import { Button, Form, Input } from "antd";
+import { ColProps } from "antd/lib/col";
 import * as React from "react";
 import { PollFormInput } from "../../reducers/rootReducer";
 import "./antd-override.css";
@@ -32,7 +33,7 @@ interface CreatePollFormProps {
 //   background-color: #c6dea6;
 // `;
 
-const itemLayout = {
+const itemLayout: { labelCol: ColProps; wrapperCol: ColProps } = {
   labelCol: { span: 4 },
   wrapperCol: { span: 16 }
 };
