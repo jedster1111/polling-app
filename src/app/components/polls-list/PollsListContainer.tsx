@@ -1,3 +1,4 @@
+import { push } from "connected-react-router";
 import * as React from "react";
 import { connect } from "react-redux";
 import {
@@ -24,7 +25,10 @@ interface PollsListContainerProps {
   editingPoll: null | string;
   discardUpdatePollForm: () => any;
   isLoading: boolean;
+  navigateToPoll: (pollId: string) => any;
 }
+
+const navigateToPoll = (pollId: string) => push(`/${pollId}`);
 
 const mapStateToProps = (state: InitialState) => {
   return {
@@ -41,7 +45,8 @@ const mapDispatchToProps = {
   toggleShowResults,
   deletePoll,
   showUpdatePollForm,
-  discardUpdatePollForm
+  discardUpdatePollForm,
+  navigateToPoll
 };
 
 class PollsListContainer extends React.Component<PollsListContainerProps> {
@@ -80,6 +85,7 @@ class PollsListContainer extends React.Component<PollsListContainerProps> {
         showEditForm={this.showEditForm}
         editingPoll={this.props.editingPoll}
         isLoading={this.props.isLoading}
+        navigateToPoll={this.props.navigateToPoll}
       />
     );
   }
