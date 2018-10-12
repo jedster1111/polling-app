@@ -43,7 +43,8 @@ const OptionsInput = (props: OptionsInputProps) => {
             placeholder={option.optionId ? "Existing option" : "New option"}
             onChange={props.handleChange}
             suffix={
-              !option.optionId && (
+              !option.optionId &&
+              props.values.length > 1 && (
                 <Button
                   className="removeOption"
                   icon="minus"

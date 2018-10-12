@@ -32,12 +32,14 @@ storiesOf("Navbar", module)
         userData={userData}
         handleLogin={loggedIn()}
         handleLogout={loggedOut()}
+        location={"/"}
       />
       <Navbar
         isLoggedIn={true}
         userData={userData}
         handleLogin={loggedIn()}
         handleLogout={loggedOut()}
+        location={"test"}
       />
     </React.Fragment>
   ));

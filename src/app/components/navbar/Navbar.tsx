@@ -5,6 +5,7 @@ import { User } from "../../types";
 import { LoginButton, LogoutButton } from "../login-form/AuthButtons";
 
 interface NavBarProps {
+  location: string;
   isLoggedIn: boolean;
   userData: User;
   handleLogin: () => void;
@@ -12,19 +13,20 @@ interface NavBarProps {
 }
 
 const NavBar: React.SFC<NavBarProps> = ({
+  location,
   isLoggedIn,
   userData,
   handleLogin,
   handleLogout
 }) => (
-  <Menu mode="horizontal">
-    <Menu.Item>
-      <NavLink to="/" id="pollsListLink" key="pollsListLink">
+  <Menu mode="horizontal" defaultSelectedKeys={["/"]} selectedKeys={[location]}>
+    <Menu.Item key="/">
+      <NavLink to="/" id="pollsListLink">
         Polls
       </NavLink>
     </Menu.Item>
-    <Menu.Item disabled={!isLoggedIn}>
-      <NavLink to="/create-poll" id="createPollLink" key="createPollLink">
+    <Menu.Item disabled={!isLoggedIn} key="/create-poll">
+      <NavLink to="/create-poll" id="createPollLink">
         Create a Poll
       </NavLink>
     </Menu.Item>

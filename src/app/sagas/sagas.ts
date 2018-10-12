@@ -1,5 +1,6 @@
 import { message } from "antd";
 import { AxiosError, AxiosResponse } from "axios";
+import { push } from "connected-react-router";
 import { AnyAction } from "redux";
 import { all, call, put, takeLatest } from "redux-saga/effects";
 import * as actionTypes from "../actions/action-types";
@@ -32,7 +33,7 @@ function* postPollsSaga(action: any) {
     const poll: Poll = response.data.poll;
     message.success("Poll Created!");
     yield put({ type: actionTypes.POST_POLLS_SUCCESS, payload: { poll } });
-    // yield put({ type: actionTypes.GET_POLLS_REQUEST });
+    yield put(push("/"));
   } catch (error) {
     const err: AxiosError = error;
     const errorMessage =

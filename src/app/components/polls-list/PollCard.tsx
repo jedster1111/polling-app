@@ -58,6 +58,7 @@ const ActionButton: React.SFC<{
 
 const PollCard = (props: PollCardProps) => {
   const voteButton = <ActionButton type="check" text="Vote" />;
+
   const editButton = (
     <ActionButton
       type="edit"
@@ -65,7 +66,9 @@ const PollCard = (props: PollCardProps) => {
       handleClick={() => props.showEditForm(props.poll.pollId)}
     />
   );
+
   const actions = props.isOwner ? [editButton, voteButton] : [voteButton];
+
   return (
     <List.Item key={props.poll.pollId} actions={actions}>
       <List.Item.Meta

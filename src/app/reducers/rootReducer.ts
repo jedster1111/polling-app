@@ -1,3 +1,4 @@
+import { RouterState } from "connected-react-router";
 import { combineReducers } from "redux";
 import { Poll, UpdatePollInput, User } from "../types";
 import pollForm from "./pollForm";
@@ -49,6 +50,7 @@ export interface InitialState {
   userFormState: UserFormState;
   pollsListState: PollsListState;
 }
+export type StoreState = InitialState & { router: RouterState };
 export const initialState: InitialState = {
   pollsState: {
     polls: [],
