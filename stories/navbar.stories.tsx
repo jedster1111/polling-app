@@ -4,10 +4,7 @@ import { storiesOf } from "@storybook/react";
 import "antd/dist/antd.css";
 import * as React from "react";
 import { MemoryRouter } from "react-router-dom";
-import {
-  LoginButton,
-  LogoutButton
-} from "../src/app/components/login-form/AuthButtons";
+import NavBarButton from "../src/app/components/navbar/AuthButtons";
 import Navbar from "../src/app/components/navbar/Navbar";
 
 const userData = {
@@ -21,8 +18,8 @@ storiesOf("Navbar", module)
   ))
   .add("Login/Logout Button", () => (
     <React.Fragment>
-      <LoginButton handleLogin={loggedIn()} />
-      <LogoutButton handleLogout={loggedOut()} />
+      <NavBarButton type="Login" handleClick={loggedIn()} />
+      <NavBarButton type="Logout" handleClick={loggedOut()} />
     </React.Fragment>
   ))
   .add("Navbar", () => (
@@ -33,6 +30,7 @@ storiesOf("Navbar", module)
         handleLogin={loggedIn()}
         handleLogout={loggedOut()}
         location={"/"}
+        isLoading={false}
       />
       <Navbar
         isLoggedIn={true}
@@ -40,6 +38,7 @@ storiesOf("Navbar", module)
         handleLogin={loggedIn()}
         handleLogout={loggedOut()}
         location={"test"}
+        isLoading={true}
       />
     </React.Fragment>
   ));

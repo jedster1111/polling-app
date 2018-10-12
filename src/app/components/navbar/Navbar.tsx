@@ -2,11 +2,12 @@ import { Avatar, Menu } from "antd";
 import * as React from "react";
 import { NavLink } from "react-router-dom";
 import { User } from "../../types";
-import { LoginButton, LogoutButton } from "../login-form/AuthButtons";
+import NavBarButton from "./AuthButtons";
 
 interface NavBarProps {
   location: string;
   isLoggedIn: boolean;
+  isLoading: boolean;
   userData: User;
   handleLogin: () => void;
   handleLogout: () => void;
@@ -15,6 +16,7 @@ interface NavBarProps {
 const NavBar: React.SFC<NavBarProps> = ({
   location,
   isLoggedIn,
+  isLoading,
   userData,
   handleLogin,
   handleLogout
@@ -31,10 +33,12 @@ const NavBar: React.SFC<NavBarProps> = ({
       </NavLink>
     </Menu.Item>
     <Menu.Item>
-      {isLoggedIn ? (
-        <LogoutButton handleLogout={handleLogout} />
+      {isLoading ? (
+        <NavBarButton type="Loading" />
+      ) : isLoggedIn ? (
+        <NavBarButton type="Logout" handleClick={handleLogout} />
       ) : (
-        <LoginButton handleLogin={handleLogin} />
+        <NavBarButton type="Login" handleClick={handleLogin} />
       )}
     </Menu.Item>
     {isLoggedIn && (

@@ -8,6 +8,7 @@ import { InitialState } from "../reducers/rootReducer";
 import { history } from "../store/index";
 import NavBar from "./navbar/NavbarContainer";
 import CreatePollPage from "./pages/CreatePollPage";
+import PollDetailPage from "./pages/PollDetailPage";
 // import HomePage from "./pages/HomePage";
 import PollsListPage from "./pages/PollsListPage";
 
@@ -45,6 +46,7 @@ class PollingApp extends React.Component<PollingAppProps> {
               <Switch>
                 <Route path="/" exact component={PollsListPage} />
                 <Route path="/create-poll" component={CreatePollPage} />
+                <Route path="/:id" component={PollDetailPage} />
               </Switch>
             </div>
           </Content>
