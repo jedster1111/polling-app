@@ -23,6 +23,7 @@ interface PollsListContainerProps {
   showUpdatePollForm: (pollId: string, poll: Poll) => any;
   editingPoll: null | string;
   discardUpdatePollForm: () => any;
+  isLoading: boolean;
 }
 
 const mapStateToProps = (state: InitialState) => {
@@ -30,7 +31,8 @@ const mapStateToProps = (state: InitialState) => {
     polls: [...state.pollsState.polls].reverse(),
     user: state.userState.data,
     showResults: state.pollsState.showResults,
-    editingPoll: state.pollsState.editingPoll
+    editingPoll: state.pollsState.editingPoll,
+    isLoading: state.pollsState.isLoading
   };
 };
 const mapDispatchToProps = {
@@ -77,6 +79,7 @@ class PollsListContainer extends React.Component<PollsListContainerProps> {
         deletePoll={this.props.deletePoll}
         showEditForm={this.showEditForm}
         editingPoll={this.props.editingPoll}
+        isLoading={this.props.isLoading}
       />
     );
   }

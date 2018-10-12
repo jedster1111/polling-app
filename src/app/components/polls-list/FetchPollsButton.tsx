@@ -3,6 +3,7 @@ import * as React from "react";
 
 interface FetchPollsButtonProps {
   fetchPolls: () => void;
+  isLoading: boolean;
 }
 
 // const StyledButton = styled.button<{}>`
@@ -18,13 +19,16 @@ interface FetchPollsButtonProps {
 //   }
 // `;
 
-const FetchPollsButton = (props: FetchPollsButtonProps) => (
+const FetchPollsButton: React.SFC<FetchPollsButtonProps> = ({
+  fetchPolls,
+  isLoading
+}) => (
   // <StyledButton onClick={props.fetchPolls} id="fetchPollsButton">
   //   Refresh Polls
   // </StyledButton>
-  <Button style={{ marginLeft: "auto" }}>
+  <Button style={{ marginLeft: "auto" }} onClick={fetchPolls}>
     Refresh Polls
-    <Icon type="reload" />
+    <Icon type="reload" spin={isLoading} />
   </Button>
 );
 

@@ -15,6 +15,7 @@ export interface PollsListProps {
   showResults: { [pollId: string]: boolean };
   showEditForm: (pollId: string) => void;
   editingPoll: null | string;
+  isLoading: boolean;
 }
 
 // const PollsListContainer = styled.div<{}>`
@@ -33,7 +34,12 @@ export interface PollsListProps {
 
 const PollsList = (props: PollsListProps) => (
   <List
-    header={<FetchPollsButton fetchPolls={props.fetchPolls} />}
+    header={
+      <FetchPollsButton
+        fetchPolls={props.fetchPolls}
+        isLoading={props.isLoading}
+      />
+    }
     pagination={{ pageSize: 5 }}
     dataSource={props.polls}
     renderItem={(poll: Poll) => (

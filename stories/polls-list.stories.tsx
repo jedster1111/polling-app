@@ -58,7 +58,7 @@ storiesOf("Polls List", module)
     />
   ))
   .add("Fetch Polls Button", () => (
-    <FetchPollsButton fetchPolls={action("fetching polls")} />
+    <FetchPollsButton fetchPolls={action("fetching polls")} isLoading={false} />
   ))
   .add("Option Display", () => (
     <Fragment>
@@ -141,6 +141,7 @@ storiesOf("Polls List", module)
         deletePoll={action("deleted poll")}
         showEditForm={action("showEditForm")}
         editingPoll="1"
+        isLoading={false}
       />
     );
   })
