@@ -21,13 +21,13 @@ storiesOf("Login Form", module)
         handleLogin={action("Logged in!")}
         handleLogout={action("Logged out!")}
         isLoggedIn={false}
-        userData={null}
+        userData={{ id: "1", userName: "Josh" }}
       />
       <LoginForm
         handleLogin={action("Logged in!")}
         handleLogout={action("Logged out!")}
         isLoggedIn={true}
-        userData={{ id: "1", displayName: "Jed" }}
+        userData={{ id: "1", userName: "Jed" }}
       />
     </Fragment>
   ));

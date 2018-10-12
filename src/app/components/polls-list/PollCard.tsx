@@ -1,11 +1,8 @@
+import { Avatar, Button, Icon, List, Modal } from "antd";
+import { ButtonType } from "antd/lib/button";
 import * as React from "react";
-import styled from "styled-components";
 import { Poll, User } from "../../types";
-import OptionButton from "../create-poll-form/AddRemoveOptionButton";
-import ConnectedPollFormContainer from "../create-poll-form/PollFormContainer";
-import OptionsList from "./OptionsList";
-import PollInfo from "./PollInfo";
-import ResultsList from "./ResultsList";
+import PollForm from "../create-poll-form/PollFormContainer";
 
 export interface PollCardProps {
   poll: Poll;
@@ -17,65 +14,84 @@ export interface PollCardProps {
   showEditForm: (pollId: string) => void;
   isEditing?: boolean;
   isOwner?: boolean;
+  navigateToPoll: () => void;
 }
 
-const PollContainer = styled.div<{}>`
-  position: relative;
-  align-self: stretch;
-  display: block;
-  max-width: 1000px;
-  min-width: 170px;
-  border: solid 1px black;
-  margin: 5px 0;
-  padding: 4px 3px;
-  background-color: white;
-`;
-const DeletePollButton = styled(OptionButton)`
-  position: absolute;
-  margin: 0;
-  right: 4px;
-  top: 3px;
-`;
-const InnerContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-`;
+const ActionButton: React.SFC<{
+  iconType: string;
+  text: string;
+  handleClick?: () => void;
+  buttonType?: ButtonType;
+  link?: boolean;
+}> = ({ iconType, text, handleClick, buttonType, link }) => {
+  const actionButtonTemplate = (
+    <Button onClick={handleClick} type={buttonType || "default"}>
+      {text}
+      {<Icon type={iconType} style={{ marginRight: 8 }} />}
+    </Button>
+  );
+  const button = link ? actionButtonTemplate : <a>{actionButtonTemplate}</a>;
+  return button;
+};
 
-DeletePollButton.displayName = "DeletePollButton";
+const PollCard = (props: PollCardProps) => {
+  const detailButton = (
+    <ActionButton
+      iconType="info-circle"
+      buttonType="primary"
+      text="Details"
+      handleClick={props.navigateToPoll}
+    />
+  );
+  const deleteButton = (
+    <ActionButton
+      iconType="close"
+      buttonType="danger"
+      text="Delete"
+      handleClick={() => props.deletePoll(props.user.id, props.poll.pollId)}
+    />
+  );
+  const editButton = (
+    <ActionButton
+      iconType="edit"
+      text="Edit"
+      handleClick={() => props.showEditForm(props.poll.pollId)}
+    />
+  );
 
-const PollCard = (props: PollCardProps) => (
-  <PollContainer id={`poll${props.poll.pollId}`}>
-    <InnerContainer>
-      <PollInfo
-        pollId={props.poll.pollId}
-        creatorName={
-          props.poll.creator.displayName || props.poll.creator.userName
+  const actions = props.isOwner
+    ? [detailButton, editButton, deleteButton]
+    : [detailButton];
+
+  return (
+    <List.Item key={props.poll.pollId} actions={actions}>
+      <List.Item.Meta
+        avatar={
+          props.poll.creator.photos && (
+            <Avatar src={props.poll.creator.photos[0].value} />
+          )
         }
-        description={props.poll.description}
-        pollName={props.poll.pollName}
-        toggleShowResults={props.toggleShowResults}
-        showEditForm={props.showEditForm}
-        isOwner={props.isOwner}
+        title={<p>{props.poll.pollName}</p>}
+        description={
+          <span>
+            <p>{props.poll.description}</p>
+            <p>
+              {props.poll.creator.displayName || props.poll.creator.userName}
+            </p>
+          </span>
+        }
       />
-      <OptionsList
-        handleVote={props.handleVote}
-        pollId={props.poll.pollId}
-        options={props.poll.options}
-        userId={props.user.id}
-      />
-    </InnerContainer>
-    {props.isEditing &&
-      props.isOwner && (
-        <ConnectedPollFormContainer edit pollId={props.poll.pollId} />
-      )}
-    {props.showResults && <ResultsList options={props.poll.options} />}
-    {props.isOwner && (
-      <DeletePollButton
-        remove
-        onClick={() => props.deletePoll(props.user.id, props.poll.pollId)}
-      />
-    )}
-  </PollContainer>
-);
+      <Modal
+        visible={props.isEditing}
+        onCancel={() => props.showEditForm(props.poll.pollId)}
+        footer={null}
+        width="75%"
+        style={{ maxWidth: "800px" }}
+      >
+        <PollForm edit pollId={props.poll.pollId} />
+      </Modal>
+    </List.Item>
+  );
+};
 
 export default PollCard;

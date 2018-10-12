@@ -1,3 +1,4 @@
+// import * as moment from "moment";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Provider } from "react-redux";
@@ -5,6 +6,9 @@ import { injectGlobal } from "styled-components";
 import PollingApp from "./components/PollingApp";
 import store from "./store";
 declare let module: any;
+import "antd/dist/antd.css";
+
+// moment.locale();
 
 // tslint:disable-next-line
 injectGlobal`

@@ -6,21 +6,13 @@ import {
   LoginButton,
   LogoutButton
 } from "../src/app/components/login-form/AuthButtons";
-import UserDataForm from "../src/app/components/user-data-form/UserDataForm";
-import { mockSubmit } from "./index.stories";
 
-storiesOf("User Data Form", module)
-  .add("NameForm", () => (
-    <UserDataForm
-      handleChange={action("Input changed")}
-      discardChanges={action("Discarded changes")}
-      handleSubmit={mockSubmit}
-      values={{ name: "Jed" }}
-    />
-  ))
-  .add("Login and Logout with Github Buttons", () => (
+storiesOf("User Data Form", module).add(
+  "Login and Logout with Github Buttons",
+  () => (
     <Fragment>
       <LoginButton handleLogin={action("Logged In")} />
       <LogoutButton handleLogout={action("Logged Out")} />
     </Fragment>
-  ));
+  )
+);

@@ -1,10 +1,6 @@
+import { Button, Icon } from "antd";
 import * as React from "react";
-import styled from "styled-components";
 
-interface StyledButtonProps {
-  login?: boolean;
-  logout?: boolean;
-}
 interface LoginButtonProps {
   handleLogin: () => void;
 }
@@ -12,28 +8,16 @@ interface LogoutButtonProps {
   handleLogout: () => void;
 }
 
-const StyledButton = styled.button<StyledButtonProps>`
-  flex: 1;
-  border: none;
-  border: solid black 1px;
-  outline: none;
-  background: ${props =>
-    props.login ? "green" : props.logout ? "red" : "grey"};
-  height: 45px;
-  max-width: 140px;
-  margin: 5px;
-`;
-StyledButton.displayName = "StyledButton";
-
 export const LoginButton: React.SFC<LoginButtonProps> = props => (
-  <StyledButton type="button" onClick={props.handleLogin} login>
+  <Button onClick={props.handleLogin}>
     Login
-  </StyledButton>
+    <Icon type="github" />
+  </Button>
 );
 export const LogoutButton: React.SFC<LogoutButtonProps> = props => (
-  <StyledButton type="button" onClick={props.handleLogout} logout>
+  <Button onClick={props.handleLogout} type="danger">
     Logout
-  </StyledButton>
+  </Button>
 );
 LoginButton.displayName = "LoginButton";
 LogoutButton.displayName = "LogoutButton";
