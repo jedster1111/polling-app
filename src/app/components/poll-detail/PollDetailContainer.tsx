@@ -21,7 +21,8 @@ const mapStateToProps: MapStateToProps<
   const { id } = ownProps.match.params;
   return {
     pollData: state.pollsState.polls.find(poll => poll.pollId === id),
-    isLoading: state.pollsState.isLoading
+    isLoading: state.pollsState.isLoading,
+    userData: state.userState.data
   };
 };
 const mapDispatchToProps: MapDispatchToProps<DispatchProps, OwnProps> = {
@@ -39,6 +40,7 @@ class PollDetailContainer extends React.Component<PollDetailContainerProps> {
       <PollDetail
         pollData={this.props.pollData}
         isLoading={this.props.isLoading}
+        userData={this.props.userData}
       />
     );
   }
