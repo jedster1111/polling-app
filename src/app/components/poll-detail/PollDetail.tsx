@@ -3,16 +3,18 @@ import { ColumnProps } from "antd/lib/table";
 import * as React from "react";
 import { Poll, PollOption, User } from "../../types";
 
-export interface PollDetailProps {
+interface PollDetailProps {
   pollData: Poll | undefined;
   isLoading: boolean;
   userData: User;
+  voteOption: (userId: string, pollId: string, optionId: string) => void;
 }
 
 const PollDetail: React.SFC<PollDetailProps> = ({
   pollData,
   isLoading,
-  userData
+  userData,
+  voteOption
 }) => {
   if (!pollData) {
     return <p>That poll doesn't exist</p>;
@@ -42,7 +44,7 @@ const PollDetail: React.SFC<PollDetailProps> = ({
     }
   ];
 
-  const { creator, description, pollName, options } = pollData;
+  const { creator, description, pollName, options, pollId } = pollData;
   return (
     <Card title={pollName}>
       <Card.Meta
@@ -56,6 +58,9 @@ const PollDetail: React.SFC<PollDetailProps> = ({
         dataSource={options}
         rowKey={option => option.optionId}
         pagination={false}
+        onRow={option => ({
+          onClick: () => voteOption(userData.id, pollId, option.optionId)
+        })}
       />
       {/* <p>
         {pollId}

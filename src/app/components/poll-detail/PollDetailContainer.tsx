@@ -1,23 +1,28 @@
 import * as React from "react";
 import { connect, MapDispatchToProps, MapStateToProps } from "react-redux";
 import { RouteComponentProps, withRouter } from "react-router";
-import { Action, ActionCreator } from "redux";
-import { fetchPolls } from "../../actions/actions";
+import { fetchPolls, voteOption } from "../../actions/actions";
 import { InitialState } from "../../reducers/rootReducer";
-import PollDetail, { PollDetailProps } from "./PollDetail";
+import { Poll, User } from "../../types";
+import PollDetail from "./PollDetail";
 
+interface StateProps {
+  pollData: Poll | undefined;
+  isLoading: boolean;
+  userData: User;
+}
 interface DispatchProps {
-  fetchPolls: ActionCreator<Action>;
+  fetchPolls: () => any;
+  voteOption: (userId: string, pollId: string, optionId: string) => any;
 }
 type OwnProps = RouteComponentProps<{ id: string }>;
 
-type PollDetailContainerProps = PollDetailProps & DispatchProps & OwnProps;
+type PollDetailContainerProps = StateProps & DispatchProps & OwnProps;
 
-const mapStateToProps: MapStateToProps<
-  PollDetailProps,
-  OwnProps,
-  InitialState
-> = (state, ownProps) => {
+const mapStateToProps: MapStateToProps<StateProps, OwnProps, InitialState> = (
+  state,
+  ownProps
+) => {
   const { id } = ownProps.match.params;
   return {
     pollData: state.pollsState.polls.find(poll => poll.pollId === id),
@@ -26,7 +31,8 @@ const mapStateToProps: MapStateToProps<
   };
 };
 const mapDispatchToProps: MapDispatchToProps<DispatchProps, OwnProps> = {
-  fetchPolls
+  fetchPolls,
+  voteOption
 };
 
 class PollDetailContainer extends React.Component<PollDetailContainerProps> {
@@ -41,6 +47,7 @@ class PollDetailContainer extends React.Component<PollDetailContainerProps> {
         pollData={this.props.pollData}
         isLoading={this.props.isLoading}
         userData={this.props.userData}
+        voteOption={this.props.voteOption}
       />
     );
   }
