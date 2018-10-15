@@ -17,7 +17,7 @@ export interface PollCardProps {
   navigateToPoll: () => void;
 }
 
-const ActionButton: React.SFC<{
+export const ActionButton: React.SFC<{
   iconType: string;
   text: string;
   handleClick?: () => void;

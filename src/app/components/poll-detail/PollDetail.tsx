@@ -1,20 +1,30 @@
-import { Avatar, Card, Icon, Table } from "antd";
+import { Avatar, Card, Icon, Modal, Table } from "antd";
 import { ColumnProps } from "antd/lib/table";
 import * as React from "react";
 import { Poll, PollOption, User } from "../../types";
+import PollForm from "../create-poll-form/PollFormContainer";
+import { ActionButton } from "../polls-list/PollCard";
 
 interface PollDetailProps {
   pollData: Poll | undefined;
   isLoading: boolean;
   userData: User;
   voteOption: (userId: string, pollId: string, optionId: string) => void;
+  showEditForm: (pollId: string, poll: Poll) => void;
+  discardUpdatePollForm: () => void;
+  deletePoll: (userId: string, pollId: string) => void;
+  isEditing: boolean;
 }
 
 const PollDetail: React.SFC<PollDetailProps> = ({
   pollData,
   isLoading,
   userData,
-  voteOption
+  voteOption,
+  showEditForm,
+  deletePoll,
+  isEditing,
+  discardUpdatePollForm
 }) => {
   if (!pollData) {
     return <p>That poll doesn't exist</p>;
@@ -43,10 +53,26 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       render: (text, option) => option.votes.length
     }
   ];
-
   const { creator, description, pollName, options, pollId } = pollData;
+  const isOwner = creator.id === userData.id;
+  const EditButton = (
+    <ActionButton
+      iconType="edit"
+      text="Edit"
+      handleClick={() => showEditForm(pollData.pollId, pollData)}
+    />
+  );
+  const DeleteButton = (
+    <ActionButton
+      iconType="close"
+      buttonType="danger"
+      text="Delete"
+      handleClick={() => deletePoll(userData.id, pollData.pollId)}
+    />
+  );
+  const actions = isOwner ? [EditButton, DeleteButton] : [];
   return (
-    <Card title={pollName}>
+    <Card title={pollName} actions={actions}>
       <Card.Meta
         title={description}
         description={creator.displayName || creator.userName}
@@ -62,12 +88,15 @@ const PollDetail: React.SFC<PollDetailProps> = ({
           onClick: () => voteOption(userData.id, pollId, option.optionId)
         })}
       />
-      {/* <p>
-        {pollId}
-        {options.map(option => (
-          <p>{option.value}</p>
-        ))}
-      </p> */}
+      <Modal
+        visible={isEditing}
+        onCancel={() => discardUpdatePollForm()}
+        footer={null}
+        width="75%"
+        style={{ maxWidth: "800px" }}
+      >
+        <PollForm edit pollId={pollData.pollId} />
+      </Modal>
     </Card>
   );
 };
