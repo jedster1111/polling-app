@@ -1,8 +1,8 @@
-import { Avatar, Button, Icon, List, Modal } from "antd";
-import { ButtonType } from "antd/lib/button";
+import { Avatar, List, Modal } from "antd";
 import * as React from "react";
 import { Poll, User } from "../../types";
 import PollForm from "../create-poll-form/PollFormContainer";
+import { ActionButton } from "./ActionButton";
 
 export interface PollCardProps {
   poll: Poll;
@@ -16,23 +16,6 @@ export interface PollCardProps {
   isOwner?: boolean;
   navigateToPoll: () => void;
 }
-
-export const ActionButton: React.SFC<{
-  iconType: string;
-  text: string;
-  handleClick?: () => void;
-  buttonType?: ButtonType;
-  link?: boolean;
-}> = ({ iconType, text, handleClick, buttonType, link }) => {
-  const actionButtonTemplate = (
-    <Button onClick={handleClick} type={buttonType || "default"}>
-      {text}
-      {<Icon type={iconType} style={{ marginRight: 8 }} />}
-    </Button>
-  );
-  const button = link ? actionButtonTemplate : <a>{actionButtonTemplate}</a>;
-  return button;
-};
 
 const PollCard = (props: PollCardProps) => {
   const detailButton = (

@@ -69,6 +69,7 @@ class PollDetailContainer extends React.Component<PollDetailContainerProps> {
         discardUpdatePollForm={this.props.discardUpdatePollForm}
         deletePoll={this.props.deletePoll}
         isEditing={isEditing}
+        fetchPolls={this.props.fetchPolls}
       />
     );
   }
