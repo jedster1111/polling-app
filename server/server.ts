@@ -1,8 +1,8 @@
-import path = require("path");
-import webpack = require("webpack");
-import webpackDevMiddleware = require("webpack-dev-middleware");
-import webpackHotMiddleware = require("webpack-hot-middleware");
-import webpackConfig = require("../webpack.config.js");
+import * as path from "path";
+import * as webpack from "webpack";
+import * as webpackDevMiddleware from "webpack-dev-middleware";
+import * as webpackHotMiddleware from "webpack-hot-middleware";
+import * as webpackConfig from "../webpack.config.js";
 import app from "./app";
 
 const compiler = webpack(webpackConfig as any);

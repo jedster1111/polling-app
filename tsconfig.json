@@ -11,13 +11,15 @@
     "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": true,
     "noUnusedLocals": true,
-    "noImplicitAny": true
+    "noImplicitAny": true,
+    "allowSyntheticDefaultImports": true
   },
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",
     "server/**/*.ts",
     "stories/**/*.ts",
+    "stories/**/*.tsx",
     "storybook/addons.js",
     "tests/firstTest.js",
     "tests/navBar.test.ts",

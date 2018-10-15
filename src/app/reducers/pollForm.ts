@@ -96,6 +96,26 @@ const pollFormReducer: Reducer = (
         data: { ...poll }
       };
     }
+    case actionTypes.UPDATE_POLL_LOADING: {
+      return {
+        ...pollFormState,
+        isLoading: true,
+        error: null
+      };
+    }
+    case actionTypes.UPDATE_POLL_SUCCESS: {
+      return {
+        ...pollFormState,
+        isLoading: false
+      };
+    }
+    case actionTypes.UPDATE_POLL_ERROR: {
+      return {
+        ...pollFormState,
+        isLoading: false,
+        error: action.payload.error
+      };
+    }
     default:
       return pollFormState;
   }

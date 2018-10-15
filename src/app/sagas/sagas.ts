@@ -1,9 +1,11 @@
+import { message } from "antd";
 import { AxiosError, AxiosResponse } from "axios";
+import { push } from "connected-react-router";
 import { AnyAction } from "redux";
 import { all, call, put, takeLatest } from "redux-saga/effects";
 import * as actionTypes from "../actions/action-types";
 import * as api from "../api/api";
-import { Poll } from "../types";
+import { Poll, User } from "../types";
 
 // function fetchPolls() {
 //   return axios.get("http://localhost:8000/api/polls");
@@ -29,14 +31,16 @@ function* postPollsSaga(action: any) {
   try {
     const response = yield call(api.createPoll, action.payload);
     const poll: Poll = response.data.poll;
+    message.success("Poll Created!");
     yield put({ type: actionTypes.POST_POLLS_SUCCESS, payload: { poll } });
-    // yield put({ type: actionTypes.GET_POLLS_REQUEST });
+    yield put(push("/"));
   } catch (error) {
     const err: AxiosError = error;
     const errorMessage =
       err.response && err.response.data.error
         ? err.response.data.error
         : err.message;
+    message.error("Something went wrong!");
     yield put({
       type: actionTypes.POST_POLLS_ERROR,
       payload: { error: errorMessage }
@@ -117,8 +121,9 @@ function* updatePoll(action: AnyAction) {
 function* getUserData(action: AnyAction) {
   try {
     const response: AxiosResponse = yield call(api.getUserData);
-    const user = response.data.user;
+    const user: User = response.data.user;
     if (response.status === 200) {
+      message.success(`Welcome ${user.displayName || user.userName}`);
       yield put({
         type: actionTypes.GET_USER_DATA_SUCCESS,
         payload: { user }

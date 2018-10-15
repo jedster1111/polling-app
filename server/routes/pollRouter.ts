@@ -26,7 +26,8 @@ export const getResponsePoll = (storedPoll: Poll): PollResponse => {
     creator: {
       displayName: creator.displayName,
       id: creator.id,
-      userName: creator.userName
+      userName: creator.userName,
+      photos: creator.photos
     },
     options: options.map<PollResponseOption>(option => ({
       optionId: option.optionId,
