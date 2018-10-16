@@ -41,7 +41,8 @@ const userStateReducer: Reducer = (
       return {
         ...userState,
         isLoading: false,
-        isLoggedIn: false
+        isLoggedIn: false,
+        data: { ...initialUserState.data }
       };
     default:
       return userState;
