@@ -3,7 +3,6 @@ import { combineReducers } from "redux";
 import { Poll, UpdatePollInput, User } from "../types";
 import pollForm from "./pollForm";
 import pollsState from "./pollsState";
-import userFormState from "./userFormState";
 import userState, { initialUserState } from "./userState";
 
 export interface PollsState {
@@ -88,8 +87,7 @@ export const initialState: InitialState = {
 const rootReducer = combineReducers({
   pollsState,
   pollForm,
-  userState,
-  userFormState
+  userState
 });
 
 export default rootReducer;
