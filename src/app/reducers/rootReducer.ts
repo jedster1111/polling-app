@@ -4,7 +4,7 @@ import { Poll, UpdatePollInput, User } from "../types";
 import pollForm from "./pollForm";
 import pollsState from "./pollsState";
 import userFormState from "./userFormState";
-import userState from "./userState";
+import userState, { initialUserState } from "./userState";
 
 export interface PollsState {
   polls: Poll[];
@@ -73,16 +73,7 @@ export const initialState: InitialState = {
     isLoading: false,
     error: null
   },
-  userState: {
-    data: {
-      id: "",
-      displayName: "",
-      userName: ""
-    },
-    isLoading: false,
-    error: null,
-    isLoggedIn: false
-  },
+  userState: initialUserState,
   userFormState: {
     data: {
       name: ""

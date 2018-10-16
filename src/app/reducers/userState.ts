@@ -1,20 +1,23 @@
 import { AnyAction, Reducer } from "redux";
 import * as actionTypes from "../actions/action-types";
-import { initialState, UserState } from "./rootReducer";
+import { UserState } from "./rootReducer";
+
+export const initialUserState = {
+  data: {
+    id: "",
+    displayName: "",
+    userName: ""
+  },
+  isLoading: false,
+  error: null,
+  isLoggedIn: false
+};
 
 const userStateReducer: Reducer = (
-  userState: UserState = initialState.userState,
+  userState: UserState = initialUserState,
   action: AnyAction
 ): UserState => {
   switch (action.type) {
-    // case actionTypes.SAVE_USER_FORM_DATA:
-    //   return {
-    //     ...userState,
-    //     data: {
-    //       ...userState.data,
-    //       name: action.payload.name
-    //     }
-    //   };
     case actionTypes.GET_USER_DATA_LOADING:
       return {
         ...userState,
