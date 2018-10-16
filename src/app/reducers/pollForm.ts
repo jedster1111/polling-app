@@ -1,6 +1,33 @@
 import { AnyAction, Reducer } from "redux";
 import * as actionTypes from "../actions/action-types";
-import { initialState, PollForm } from "./rootReducer";
+import { initialState } from "./rootReducer";
+
+export interface PollForm {
+  data: PollFormInput;
+  isLoading: boolean;
+  error: Error | null;
+}
+
+export interface PollFormInput {
+  description: string;
+  pollName: string;
+  options: Array<{ optionId: string; value: string }>;
+}
+
+export const initialPollFormState: PollForm = {
+  data: {
+    description: "",
+    options: [
+      { optionId: "", value: "" },
+      { optionId: "", value: "" },
+      { optionId: "", value: "" },
+      { optionId: "", value: "" }
+    ],
+    pollName: ""
+  },
+  isLoading: false,
+  error: null
+};
 
 const pollFormReducer: Reducer = (
   pollFormState: PollForm = initialState.pollForm,

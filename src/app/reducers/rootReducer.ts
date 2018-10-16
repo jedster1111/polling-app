@@ -1,7 +1,7 @@
 import { RouterState } from "connected-react-router";
 import { combineReducers } from "redux";
 import { Poll, UpdatePollInput, User } from "../types";
-import pollForm from "./pollForm";
+import pollForm, { initialPollFormState, PollForm } from "./pollForm";
 import pollsState from "./pollsState";
 import userState, { initialUserState } from "./userState";
 
@@ -12,16 +12,7 @@ export interface PollsState {
   showResults: { [pollId: string]: boolean };
   editingPoll: null | string;
 }
-export interface PollFormInput {
-  description: string;
-  pollName: string;
-  options: Array<{ optionId: string; value: string }>;
-}
-export interface PollForm {
-  data: PollFormInput;
-  isLoading: boolean;
-  error: Error | null;
-}
+
 export interface UserState {
   data: User;
   isLoading: boolean;
@@ -58,20 +49,7 @@ export const initialState: InitialState = {
     showResults: {},
     editingPoll: null
   },
-  pollForm: {
-    data: {
-      description: "",
-      options: [
-        { optionId: "", value: "" },
-        { optionId: "", value: "" },
-        { optionId: "", value: "" },
-        { optionId: "", value: "" }
-      ],
-      pollName: ""
-    },
-    isLoading: false,
-    error: null
-  },
+  pollForm: initialPollFormState,
   userState: initialUserState,
   userFormState: {
     data: {
