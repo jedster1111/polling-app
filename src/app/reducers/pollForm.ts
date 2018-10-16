@@ -28,17 +28,11 @@ export const initialPollFormState: PollForm = {
   error: null
 };
 
-const pollFormReducer: Reducer = (
-  pollFormState: PollForm = initialPollFormState,
-  action: AnyAction
+const pollFormReducer: Reducer<PollForm, AnyAction> = (
+  pollFormState = initialPollFormState,
+  action
 ): PollForm => {
   switch (action.type) {
-    case actionTypes.LOCATION_CHANGED: {
-      return {
-        ...pollFormState,
-        data: { ...initialPollFormState.data }
-      };
-    }
     case actionTypes.CHANGE_FORM_DATA:
       const { fieldId, value } = action.payload;
       if (/^(optionInput)/.test(fieldId)) {
@@ -64,14 +58,7 @@ const pollFormReducer: Reducer = (
         };
       }
     case actionTypes.DISCARD_FORM_DATA: {
-      return {
-        ...pollFormState,
-        data: {
-          description: "",
-          pollName: "",
-          options: initialPollFormState.data.options
-        }
-      };
+      return initialPollFormState;
     }
     case actionTypes.POST_POLLS_REQUEST:
       return {
