@@ -1,6 +1,5 @@
 import { AnyAction, Reducer } from "redux";
 import * as actionTypes from "../actions/action-types";
-import { initialState } from "./rootReducer";
 
 export interface PollForm {
   data: PollFormInput;
@@ -30,14 +29,14 @@ export const initialPollFormState: PollForm = {
 };
 
 const pollFormReducer: Reducer = (
-  pollFormState: PollForm = initialState.pollForm,
+  pollFormState: PollForm = initialPollFormState,
   action: AnyAction
 ): PollForm => {
   switch (action.type) {
     case actionTypes.LOCATION_CHANGED: {
       return {
         ...pollFormState,
-        data: { ...initialState.pollForm.data }
+        data: { ...initialPollFormState.data }
       };
     }
     case actionTypes.CHANGE_FORM_DATA:
@@ -70,7 +69,7 @@ const pollFormReducer: Reducer = (
         data: {
           description: "",
           pollName: "",
-          options: initialState.pollForm.data.options
+          options: initialPollFormState.data.options
         }
       };
     }
@@ -85,7 +84,7 @@ const pollFormReducer: Reducer = (
         ...pollFormState,
         data: {
           description: "",
-          options: initialState.pollForm.data.options,
+          options: initialPollFormState.data.options,
           pollName: ""
         },
         isLoading: false,
