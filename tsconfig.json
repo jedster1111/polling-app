@@ -27,5 +27,5 @@
     "tests/createPollForm.test.ts",
     "secret/github.ts"
   ],
-  "exclude": ["tsDist", "src/coverage", "./src/**/*.test.ts"]
+  "exclude": ["tsDist", "src/coverage"]
 }
