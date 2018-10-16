@@ -6,7 +6,7 @@
   "scripts": {
     "start": "webpack --display=minimal && npm run server",
     "build": "webpack",
-    "server": "nodemon --exec ./node_modules/.bin/ts-node --watch server server/server.ts",
+    "server": "nodemon --exec ./node_modules/.bin/ts-node --project tsconfig.server.json --watch server server/server.ts",
     "test": "jest",
     "testcafe": "testcafe chrome testcafe/",
     "storybook": "start-storybook -p 6006",

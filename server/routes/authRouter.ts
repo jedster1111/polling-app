@@ -1,5 +1,5 @@
-import express = require("express");
-import passport = require("passport");
+import express from "express";
+import passport from "passport";
 
 const authRouter = express.Router();
 

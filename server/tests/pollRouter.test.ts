@@ -1,4 +1,4 @@
-import request = require("supertest");
+import request from "supertest";
 import app from "../app";
 import db from "../models/database";
 import { getResponsePoll, getResponsePolls } from "../routes/pollRouter";
