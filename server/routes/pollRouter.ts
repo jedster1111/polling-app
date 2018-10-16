@@ -37,7 +37,8 @@ export const getResponsePoll = (storedPoll: Poll): PollResponse => {
         return {
           id: userId,
           displayName: user.displayName,
-          userName: user.userName
+          userName: user.userName,
+          photos: user.photos
         };
       })
     }))
