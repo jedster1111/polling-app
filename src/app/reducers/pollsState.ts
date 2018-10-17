@@ -1,11 +1,38 @@
 import { AnyAction, Reducer } from "redux";
 import * as actionTypes from "../actions/action-types";
 import { Poll } from "../types";
-import { initialState, PollsState } from "./rootReducer";
 
-const pollsStateReducer: Reducer = (
-  pollsState: PollsState = initialState.pollsState,
+export interface PollsState {
+  polls: Poll[];
+  isLoading: boolean;
+  error: string | null;
+  showResults: { [pollId: string]: boolean };
+  editingPoll: null | string;
+}
+
+export const initialPollsState = {
+  polls: [],
+  isLoading: false,
+  error: null,
+  showResults: {},
+  editingPoll: null
+};
+
+const calculateNewPolls: (
+  pollsState: PollsState,
   action: AnyAction
+) => Poll[] = (pollsState, action) => {
+  const newPolls = [...pollsState.polls];
+  const indexOfUpdatedPoll = newPolls.findIndex(
+    poll => poll.pollId === action.payload.poll.pollId
+  );
+  newPolls[indexOfUpdatedPoll] = action.payload.poll;
+  return newPolls;
+};
+
+const pollsStateReducer: Reducer<PollsState, AnyAction> = (
+  pollsState = initialPollsState,
+  action
 ): PollsState => {
   switch (action.type) {
     case actionTypes.LOCATION_CHANGED:
@@ -158,11 +185,3 @@ const pollsStateReducer: Reducer = (
 };
 
 export default pollsStateReducer;
-function calculateNewPolls(pollsState: PollsState, action: AnyAction) {
-  const newPolls = [...pollsState.polls];
-  const indexOfUpdatedPoll = newPolls.findIndex(
-    poll => poll.pollId === action.payload.poll.pollId
-  );
-  newPolls[indexOfUpdatedPoll] = action.payload.poll;
-  return newPolls;
-}

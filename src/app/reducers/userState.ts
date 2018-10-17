@@ -1,8 +1,15 @@
 import { AnyAction, Reducer } from "redux";
 import * as actionTypes from "../actions/action-types";
-import { UserState } from "./rootReducer";
+import { User } from "../types";
 
-export const initialUserState = {
+export interface UserState {
+  data: User;
+  isLoading: boolean;
+  error: Error | null;
+  isLoggedIn: boolean;
+}
+
+export const initialUserState: UserState = {
   data: {
     id: "",
     displayName: "",
