@@ -4,7 +4,7 @@ import * as actionTypes from "../actions/action-types";
 export interface PollForm {
   data: PollFormInput;
   isLoading: boolean;
-  error: Error | null;
+  error: string | null;
 }
 
 export interface PollFormInput {
@@ -67,16 +67,7 @@ const pollFormReducer: Reducer<PollForm, AnyAction> = (
         error: null
       };
     case actionTypes.POST_POLLS_SUCCESS:
-      return {
-        ...pollFormState,
-        data: {
-          description: "",
-          options: initialPollFormState.data.options,
-          pollName: ""
-        },
-        isLoading: false,
-        error: null
-      };
+      return initialPollFormState;
     case actionTypes.POST_POLLS_ERROR:
       return {
         ...pollFormState,

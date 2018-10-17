@@ -1,4 +1,5 @@
 import * as types from "../../actions/action-types";
+import { Poll } from "../../types";
 import reducer, { initialPollFormState } from "../pollForm";
 
 describe("Testing pollForm Reducer", () => {
@@ -73,5 +74,109 @@ describe("Testing pollForm Reducer", () => {
         { type: types.DISCARD_FORM_DATA }
       )
     ).toEqual(initialPollFormState);
+  });
+
+  it("should handle POST_POLLS_REQUEST", () => {
+    expect(
+      reducer(
+        { ...initialPollFormState, error: "Error" },
+        {
+          type: types.POST_POLLS_REQUEST
+        }
+      )
+    ).toEqual({ ...initialPollFormState, isLoading: true, error: null });
+  });
+
+  it("should handle POST_POLLS_SUCCESS", () => {
+    expect(
+      reducer(
+        { ...initialPollFormState, isLoading: true },
+        { type: types.POST_POLLS_SUCCESS }
+      )
+    ).toEqual(initialPollFormState);
+  });
+
+  it("should handle POST_POLLS_ERROR", () => {
+    const error = "error";
+    expect(
+      reducer(
+        { ...initialPollFormState, isLoading: true },
+        { type: types.POST_POLLS_ERROR, payload: { error } }
+      )
+    ).toEqual({ ...initialPollFormState, error });
+  });
+
+  it("should handle ADD_POLL_FORM_OPTION", () => {
+    const data = initialPollFormState.data;
+    const options = data.options;
+    expect(
+      reducer(initialPollFormState, { type: types.ADD_POLL_FORM_OPTION })
+    ).toEqual({
+      ...initialPollFormState,
+      data: {
+        ...data,
+        options: [...options, { optionId: "", value: "" }]
+      }
+    });
+  });
+
+  it("should handle REMOVE_POLL_FORM_OPTION", () => {
+    const index = 1;
+    const options = [...initialPollFormState.data.options];
+    options.splice(index, 1);
+    expect(
+      reducer(initialPollFormState, {
+        type: types.REMOVE_POLL_FORM_OPTION,
+        payload: { index }
+      })
+    ).toEqual({
+      ...initialPollFormState,
+      data: { ...initialPollFormState.data, options }
+    });
+  });
+
+  it("should handle SHOW_UPDATE_POLL_FORM", () => {
+    const creator = { id: "1", userName: "jed" };
+    const poll: Poll = {
+      creator,
+      description: "description",
+      options: [{ optionId: "1", value: "option1", votes: [creator] }],
+      pollId: "1",
+      pollName: "pollName"
+    };
+    expect(
+      reducer(initialPollFormState, {
+        type: types.SHOW_UPDATE_POLL_FORM,
+        payload: { poll }
+      })
+    ).toEqual({ ...initialPollFormState, data: poll });
+  });
+
+  it("should handle UPDATE_POLL_LOADING", () => {
+    expect(
+      reducer(
+        { ...initialPollFormState, error: "whoops" },
+        { type: types.UPDATE_POLL_LOADING }
+      )
+    ).toEqual({ ...initialPollFormState, isLoading: true, error: null });
+  });
+
+  it("should handle UPDATE_POLL_SUCCESS", () => {
+    expect(
+      reducer(
+        { ...initialPollFormState, isLoading: true },
+        { type: types.UPDATE_POLL_SUCCESS }
+      )
+    ).toEqual(initialPollFormState);
+  });
+
+  it("should handle UPDATE_POLL_ERROR", () => {
+    const error = "whoops";
+    expect(
+      reducer(
+        { ...initialPollFormState, isLoading: true },
+        { type: types.UPDATE_POLL_ERROR, payload: { error } }
+      )
+    ).toEqual({ ...initialPollFormState, error });
   });
 });

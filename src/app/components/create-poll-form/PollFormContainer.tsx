@@ -9,7 +9,8 @@ import {
   removePollOption,
   updatePoll
 } from "../../actions/actions";
-import { InitialState, PollFormInput } from "../../reducers/rootReducer";
+import { PollFormInput } from "../../reducers/pollForm";
+import { InitialState } from "../../reducers/rootReducer";
 import { PollInput, UpdatePollInput, User } from "../../types";
 import PollForm from "./PollForm";
 

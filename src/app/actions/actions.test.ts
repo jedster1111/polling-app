@@ -143,7 +143,7 @@ describe("Testing actions:", () => {
     );
   });
 
-  it("should createa an action that gets user data ", () => {
+  it("should create an action that gets user data ", () => {
     const expectedAction = { type: types.GET_USER_DATA_LOADING };
     expect(actions.getUserData()).toEqual(expectedAction);
   });
