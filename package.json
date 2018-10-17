@@ -136,7 +136,9 @@
       "/coverage/",
       "/dist/",
       "/tests/",
-      "/build/"
+      "/build/",
+      "/stories/",
+      "/testcafe/"
     ]
   }
 }
