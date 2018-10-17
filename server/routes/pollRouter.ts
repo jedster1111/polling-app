@@ -17,12 +17,20 @@ export const getResponsePolls = (storedPolls: Poll[]): PollResponse[] => {
   });
 };
 export const getResponsePoll = (storedPoll: Poll): PollResponse => {
-  const { creatorId, options, description, pollName, pollId } = storedPoll;
+  const {
+    creatorId,
+    options,
+    description,
+    pollName,
+    pollId,
+    voteLimit
+  } = storedPoll;
   const creator = db.getUser(creatorId);
   return {
     description,
     pollId,
     pollName,
+    voteLimit,
     creator: {
       displayName: creator.displayName,
       id: creator.id,

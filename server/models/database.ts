@@ -18,7 +18,8 @@ class Database {
       "creatorId",
       "description",
       "pollName",
-      "options"
+      "options",
+      "voteLimit"
     ];
     const missingProperties: string[] = [];
     necessaryProperties.forEach(property => {

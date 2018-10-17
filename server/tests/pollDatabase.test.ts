@@ -11,7 +11,8 @@ const generatePollInputs = (n: number) => {
       creatorId: `${index}`,
       pollName: `pollName${index}`,
       description: `description${index}`,
-      options: ["option1", "option2"]
+      options: ["option1", "option2"],
+      voteLimit: 3
     });
   }
   return polls;
@@ -108,7 +109,8 @@ describe("Testing poll related database methods:", () => {
         options: [
           { optionId: "1", value: "changed" },
           { optionId: "2", value: "changed2" }
-        ]
+        ],
+        voteLimit: 3
       };
 
       const expectedPollOptions = generateExpectedOptions(updateInput);
@@ -118,7 +120,8 @@ describe("Testing poll related database methods:", () => {
         pollId: pollToUpdate.pollId,
         pollName: updateInput.pollName,
         description: updateInput.description,
-        options: expectedPollOptions
+        options: expectedPollOptions,
+        voteLimit: updateInput.voteLimit
       };
 
       const poll = db.updatePoll(
