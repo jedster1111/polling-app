@@ -123,7 +123,7 @@ const PollDetail: React.SFC<PollDetailProps> = ({
         title={description}
         description={
           <span>
-            <p>creator.displayName || creator.userName</p>
+            <p>{creator.displayName || creator.userName}</p>
             {<VoteDisplay poll={pollData} user={userData} />}
           </span>
         }
