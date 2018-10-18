@@ -1,4 +1,4 @@
-import loki = require("lokijs");
+import Loki from "lokijs";
 import { ErrorWithStatusCode } from "../app";
 import {
   Poll,
@@ -43,7 +43,7 @@ class Database {
     }
   }
 
-  db = new loki("polling-app.db");
+  db = new Loki("polling-app.db");
   polls = this.db.addCollection("polls", { clone: true, disableMeta: true });
   users = this.db.addCollection("users", { clone: true, disableMeta: true });
   pollsCount = 0;

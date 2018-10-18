@@ -1,18 +1,38 @@
 import { AnyAction, Reducer } from "redux";
 import * as actionTypes from "../actions/action-types";
-import { initialState, PollForm } from "./rootReducer";
 
-const pollFormReducer: Reducer = (
-  pollFormState: PollForm = initialState.pollForm,
-  action: AnyAction
+export interface PollForm {
+  data: PollFormInput;
+  isLoading: boolean;
+  error: string | null;
+}
+
+export interface PollFormInput {
+  description: string;
+  pollName: string;
+  options: Array<{ optionId: string; value: string }>;
+}
+
+export const initialPollFormState: PollForm = {
+  data: {
+    description: "",
+    options: [
+      { optionId: "", value: "" },
+      { optionId: "", value: "" },
+      { optionId: "", value: "" },
+      { optionId: "", value: "" }
+    ],
+    pollName: ""
+  },
+  isLoading: false,
+  error: null
+};
+
+const pollFormReducer: Reducer<PollForm, AnyAction> = (
+  pollFormState = initialPollFormState,
+  action
 ): PollForm => {
   switch (action.type) {
-    case actionTypes.LOCATION_CHANGED: {
-      return {
-        ...pollFormState,
-        data: { ...initialState.pollForm.data }
-      };
-    }
     case actionTypes.CHANGE_FORM_DATA:
       const { fieldId, value } = action.payload;
       if (/^(optionInput)/.test(fieldId)) {
@@ -38,14 +58,7 @@ const pollFormReducer: Reducer = (
         };
       }
     case actionTypes.DISCARD_FORM_DATA: {
-      return {
-        ...pollFormState,
-        data: {
-          description: "",
-          pollName: "",
-          options: initialState.pollForm.data.options
-        }
-      };
+      return initialPollFormState;
     }
     case actionTypes.POST_POLLS_REQUEST:
       return {
@@ -54,16 +67,7 @@ const pollFormReducer: Reducer = (
         error: null
       };
     case actionTypes.POST_POLLS_SUCCESS:
-      return {
-        ...pollFormState,
-        data: {
-          description: "",
-          options: initialState.pollForm.data.options,
-          pollName: ""
-        },
-        isLoading: false,
-        error: null
-      };
+      return initialPollFormState;
     case actionTypes.POST_POLLS_ERROR:
       return {
         ...pollFormState,
@@ -94,6 +98,26 @@ const pollFormReducer: Reducer = (
       return {
         ...pollFormState,
         data: { ...poll }
+      };
+    }
+    case actionTypes.UPDATE_POLL_LOADING: {
+      return {
+        ...pollFormState,
+        isLoading: true,
+        error: null
+      };
+    }
+    case actionTypes.UPDATE_POLL_SUCCESS: {
+      return {
+        ...pollFormState,
+        isLoading: false
+      };
+    }
+    case actionTypes.UPDATE_POLL_ERROR: {
+      return {
+        ...pollFormState,
+        isLoading: false,
+        error: action.payload.error
       };
     }
     default:

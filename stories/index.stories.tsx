@@ -94,5 +94,6 @@ storiesOf("Create Poll Form", module)
       }}
       addPollOption={action("added poll option input")}
       removePollOption={action("removed poll option input")}
+      isLoading={false}
     />
   ));

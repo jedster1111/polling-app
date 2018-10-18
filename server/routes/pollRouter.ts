@@ -1,5 +1,5 @@
-import express = require("express");
-import { passport } from "../app";
+import express from "express";
+import passport from "passport";
 import db from "../models/database";
 import { CreatePollRequest, VoteInputRequest } from "../types";
 import {
@@ -26,7 +26,8 @@ export const getResponsePoll = (storedPoll: Poll): PollResponse => {
     creator: {
       displayName: creator.displayName,
       id: creator.id,
-      userName: creator.userName
+      userName: creator.userName,
+      photos: creator.photos
     },
     options: options.map<PollResponseOption>(option => ({
       optionId: option.optionId,
@@ -36,7 +37,8 @@ export const getResponsePoll = (storedPoll: Poll): PollResponse => {
         return {
           id: userId,
           displayName: user.displayName,
-          userName: user.userName
+          userName: user.userName,
+          photos: user.photos
         };
       })
     }))

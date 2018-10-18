@@ -29,7 +29,7 @@ const ResultsColumn = (props: ResultsColumnProps) => {
     <ResultsColumnContainer>
       <TitleText>{props.option.value + voteText}</TitleText>
       {props.option.votes.map(voter => (
-        <VoterText key={voter.id}>{voter.displayName}</VoterText>
+        <VoterText key={voter.id}>{voter.userName}</VoterText>
       ))}
     </ResultsColumnContainer>
   );

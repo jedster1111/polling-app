@@ -1,6 +1,6 @@
 import { connectRouter, routerMiddleware } from "connected-react-router";
 import { createBrowserHistory } from "history";
-import path = require("path");
+import path from "path";
 import { applyMiddleware, createStore } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 import createSagaMiddleware from "redux-saga";

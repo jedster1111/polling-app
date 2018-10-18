@@ -1,4 +1,4 @@
-import request = require("supertest");
+import request from "supertest";
 import app from "../app";
 import db from "../models/database";
 import { getResponsePoll, getResponsePolls } from "../routes/pollRouter";
@@ -33,7 +33,8 @@ const generateInputUsers = (n: number) => {
     users.push({
       id: `${index}`,
       displayName: `displayName${index}`,
-      userName: `userName${index}`
+      userName: `userName${index}`,
+      photos: [{ value: "photoUrl" }]
     });
   }
   return users;
@@ -68,7 +69,7 @@ describe("Testing poll related routes:", () => {
 
       const polls: PollResponse[] = response.body.polls;
 
-      expect(polls).toMatchObject(responsePolls);
+      expect(polls).toEqual(responsePolls);
     });
     test("Can I create a poll and will I get it back in the response?", async () => {
       const userToUse = db.getAllUsers()[0];
@@ -161,7 +162,7 @@ describe("Testing poll related routes:", () => {
 
       const postResponse = JSON.parse(payload.text).poll;
 
-      expect(postResponse).toMatchObject(expectedResponse);
+      expect(postResponse).toEqual(expectedResponse);
     });
 
     test("Can I remove a specific poll?", async () => {

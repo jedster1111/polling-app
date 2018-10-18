@@ -1,4 +1,4 @@
-import uuid = require("uuid/v1");
+import uuid from "uuid/v1";
 import db from "../models/database";
 import { User } from "../types";
 

@@ -1,6 +1,8 @@
 const path = require("path");
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+// const tsImportPluginFactory = require("ts-import-plugin");
+const tsImportPluginFactory = require("ts-import-plugin");
 
 module.exports = {
   entry: {
@@ -19,9 +21,55 @@ module.exports = {
     rules: [
       {
         test: /\.tsx?$/,
-        loader: "ts-loader"
+        loader: "ts-loader",
+        options: {
+          getCustomTransformers: () => ({
+            before: [
+              tsImportPluginFactory({
+                libraryDirectory: "es",
+                libraryName: "antd",
+                style: "css"
+              })
+            ]
+          })
+        }
       },
-      { enforce: "pre", test: /\.js$/, loader: "source-map-loader" }
+      //   options: {
+      //     transpileOnly: true,
+      //     getCustomTransformers: () => ({
+      //       before: [tsImportPluginFactory(/** options */)]
+      //     }),
+      //     compilerOptions: {
+      //       module: "commonJs"
+      //     }
+      //   },
+      //   exclude: /node_modules/
+      // },
+      {
+        test: /\.css$/,
+        use: [
+          { loader: "style-loader" },
+          { loader: "css-loader" }
+          // {
+          //   loader: "less-loader",
+          //   options: {
+          //     root: path.resolve(__dirname, "./")
+          //   }
+          // }
+        ]
+      }
+
+      // { enforce: "pre", test: /\.js$/, loader: "source-map-loader" }
+
+      // {
+      //   loader: "style-loader"
+      // },
+      // {
+      //   loader: "css-loader",
+      //   options: {
+      //     sourceMap: true
+      //   }
+      // }
     ]
   },
   plugins: [
