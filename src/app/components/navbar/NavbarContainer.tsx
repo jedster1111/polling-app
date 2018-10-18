@@ -1,9 +1,10 @@
 import * as React from "react";
-import { connect, MapStateToProps } from "react-redux";
+import { connect } from "react-redux";
 import { StoreState } from "../../reducers/rootReducer";
 import { User } from "../../types";
-import NavBar from "./Navbar";
 
+import { discardPoll, navigateToPollForm } from "../../actions/actions";
+import NavBar from "./Navbar";
 // import * as React from "react";
 
 interface StateProps {
@@ -12,19 +13,33 @@ interface StateProps {
   location: string;
   isLoading: boolean;
 }
+interface DispatchProps {
+  navigateToPollForm: () => any;
+  discardPoll: () => any;
+}
 
-type NavBarContainerProps = StateProps;
+type NavBarContainerProps = StateProps & DispatchProps;
 
-const mapStateToProps: MapStateToProps<StateProps, {}, StoreState> = state => ({
+const mapStateToProps: (state: StoreState) => StateProps = state => ({
   isLoading: state.userState.isLoading,
   isLoggedIn: state.userState.isLoggedIn,
   userData: state.userState.data,
   location: state.router.location.pathname
 });
 
+const mapDispatchToProps: DispatchProps = {
+  navigateToPollForm,
+  discardPoll
+};
+
 class NavBarContainer extends React.Component<NavBarContainerProps> {
   handleLogin = () => (window.location.href = "/auth/github");
   handleLogout = () => (window.location.href = "/auth/logout");
+  navigateToPollForm = () => {
+    console.log("navigating");
+    this.props.discardPoll();
+    this.props.navigateToPollForm();
+  };
   render() {
     const location = this.props.location;
     return (
@@ -35,11 +50,15 @@ class NavBarContainer extends React.Component<NavBarContainerProps> {
         handleLogin={this.handleLogin}
         handleLogout={this.handleLogout}
         location={location}
+        navigateToPollForm={this.navigateToPollForm}
       />
     );
   }
 }
 
-const ConnectedNavBarContainer = connect(mapStateToProps)(NavBarContainer);
+const ConnectedNavBarContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(NavBarContainer);
 
 export default ConnectedNavBarContainer;

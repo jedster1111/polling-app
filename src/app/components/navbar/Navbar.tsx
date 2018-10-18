@@ -11,6 +11,7 @@ interface NavBarProps {
   userData: User;
   handleLogin: () => void;
   handleLogout: () => void;
+  navigateToPollForm: () => void;
 }
 
 const NavBar: React.SFC<NavBarProps> = ({
@@ -19,7 +20,8 @@ const NavBar: React.SFC<NavBarProps> = ({
   isLoading,
   userData,
   handleLogin,
-  handleLogout
+  handleLogout,
+  navigateToPollForm
 }) => (
   <Menu mode="horizontal" defaultSelectedKeys={["/"]} selectedKeys={[location]}>
     <Menu.Item key="/">
@@ -28,9 +30,7 @@ const NavBar: React.SFC<NavBarProps> = ({
       </NavLink>
     </Menu.Item>
     <Menu.Item disabled={!isLoggedIn} key="/create-poll">
-      <NavLink to="/create-poll" id="createPollLink">
-        Create a Poll
-      </NavLink>
+      <div onClick={navigateToPollForm}>Create a Poll</div>
     </Menu.Item>
     <Menu.Item>
       {isLoading ? (

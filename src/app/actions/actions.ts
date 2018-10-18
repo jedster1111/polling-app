@@ -1,3 +1,4 @@
+import { push } from "connected-react-router";
 import { Action } from "redux";
 import { Poll, PollInput, UpdatePollInput } from "../types";
 import * as actionTypes from "./action-types";
@@ -20,8 +21,8 @@ export const createPoll: (
 
 export const changeFormData: (
   fieldId: string,
-  value: string
-) => Action & { payload: { fieldId: string; value: string } } = (
+  value: string | number
+) => Action & { payload: { fieldId: string; value: string | number } } = (
   fieldId,
   value
 ) => ({
@@ -100,3 +101,5 @@ export const updatePoll: (
 export const getUserData: () => Action = () => ({
   type: actionTypes.GET_USER_DATA_LOADING
 });
+
+export const navigateToPollForm: () => Action = () => push("/create-poll");

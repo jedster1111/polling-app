@@ -4,6 +4,7 @@ export interface Poll {
   description: string;
   pollId: string;
   options: PollOption[];
+  voteLimit: number;
 }
 export interface User {
   id: string;
@@ -23,6 +24,7 @@ export interface PollInput {
   pollName: string;
   description: string;
   options: string[];
+  voteLimit: number;
 }
 export interface UpdatePollInput {
   pollName?: string;

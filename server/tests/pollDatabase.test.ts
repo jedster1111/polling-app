@@ -11,7 +11,8 @@ const generatePollInputs = (n: number) => {
       creatorId: `${index}`,
       pollName: `pollName${index}`,
       description: `description${index}`,
-      options: ["option1", "option2"]
+      options: ["option1", "option2"],
+      voteLimit: 1
     });
   }
   return polls;
@@ -22,6 +23,7 @@ const generateExpectedPolls = (n: number) => {
     pollName: string;
     description: string;
     options: Array<{ optionId: string; value: string; votes: string[] }>;
+    voteLimit: number;
   }> = [];
 
   for (let i = 0; i < n; i++) {
@@ -33,7 +35,8 @@ const generateExpectedPolls = (n: number) => {
       options: [
         { optionId: "1", value: "option1", votes: [] },
         { optionId: "2", value: "option2", votes: [] }
-      ]
+      ],
+      voteLimit: 1
     });
   }
   return expectedPolls;
@@ -108,7 +111,8 @@ describe("Testing poll related database methods:", () => {
         options: [
           { optionId: "1", value: "changed" },
           { optionId: "2", value: "changed2" }
-        ]
+        ],
+        voteLimit: 3
       };
 
       const expectedPollOptions = generateExpectedOptions(updateInput);
@@ -118,7 +122,8 @@ describe("Testing poll related database methods:", () => {
         pollId: pollToUpdate.pollId,
         pollName: updateInput.pollName,
         description: updateInput.description,
-        options: expectedPollOptions
+        options: expectedPollOptions,
+        voteLimit: updateInput.voteLimit
       };
 
       const poll = db.updatePoll(
@@ -162,6 +167,15 @@ describe("Testing poll related database methods:", () => {
       db.votePoll("1", { optionId: "1", voterId: "1" });
       const poll = db.votePoll("1", { optionId: "1", voterId: "1" });
       expect(poll).toMatchObject(expectedPoll);
+    });
+    it("should restrict my vote if the voteLimit has been reached", () => {
+      const expectedPoll = generateExpectedPolls(1)[0];
+      expectedPoll.options[0].votes = ["1"];
+      const poll = db.votePoll("1", { optionId: "1", voterId: "1" });
+      expect(poll).toMatchObject(expectedPoll);
+
+      const voteInput2 = { optionId: "2", voterId: "1" };
+      expect(() => db.votePoll("1", voteInput2)).toThrow();
     });
   });
 

@@ -18,7 +18,8 @@ class Database {
       "creatorId",
       "description",
       "pollName",
-      "options"
+      "options",
+      "voteLimit"
     ];
     const missingProperties: string[] = [];
     necessaryProperties.forEach(property => {
@@ -137,18 +138,25 @@ class Database {
    */
   votePoll(pollId: string, voteInput: VoteInput): Poll {
     const poll: StoredPoll = this.polls.findOne({ pollId });
+
+    const numberOfExistingVotes = poll.options.filter(option =>
+      option.votes.find(vote => vote === voteInput.voterId)
+    ).length;
+
+    const optionBeingVotedOn = poll.options.find(
+      option => option.optionId === voteInput.optionId
+    );
     const isValidVote =
       poll &&
-      poll.options[
-        poll.options.findIndex(option => option.optionId === voteInput.optionId)
-      ] &&
-      voteInput.voterId;
+      optionBeingVotedOn &&
+      voteInput.voterId &&
+      (numberOfExistingVotes < poll.voteLimit ||
+        optionBeingVotedOn.votes.find(vote => vote === voteInput.voterId));
+
     if (!isValidVote) {
       const err = new Error(
-        `Invalid vote input, either vote/poll doesn't exist
-        or username is empty. PollId: ${pollId}, OptionId: ${
-          voteInput.optionId
-        }, VoterId: ${voteInput.voterId}`
+        `Invalid vote input: either vote/poll doesn't exist,
+         username is empty, or you have reached the vote limit.`
       ) as ErrorWithStatusCode;
       err.statusCode = 400;
       throw err;

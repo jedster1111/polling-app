@@ -90,7 +90,8 @@ storiesOf("Create Poll Form", module)
           { value: "test", optionId: "1" },
           { value: "test2", optionId: "2" },
           { value: "test3", optionId: "3" }
-        ]
+        ],
+        voteLimit: 1
       }}
       addPollOption={action("added poll option input")}
       removePollOption={action("removed poll option input")}

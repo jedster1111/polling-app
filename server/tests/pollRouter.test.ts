@@ -12,6 +12,8 @@ import {
 } from "../types";
 import createJwtCookie from "./createJwtCookie";
 
+const voteLimit = 3;
+
 const generateInputPolls = (n: number) => {
   const polls: PollInput[] = [];
   for (let i = 0; i < n; i++) {
@@ -20,7 +22,8 @@ const generateInputPolls = (n: number) => {
       pollName: `pollName${index}`,
       description: `description${index}`,
       creatorId: `${index}`,
-      options: ["option1", "option2"]
+      options: ["option1", "option2"],
+      voteLimit
     });
   }
   return polls;
@@ -78,7 +81,8 @@ describe("Testing poll related routes:", () => {
         creatorId: userToUse.id,
         description: "descriptionPOST",
         options: ["option1", "option2"],
-        pollName: "pollNamePOST"
+        pollName: "pollNamePOST",
+        voteLimit
       };
 
       const expectedResponse = {
@@ -141,7 +145,8 @@ describe("Testing poll related routes:", () => {
           }
         ],
         pollId: pollToUse.pollId,
-        pollName: "pollNameChanged"
+        pollName: "pollNameChanged",
+        voteLimit
       };
 
       const token = createJwtCookie(creator.id);

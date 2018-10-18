@@ -2,6 +2,7 @@ import { Avatar, List, Modal } from "antd";
 import * as React from "react";
 import { Poll, User } from "../../types";
 import PollForm from "../create-poll-form/PollFormContainer";
+import VoteDisplay from "../VoteDisplay";
 import { ActionButton } from "./ActionButton";
 
 export interface PollCardProps {
@@ -61,6 +62,7 @@ const PollCard = (props: PollCardProps) => {
             <p>
               {props.poll.creator.displayName || props.poll.creator.userName}
             </p>
+            <VoteDisplay poll={props.poll} user={props.user} />
           </span>
         }
       />

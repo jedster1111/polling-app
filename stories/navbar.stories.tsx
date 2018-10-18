@@ -12,6 +12,7 @@ const userData = {
   photos: [{ value: "https://avatars2.githubusercontent.com/u/25291974?v=4" }],
   userName: "Jed"
 };
+const navigateToPollForm = action("navigated to poll form");
 storiesOf("Navbar", module)
   .addDecorator(story => (
     <MemoryRouter initialEntries={["/"]}>{story()}</MemoryRouter>
@@ -31,6 +32,7 @@ storiesOf("Navbar", module)
         handleLogout={loggedOut()}
         location={"/"}
         isLoading={false}
+        navigateToPollForm={navigateToPollForm}
       />
       <Navbar
         isLoggedIn={true}
@@ -39,6 +41,7 @@ storiesOf("Navbar", module)
         handleLogout={loggedOut()}
         location={"test"}
         isLoading={true}
+        navigateToPollForm={action("navigated to poll form")}
       />
     </React.Fragment>
   ));

@@ -68,7 +68,8 @@ describe("Testing pollForm Reducer", () => {
           data: {
             pollName: "pollName",
             description: "description",
-            options: [{ optionId: "1", value: " value1" }]
+            options: [{ optionId: "1", value: " value1" }],
+            voteLimit: 1
           }
         },
         { type: types.DISCARD_FORM_DATA }
@@ -142,7 +143,8 @@ describe("Testing pollForm Reducer", () => {
       description: "description",
       options: [{ optionId: "1", value: "option1", votes: [creator] }],
       pollId: "1",
-      pollName: "pollName"
+      pollName: "pollName",
+      voteLimit: 1
     };
     expect(
       reducer(initialPollFormState, {

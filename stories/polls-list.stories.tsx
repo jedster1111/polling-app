@@ -35,14 +35,16 @@ const examplePolls: Poll[] = [
     options: createOptions(4),
     pollId: "1",
     pollName: "New Furniture?",
-    creator: { id: "1", userName: "Jed" }
+    creator: { id: "1", userName: "Jed" },
+    voteLimit: 1
   },
   {
     creator: { id: "2", userName: "Joy" },
     description: "What to get for lunch today?",
     options: createOptions(6),
     pollId: "2",
-    pollName: "Lunch today?"
+    pollName: "Lunch today?",
+    voteLimit: 1
   }
 ];
 
