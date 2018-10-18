@@ -6,6 +6,7 @@ import { Poll, PollOption, User } from "../../types";
 import PollForm from "../create-poll-form/PollFormContainer";
 import { ActionButton } from "../polls-list/ActionButton";
 import FetchPollsButton from "../polls-list/FetchPollsButton";
+import VoteDisplay from "../VoteDisplay";
 import VoteBar from "./VoteBar";
 
 interface PollDetailProps {
@@ -117,12 +118,19 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       <RefreshButtonContainer>
         <FetchPollsButton fetchPolls={fetchPolls} isLoading={isLoading} />
       </RefreshButtonContainer>
+
       <Card.Meta
         title={description}
-        description={creator.displayName || creator.userName}
+        description={
+          <span>
+            <p>creator.displayName || creator.userName</p>
+            {<VoteDisplay poll={pollData} user={userData} />}
+          </span>
+        }
         avatar={creator.photos && <Avatar src={creator.photos[0].value} />}
         style={{ marginBottom: "15px" }}
       />
+
       <Table
         columns={columns}
         dataSource={options}
