@@ -16,23 +16,6 @@ interface CreatePollFormProps {
   isLoading: boolean;
 }
 
-// export const FormContainer = styled(
-//   posed.form({
-//     enter: { opacity: 1, y: 0, delayChildren: 150, staggerChildren: 150 },
-//     exit: { opacity: 0, y: 30 }
-//   })
-// )`
-//   flex: 1;
-//   min-width: 240px;
-//   max-width: 750px;
-//   border: black solid 1px;
-//   margin: 0 auto;
-//   margin-bottom: 10px;
-//   padding: 0px 5px;
-//   border-radius: 8px;
-//   background-color: #c6dea6;
-// `;
-
 const itemLayout: { labelCol: ColProps; wrapperCol: ColProps } = {
   labelCol: { span: 4 },
   wrapperCol: { span: 16 }
@@ -40,30 +23,6 @@ const itemLayout: { labelCol: ColProps; wrapperCol: ColProps } = {
 
 const PollForm: React.SFC<CreatePollFormProps> = props => {
   return (
-    // <FormContainer onSubmit={props.handleSubmit} id="createPollForm">
-    //   <SingleInput
-    //     id="pollName"
-    //     value={props.values.pollName}
-    //     labelText="Poll Name"
-    //     handleChange={props.handleChange}
-    //     placeholder="Enter the poll name"
-    //   />
-    //   <SingleInput
-    //     id="description"
-    //     value={props.values.description}
-    //     labelText="Description"
-    //     handleChange={props.handleChange}
-    //     placeholder="Enter the description"
-    //   />
-    //   <OptionsInput
-    //     handleChange={props.handleChange}
-    //     values={props.values.options}
-    //     addPollOption={props.addPollOption}
-    //     removePollOption={props.removePollOption}
-    //     edit={props.edit}
-    //   />
-    //   <Buttons edit={props.edit} discardPoll={props.discardPoll} />
-    // </FormContainer>
     <Form onSubmit={props.handleSubmit} id="createPollForm" layout="vertical">
       <Form.Item {...itemLayout} label="Poll name">
         <Input
@@ -87,6 +46,17 @@ const PollForm: React.SFC<CreatePollFormProps> = props => {
         handleChange={props.handleChange}
         values={props.values.options}
       />
+      <Form.Item label="Vote Limit" {...itemLayout}>
+        <Input
+          value={props.values.voteLimit}
+          onChange={props.handleChange}
+          min={1}
+          max={props.values.options.length}
+          type="number"
+          id="voteLimit"
+          placeholder="Vote Limit"
+        />
+      </Form.Item>
       <Form.Item wrapperCol={{ xs: { span: 16 }, sm: { span: 16, offset: 4 } }}>
         <Button
           id="createButton"

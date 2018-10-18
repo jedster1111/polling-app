@@ -19,7 +19,7 @@ interface PollFormContainerProps {
   user: User;
   isLoading: boolean;
   submitPoll: (poll: PollInput) => any;
-  handleChange: (fieldId: string, value: string) => any;
+  handleChange: (fieldId: string, value: string | number) => any;
   discardPoll: () => any;
   addPollOption: () => any;
   removePollOption: (index: number) => any;
@@ -63,7 +63,8 @@ class PollFormContainer extends React.Component<
         creatorId: this.props.user.id,
         description: this.props.pollFormData.description,
         pollName: this.props.pollFormData.pollName,
-        options: this.props.pollFormData.options.map(option => option.value)
+        options: this.props.pollFormData.options.map(option => option.value),
+        voteLimit: this.props.pollFormData.voteLimit
       };
       this.props.submitPoll(inputData);
     } else if (this.props.edit && this.props.pollId) {
@@ -73,7 +74,17 @@ class PollFormContainer extends React.Component<
     }
   };
   handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.props.handleChange(e.target.id, e.target.value);
+    const target = e.target.id;
+    let value: string | number = e.target.value;
+    if (target === "voteLimit" && value) {
+      value = parseInt(value, 10);
+      const noOfOptions = this.props.pollFormData.options.length;
+      if (value > noOfOptions) {
+        value = noOfOptions;
+        console.log(value);
+      }
+    }
+    this.props.handleChange(target, value);
   };
   handleDiscardPoll = () => {
     if (this.props.edit) {

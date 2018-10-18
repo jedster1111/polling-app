@@ -17,7 +17,8 @@ describe("Testing actions:", () => {
       creatorId: "creatorId",
       description: "description",
       options: ["option1", "option2", "option3"],
-      pollName: "pollName"
+      pollName: "pollName",
+      voteLimit: 1
     };
     const expectedAction = {
       type: types.POST_POLLS_REQUEST,
@@ -109,7 +110,8 @@ describe("Testing actions:", () => {
       ],
       creator: user1,
       description: "description",
-      pollId
+      pollId,
+      voteLimit: 1
     };
     const expectedAction = {
       type: types.SHOW_UPDATE_POLL_FORM,
