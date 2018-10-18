@@ -23,6 +23,7 @@ const generateExpectedPolls = (n: number) => {
     pollName: string;
     description: string;
     options: Array<{ optionId: string; value: string; votes: string[] }>;
+    voteLimit: number;
   }> = [];
 
   for (let i = 0; i < n; i++) {
@@ -34,7 +35,8 @@ const generateExpectedPolls = (n: number) => {
       options: [
         { optionId: "1", value: "option1", votes: [] },
         { optionId: "2", value: "option2", votes: [] }
-      ]
+      ],
+      voteLimit: 1
     });
   }
   return expectedPolls;
@@ -165,6 +167,15 @@ describe("Testing poll related database methods:", () => {
       db.votePoll("1", { optionId: "1", voterId: "1" });
       const poll = db.votePoll("1", { optionId: "1", voterId: "1" });
       expect(poll).toMatchObject(expectedPoll);
+    });
+    it("should restrict my vote if the voteLimit has been reached", () => {
+      const expectedPoll = generateExpectedPolls(1)[0];
+      expectedPoll.options[0].votes = ["1"];
+      const poll = db.votePoll("1", { optionId: "1", voterId: "1" });
+      expect(poll).toMatchObject(expectedPoll);
+
+      const voteInput2 = { optionId: "2", voterId: "1" };
+      expect(() => db.votePoll("1", voteInput2)).toThrow();
     });
   });
 
