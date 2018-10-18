@@ -12,7 +12,7 @@ const generatePollInputs = (n: number) => {
       pollName: `pollName${index}`,
       description: `description${index}`,
       options: ["option1", "option2"],
-      voteLimit: 3
+      voteLimit: 1
     });
   }
   return polls;
