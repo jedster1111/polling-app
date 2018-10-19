@@ -79,7 +79,7 @@ passport.use(
   })
 );
 
-const callbackURL = `http://${rootUrl}/auth/github/callback`;
+const callbackURL = `${rootUrl}/auth/github/callback`;
 passport.use(
   new Strategy(
     {
