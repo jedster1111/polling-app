@@ -6,9 +6,9 @@
   "scripts": {
     "start:prod": "yarn server:prod",
     "build": "webpack --config webpack.config.prod && yarn build-server",
-    "server:prod": "node dist/server/server",
+    "server:prod": "node dist/server/server.prod",
     "build-server": "tsc --project tsconfig.server.json",
-    "postinstall": "yarn build",
+    "heroku-postbuild": "yarn build",
     "start:dev": "npm run build && npm run server",
     "build:dev": "webpack",
     "server:dev": "nodemon --exec ./node_modules/.bin/ts-node --project tsconfig.server.json --watch server server/server.ts",
