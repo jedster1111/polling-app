@@ -30,6 +30,7 @@ export interface UpdatePollInput {
   pollName?: string;
   description?: string;
   options?: UpdatePollInputOption[];
+  voteLimit?: number;
 }
 export interface UpdatePollInputOption {
   optionId: string;

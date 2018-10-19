@@ -1,10 +1,10 @@
 {
   "compilerOptions": {
-    "outDir": "./build/",
+    "outDir": "./dist/",
     "sourceMap": true,
     "allowJs": true,
     "strict": true,
-    "target": "es6",
+    "target": "es5",
     "jsx": "react",
     "module": "esnext",
     "moduleResolution": "node",
@@ -13,7 +13,8 @@
     "noUnusedLocals": true,
     "noImplicitAny": true,
     "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "lib": ["es2015", "dom"]
   },
   "include": [
     "src/**/*.ts",
@@ -25,7 +26,10 @@
     "tests/firstTest.js",
     "tests/navBar.test.ts",
     "tests/createPollForm.test.ts",
-    "secret/github.ts"
+    "secret/github.ts",
+    "webpack.config.prod.js",
+    "deployment.config.js",
+    "webpack.config.prod.js"
   ],
-  "exclude": ["tsDist", "src/coverage"]
+  "exclude": ["tsDist", "src/coverage", "webpack.config.js"]
 }

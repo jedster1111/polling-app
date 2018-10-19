@@ -1,11 +1,10 @@
 const path = require("path");
-const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const tsImportPluginFactory = require("ts-import-plugin");
 
 module.exports = {
   entry: {
-    app: ["./src/app/index.tsx", "webpack-hot-middleware/client"],
+    app: ["./src/app/index.tsx"],
     vendor: ["react", "react-dom"]
   },
   output: {
@@ -42,9 +41,8 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, "src", "app", "index.html")
-    }),
-    new webpack.HotModuleReplacementPlugin()
+    })
   ],
-  mode: "development",
+  mode: "production",
   stats: { chunks: false, chunkModules: false }
 };
