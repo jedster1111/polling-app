@@ -1,5 +1,6 @@
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
+import dotenv from "dotenv";
 import express from "express";
 import { ErrorRequestHandler } from "express";
 import jwt from "jsonwebtoken";
@@ -9,11 +10,24 @@ import { Strategy } from "passport-github2";
 // import morgan = require("morgan");
 import passportJwt from "passport-jwt";
 import path from "path";
-import * as secrets from "../secret/github";
+// import * as secrets from "../secret/github";
 import db from "./models/database";
 // import authRouter from "./routes/authRouter";
 import pollRouter from "./routes/pollRouter";
 import userRouter from "./routes/userRouter";
+
+const ENV = process.env.NODE_ENV || "development";
+
+if (ENV === "development") {
+  dotenv.config({ path: path.resolve(__dirname, "..", "dev.env") });
+} else {
+  dotenv.config({ path: path.resolve(__dirname, "..", "..", "prod.env") });
+}
+
+const rootUrl = process.env.URL || "127.0.0.1:8000";
+const secretKey = process.env.SECRET_KEY || "SuperSecretKey";
+const clientId = process.env.CLIENT_ID || "GithubProvidedClientId";
+const clientSecret = process.env.CLIENT_SECRET || "GithubProvidedSecretKey";
 
 export interface ErrorWithStatusCode extends Error {
   statusCode?: number;
@@ -41,13 +55,13 @@ const jwtCookieExtractor = (req: express.Request) => {
 };
 const jwtOptions: passportJwt.StrategyOptions = {
   jwtFromRequest: jwtCookieExtractor,
-  secretOrKey: secrets.secret
+  secretOrKey: secretKey
   // issuer: config.get('authentication.token.issuer'),
   // audience: config.get('authentication.token.audience')
 };
 export const generateAccessToken = (userId: string) => {
   const expiresIn = "1 hour";
-  const secret = secrets.secret;
+  const secret = secretKey;
   const token = jwt.sign({}, secret, {
     expiresIn,
     subject: userId
@@ -64,12 +78,14 @@ passport.use(
     }
   })
 );
+
+const callbackURL = `http://${rootUrl}/auth/github/callback`;
 passport.use(
   new Strategy(
     {
-      clientID: secrets.clientId,
-      clientSecret: secrets.clientSecret,
-      callbackURL: "http://127.0.0.1:8000/auth/github/callback"
+      clientID: clientId,
+      clientSecret,
+      callbackURL
     },
     (accessToken: any, refreshToken: any, profile: any, done: any) => {
       const cleanedProfile = {
