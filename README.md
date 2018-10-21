@@ -10,13 +10,19 @@
       `http://127.0.0.1:8000/auth/github/callback`  
       ![github OAuth example](http://puu.sh/BExqF/c1e010896b.png)
   - You will then be provided with a clientId and a clientSecret.
-  - create a secret file in `${rootDirectory}/secret/github.ts`.
-    It must contain the following constants:
-    ```json
-      export const clientId = "githubProvidedClientId";
-      export const clientSecret = "githubProvidedClientSecret";
-      export const secret = "aUserGeneratedSecretKey";
+  - You must then set the following environment variables in order for the app
+  to run in both development and production.  
+  _Note the `URL` must match the `Homepage URL` provided when creating your
+  GitHub OAuth app_
+    ```txt
+    CLIENT_ID=YourGitHubProvidedClientId
+    Client_SECRET=YoutGitHubProvidedClientSecret
+    SECRET_KEY=ASecretKeyGeneratedByYou
+    URL=http://127.0.0.1:8000
     ```
+    - Dotenv is set up, so create a file in the root directory called `dev.env`
+    and store the env variables in there as shown above. They will be loaded into
+    your code automatically.
 
 ## Development Server
 
@@ -33,12 +39,14 @@
 - To execute tests using testcafe, first ensure development server is running
   and run: `yarn run testcafe`
 
+## Deployment
+
+On the deployment server, run `yarn build`, which will bundle all the front end
+code using webpack, and compiles the server to javascript
+
 ## Other Commands
 
 - To start Storybook run: `yarn run storybook`
-- To build, run: `yarn run build`  
-  To run in watch mode, run `yarn run build -w`  
-  _Note as ts-node is installed there's no need to build during development_
 - To launch a debug Chrome instance, run: `yarn start chrome`  
   Attach to port `9222` using your debugger and you can debug in your IDE now!
 
