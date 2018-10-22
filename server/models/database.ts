@@ -110,8 +110,10 @@ class Database {
               const optionToUpdate = poll.options.find(
                 option => option.optionId === optionInput.optionId
               );
-              if (optionToUpdate !== undefined && optionInput.value) {
+              if (optionToUpdate !== undefined && optionInput.value !== "") {
                 optionToUpdate.value = optionInput.value;
+              } else if (optionToUpdate !== undefined) {
+                poll.options.splice(poll.options.indexOf(optionToUpdate), 1);
               }
             } else if (optionInput.value) {
               poll.options.push({

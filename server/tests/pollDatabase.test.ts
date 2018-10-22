@@ -145,10 +145,18 @@ describe("Testing poll related database methods:", () => {
       const inputPoll = db.getPolls()[0];
       const updatePoll = db.updatePoll(inputPoll.creatorId, inputPoll.pollId, {
         pollName: "",
-        description: "",
-        options: [{ optionId: "1", value: "" }]
+        description: ""
       });
       expect(updatePoll).toMatchObject(inputPoll);
+    });
+
+    test("Should delete an option when I input an empty string", () => {
+      const inputPoll = db.getPolls()[0];
+      inputPoll.options.shift();
+      const updatePoll = db.updatePoll(inputPoll.creatorId, inputPoll.pollId, {
+        options: [{ optionId: "1", value: "" }]
+      });
+      expect(updatePoll).toEqual(inputPoll);
     });
   });
 
