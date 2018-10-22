@@ -45,6 +45,7 @@ const PollForm: React.SFC<CreatePollFormProps> = props => {
         removePollOption={props.removePollOption}
         handleChange={props.handleChange}
         values={props.values.options}
+        edit={props.edit}
       />
       <Form.Item label="Vote Limit" {...itemLayout}>
         <Input

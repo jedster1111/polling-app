@@ -13,22 +13,13 @@ const OptionsInput = (props: OptionsInputProps) => {
   return (
     <React.Fragment>
       {props.values.map((option, index) => (
-        // <SingleOptionInputContainer key={index}>
-        //   <StyledOptionTextInput
-        //     id={`optionInput${index + 1}`}
-        //     placeholder={option.optionId ? "existing option" : "new option"}
-        //     value={option.value}
-        //     handleChange={props.handleChange}
-        //   />
-        //   {!option.optionId && (
-        //     <OptionButton
-        //       remove
-        //       onClick={() => props.removePollOption(index)}
-        //     />
-        //   )}
-        // </SingleOptionInputContainer>
         <Form.Item
           key={index}
+          help={
+            option.value === "" && option.optionId && props.edit
+              ? "This option will be deleted"
+              : undefined
+          }
           label={index === 0 ? "Options" : ""}
           labelCol={{ span: 4 }}
           wrapperCol={{
