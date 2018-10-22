@@ -56,7 +56,12 @@ const PollForm: React.SFC<CreatePollFormProps> = props => {
           value={props.values.voteLimit}
           onChange={props.handleChange}
           min={1}
-          max={props.values.options.length}
+          max={props.values.options.reduce((previousVal, option) => {
+            if (option.value !== "") {
+              previousVal++;
+            }
+            return previousVal;
+          }, 0)}
           type="number"
           id="voteLimit"
           placeholder="Vote Limit"

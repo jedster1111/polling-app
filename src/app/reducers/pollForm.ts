@@ -94,9 +94,16 @@ const pollFormReducer: Reducer<PollForm, AnyAction> = (
       const newOptions = [...pollFormState.data.options];
       const indexToRemove = action.payload.index;
       newOptions.splice(indexToRemove, 1);
+
+      const newVoteLimit = calculateNewVoteLimit(pollFormState, newOptions);
+
       return {
         ...pollFormState,
-        data: { ...pollFormState.data, options: newOptions }
+        data: {
+          ...pollFormState.data,
+          options: newOptions,
+          voteLimit: newVoteLimit
+        }
       };
     }
     case actionTypes.SHOW_UPDATE_POLL_FORM: {
@@ -133,3 +140,12 @@ const pollFormReducer: Reducer<PollForm, AnyAction> = (
 };
 
 export default pollFormReducer;
+function calculateNewVoteLimit(
+  pollFormState: PollForm,
+  newOptions: { optionId: string; value: string }[]
+) {
+  const oldVoteLimit = pollFormState.data.voteLimit;
+  const newVoteLimit =
+    oldVoteLimit > newOptions.length ? newOptions.length : oldVoteLimit;
+  return newVoteLimit;
+}
