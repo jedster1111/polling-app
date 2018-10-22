@@ -16,6 +16,7 @@ import PollForm from "./PollForm";
 
 interface PollFormContainerProps {
   pollFormData: PollFormInput;
+  originalData: PollFormInput;
   user: User;
   isLoading: boolean;
   submitPoll: (poll: PollInput) => any;
@@ -48,6 +49,7 @@ const mapDispatchToProps = {
 const mapStateToProps = (state: InitialState, ownProps: OwnProps) => {
   return {
     pollFormData: state.pollForm.data,
+    originalData: state.pollForm.originalData,
     isLoading: state.pollForm.isLoading,
     user: state.userState.data
   };
@@ -81,10 +83,12 @@ class PollFormContainer extends React.Component<
       const noOfOptions = this.props.pollFormData.options.length;
       if (value > noOfOptions) {
         value = noOfOptions;
-        console.log(value);
       }
     }
     this.props.handleChange(target, value);
+  };
+  clearOption = (index: number) => {
+    this.props.handleChange(`optionInput${index + 1}`, "");
   };
   handleDiscardPoll = () => {
     if (this.props.edit) {
@@ -103,6 +107,8 @@ class PollFormContainer extends React.Component<
         removePollOption={this.props.removePollOption}
         edit={this.props.edit}
         isLoading={this.props.isLoading}
+        clearOption={this.clearOption}
+        originalValues={this.props.originalData}
       />
     );
   }

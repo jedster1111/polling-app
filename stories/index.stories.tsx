@@ -13,6 +13,16 @@ export const mockSubmit = (e: React.FormEvent<HTMLFormElement>) => {
   action("submitted form")(e);
 };
 
+const values = {
+  pollName: "New furniture guys!",
+  description: "description",
+  options: [
+    { value: "test", optionId: "1" },
+    { value: "test2", optionId: "2" },
+    { value: "test3", optionId: "3" }
+  ],
+  voteLimit: 1
+};
 storiesOf("Create Poll Form", module)
   .add("Buttons", () => (
     <Fragment>
@@ -83,18 +93,11 @@ storiesOf("Create Poll Form", module)
       handleChange={action("Value changed")}
       handleSubmit={mockSubmit}
       discardPoll={action("Discarded poll")}
-      values={{
-        pollName: "New furniture guys!",
-        description: "description",
-        options: [
-          { value: "test", optionId: "1" },
-          { value: "test2", optionId: "2" },
-          { value: "test3", optionId: "3" }
-        ],
-        voteLimit: 1
-      }}
+      values={values}
       addPollOption={action("added poll option input")}
       removePollOption={action("removed poll option input")}
       isLoading={false}
+      clearOption={action("Cleared option")}
+      originalValues={values}
     />
   ));

@@ -81,6 +81,7 @@ class Database {
     this.pollsCount++;
     return this.stripMeta<Poll>(newPoll);
   }
+  // This could really be cleaned up
   updatePoll(
     userId: string,
     pollId: string,
@@ -116,9 +117,10 @@ class Database {
                 poll.options.splice(poll.options.indexOf(optionToUpdate), 1);
               }
             } else if (optionInput.value) {
+              const lastOption = poll.options[poll.options.length - 1];
               poll.options.push({
                 optionId: `${parseInt(
-                  poll.options[poll.options.length - 1].optionId,
+                  lastOption ? lastOption.optionId : "1",
                   10
                 ) + 1}`,
                 value: optionInput.value,
@@ -129,6 +131,11 @@ class Database {
         );
       }
     });
+    if (poll.options.length === 0) {
+      const error: ErrorWithStatusCode = new Error("Can't delete all options!");
+      error.statusCode = 401;
+      throw error;
+    }
     this.polls.update(poll);
     return this.stripMeta<Poll>(poll);
   }

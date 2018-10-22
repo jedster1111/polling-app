@@ -3,9 +3,11 @@ import * as React from "react";
 
 interface OptionsInputProps {
   values: Array<{ optionId: string; value: string }>;
+  originalValues: Array<{ optionId: string; value: string }>;
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   addPollOption: () => void;
   removePollOption: (index: number) => void;
+  clearOption: (index: number) => void;
   edit?: boolean;
 }
 
@@ -31,17 +33,24 @@ const OptionsInput = (props: OptionsInputProps) => {
             id={`optionInput${index + 1}`}
             className="optionInput"
             value={option.value}
-            placeholder={option.optionId ? "Existing option" : "New option"}
+            placeholder={
+              option.optionId
+                ? `${props.originalValues[index].value}`
+                : "New option"
+            }
             onChange={props.handleChange}
             suffix={
-              !option.optionId &&
               props.values.length > 1 && (
                 <Button
                   className="removeOption"
                   icon="minus"
                   shape="circle"
                   size="small"
-                  onClick={() => props.removePollOption(index)}
+                  onClick={() =>
+                    !option.optionId
+                      ? props.removePollOption(index)
+                      : props.clearOption(index)
+                  }
                 />
               )
             }

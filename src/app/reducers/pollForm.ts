@@ -3,6 +3,7 @@ import * as actionTypes from "../actions/action-types";
 
 export interface PollForm {
   data: PollFormInput;
+  originalData: PollFormInput;
   isLoading: boolean;
   error: string | null;
 }
@@ -14,18 +15,21 @@ export interface PollFormInput {
   voteLimit: number;
 }
 
+const initData = {
+  description: "",
+  options: [
+    { optionId: "", value: "" },
+    { optionId: "", value: "" },
+    { optionId: "", value: "" },
+    { optionId: "", value: "" }
+  ],
+  pollName: "",
+  voteLimit: 1
+};
+
 export const initialPollFormState: PollForm = {
-  data: {
-    description: "",
-    options: [
-      { optionId: "", value: "" },
-      { optionId: "", value: "" },
-      { optionId: "", value: "" },
-      { optionId: "", value: "" }
-    ],
-    pollName: "",
-    voteLimit: 1
-  },
+  data: initData,
+  originalData: initData,
   isLoading: false,
   error: null
 };
@@ -99,7 +103,8 @@ const pollFormReducer: Reducer<PollForm, AnyAction> = (
       const poll = action.payload.poll;
       return {
         ...pollFormState,
-        data: { ...poll }
+        data: { ...poll },
+        originalData: { ...poll }
       };
     }
     case actionTypes.UPDATE_POLL_LOADING: {

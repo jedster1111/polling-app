@@ -7,11 +7,13 @@ import OptionsInput from "./OptionsInput";
 
 interface CreatePollFormProps {
   values: PollFormInput;
+  originalValues: PollFormInput;
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   discardPoll: () => void;
   addPollOption: () => void;
   removePollOption: (index: number) => void;
+  clearOption: (index: number) => void;
   edit?: boolean;
   isLoading: boolean;
 }
@@ -45,7 +47,9 @@ const PollForm: React.SFC<CreatePollFormProps> = props => {
         removePollOption={props.removePollOption}
         handleChange={props.handleChange}
         values={props.values.options}
+        originalValues={props.originalValues.options}
         edit={props.edit}
+        clearOption={props.clearOption}
       />
       <Form.Item label="Vote Limit" {...itemLayout}>
         <Input
