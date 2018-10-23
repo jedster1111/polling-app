@@ -2,9 +2,11 @@ import { push } from "connected-react-router";
 import * as React from "react";
 import { connect } from "react-redux";
 import {
+  closePoll,
   deletePoll,
   discardUpdatePollForm,
   fetchPolls,
+  openPoll,
   showUpdatePollForm,
   toggleShowResults,
   voteOption
@@ -27,6 +29,8 @@ interface PollsListContainerProps {
   isLoading: boolean;
   isLoggedIn: boolean;
   navigateToPoll: (pollId: string) => any;
+  openPoll: (pollId: string) => any;
+  closePoll: (pollId: string) => any;
 }
 
 const navigateToPoll = (pollId: string) => push(`/${pollId}`);
@@ -48,7 +52,9 @@ const mapDispatchToProps = {
   deletePoll,
   showUpdatePollForm,
   discardUpdatePollForm,
-  navigateToPoll
+  navigateToPoll,
+  openPoll,
+  closePoll
 };
 
 class PollsListContainer extends React.Component<PollsListContainerProps> {
@@ -89,6 +95,8 @@ class PollsListContainer extends React.Component<PollsListContainerProps> {
         isLoading={this.props.isLoading}
         navigateToPoll={this.props.navigateToPoll}
         isLoggedIn={this.props.isLoggedIn}
+        openPoll={this.props.openPoll}
+        closePoll={this.props.closePoll}
       />
     );
   }

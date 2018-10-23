@@ -17,6 +17,8 @@ export interface PollsListProps {
   isLoading: boolean;
   isLoggedIn: boolean;
   navigateToPoll: (pollId: string) => void;
+  openPoll: (pollId: string) => void;
+  closePoll: (pollId: string) => void;
 }
 
 const PollsList = (props: PollsListProps) => (
@@ -43,6 +45,8 @@ const PollsList = (props: PollsListProps) => (
         isOwner={props.user.id === poll.creator.id}
         navigateToPoll={() => props.navigateToPoll(poll.pollId)}
         isLoggedIn={props.isLoggedIn}
+        openPoll={() => props.openPoll(poll.pollId)}
+        closePoll={() => props.closePoll(poll.pollId)}
       />
     )}
   />

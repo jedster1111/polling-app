@@ -4,7 +4,7 @@ import * as React from "react";
 import styled from "styled-components";
 import { Poll, PollOption, User } from "../../types";
 import PollForm from "../create-poll-form/PollFormContainer";
-import { ActionButton } from "../polls-list/ActionButton";
+import ActionButton from "../polls-list/ActionButton";
 import FetchPollsButton from "../polls-list/FetchPollsButton";
 import VoteDisplay from "../VoteDisplay";
 import VoteBar from "./VoteBar";
@@ -20,6 +20,8 @@ interface PollDetailProps {
   deletePoll: (userId: string, pollId: string) => void;
   fetchPolls: () => void;
   isEditing: boolean;
+  openPoll: () => void;
+  closePoll: () => void;
 }
 
 const RefreshButtonContainer = styled.div`
@@ -36,7 +38,9 @@ const PollDetail: React.SFC<PollDetailProps> = ({
   isEditing,
   discardUpdatePollForm,
   fetchPolls,
-  isLoggedIn
+  isLoggedIn,
+  openPoll,
+  closePoll
 }) => {
   if (!pollData) {
     return <p>That poll doesn't exist</p>;
@@ -113,7 +117,25 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       block
     />
   );
-  const actions = isOwner ? [EditButton, DeleteButton] : [];
+  const closeButton = (
+    <ActionButton
+      iconType="unlock"
+      text="Poll is open"
+      handleClick={closePoll}
+      block
+    />
+  );
+  const openButton = (
+    <ActionButton
+      iconType="lock"
+      text="Poll is closed"
+      handleClick={openPoll}
+      block
+    />
+  );
+  const actions = isOwner
+    ? [EditButton, DeleteButton, pollData.isOpen ? closeButton : openButton]
+    : [];
 
   return (
     <Card title={pollName} actions={actions}>

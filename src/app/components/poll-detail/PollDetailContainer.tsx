@@ -2,9 +2,11 @@ import * as React from "react";
 import { connect, MapDispatchToProps, MapStateToProps } from "react-redux";
 import { RouteComponentProps, withRouter } from "react-router";
 import {
+  closePoll,
   deletePoll,
   discardUpdatePollForm,
   fetchPolls,
+  openPoll,
   showUpdatePollForm,
   voteOption
 } from "../../actions/actions";
@@ -25,6 +27,8 @@ interface DispatchProps {
   showUpdatePollForm: (pollId: string, poll: Poll) => any;
   discardUpdatePollForm: () => any;
   deletePoll: (userId: string, pollId: string) => any;
+  openPoll: (pollId: string) => any;
+  closePoll: (pollId: string) => any;
 }
 type OwnProps = RouteComponentProps<{ id: string }>;
 
@@ -48,7 +52,9 @@ const mapDispatchToProps: MapDispatchToProps<DispatchProps, OwnProps> = {
   voteOption,
   showUpdatePollForm,
   discardUpdatePollForm,
-  deletePoll
+  deletePoll,
+  openPoll,
+  closePoll
 };
 
 class PollDetailContainer extends React.Component<PollDetailContainerProps> {
@@ -57,6 +63,18 @@ class PollDetailContainer extends React.Component<PollDetailContainerProps> {
       this.props.fetchPolls();
     }
   }
+  openPoll = () => {
+    const pollData = this.props.pollData;
+    if (pollData) {
+      this.props.openPoll(pollData.pollId);
+    }
+  };
+  closePoll = () => {
+    const pollData = this.props.pollData;
+    if (pollData) {
+      this.props.closePoll(pollData.pollId);
+    }
+  };
   render() {
     const isEditing = this.props.pollData
       ? this.props.editingPoll === this.props.pollData.pollId
@@ -73,6 +91,8 @@ class PollDetailContainer extends React.Component<PollDetailContainerProps> {
         isEditing={isEditing}
         fetchPolls={this.props.fetchPolls}
         isLoggedIn={this.props.isLoggedIn}
+        openPoll={this.openPoll}
+        closePoll={this.closePoll}
       />
     );
   }

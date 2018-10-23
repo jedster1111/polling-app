@@ -110,3 +110,10 @@ export const closePoll: (
   type: actionTypes.CLOSE_POLL_LOADING,
   payload: { pollId }
 });
+
+export const openPoll: (
+  pollId: string
+) => Action & { payload: { pollId: string } } = pollId => ({
+  type: actionTypes.OPEN_POLL_LOADING,
+  payload: { pollId }
+});
