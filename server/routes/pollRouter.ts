@@ -127,4 +127,39 @@ pollRouter
     }
   );
 
+pollRouter
+  .route("/:pollId/open")
+  .post(
+    passport.authenticate(["jwt"], { session: false }),
+    (req, res, next) => {
+      try {
+        const userId: string = req.user.id;
+        const pollId: string = req.params.pollId;
+
+        const poll = getResponsePoll(db.openPoll(userId, pollId));
+
+        res.status(200).json({ poll });
+      } catch (error) {
+        next(error);
+      }
+    }
+  );
+pollRouter
+  .route("/:pollId/close")
+  .post(
+    passport.authenticate(["jwt"], { session: false }),
+    (req, res, next) => {
+      try {
+        const userId: string = req.user.id;
+        const pollId: string = req.params.pollId;
+
+        const poll = getResponsePoll(db.closePoll(userId, pollId));
+
+        res.status(200).json({ poll });
+      } catch (error) {
+        next(error);
+      }
+    }
+  );
+
 export default pollRouter;

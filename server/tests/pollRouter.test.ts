@@ -247,4 +247,35 @@ describe("Testing poll related routes:", () => {
       expect(postResponse2.options[1].votes).toEqual([]);
     });
   });
+
+  describe("Testing /api/polls/:id/open and /api/polls/:id/close", () => {
+    test("Can I close a poll and then re-open it?", async () => {
+      const pollToChange = db.getPolls()[0];
+      const userToUse = db.getUser(pollToChange.creatorId);
+
+      pollToChange.isOpen = false;
+
+      const token = createJwtCookie(userToUse.id);
+
+      let response = await request(app)
+        .post(`/api/polls/${pollToChange.pollId}/close`)
+        .set("Accept", "application/json")
+        .set("Cookie", token)
+        .expect(200);
+      let postResponse: PollResponse = JSON.parse(response.text).poll;
+
+      expect(postResponse.isOpen).toBe(pollToChange.isOpen);
+
+      pollToChange.isOpen = true;
+
+      response = await request(app)
+        .post(`/api/polls/${pollToChange.pollId}/open`)
+        .set("Accept", "application/json")
+        .set("Cookie", token)
+        .expect(200);
+      postResponse = JSON.parse(response.text).poll;
+
+      expect(postResponse.isOpen).toBe(pollToChange.isOpen);
+    });
+  });
 });
