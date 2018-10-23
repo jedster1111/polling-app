@@ -44,8 +44,8 @@ const generateInputUsers = (n: number) => {
   return users;
 };
 
-const getAnotherUser = (pollToRemove: Poll) => {
-  return db.getAllUsers().find(user => user.id !== pollToRemove.creatorId)!;
+const getAnotherUser = (poll: Poll) => {
+  return db.getAllUsers().find(user => user.id !== poll.creatorId)!;
 };
 
 describe("Testing poll related routes:", () => {
@@ -276,6 +276,24 @@ describe("Testing poll related routes:", () => {
       postResponse = JSON.parse(response.text).poll;
 
       expect(postResponse.isOpen).toBe(pollToChange.isOpen);
+    });
+    test("It should stop me from opening/closing a poll I didn't create", async () => {
+      const pollToChange = db.getPolls()[0];
+      const userToUse = getAnotherUser(pollToChange);
+
+      const token = createJwtCookie(userToUse.id);
+
+      await request(app)
+        .post(`/api/polls/${pollToChange.pollId}/close`)
+        .set("Accept", "application/json")
+        .set("Cookie", token)
+        .expect(401);
+
+      await request(app)
+        .post(`/api/polls/${pollToChange.pollId}/open`)
+        .set("Accept", "application/json")
+        .set("Cookie", token)
+        .expect(401);
     });
   });
 });
