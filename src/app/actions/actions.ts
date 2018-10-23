@@ -103,3 +103,10 @@ export const getUserData: () => Action = () => ({
 });
 
 export const navigateToPollForm: () => Action = () => push("/create-poll");
+
+export const closePoll: (
+  pollId: string
+) => Action & { payload: { pollId: string } } = pollId => ({
+  type: actionTypes.CLOSE_POLL_LOADING,
+  payload: { pollId }
+});
