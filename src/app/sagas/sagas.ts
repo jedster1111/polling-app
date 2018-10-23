@@ -1,7 +1,7 @@
 import { message } from "antd";
 import { AxiosError, AxiosResponse } from "axios";
 import { push } from "connected-react-router";
-import { AnyAction } from "redux";
+import { Action, AnyAction } from "redux";
 import { all, call, put, takeLatest } from "redux-saga/effects";
 import * as actionTypes from "../actions/action-types";
 import * as api from "../api/api";
@@ -163,6 +163,55 @@ function* getUserData(action: AnyAction) {
     }
   }
 }
+function* closePoll(action: Action & { payload: { pollId: string } }) {
+  try {
+    const response: AxiosResponse = yield call(api.closePoll, action.payload);
+    const poll: Poll = response.data.poll;
+    yield put({
+      type: actionTypes.CLOSE_POLL_SUCCESS,
+      payload: { poll }
+    });
+
+    message.success("Poll was successfully closed!");
+  } catch (error) {
+    const err: AxiosError = error;
+    const errorMessage =
+      err.response && err.response.data.error
+        ? err.response.data.error
+        : err.message;
+    yield put({
+      type: actionTypes.CLOSE_POLL_ERROR,
+      payload: { error: errorMessage }
+    });
+
+    message.error(errorMessage);
+  }
+}
+
+function* openPoll(action: Action & { payload: { pollId: string } }) {
+  try {
+    const response: AxiosResponse = yield call(api.openPoll, action.payload);
+    const poll: Poll = response.data.poll;
+    yield put({
+      type: actionTypes.OPEN_POLL_SUCCESS,
+      payload: { poll }
+    });
+
+    message.success("Poll was successfully closed!");
+  } catch (error) {
+    const err: AxiosError = error;
+    const errorMessage =
+      err.response && err.response.data.error
+        ? err.response.data.error
+        : err.message;
+    yield put({
+      type: actionTypes.OPEN_POLL_ERROR,
+      payload: { error: errorMessage }
+    });
+
+    message.error(errorMessage);
+  }
+}
 
 export function* mainSaga() {
   yield all([
@@ -172,6 +221,8 @@ export function* mainSaga() {
     takeLatest(actionTypes.TOGGLE_SHOW_RESULTS_LOADING, toggleShowResults),
     takeLatest(actionTypes.DELETE_POLL_LOADING, deletePoll),
     takeLatest(actionTypes.UPDATE_POLL_LOADING, updatePoll),
-    takeLatest(actionTypes.GET_USER_DATA_LOADING, getUserData)
+    takeLatest(actionTypes.GET_USER_DATA_LOADING, getUserData),
+    takeLatest(actionTypes.CLOSE_POLL_LOADING, closePoll),
+    takeLatest(actionTypes.OPEN_POLL_LOADING, openPoll)
   ]);
 }
