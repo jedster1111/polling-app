@@ -4,16 +4,16 @@
 
 - To install dependencies run: `yarn install`
 - In order for the github authentication to work, you must
-  - Follow  [github's tutorial for creating an OAuth app](https://developer.github.com/apps/building-oauth-apps/creating-an-oauth-app/)  
+  - Follow [github's tutorial for creating an OAuth app](https://developer.github.com/apps/building-oauth-apps/creating-an-oauth-app/)
     - Homepage Url might be `http://127.0.0.1:8000` while developing locally
     - Authorization callback URL would then be
       `http://127.0.0.1:8000/auth/github/callback`  
       ![github OAuth example](http://puu.sh/BExqF/c1e010896b.png)
   - You will then be provided with a clientId and a clientSecret.
   - You must then set the following environment variables in order for the app
-  to run in both development and production.  
-  _Note the `URL` must match the `Homepage URL` provided when creating your
-  GitHub OAuth app_
+    to run in both development and production.  
+    _Note the `URL` must match the `Homepage URL` provided when creating your
+    GitHub OAuth app_
     ```txt
     CLIENT_ID=YourGitHubProvidedClientId
     Client_SECRET=YoutGitHubProvidedClientSecret
@@ -21,8 +21,8 @@
     URL=http://127.0.0.1:8000
     ```
     - Dotenv is set up, so create a file in the root directory called `dev.env`
-    and store the env variables in there as shown above. They will be loaded into
-    your code automatically.
+      and store the env variables in there as shown above. They will be loaded into
+      your code automatically.
 
 ## Development Server
 
@@ -102,6 +102,7 @@ Json:
     "creator": { "displayName": "Roy", "id": "1234" },
     "pollName": "What furniture?",
     "description": "We are going to get some new furniture in the office!",
+    "isOpen": true,
     "options": [
       { "optionId": 1, "value": "bean bags", "votes": [] },
       { "optionId": 2, "value": "rocking chairs", "votes": [] },
@@ -147,6 +148,7 @@ Json:
       "creator": { "id": "1234", "displayName": "Roy" },
       "pollName": "What furniture?",
       "description": "We are going to get some new furniture in the office!",
+      "isOpen": true,
       "options": [
         {
           "optionId": "1",
@@ -161,6 +163,7 @@ Json:
       "creator": { "id": "2345", "displayName": "Jed" },
       "pollName": "New monitors?",
       "description": "What type of monitor would you guys like?",
+      "isOpen": true,
       "options": [
         {
           "optionId": "1",
@@ -219,6 +222,7 @@ JSON:
     "creatorName": "Changed Name",
     "pollName": "What furniture?",
     "description": "What furniture do you want?",
+    "isOpen": true,
     "options": [
       {
         "optionId": 1,
@@ -275,6 +279,7 @@ JSON:
     "creator": { "id": "1234", "displayName": "Roy" },
     "pollName": "What furniture?",
     "description": "What furniture do you want?",
+    "isOpen": true,
     "options": [
       {
         "optionId": 1,
@@ -361,6 +366,7 @@ JSON:
     "creator": { "id": "1234", "displayName": "Roy" },
     "pollName": "What furniture?",
     "description": "What furniture do you want?",
+    "isOpen": true,
     "options": [
       {
         "optionId": 1,
@@ -387,6 +393,102 @@ JSON:
 Response Code: `400`  
 Description: Vote was rejected, possibly due to invalid option id  
 JSON: N/A
+
+Response Code: `401`  
+Description: Unauthorized, you are not logged in or JWT is invalid  
+JSON: N/A
+
+## `/api/polls/:id/open`
+
+### `POST`
+
+#### Usage
+
+Sets a poll as open (users are able to vote on it) and returns the updated poll.
+
+#### Expects
+
+N/A
+
+#### Returns
+
+Response Code: `200`  
+Description: Poll was successfully set to open  
+JSON:
+
+```json
+{
+  "poll": {
+    "pollId": "1",
+    "creatorName": "Changed Name",
+    "pollName": "What furniture?",
+    "description": "What furniture do you want?",
+    "isOpen": true,
+    "options": [
+      {
+        "optionId": 1,
+        "value": "new option value",
+        "votes": []
+      },
+      {
+        "optionId": 2,
+        "value": "rocking chairs",
+        "votes": [{ "id": "1234", "displayName": "Roy" }]
+      },
+      { "optionId": 3, "value": "updated option 3", "votes": [] },
+      { "optionId": 4, "value": "new option!", "votes": [] }
+    ]
+  }
+}
+```
+
+Response Code: `401`  
+Description: Unauthorized, you are not logged in or JWT is invalid  
+JSON: N/A
+
+## `/api/polls/:id/close`
+
+### `POST`
+
+#### Usage
+
+Sets a poll as closed (users will be unable to vote on it) and returns the updated poll.
+
+#### Expects
+
+N/A
+
+#### Returns
+
+Response Code: `200`  
+Description: Poll was successfully set to closed  
+JSON:
+
+```json
+{
+  "poll": {
+    "pollId": "1",
+    "creatorName": "Changed Name",
+    "pollName": "What furniture?",
+    "description": "What furniture do you want?",
+    "isOpen": false,
+    "options": [
+      {
+        "optionId": 1,
+        "value": "new option value",
+        "votes": []
+      },
+      {
+        "optionId": 2,
+        "value": "rocking chairs",
+        "votes": [{ "id": "1234", "displayName": "Roy" }]
+      },
+      { "optionId": 3, "value": "updated option 3", "votes": [] },
+      { "optionId": 4, "value": "new option!", "votes": [] }
+    ]
+  }
+}
+```
 
 Response Code: `401`  
 Description: Unauthorized, you are not logged in or JWT is invalid  
