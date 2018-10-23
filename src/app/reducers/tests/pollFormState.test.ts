@@ -151,7 +151,7 @@ describe("Testing pollForm Reducer", () => {
         type: types.SHOW_UPDATE_POLL_FORM,
         payload: { poll }
       })
-    ).toEqual({ ...initialPollFormState, data: poll });
+    ).toEqual({ ...initialPollFormState, data: poll, originalData: poll });
   });
 
   it("should handle UPDATE_POLL_LOADING", () => {
