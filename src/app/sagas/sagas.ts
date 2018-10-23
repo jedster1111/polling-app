@@ -197,7 +197,7 @@ function* openPoll(action: Action & { payload: { pollId: string } }) {
       payload: { poll }
     });
 
-    message.success("Poll was successfully closed!");
+    message.success("Poll was successfully opened!");
   } catch (error) {
     const err: AxiosError = error;
     const errorMessage =

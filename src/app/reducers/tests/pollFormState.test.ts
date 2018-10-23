@@ -144,7 +144,8 @@ describe("Testing pollForm Reducer", () => {
       options: [{ optionId: "1", value: "option1", votes: [creator] }],
       pollId: "1",
       pollName: "pollName",
-      voteLimit: 1
+      voteLimit: 1,
+      isOpen: true
     };
     expect(
       reducer(initialPollFormState, {
