@@ -157,6 +157,7 @@ class Database {
     );
     const isValidVote =
       poll &&
+      poll.isOpen &&
       optionBeingVotedOn &&
       voteInput.voterId &&
       (numberOfExistingVotes < poll.voteLimit ||

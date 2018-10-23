@@ -189,6 +189,20 @@ describe("Testing poll related database methods:", () => {
       const voteInput2 = { optionId: "2", voterId: "1" };
       expect(() => db.votePoll("1", voteInput2)).toThrow();
     });
+
+    test("Voting on a poll that's closed should thrown an error", () => {
+      let pollToVote = db.getPolls()[0];
+
+      pollToVote = db.closePoll(pollToVote.creatorId, pollToVote.pollId);
+
+      expect(() =>
+        db.votePoll(pollToVote.pollId, {
+          voterId: "1",
+          optionId: pollToVote.options[0].optionId
+        })
+      ).toThrowError();
+      expect(pollToVote).toEqual(db.getPoll(pollToVote.pollId));
+    });
   });
 
   describe("Testing open and close Poll", () => {
