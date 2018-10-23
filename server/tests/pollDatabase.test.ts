@@ -12,7 +12,8 @@ const generatePollInputs = (n: number) => {
       pollName: `pollName${index}`,
       description: `description${index}`,
       options: ["option1", "option2"],
-      voteLimit: 1
+      voteLimit: 1,
+      isOpen: true
     });
   }
   return polls;
@@ -24,6 +25,7 @@ const generateExpectedPolls = (n: number) => {
     description: string;
     options: Array<{ optionId: string; value: string; votes: string[] }>;
     voteLimit: number;
+    isOpen: boolean;
   }> = [];
 
   for (let i = 0; i < n; i++) {
@@ -36,7 +38,8 @@ const generateExpectedPolls = (n: number) => {
         { optionId: "1", value: "option1", votes: [] },
         { optionId: "2", value: "option2", votes: [] }
       ],
-      voteLimit: 1
+      voteLimit: 1,
+      isOpen: true
     });
   }
   return expectedPolls;
@@ -123,7 +126,8 @@ describe("Testing poll related database methods:", () => {
         pollName: updateInput.pollName,
         description: updateInput.description,
         options: expectedPollOptions,
-        voteLimit: updateInput.voteLimit
+        voteLimit: updateInput.voteLimit,
+        isOpen: true
       };
 
       const poll = db.updatePoll(
@@ -156,7 +160,7 @@ describe("Testing poll related database methods:", () => {
       const updatePoll = db.updatePoll(inputPoll.creatorId, inputPoll.pollId, {
         options: [{ optionId: "1", value: "" }]
       });
-      expect(updatePoll).toEqual(inputPoll);
+      expect(updatePoll).toMatchObject(inputPoll);
     });
   });
 

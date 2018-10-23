@@ -23,7 +23,8 @@ const generateInputPolls = (n: number) => {
       description: `description${index}`,
       creatorId: `${index}`,
       options: ["option1", "option2"],
-      voteLimit
+      voteLimit,
+      isOpen: true
     });
   }
   return polls;
@@ -82,7 +83,8 @@ describe("Testing poll related routes:", () => {
         description: "descriptionPOST",
         options: ["option1", "option2"],
         pollName: "pollNamePOST",
-        voteLimit
+        voteLimit,
+        isOpen: true
       };
 
       const expectedResponse = {
@@ -146,7 +148,8 @@ describe("Testing poll related routes:", () => {
         ],
         pollId: pollToUse.pollId,
         pollName: "pollNameChanged",
-        voteLimit
+        voteLimit,
+        isOpen: true
       };
 
       const token = createJwtCookie(creator.id);
