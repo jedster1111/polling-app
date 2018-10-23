@@ -80,7 +80,15 @@ class PollFormContainer extends React.Component<
     let value: string | number = e.target.value;
     if (target === "voteLimit" && value) {
       value = parseInt(value, 10);
-      const noOfOptions = this.props.pollFormData.options.length;
+      const noOfOptions = this.props.pollFormData.options.reduce(
+        (prev, option) => {
+          if (option.value) {
+            prev++;
+          }
+          return prev;
+        },
+        0
+      );
       if (value > noOfOptions) {
         value = noOfOptions;
       }

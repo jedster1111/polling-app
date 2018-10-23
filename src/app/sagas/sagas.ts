@@ -25,26 +25,30 @@ function* getPollsSaga() {
       type: actionTypes.GET_POLLS_ERROR,
       payload: { error: errorMessage }
     });
+
+    message.error(errorMessage);
   }
 }
 function* postPollsSaga(action: any) {
   try {
     const response = yield call(api.createPoll, action.payload);
     const poll: Poll = response.data.poll;
-    message.success("Poll Created!");
     yield put({ type: actionTypes.POST_POLLS_SUCCESS, payload: { poll } });
     yield put(push("/"));
+
+    message.success("Poll Created!");
   } catch (error) {
     const err: AxiosError = error;
     const errorMessage =
       err.response && err.response.data.error
         ? err.response.data.error
         : err.message;
-    message.error("Something went wrong!");
     yield put({
       type: actionTypes.POST_POLLS_ERROR,
       payload: { error: errorMessage }
     });
+
+    message.error(errorMessage);
   }
 }
 function* voteOption(action: AnyAction) {
@@ -52,6 +56,8 @@ function* voteOption(action: AnyAction) {
     const response = yield call(api.voteOption, action.payload);
     const poll: Poll = response.data.poll;
     yield put({ type: actionTypes.VOTE_OPTION_SUCCESS, payload: { poll } });
+
+    message.success("Vote successfully cast!");
   } catch (error) {
     const err: AxiosError = error;
     const errorMessage =
@@ -62,6 +68,8 @@ function* voteOption(action: AnyAction) {
       type: actionTypes.VOTE_OPTION_ERROR,
       payload: { error: errorMessage }
     });
+
+    message.error(errorMessage);
   }
 }
 function* toggleShowResults(action: AnyAction) {
@@ -86,6 +94,8 @@ function* deletePoll(action: AnyAction) {
       type: actionTypes.DELETE_POLL_SUCCESS,
       payload: action.payload
     });
+
+    message.success("Successfully deleted poll!");
   } catch (error) {
     const err: AxiosError = error;
     const errorMessage =
@@ -96,6 +106,8 @@ function* deletePoll(action: AnyAction) {
       type: actionTypes.DELETE_POLL_ERROR,
       payload: { error: errorMessage }
     });
+
+    message.error(errorMessage);
   }
 }
 function* updatePoll(action: AnyAction) {
@@ -106,6 +118,8 @@ function* updatePoll(action: AnyAction) {
       type: actionTypes.UPDATE_POLL_SUCCESS,
       payload: { poll }
     });
+
+    message.success("Poll successfully updated!");
   } catch (error) {
     const err: AxiosError = error;
     const errorMessage =
@@ -116,6 +130,8 @@ function* updatePoll(action: AnyAction) {
       type: actionTypes.UPDATE_POLL_ERROR,
       payload: { error: errorMessage }
     });
+
+    message.error(errorMessage);
   }
 }
 function* getUserData(action: AnyAction) {
@@ -144,6 +160,8 @@ function* getUserData(action: AnyAction) {
         type: actionTypes.GET_USER_DATA_ERROR,
         payload: { error: errorMessage }
       });
+
+      message.error(errorMessage);
     }
   }
 }

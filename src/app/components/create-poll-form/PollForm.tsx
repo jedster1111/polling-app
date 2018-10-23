@@ -33,20 +33,49 @@ const PollForm: React.SFC<CreatePollFormProps> = props => {
 
   return (
     <Form onSubmit={props.handleSubmit} id="createPollForm" layout="vertical">
-      <Form.Item {...itemLayout} label="Poll name">
+      <Form.Item
+        {...itemLayout}
+        label="Poll name"
+        help={
+          props.edit && props.values.pollName !== props.originalValues.pollName
+            ? props.values.pollName
+              ? `"${props.originalValues.pollName}" will be changed to "${
+                  props.values.pollName
+                }"`
+              : `You can't have an empty poll name, changes will be ignored`
+            : undefined
+        }
+      >
         <Input
           value={props.values.pollName}
           onChange={props.handleChange}
           id="pollName"
-          placeholder="Poll name"
+          placeholder={
+            props.edit ? `${props.originalValues.pollName}` : "Poll name"
+          }
         />
       </Form.Item>
-      <Form.Item label="Description" {...itemLayout}>
+      <Form.Item
+        label="Description"
+        {...itemLayout}
+        help={
+          props.edit &&
+          props.values.description !== props.originalValues.description
+            ? props.values.description
+              ? `"${props.originalValues.description}" will be changed to "${
+                  props.values.description
+                }"`
+              : `You can't have an empty description, changes will be ignored`
+            : undefined
+        }
+      >
         <Input
           value={props.values.description}
           onChange={props.handleChange}
           id="description"
-          placeholder="Description"
+          placeholder={
+            props.edit ? `${props.originalValues.description}` : "Description"
+          }
         />
       </Form.Item>
       <OptionsInput

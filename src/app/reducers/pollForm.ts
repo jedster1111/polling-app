@@ -142,7 +142,7 @@ const pollFormReducer: Reducer<PollForm, AnyAction> = (
 export default pollFormReducer;
 function calculateNewVoteLimit(
   pollFormState: PollForm,
-  newOptions: { optionId: string; value: string }[]
+  newOptions: Array<{ optionId: string; value: string }>
 ) {
   const oldVoteLimit = pollFormState.data.voteLimit;
   const newVoteLimit =
