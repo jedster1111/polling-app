@@ -15,6 +15,7 @@ export interface PollsListProps {
   showEditForm: (pollId: string) => void;
   editingPoll: null | string;
   isLoading: boolean;
+  isLoggedIn: boolean;
   navigateToPoll: (pollId: string) => void;
 }
 
@@ -41,6 +42,7 @@ const PollsList = (props: PollsListProps) => (
         isEditing={props.editingPoll === poll.pollId}
         isOwner={props.user.id === poll.creator.id}
         navigateToPoll={() => props.navigateToPoll(poll.pollId)}
+        isLoggedIn={props.isLoggedIn}
       />
     )}
   />

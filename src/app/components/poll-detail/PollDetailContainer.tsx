@@ -17,6 +17,7 @@ interface StateProps {
   isLoading: boolean;
   userData: User;
   editingPoll: null | string;
+  isLoggedIn: boolean;
 }
 interface DispatchProps {
   fetchPolls: () => any;
@@ -38,7 +39,8 @@ const mapStateToProps: MapStateToProps<StateProps, OwnProps, InitialState> = (
     pollData: state.pollsState.polls.find(poll => poll.pollId === id),
     isLoading: state.pollsState.isLoading,
     userData: state.userState.data,
-    editingPoll: state.pollsState.editingPoll
+    editingPoll: state.pollsState.editingPoll,
+    isLoggedIn: state.userState.isLoggedIn
   };
 };
 const mapDispatchToProps: MapDispatchToProps<DispatchProps, OwnProps> = {
@@ -70,6 +72,7 @@ class PollDetailContainer extends React.Component<PollDetailContainerProps> {
         deletePoll={this.props.deletePoll}
         isEditing={isEditing}
         fetchPolls={this.props.fetchPolls}
+        isLoggedIn={this.props.isLoggedIn}
       />
     );
   }

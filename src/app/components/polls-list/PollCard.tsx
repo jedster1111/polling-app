@@ -16,6 +16,7 @@ export interface PollCardProps {
   isEditing?: boolean;
   isOwner?: boolean;
   navigateToPoll: () => void;
+  isLoggedIn: boolean;
 }
 
 const PollCard = (props: PollCardProps) => {
@@ -62,7 +63,11 @@ const PollCard = (props: PollCardProps) => {
             <p>
               {props.poll.creator.displayName || props.poll.creator.userName}
             </p>
-            <VoteDisplay poll={props.poll} user={props.user} />
+            <VoteDisplay
+              poll={props.poll}
+              user={props.user}
+              isLoggedIn={props.isLoggedIn}
+            />
           </span>
         }
       />

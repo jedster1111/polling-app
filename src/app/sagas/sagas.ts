@@ -56,8 +56,6 @@ function* voteOption(action: AnyAction) {
     const response = yield call(api.voteOption, action.payload);
     const poll: Poll = response.data.poll;
     yield put({ type: actionTypes.VOTE_OPTION_SUCCESS, payload: { poll } });
-
-    message.success("Vote successfully cast!");
   } catch (error) {
     const err: AxiosError = error;
     const errorMessage =

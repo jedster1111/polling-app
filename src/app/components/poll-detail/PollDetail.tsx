@@ -13,6 +13,7 @@ interface PollDetailProps {
   pollData: Poll | undefined;
   isLoading: boolean;
   userData: User;
+  isLoggedIn: boolean;
   voteOption: (userId: string, pollId: string, optionId: string) => void;
   showEditForm: (pollId: string, poll: Poll) => void;
   discardUpdatePollForm: () => void;
@@ -34,7 +35,8 @@ const PollDetail: React.SFC<PollDetailProps> = ({
   deletePoll,
   isEditing,
   discardUpdatePollForm,
-  fetchPolls
+  fetchPolls,
+  isLoggedIn
 }) => {
   if (!pollData) {
     return <p>That poll doesn't exist</p>;
@@ -124,7 +126,13 @@ const PollDetail: React.SFC<PollDetailProps> = ({
         description={
           <span>
             <p>{creator.displayName || creator.userName}</p>
-            {<VoteDisplay poll={pollData} user={userData} />}
+            {
+              <VoteDisplay
+                poll={pollData}
+                user={userData}
+                isLoggedIn={isLoggedIn}
+              />
+            }
           </span>
         }
         avatar={creator.photos && <Avatar src={creator.photos[0].value} />}

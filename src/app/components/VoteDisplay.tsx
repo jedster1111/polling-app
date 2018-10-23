@@ -5,14 +5,15 @@ import { Poll, User } from "../types";
 interface VoteDisplayProps {
   poll: Poll;
   user: User;
+  isLoggedIn: boolean;
 }
 
 const VoteDisplayContainer = styled.div<{
-  numberOfVotes: number;
-  voteLimit: number;
+  numberOfVotes?: number;
+  voteLimit?: number;
 }>`
   color: ${({ numberOfVotes, voteLimit }) =>
-    numberOfVotes > voteLimit ? "red" : "black"};
+    numberOfVotes && voteLimit && numberOfVotes > voteLimit ? "red" : "black"};
 `;
 
 const VoteDisplay: React.SFC<VoteDisplayProps> = props => {
@@ -20,12 +21,16 @@ const VoteDisplay: React.SFC<VoteDisplayProps> = props => {
     option.votes.find(vote => vote.id === props.user.id)
   ).length;
 
-  return (
+  return props.isLoggedIn ? (
     <VoteDisplayContainer
       numberOfVotes={numberOfVotes}
       voteLimit={props.poll.voteLimit}
     >
       Votes: {numberOfVotes} / {props.poll.voteLimit}
+    </VoteDisplayContainer>
+  ) : (
+    <VoteDisplayContainer>
+      Vote Limit: {props.poll.voteLimit}
     </VoteDisplayContainer>
   );
 };

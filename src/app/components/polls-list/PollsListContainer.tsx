@@ -25,6 +25,7 @@ interface PollsListContainerProps {
   editingPoll: null | string;
   discardUpdatePollForm: () => any;
   isLoading: boolean;
+  isLoggedIn: boolean;
   navigateToPoll: (pollId: string) => any;
 }
 
@@ -36,7 +37,8 @@ const mapStateToProps = (state: InitialState) => {
     user: state.userState.data,
     showResults: state.pollsState.showResults,
     editingPoll: state.pollsState.editingPoll,
-    isLoading: state.pollsState.isLoading
+    isLoading: state.pollsState.isLoading,
+    isLoggedIn: state.userState.isLoggedIn
   };
 };
 const mapDispatchToProps = {
@@ -86,6 +88,7 @@ class PollsListContainer extends React.Component<PollsListContainerProps> {
         editingPoll={this.props.editingPoll}
         isLoading={this.props.isLoading}
         navigateToPoll={this.props.navigateToPoll}
+        isLoggedIn={this.props.isLoggedIn}
       />
     );
   }

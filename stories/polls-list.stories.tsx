@@ -119,6 +119,7 @@ storiesOf("Polls List", module)
           deletePoll={action("deleted poll")}
           showEditForm={action("showEditForm")}
           navigateToPoll={action("navigated")}
+          isLoggedIn={false}
         />
         <PollCard
           user={{ id: "1", userName: "Joy" }}
@@ -129,6 +130,7 @@ storiesOf("Polls List", module)
           deletePoll={action("deleted poll")}
           showEditForm={action("showEditForm")}
           navigateToPoll={action("navigated")}
+          isLoggedIn={true}
         />
       </Fragment>
     );
@@ -147,6 +149,7 @@ storiesOf("Polls List", module)
         editingPoll="1"
         isLoading={false}
         navigateToPoll={action("navigated to poll")}
+        isLoggedIn={true}
       />
     );
   })
