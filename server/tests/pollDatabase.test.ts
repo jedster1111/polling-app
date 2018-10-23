@@ -191,6 +191,30 @@ describe("Testing poll related database methods:", () => {
     });
   });
 
+  describe("Testing open and close Poll", () => {
+    test("Can I close a poll? And then re-open it?", () => {
+      // const expectedPoll = generateExpectedPolls(1)[0];
+      const expectedPoll = db.getPolls()[0];
+      expectedPoll.isOpen = false;
+
+      let poll = db.closePoll(expectedPoll.creatorId, expectedPoll.pollId);
+
+      expect(poll).toEqual(expectedPoll);
+
+      expectedPoll.isOpen = true;
+
+      poll = db.openPoll(expectedPoll.creatorId, expectedPoll.pollId);
+
+      expect(poll).toEqual(expectedPoll);
+    });
+    test("Does trying to open/close a poll with wrong userId throw an error?", () => {
+      const pollToChange = db.getPolls()[0];
+
+      expect(() => db.closePoll("wrongId", pollToChange.pollId)).toThrowError();
+      expect(() => db.openPoll("wrongId", pollToChange.pollId)).toThrowError();
+    });
+  });
+
   describe("Testing removePoll:", () => {
     test("Can I remove a poll?", () => {
       db.removePoll("1", "1");

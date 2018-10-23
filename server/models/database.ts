@@ -187,6 +187,34 @@ class Database {
     this.polls.update(poll);
     return this.stripMeta<Poll>(poll);
   }
+  openPoll(userId: string, pollId: string): Poll {
+    const poll: StoredPoll = this.polls.findOne({ pollId });
+    if (poll.creatorId !== userId) {
+      const error = new Error(
+        "Can't open a poll that you didn't create!"
+      ) as ErrorWithStatusCode;
+      error.statusCode = 401;
+      throw error;
+    } else {
+      poll.isOpen = true;
+      this.polls.update(poll);
+      return this.stripMeta<Poll>(poll);
+    }
+  }
+  closePoll(userId: string, pollId: string): Poll {
+    const poll: StoredPoll = this.polls.findOne({ pollId });
+    if (poll.creatorId !== userId) {
+      const error = new Error(
+        "Can't close a poll that you didn't create!"
+      ) as ErrorWithStatusCode;
+      error.statusCode = 401;
+      throw error;
+    } else {
+      poll.isOpen = false;
+      this.polls.update(poll);
+      return this.stripMeta<Poll>(poll);
+    }
+  }
   /**
    * Removes a poll with the specified Id.
    * @param pollId Id of the poll you wish to remove from the database.
