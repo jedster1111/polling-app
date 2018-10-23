@@ -24,6 +24,13 @@ const itemLayout: { labelCol: ColProps; wrapperCol: ColProps } = {
 };
 
 const PollForm: React.SFC<CreatePollFormProps> = props => {
+  const numberOfOptions = props.values.options.reduce((previousVal, option) => {
+    if (option.value !== "") {
+      previousVal++;
+    }
+    return previousVal;
+  }, 0);
+
   return (
     <Form onSubmit={props.handleSubmit} id="createPollForm" layout="vertical">
       <Form.Item {...itemLayout} label="Poll name">
@@ -55,13 +62,8 @@ const PollForm: React.SFC<CreatePollFormProps> = props => {
         <Input
           value={props.values.voteLimit}
           onChange={props.handleChange}
-          min={1}
-          max={props.values.options.reduce((previousVal, option) => {
-            if (option.value !== "") {
-              previousVal++;
-            }
-            return previousVal;
-          }, 0)}
+          min={numberOfOptions ? 1 : 0}
+          max={numberOfOptions}
           type="number"
           id="voteLimit"
           placeholder="Vote Limit"

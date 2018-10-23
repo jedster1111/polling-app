@@ -14,49 +14,62 @@ interface OptionsInputProps {
 const OptionsInput = (props: OptionsInputProps) => {
   return (
     <React.Fragment>
-      {props.values.map((option, index) => (
-        <Form.Item
-          key={index}
-          help={
-            option.value === "" && option.optionId && props.edit
-              ? "This option will be deleted"
-              : undefined
-          }
-          label={index === 0 ? "Options" : ""}
-          labelCol={{ span: 4 }}
-          wrapperCol={{
-            xs: { span: 16 },
-            sm: { span: 16, offset: index === 0 ? 0 : 4 }
-          }}
-        >
-          <Input
-            id={`optionInput${index + 1}`}
-            className="optionInput"
-            value={option.value}
-            placeholder={
-              option.optionId
-                ? `${props.originalValues[index].value}`
-                : "New option"
+      {props.values.map((option, index) => {
+        const originalOption = props.originalValues.find(
+          origOpt =>
+            origOpt.optionId !== "" && origOpt.optionId === option.optionId
+        );
+        return (
+          <Form.Item
+            key={index}
+            help={
+              originalOption &&
+              option.value !== originalOption.value &&
+              option.optionId &&
+              props.edit
+                ? option.value === ""
+                  ? `"${originalOption.value}" will be deleted`
+                  : `"${originalOption.value}" will bechanged to "${
+                      option.value
+                    }"`
+                : undefined
             }
-            onChange={props.handleChange}
-            suffix={
-              props.values.length > 1 && (
-                <Button
-                  className="removeOption"
-                  icon="minus"
-                  shape="circle"
-                  size="small"
-                  onClick={() =>
-                    !option.optionId
-                      ? props.removePollOption(index)
-                      : props.clearOption(index)
-                  }
-                />
-              )
-            }
-          />
-        </Form.Item>
-      ))}
+            label={index === 0 ? "Options" : ""}
+            labelCol={{ span: 4 }}
+            wrapperCol={{
+              xs: { span: 16 },
+              sm: { span: 16, offset: index === 0 ? 0 : 4 }
+            }}
+          >
+            <Input
+              id={`optionInput${index + 1}`}
+              className="optionInput"
+              value={option.value}
+              placeholder={
+                originalOption && option.optionId
+                  ? `${originalOption.value}`
+                  : "New option"
+              }
+              onChange={props.handleChange}
+              suffix={
+                !(option.optionId && !option.value) && (
+                  <Button
+                    className="removeOption"
+                    icon="minus"
+                    shape="circle"
+                    size="small"
+                    onClick={() =>
+                      !option.optionId
+                        ? props.removePollOption(index)
+                        : props.clearOption(index)
+                    }
+                  />
+                )
+              }
+            />
+          </Form.Item>
+        );
+      })}
       <Form.Item wrapperCol={{ xs: { span: 16 }, sm: { span: 16, offset: 4 } }}>
         <Button
           type="dashed"
