@@ -23,7 +23,8 @@ export const getResponsePoll = (storedPoll: Poll): PollResponse => {
     description,
     pollName,
     pollId,
-    voteLimit
+    voteLimit,
+    isOpen
   } = storedPoll;
   const creator = db.getUser(creatorId);
   return {
@@ -49,7 +50,8 @@ export const getResponsePoll = (storedPoll: Poll): PollResponse => {
           photos: user.photos
         };
       })
-    }))
+    })),
+    isOpen
   };
 };
 
@@ -67,7 +69,7 @@ pollRouter
         const user = req.user;
         const newPoll: CreatePollRequest = req.body;
         const poll = getResponsePoll(
-          db.insertPoll({ ...newPoll, creatorId: user.id })
+          db.insertPoll({ ...newPoll, creatorId: user.id, isOpen: true })
         );
         res.status(201);
         res.json({ poll });

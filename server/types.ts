@@ -16,6 +16,7 @@ export interface PollInput {
   description: string;
   options: string[];
   voteLimit: number;
+  isOpen: boolean;
 }
 /**
  * The format a poll is actually stored in the database as, not including Loki property.
@@ -27,6 +28,7 @@ export interface Poll {
   pollId: string;
   options: StoredPollOptions[];
   voteLimit: number;
+  isOpen: boolean;
 }
 export interface StoredPoll extends Poll {
   $loki: string;
@@ -49,6 +51,7 @@ export interface PollResponse {
   pollId: string;
   options: PollResponseOption[];
   voteLimit: number;
+  isOpen: boolean;
 }
 export interface PollResponseOption {
   optionId: string;
