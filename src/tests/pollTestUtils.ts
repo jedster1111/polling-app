@@ -1,4 +1,4 @@
-import { Poll, PollOption } from "../app/types";
+import { Poll, PollOption, User } from "../app/types";
 export const generateOptions: (n: number) => PollOption[] = n => {
   const options: PollOption[] = [];
   for (let i = 0; i < n; i++) {
@@ -25,4 +25,16 @@ export const generatePolls: (n: number) => Poll[] = n => {
     polls.push(generatePoll(i + 1));
   }
   return polls;
+};
+export const generateUsers = (n: number) => {
+  const users: User[] = [];
+  for (let i = 0; i < n; i++) {
+    const index = i + 1;
+    users.push({
+      id: `${index}`,
+      displayName: `displayName${index}`,
+      userName: `userName${index}`
+    });
+  }
+  return users;
 };

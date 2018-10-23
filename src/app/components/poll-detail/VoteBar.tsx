@@ -4,6 +4,7 @@ import styled from "styled-components";
 interface VoteBarProps {
   maxVotes: number;
   numberOfVotes: number;
+  ranking: number;
 }
 
 const BarContainer = styled.div``;
@@ -21,7 +22,11 @@ const VoteText = styled.div`
   width: 100%;
 `;
 
-const VoteBar: React.SFC<VoteBarProps> = ({ maxVotes, numberOfVotes }) => {
+const VoteBar: React.SFC<VoteBarProps> = ({
+  maxVotes,
+  numberOfVotes,
+  ranking
+}) => {
   const percentageWidth = maxVotes
     ? `${(numberOfVotes * 100) / maxVotes}%`
     : "0%";
@@ -29,6 +34,7 @@ const VoteBar: React.SFC<VoteBarProps> = ({ maxVotes, numberOfVotes }) => {
     <div>
       <BarContainer>
         <InnerVoteBar percentageWidth={percentageWidth} />
+        Ranking: {ranking}
       </BarContainer>
       <VoteText>{numberOfVotes}</VoteText>
     </div>

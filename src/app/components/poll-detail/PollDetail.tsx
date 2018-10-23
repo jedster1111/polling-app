@@ -7,6 +7,7 @@ import PollForm from "../create-poll-form/PollFormContainer";
 import ActionButton from "../polls-list/ActionButton";
 import FetchPollsButton from "../polls-list/FetchPollsButton";
 import VoteDisplay from "../VoteDisplay";
+import { getRankings } from "./getRankings";
 import VoteBar from "./VoteBar";
 
 interface PollDetailProps {
@@ -45,6 +46,8 @@ const PollDetail: React.SFC<PollDetailProps> = ({
   if (!pollData) {
     return <p>That poll doesn't exist</p>;
   }
+
+  const optionRankings = getRankings(pollData.options);
 
   const columns: Array<ColumnProps<PollOption>> = [
     {
@@ -89,12 +92,19 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       title: "Votes",
       dataIndex: "votes",
       key: "votes",
-      render: (text, option) => (
-        <VoteBar
-          numberOfVotes={option.votes.length}
-          maxVotes={Math.max(...pollData.options.map(opt => opt.votes.length))}
-        />
-      ),
+      render: (text, option) => {
+        const numberOfVotes = option.votes.length;
+        const ranking = optionRankings[numberOfVotes];
+        return (
+          <VoteBar
+            numberOfVotes={numberOfVotes}
+            maxVotes={Math.max(
+              ...pollData.options.map(opt => opt.votes.length)
+            )}
+            ranking={ranking}
+          />
+        );
+      },
       sorter: (a, b) => a.votes.length - b.votes.length
     }
   ];
