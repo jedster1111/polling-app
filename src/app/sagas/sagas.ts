@@ -11,7 +11,7 @@ import { Poll, User } from "../types";
 // function fetchPolls() {
 //   return axios.get("http://localhost:8000/api/polls");
 // }
-function* getPollsSaga() {
+export function* getPollsSaga() {
   try {
     const response = yield call(api.getPolls);
     const polls: Poll[] = response.data.polls;
