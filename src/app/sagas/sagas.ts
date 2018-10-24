@@ -4,6 +4,7 @@ import { push } from "connected-react-router";
 import { Action, AnyAction } from "redux";
 import { all, call, put, takeLatest } from "redux-saga/effects";
 import * as actionTypes from "../actions/action-types";
+import { fetchPolls } from "../actions/actions";
 import * as api from "../api/api";
 import { Poll, User } from "../types";
 
@@ -66,6 +67,7 @@ function* voteOption(action: AnyAction) {
       type: actionTypes.VOTE_OPTION_ERROR,
       payload: { error: errorMessage }
     });
+    yield put(fetchPolls());
 
     message.error(errorMessage);
   }
