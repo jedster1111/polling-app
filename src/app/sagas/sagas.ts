@@ -30,7 +30,7 @@ export function* getPollsSaga() {
     message.error(errorMessage);
   }
 }
-function* postPollsSaga(action: any) {
+export function* postPollsSaga(action: any) {
   try {
     const response = yield call(api.createPoll, action.payload);
     const poll: Poll = response.data.poll;
@@ -52,7 +52,7 @@ function* postPollsSaga(action: any) {
     message.error(errorMessage);
   }
 }
-function* voteOption(action: AnyAction) {
+export function* voteOption(action: AnyAction) {
   try {
     const response = yield call(api.voteOption, action.payload);
     const poll: Poll = response.data.poll;
@@ -72,22 +72,8 @@ function* voteOption(action: AnyAction) {
     message.error(errorMessage);
   }
 }
-function* toggleShowResults(action: AnyAction) {
-  try {
-    const response = yield call(api.getPoll, action.payload.pollId);
-    const poll: Poll = response.data.poll;
-    yield put({
-      type: actionTypes.TOGGLE_SHOW_RESULTS_SUCCESS,
-      payload: { poll }
-    });
-  } catch (error) {
-    yield put({
-      type: actionTypes.TOGGLE_SHOW_RESULTS_ERROR,
-      payload: { error: error.message }
-    });
-  }
-}
-function* deletePoll(action: AnyAction) {
+
+export function* deletePoll(action: AnyAction) {
   try {
     yield call(api.deletePoll, action.payload);
     yield put({
@@ -110,7 +96,7 @@ function* deletePoll(action: AnyAction) {
     message.error(errorMessage);
   }
 }
-function* updatePoll(action: AnyAction) {
+export function* updatePoll(action: AnyAction) {
   try {
     const response = yield call(api.updatePoll, action.payload);
     const poll: Poll = response.data.poll;
@@ -134,7 +120,7 @@ function* updatePoll(action: AnyAction) {
     message.error(errorMessage);
   }
 }
-function* getUserData(action: AnyAction) {
+export function* getUserData(action: AnyAction) {
   try {
     const response: AxiosResponse = yield call(api.getUserData);
     const user: User = response.data.user;
@@ -165,7 +151,7 @@ function* getUserData(action: AnyAction) {
     }
   }
 }
-function* closePoll(action: Action & { payload: { pollId: string } }) {
+export function* closePoll(action: Action & { payload: { pollId: string } }) {
   try {
     const response: AxiosResponse = yield call(api.closePoll, action.payload);
     const poll: Poll = response.data.poll;
@@ -190,7 +176,7 @@ function* closePoll(action: Action & { payload: { pollId: string } }) {
   }
 }
 
-function* openPoll(action: Action & { payload: { pollId: string } }) {
+export function* openPoll(action: Action & { payload: { pollId: string } }) {
   try {
     const response: AxiosResponse = yield call(api.openPoll, action.payload);
     const poll: Poll = response.data.poll;
@@ -220,7 +206,6 @@ export function* mainSaga() {
     takeLatest(actionTypes.GET_POLLS_REQUEST, getPollsSaga),
     takeLatest(actionTypes.POST_POLLS_REQUEST, postPollsSaga),
     takeLatest(actionTypes.VOTE_OPTION_LOADING, voteOption),
-    takeLatest(actionTypes.TOGGLE_SHOW_RESULTS_LOADING, toggleShowResults),
     takeLatest(actionTypes.DELETE_POLL_LOADING, deletePoll),
     takeLatest(actionTypes.UPDATE_POLL_LOADING, updatePoll),
     takeLatest(actionTypes.GET_USER_DATA_LOADING, getUserData),
