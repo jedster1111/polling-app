@@ -14,14 +14,19 @@ const InnerVoteBar = styled.div<{ percentageWidth: string; ranking: number }>`
   transition: all 0.5s;
   background-color: ${({ ranking }) => {
     let color;
-    if (ranking === 1) {
-      color = "#FDCA40";
-    } else if (ranking === 2) {
-      color = "#E6F2F2";
-    } else if (ranking === 3) {
-      color = "#EDC9AA";
-    } else {
-      color = "#AEC5EB";
+    switch (ranking) {
+      case 1:
+        color = "#FDCA40";
+        break;
+      case 2:
+        color = "#E6F2F2";
+        break;
+      case 3:
+        color = "#EDC9AA";
+        break;
+      default:
+        color = "#AEC5EB";
+        break;
     }
     return color;
   }};
