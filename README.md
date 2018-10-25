@@ -35,14 +35,21 @@
 
 ## Testing
 
-- To execute tests with jest, run: `yarn test`
-- To execute tests using testcafe, first ensure development server is running
-  and run: `yarn run testcafe`
+- To execute unit/integration tests with jest, run: `yarn test`
+- To execute end-to-end tests using testcafe, first ensure development server is running
+  and run: `yarn testcafe`
+  - **Add the github account you'd like to use for testing to `dev.env` file in the format shown below**  
+    Probably best not to use your real github account especially if you share passwords between multiple accounts.
+  ```
+    TEST_USERNAME=YourGithubUsername
+    TEST_PASSWORD=YourPassword
+  ```
 
 ## Deployment
 
-On the deployment server, run `yarn build`, which will bundle all the front end
-code using webpack, and compiles the server to javascript
+On the deployment server, run `yarn build` to bundle all the front end
+code using webpack, and compile the server to javascript.  
+Run `yarn start:prod` to run the server.
 
 ## Other Commands
 

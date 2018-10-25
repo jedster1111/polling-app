@@ -1,6 +1,6 @@
 import { ReactSelector } from "testcafe-react-selectors";
-import { username } from "../../secret/githubTestAuth";
 import { PollInput } from "../../src/app/types";
+import { username } from "../roles/roles";
 
 export default class PollsListPage {
   refreshPolls = ReactSelector("FetchPollsButton");
