@@ -263,8 +263,4 @@ describe("Testing poll related database methods:", () => {
       expect(polls).toMatchObject(expectedPolls);
     });
   });
-
-  // describe("Testing votePoll and updatePoll", () => {
-  //   test("Can I vote and then update a")
-  // });
 });
