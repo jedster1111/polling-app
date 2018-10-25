@@ -22,9 +22,9 @@ const createOptions = (n: number) => {
       optionId: `${index + 1}`,
       value: `Bean bags, green and black asdfasdf asdfasd asdffdas asdfasdf`,
       votes: [
-        { id: "1", displayName: "Jed" },
-        { id: "2", displayName: "Joy" },
-        { id: "3", displayName: "Josh" }
+        { id: "1", userName: "Jed" },
+        { id: "2", userName: "Joy" },
+        { id: "3", userName: "Josh" }
       ]
     }));
   return options;
@@ -35,14 +35,18 @@ const examplePolls: Poll[] = [
     options: createOptions(4),
     pollId: "1",
     pollName: "New Furniture?",
-    creator: { id: "1", displayName: "Jed" }
+    creator: { id: "1", userName: "Jed" },
+    voteLimit: 1,
+    isOpen: true
   },
   {
-    creator: { id: "2", displayName: "Joy" },
+    creator: { id: "2", userName: "Joy" },
     description: "What to get for lunch today?",
     options: createOptions(6),
     pollId: "2",
-    pollName: "Lunch today?"
+    pollName: "Lunch today?",
+    voteLimit: 1,
+    isOpen: true
   }
 ];
 
@@ -58,7 +62,7 @@ storiesOf("Polls List", module)
     />
   ))
   .add("Fetch Polls Button", () => (
-    <FetchPollsButton fetchPolls={action("fetching polls")} />
+    <FetchPollsButton fetchPolls={action("fetching polls")} isLoading={false} />
   ))
   .add("Option Display", () => (
     <Fragment>
@@ -109,22 +113,30 @@ storiesOf("Polls List", module)
     return (
       <Fragment>
         <PollCard
-          creator={{ displayName: "Jed", id: "1" }}
+          user={{ id: "1", userName: "Jed" }}
           toggleShowResults={action("toggled show")}
           poll={examplePolls[0]}
           handleVote={action("clicked option")}
           showResults={false}
           deletePoll={action("deleted poll")}
           showEditForm={action("showEditForm")}
+          navigateToPoll={action("navigated")}
+          isLoggedIn={false}
+          closePoll={action("Closed poll")}
+          openPoll={action("Opened poll")}
         />
         <PollCard
-          creator={{ displayName: "Jed", id: "1" }}
+          user={{ id: "1", userName: "Joy" }}
           toggleShowResults={action("toggled show")}
           poll={examplePolls[0]}
           handleVote={action("clicked option")}
           showResults={false}
           deletePoll={action("deleted poll")}
           showEditForm={action("showEditForm")}
+          navigateToPoll={action("navigated")}
+          isLoggedIn={true}
+          closePoll={action("Closed poll")}
+          openPoll={action("Opened poll")}
         />
       </Fragment>
     );
@@ -136,21 +148,23 @@ storiesOf("Polls List", module)
         polls={[examplePolls[0], examplePolls[1]]}
         fetchPolls={action("fetching polls")}
         handleVote={action("clicked option")}
-        creator={{ displayName: "Jed", id: "123" }}
+        user={{ id: "1", userName: "Jed" }}
         showResults={{ 1: false, 2: true }}
         deletePoll={action("deleted poll")}
         showEditForm={action("showEditForm")}
         editingPoll="1"
+        isLoading={false}
+        navigateToPoll={action("navigated to poll")}
+        isLoggedIn={true}
+        closePoll={action("Closed poll")}
+        openPoll={action("Opened poll")}
       />
     );
   })
   .add("Result Column", () => (
     <ResultsColumn
       option={{
-        votes: [
-          { displayName: "Jed", id: "1" },
-          { displayName: "Joy", id: "2" }
-        ],
+        votes: [{ userName: "Jed", id: "1" }, { userName: "Joy", id: "2" }],
         value: "Bean bags",
         optionId: "1"
       }}

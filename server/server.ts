@@ -1,16 +1,27 @@
-import path = require("path");
-import webpack = require("webpack");
-import webpackDevMiddleware = require("webpack-dev-middleware");
-import webpackHotMiddleware = require("webpack-hot-middleware");
-import webpackConfig = require("../webpack.config.js");
+import path from "path";
+import webpack from "webpack";
+import webpackDevMiddleware from "webpack-dev-middleware";
+import webpackHotMiddleware from "webpack-hot-middleware";
+import webpackConfig from "../webpack.config.js";
 import app from "./app";
 
-const compiler = webpack(webpackConfig as any);
-app.use(webpackDevMiddleware(compiler));
-app.use(webpackHotMiddleware(compiler));
+const PORT = process.env.PORT || 8000;
+const ENV = process.env.NODE_ENV || "development";
+
+console.log(`You are running in ${ENV} mode!`);
+
+if (ENV === "development") {
+  console.log("hot module and dev middleware is loaded");
+  const compiler = webpack(webpackConfig as any);
+  app.use(webpackDevMiddleware(compiler));
+  app.use(webpackHotMiddleware(compiler));
+}
 app.get("*", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "..", "dist", "index.html"));
+  if (ENV === "development") {
+    res.sendFile(path.resolve(__dirname, "..", "dist", "index.html"));
+  } else {
+    res.sendFile(path.resolve(__dirname, "..", "index.html"));
+  }
 });
 
-const port = process.env.PORT || 8000;
-app.listen(port, () => console.log(`App is running on port: ${port}`));
+app.listen(PORT, () => console.log(`App is running on port: ${PORT}`));

@@ -4,11 +4,15 @@ export interface Poll {
   description: string;
   pollId: string;
   options: PollOption[];
+  voteLimit: number;
+  isOpen: boolean;
 }
 export interface User {
   id: string;
   displayName?: string;
   userName: string;
+  photos?: Array<{ value: string }>;
+  profileUrl?: string;
 }
 export interface PollOption {
   optionId: string;
@@ -21,11 +25,13 @@ export interface PollInput {
   pollName: string;
   description: string;
   options: string[];
+  voteLimit: number;
 }
 export interface UpdatePollInput {
   pollName?: string;
   description?: string;
   options?: UpdatePollInputOption[];
+  voteLimit?: number;
 }
 export interface UpdatePollInputOption {
   optionId: string;

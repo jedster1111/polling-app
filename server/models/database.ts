@@ -1,4 +1,4 @@
-import loki = require("lokijs");
+import Loki from "lokijs";
 import { ErrorWithStatusCode } from "../app";
 import {
   Poll,
@@ -18,7 +18,8 @@ class Database {
       "creatorId",
       "description",
       "pollName",
-      "options"
+      "options",
+      "voteLimit"
     ];
     const missingProperties: string[] = [];
     necessaryProperties.forEach(property => {
@@ -43,7 +44,7 @@ class Database {
     }
   }
 
-  db = new loki("polling-app.db");
+  db = new Loki("polling-app.db");
   polls = this.db.addCollection("polls", { clone: true, disableMeta: true });
   users = this.db.addCollection("users", { clone: true, disableMeta: true });
   pollsCount = 0;
@@ -80,6 +81,7 @@ class Database {
     this.pollsCount++;
     return this.stripMeta<Poll>(newPoll);
   }
+  // This could really be cleaned up
   updatePoll(
     userId: string,
     pollId: string,
@@ -109,13 +111,16 @@ class Database {
               const optionToUpdate = poll.options.find(
                 option => option.optionId === optionInput.optionId
               );
-              if (optionToUpdate !== undefined && optionInput.value) {
+              if (optionToUpdate !== undefined && optionInput.value !== "") {
                 optionToUpdate.value = optionInput.value;
+              } else if (optionToUpdate !== undefined) {
+                poll.options.splice(poll.options.indexOf(optionToUpdate), 1);
               }
             } else if (optionInput.value) {
+              const lastOption = poll.options[poll.options.length - 1];
               poll.options.push({
                 optionId: `${parseInt(
-                  poll.options[poll.options.length - 1].optionId,
+                  lastOption ? lastOption.optionId : "1",
                   10
                 ) + 1}`,
                 value: optionInput.value,
@@ -126,9 +131,15 @@ class Database {
         );
       }
     });
+    if (poll.options.length === 0) {
+      const error: ErrorWithStatusCode = new Error("Can't delete all options!");
+      error.statusCode = 401;
+      throw error;
+    }
     this.polls.update(poll);
     return this.stripMeta<Poll>(poll);
   }
+
   /**
    * Casts a vote on a specific poll. If the name already exists on the option the vote will be removed.
    * @param pollId Id of poll to be voted on
@@ -137,22 +148,9 @@ class Database {
    */
   votePoll(pollId: string, voteInput: VoteInput): Poll {
     const poll: StoredPoll = this.polls.findOne({ pollId });
-    const isValidVote =
-      poll &&
-      poll.options[
-        poll.options.findIndex(option => option.optionId === voteInput.optionId)
-      ] &&
-      voteInput.voterId;
-    if (!isValidVote) {
-      const err = new Error(
-        `Invalid vote input, either vote/poll doesn't exist
-        or username is empty. PollId: ${pollId}, OptionId: ${
-          voteInput.optionId
-        }, VoterId: ${voteInput.voterId}`
-      ) as ErrorWithStatusCode;
-      err.statusCode = 400;
-      throw err;
-    }
+
+    this.checkValidVoteAndThrowErrors(poll, voteInput);
+
     for (const option of poll.options) {
       if (option.optionId === voteInput.optionId) {
         const indexOfId: number = option.votes.findIndex(
@@ -169,6 +167,34 @@ class Database {
     }
     this.polls.update(poll);
     return this.stripMeta<Poll>(poll);
+  }
+  openPoll(userId: string, pollId: string): Poll {
+    const poll: StoredPoll = this.polls.findOne({ pollId });
+    if (poll.creatorId !== userId) {
+      const error = new Error(
+        "Can't open a poll that you didn't create!"
+      ) as ErrorWithStatusCode;
+      error.statusCode = 401;
+      throw error;
+    } else {
+      poll.isOpen = true;
+      this.polls.update(poll);
+      return this.stripMeta<Poll>(poll);
+    }
+  }
+  closePoll(userId: string, pollId: string): Poll {
+    const poll: StoredPoll = this.polls.findOne({ pollId });
+    if (poll.creatorId !== userId) {
+      const error = new Error(
+        "Can't close a poll that you didn't create!"
+      ) as ErrorWithStatusCode;
+      error.statusCode = 401;
+      throw error;
+    } else {
+      poll.isOpen = false;
+      this.polls.update(poll);
+      return this.stripMeta<Poll>(poll);
+    }
   }
   /**
    * Removes a poll with the specified Id.
@@ -209,6 +235,52 @@ class Database {
   }
   resetUsers(): void {
     this.users.clear();
+  }
+
+  /**
+   * Checks if a vote input for a given poll is valid or not, and then throws appropiate error messages.
+   * @param poll The poll that is being voted on, can be undefined.
+   * @param voteInput VoteInput containing voterId and optionId
+   */
+  private checkValidVoteAndThrowErrors(
+    poll: StoredPoll | undefined,
+    voteInput: VoteInput
+  ): void {
+    let messages: string = "";
+    if (!poll) {
+      this.throwErrorWithStatusCode("Poll was not found!", 400);
+      return;
+    }
+
+    const optionBeingVotedOn = poll.options.find(
+      option => option.optionId === voteInput.optionId
+    );
+    const numberOfExistingVotes = poll.options.filter(option =>
+      option.votes.find(vote => vote === voteInput.voterId)
+    ).length;
+
+    if (!poll.isOpen) {
+      messages = "This poll has been closed!";
+    } else if (!optionBeingVotedOn) {
+      messages = "That option doesn't exist!";
+    } else if (
+      !(
+        numberOfExistingVotes < poll.voteLimit ||
+        optionBeingVotedOn.votes.find(vote => vote === voteInput.voterId)
+      )
+    ) {
+      messages = "You've used up all of your votes!";
+    }
+
+    if (messages) {
+      this.throwErrorWithStatusCode(messages, 400);
+    }
+  }
+
+  private throwErrorWithStatusCode(message: string, statusCode: number) {
+    const err = new Error(message) as ErrorWithStatusCode;
+    err.statusCode = statusCode;
+    throw err;
   }
 
   private stripResultsMetadata<T>(results: Array<T & { $loki: string }>) {

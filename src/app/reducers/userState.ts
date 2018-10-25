@@ -1,20 +1,30 @@
 import { AnyAction, Reducer } from "redux";
 import * as actionTypes from "../actions/action-types";
-import { initialState, UserState } from "./rootReducer";
+import { User } from "../types";
+
+export interface UserState {
+  data: User;
+  isLoading: boolean;
+  error: Error | null;
+  isLoggedIn: boolean;
+}
+
+export const initialUserState: UserState = {
+  data: {
+    id: "",
+    displayName: "",
+    userName: ""
+  },
+  isLoading: false,
+  error: null,
+  isLoggedIn: false
+};
 
 const userStateReducer: Reducer = (
-  userState: UserState = initialState.userState,
+  userState: UserState = initialUserState,
   action: AnyAction
 ): UserState => {
   switch (action.type) {
-    // case actionTypes.SAVE_USER_FORM_DATA:
-    //   return {
-    //     ...userState,
-    //     data: {
-    //       ...userState.data,
-    //       name: action.payload.name
-    //     }
-    //   };
     case actionTypes.GET_USER_DATA_LOADING:
       return {
         ...userState,
@@ -38,7 +48,8 @@ const userStateReducer: Reducer = (
       return {
         ...userState,
         isLoading: false,
-        isLoggedIn: false
+        isLoggedIn: false,
+        data: { ...initialUserState.data }
       };
     default:
       return userState;

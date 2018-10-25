@@ -9,15 +9,18 @@ import {
   removePollOption,
   updatePoll
 } from "../../actions/actions";
-import { InitialState, PollFormInput } from "../../reducers/rootReducer";
+import { PollFormInput } from "../../reducers/pollForm";
+import { InitialState } from "../../reducers/rootReducer";
 import { PollInput, UpdatePollInput, User } from "../../types";
 import PollForm from "./PollForm";
 
 interface PollFormContainerProps {
   pollFormData: PollFormInput;
+  originalData: PollFormInput;
   user: User;
+  isLoading: boolean;
   submitPoll: (poll: PollInput) => any;
-  handleChange: (fieldId: string, value: string) => any;
+  handleChange: (fieldId: string, value: string | number) => any;
   discardPoll: () => any;
   addPollOption: () => any;
   removePollOption: (index: number) => any;
@@ -46,6 +49,8 @@ const mapDispatchToProps = {
 const mapStateToProps = (state: InitialState, ownProps: OwnProps) => {
   return {
     pollFormData: state.pollForm.data,
+    originalData: state.pollForm.originalData,
+    isLoading: state.pollForm.isLoading,
     user: state.userState.data
   };
 };
@@ -60,7 +65,8 @@ class PollFormContainer extends React.Component<
         creatorId: this.props.user.id,
         description: this.props.pollFormData.description,
         pollName: this.props.pollFormData.pollName,
-        options: this.props.pollFormData.options.map(option => option.value)
+        options: this.props.pollFormData.options.map(option => option.value),
+        voteLimit: this.props.pollFormData.voteLimit
       };
       this.props.submitPoll(inputData);
     } else if (this.props.edit && this.props.pollId) {
@@ -70,7 +76,27 @@ class PollFormContainer extends React.Component<
     }
   };
   handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.props.handleChange(e.target.id, e.target.value);
+    const target = e.target.id;
+    let value: string | number = e.target.value;
+    if (target === "voteLimit" && value) {
+      value = parseInt(value, 10);
+      const noOfOptions = this.props.pollFormData.options.reduce(
+        (prev, option) => {
+          if (option.value) {
+            prev++;
+          }
+          return prev;
+        },
+        0
+      );
+      if (value > noOfOptions) {
+        value = noOfOptions;
+      }
+    }
+    this.props.handleChange(target, value);
+  };
+  clearOption = (index: number) => {
+    this.props.handleChange(`optionInput${index + 1}`, "");
   };
   handleDiscardPoll = () => {
     if (this.props.edit) {
@@ -88,6 +114,9 @@ class PollFormContainer extends React.Component<
         addPollOption={this.props.addPollOption}
         removePollOption={this.props.removePollOption}
         edit={this.props.edit}
+        isLoading={this.props.isLoading}
+        clearOption={this.clearOption}
+        originalValues={this.props.originalData}
       />
     );
   }

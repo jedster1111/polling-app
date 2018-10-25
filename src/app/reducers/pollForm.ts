@@ -1,18 +1,44 @@
 import { AnyAction, Reducer } from "redux";
 import * as actionTypes from "../actions/action-types";
-import { initialState, PollForm } from "./rootReducer";
 
-const pollFormReducer: Reducer = (
-  pollFormState: PollForm = initialState.pollForm,
-  action: AnyAction
+export interface PollForm {
+  data: PollFormInput;
+  originalData: PollFormInput;
+  isLoading: boolean;
+  error: string | null;
+}
+
+export interface PollFormInput {
+  description: string;
+  pollName: string;
+  options: Array<{ optionId: string; value: string }>;
+  voteLimit: number;
+}
+
+const initData = {
+  description: "",
+  options: [
+    { optionId: "", value: "" },
+    { optionId: "", value: "" },
+    { optionId: "", value: "" },
+    { optionId: "", value: "" }
+  ],
+  pollName: "",
+  voteLimit: 1
+};
+
+export const initialPollFormState: PollForm = {
+  data: initData,
+  originalData: initData,
+  isLoading: false,
+  error: null
+};
+
+const pollFormReducer: Reducer<PollForm, AnyAction> = (
+  pollFormState = initialPollFormState,
+  action
 ): PollForm => {
   switch (action.type) {
-    case actionTypes.LOCATION_CHANGED: {
-      return {
-        ...pollFormState,
-        data: { ...initialState.pollForm.data }
-      };
-    }
     case actionTypes.CHANGE_FORM_DATA:
       const { fieldId, value } = action.payload;
       if (/^(optionInput)/.test(fieldId)) {
@@ -38,14 +64,7 @@ const pollFormReducer: Reducer = (
         };
       }
     case actionTypes.DISCARD_FORM_DATA: {
-      return {
-        ...pollFormState,
-        data: {
-          description: "",
-          pollName: "",
-          options: initialState.pollForm.data.options
-        }
-      };
+      return initialPollFormState;
     }
     case actionTypes.POST_POLLS_REQUEST:
       return {
@@ -54,16 +73,7 @@ const pollFormReducer: Reducer = (
         error: null
       };
     case actionTypes.POST_POLLS_SUCCESS:
-      return {
-        ...pollFormState,
-        data: {
-          description: "",
-          options: initialState.pollForm.data.options,
-          pollName: ""
-        },
-        isLoading: false,
-        error: null
-      };
+      return initialPollFormState;
     case actionTypes.POST_POLLS_ERROR:
       return {
         ...pollFormState,
@@ -84,16 +94,44 @@ const pollFormReducer: Reducer = (
       const newOptions = [...pollFormState.data.options];
       const indexToRemove = action.payload.index;
       newOptions.splice(indexToRemove, 1);
+
+      const newVoteLimit = calculateNewVoteLimit(pollFormState, newOptions);
+
       return {
         ...pollFormState,
-        data: { ...pollFormState.data, options: newOptions }
+        data: {
+          ...pollFormState.data,
+          options: newOptions,
+          voteLimit: newVoteLimit
+        }
       };
     }
     case actionTypes.SHOW_UPDATE_POLL_FORM: {
       const poll = action.payload.poll;
       return {
         ...pollFormState,
-        data: { ...poll }
+        data: { ...poll },
+        originalData: { ...poll }
+      };
+    }
+    case actionTypes.UPDATE_POLL_LOADING: {
+      return {
+        ...pollFormState,
+        isLoading: true,
+        error: null
+      };
+    }
+    case actionTypes.UPDATE_POLL_SUCCESS: {
+      return {
+        ...pollFormState,
+        isLoading: false
+      };
+    }
+    case actionTypes.UPDATE_POLL_ERROR: {
+      return {
+        ...pollFormState,
+        isLoading: false,
+        error: action.payload.error
       };
     }
     default:
@@ -102,3 +140,12 @@ const pollFormReducer: Reducer = (
 };
 
 export default pollFormReducer;
+function calculateNewVoteLimit(
+  pollFormState: PollForm,
+  newOptions: Array<{ optionId: string; value: string }>
+) {
+  const oldVoteLimit = pollFormState.data.voteLimit;
+  const newVoteLimit =
+    oldVoteLimit > newOptions.length ? newOptions.length : oldVoteLimit;
+  return newVoteLimit;
+}

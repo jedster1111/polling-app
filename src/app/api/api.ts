@@ -43,3 +43,11 @@ export function updatePoll(payload: {
 export function getUserData() {
   return axios.get(`/api/users/me`);
 }
+
+export function openPoll({ pollId }: { pollId: string }) {
+  return axios.post(`/api/polls/${pollId}/open`);
+}
+
+export function closePoll({ pollId }: { pollId: string }) {
+  return axios.post(`/api/polls/${pollId}/close`);
+}

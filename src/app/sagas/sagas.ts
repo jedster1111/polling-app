@@ -1,14 +1,17 @@
+import { message } from "antd";
 import { AxiosError, AxiosResponse } from "axios";
-import { AnyAction } from "redux";
+import { push } from "connected-react-router";
+import { Action, AnyAction } from "redux";
 import { all, call, put, takeLatest } from "redux-saga/effects";
 import * as actionTypes from "../actions/action-types";
+import { fetchPolls } from "../actions/actions";
 import * as api from "../api/api";
-import { Poll } from "../types";
+import { Poll, User } from "../types";
 
 // function fetchPolls() {
 //   return axios.get("http://localhost:8000/api/polls");
 // }
-function* getPollsSaga() {
+export function* getPollsSaga() {
   try {
     const response = yield call(api.getPolls);
     const polls: Poll[] = response.data.polls;
@@ -23,14 +26,18 @@ function* getPollsSaga() {
       type: actionTypes.GET_POLLS_ERROR,
       payload: { error: errorMessage }
     });
+
+    message.error(errorMessage);
   }
 }
-function* postPollsSaga(action: any) {
+export function* postPollsSaga(action: any) {
   try {
     const response = yield call(api.createPoll, action.payload);
     const poll: Poll = response.data.poll;
     yield put({ type: actionTypes.POST_POLLS_SUCCESS, payload: { poll } });
-    // yield put({ type: actionTypes.GET_POLLS_REQUEST });
+    yield put(push("/"));
+
+    message.success("Poll Created!");
   } catch (error) {
     const err: AxiosError = error;
     const errorMessage =
@@ -41,9 +48,11 @@ function* postPollsSaga(action: any) {
       type: actionTypes.POST_POLLS_ERROR,
       payload: { error: errorMessage }
     });
+
+    message.error(errorMessage);
   }
 }
-function* voteOption(action: AnyAction) {
+export function* voteOption(action: AnyAction) {
   try {
     const response = yield call(api.voteOption, action.payload);
     const poll: Poll = response.data.poll;
@@ -58,30 +67,21 @@ function* voteOption(action: AnyAction) {
       type: actionTypes.VOTE_OPTION_ERROR,
       payload: { error: errorMessage }
     });
+    yield put(fetchPolls());
+
+    message.error(errorMessage);
   }
 }
-function* toggleShowResults(action: AnyAction) {
-  try {
-    const response = yield call(api.getPoll, action.payload.pollId);
-    const poll: Poll = response.data.poll;
-    yield put({
-      type: actionTypes.TOGGLE_SHOW_RESULTS_SUCCESS,
-      payload: { poll }
-    });
-  } catch (error) {
-    yield put({
-      type: actionTypes.TOGGLE_SHOW_RESULTS_ERROR,
-      payload: { error: error.message }
-    });
-  }
-}
-function* deletePoll(action: AnyAction) {
+
+export function* deletePoll(action: AnyAction) {
   try {
     yield call(api.deletePoll, action.payload);
     yield put({
       type: actionTypes.DELETE_POLL_SUCCESS,
       payload: action.payload
     });
+
+    message.success("Successfully deleted poll!");
   } catch (error) {
     const err: AxiosError = error;
     const errorMessage =
@@ -92,9 +92,11 @@ function* deletePoll(action: AnyAction) {
       type: actionTypes.DELETE_POLL_ERROR,
       payload: { error: errorMessage }
     });
+
+    message.error(errorMessage);
   }
 }
-function* updatePoll(action: AnyAction) {
+export function* updatePoll(action: AnyAction) {
   try {
     const response = yield call(api.updatePoll, action.payload);
     const poll: Poll = response.data.poll;
@@ -102,6 +104,8 @@ function* updatePoll(action: AnyAction) {
       type: actionTypes.UPDATE_POLL_SUCCESS,
       payload: { poll }
     });
+
+    message.success("Poll successfully updated!");
   } catch (error) {
     const err: AxiosError = error;
     const errorMessage =
@@ -112,13 +116,16 @@ function* updatePoll(action: AnyAction) {
       type: actionTypes.UPDATE_POLL_ERROR,
       payload: { error: errorMessage }
     });
+
+    message.error(errorMessage);
   }
 }
-function* getUserData(action: AnyAction) {
+export function* getUserData(action: AnyAction) {
   try {
     const response: AxiosResponse = yield call(api.getUserData);
-    const user = response.data.user;
+    const user: User = response.data.user;
     if (response.status === 200) {
+      message.success(`Welcome ${user.displayName || user.userName}`);
       yield put({
         type: actionTypes.GET_USER_DATA_SUCCESS,
         payload: { user }
@@ -139,7 +146,58 @@ function* getUserData(action: AnyAction) {
         type: actionTypes.GET_USER_DATA_ERROR,
         payload: { error: errorMessage }
       });
+
+      message.error(errorMessage);
     }
+  }
+}
+export function* closePoll(action: Action & { payload: { pollId: string } }) {
+  try {
+    const response: AxiosResponse = yield call(api.closePoll, action.payload);
+    const poll: Poll = response.data.poll;
+    yield put({
+      type: actionTypes.CLOSE_POLL_SUCCESS,
+      payload: { poll }
+    });
+
+    message.success("Poll was successfully closed!");
+  } catch (error) {
+    const err: AxiosError = error;
+    const errorMessage =
+      err.response && err.response.data.error
+        ? err.response.data.error
+        : err.message;
+    yield put({
+      type: actionTypes.CLOSE_POLL_ERROR,
+      payload: { error: errorMessage }
+    });
+
+    message.error(errorMessage);
+  }
+}
+
+export function* openPoll(action: Action & { payload: { pollId: string } }) {
+  try {
+    const response: AxiosResponse = yield call(api.openPoll, action.payload);
+    const poll: Poll = response.data.poll;
+    yield put({
+      type: actionTypes.OPEN_POLL_SUCCESS,
+      payload: { poll }
+    });
+
+    message.success("Poll was successfully opened!");
+  } catch (error) {
+    const err: AxiosError = error;
+    const errorMessage =
+      err.response && err.response.data.error
+        ? err.response.data.error
+        : err.message;
+    yield put({
+      type: actionTypes.OPEN_POLL_ERROR,
+      payload: { error: errorMessage }
+    });
+
+    message.error(errorMessage);
   }
 }
 
@@ -148,9 +206,10 @@ export function* mainSaga() {
     takeLatest(actionTypes.GET_POLLS_REQUEST, getPollsSaga),
     takeLatest(actionTypes.POST_POLLS_REQUEST, postPollsSaga),
     takeLatest(actionTypes.VOTE_OPTION_LOADING, voteOption),
-    takeLatest(actionTypes.TOGGLE_SHOW_RESULTS_LOADING, toggleShowResults),
     takeLatest(actionTypes.DELETE_POLL_LOADING, deletePoll),
     takeLatest(actionTypes.UPDATE_POLL_LOADING, updatePoll),
-    takeLatest(actionTypes.GET_USER_DATA_LOADING, getUserData)
+    takeLatest(actionTypes.GET_USER_DATA_LOADING, getUserData),
+    takeLatest(actionTypes.CLOSE_POLL_LOADING, closePoll),
+    takeLatest(actionTypes.OPEN_POLL_LOADING, openPoll)
   ]);
 }

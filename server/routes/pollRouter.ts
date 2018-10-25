@@ -1,5 +1,5 @@
-import express = require("express");
-import { passport } from "../app";
+import express from "express";
+import passport from "passport";
 import db from "../models/database";
 import { CreatePollRequest, VoteInputRequest } from "../types";
 import {
@@ -17,16 +17,26 @@ export const getResponsePolls = (storedPolls: Poll[]): PollResponse[] => {
   });
 };
 export const getResponsePoll = (storedPoll: Poll): PollResponse => {
-  const { creatorId, options, description, pollName, pollId } = storedPoll;
+  const {
+    creatorId,
+    options,
+    description,
+    pollName,
+    pollId,
+    voteLimit,
+    isOpen
+  } = storedPoll;
   const creator = db.getUser(creatorId);
   return {
     description,
     pollId,
     pollName,
+    voteLimit,
     creator: {
       displayName: creator.displayName,
       id: creator.id,
-      userName: creator.userName
+      userName: creator.userName,
+      photos: creator.photos
     },
     options: options.map<PollResponseOption>(option => ({
       optionId: option.optionId,
@@ -36,10 +46,12 @@ export const getResponsePoll = (storedPoll: Poll): PollResponse => {
         return {
           id: userId,
           displayName: user.displayName,
-          userName: user.userName
+          userName: user.userName,
+          photos: user.photos
         };
       })
-    }))
+    })),
+    isOpen
   };
 };
 
@@ -57,7 +69,7 @@ pollRouter
         const user = req.user;
         const newPoll: CreatePollRequest = req.body;
         const poll = getResponsePoll(
-          db.insertPoll({ ...newPoll, creatorId: user.id })
+          db.insertPoll({ ...newPoll, creatorId: user.id, isOpen: true })
         );
         res.status(201);
         res.json({ poll });
@@ -108,6 +120,41 @@ pollRouter
         const poll = getResponsePoll(
           db.votePoll(pollId, { optionId: voteInput.optionId, voterId: userId })
         );
+        res.status(200).json({ poll });
+      } catch (error) {
+        next(error);
+      }
+    }
+  );
+
+pollRouter
+  .route("/:pollId/open")
+  .post(
+    passport.authenticate(["jwt"], { session: false }),
+    (req, res, next) => {
+      try {
+        const userId: string = req.user.id;
+        const pollId: string = req.params.pollId;
+
+        const poll = getResponsePoll(db.openPoll(userId, pollId));
+
+        res.status(200).json({ poll });
+      } catch (error) {
+        next(error);
+      }
+    }
+  );
+pollRouter
+  .route("/:pollId/close")
+  .post(
+    passport.authenticate(["jwt"], { session: false }),
+    (req, res, next) => {
+      try {
+        const userId: string = req.user.id;
+        const pollId: string = req.params.pollId;
+
+        const poll = getResponsePoll(db.closePoll(userId, pollId));
+
         res.status(200).json({ poll });
       } catch (error) {
         next(error);

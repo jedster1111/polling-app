@@ -1,5 +1,5 @@
-import request = require("supertest");
-import uuid = require("uuid/v1");
+import request from "supertest";
+import uuid from "uuid/v1";
 import app from "../app";
 import db from "../models/database";
 import createJwtCookie from "./createJwtCookie";

@@ -1,24 +1,36 @@
+import { ClientFunction } from "testcafe";
+import uuid = require("uuid/v1");
 import { PollInput } from "../../src/app/types";
-import Page from "../pages/createPollPage";
+import createPollPage from "../pages/createPollPage";
+import listPollPage from "../pages/pollsListPage";
 import { githubTestUser } from "../roles/roles";
 
-const page = new Page();
+const getPageUrl = ClientFunction(() => window.location.href.toString());
+
+const page = new createPollPage();
+const listPage = new listPollPage();
 
 const defaultPollInput: PollInput = {
   pollName: "pollName",
   description: "description",
-  options: ["option1", "option2", "option3", "option4"]
+  options: ["option1", "option2", "option3", "option4"],
+  voteLimit: 1
 };
 
 fixture("Testing the create a poll form").page(
   "http://127.0.0.1:8000/create-poll"
 );
 
-test("When a poll is submitted succesfully, the text inputs should reset", async t => {
+test("When a poll is submitted succesfully, should be redirected to Polls page.", async t => {
+  const titleToUse = uuid();
+  const pollInput: PollInput = { ...defaultPollInput, pollName: titleToUse };
+
   await t.useRole(githubTestUser);
-  await page.fillFormInputs(t, defaultPollInput);
+  await page.fillFormInputs(t, pollInput);
   await t.click(page.createPollButton);
-  await t.expect(page.allInputs.value).eql("");
+
+  await t.expect(getPageUrl()).contains("127.0.0.1:8000", { timeout: 10000 });
+  await t.expect(listPage.checkCreatedPoll(t, titleToUse, pollInput));
 });
 
 test("If I'm not logged in submitting the form should result in no changes", async t => {

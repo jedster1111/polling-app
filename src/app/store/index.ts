@@ -1,30 +1,40 @@
 import { connectRouter, routerMiddleware } from "connected-react-router";
 import { createBrowserHistory } from "history";
-import path = require("path");
+import path from "path";
 import { applyMiddleware, createStore } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 import createSagaMiddleware from "redux-saga";
 import rootReducer from "../reducers/rootReducer";
 import { mainSaga } from "../sagas/sagas";
 
+const ENV = process.env.NODE_ENV || "development";
+
 export const history = createBrowserHistory();
 
 const sagaMiddleware = createSagaMiddleware();
 // const persistedState = loadState();
 
-const store = createStore(
-  connectRouter(history)(rootReducer),
-  composeWithDevTools(
-    applyMiddleware(sagaMiddleware, routerMiddleware(history))
-  )
-);
+const middleware = () => {
+  if (ENV === "development") {
+    return composeWithDevTools(
+      applyMiddleware(sagaMiddleware, routerMiddleware(history))
+    );
+  } else {
+    return applyMiddleware(sagaMiddleware, routerMiddleware(history));
+  }
+};
 
-if (module.hot) {
-  // Enable Webpack hot module replacement for reducers
-  module.hot.accept(path.resolve("../reducers"), () => {
-    const nextRootReducer = require("../reducers/rootReducer");
-    store.replaceReducer(nextRootReducer);
-  });
+const store = createStore(connectRouter(history)(rootReducer), middleware());
+
+if (ENV === "development") {
+  console.log("setting up HMR");
+  if (module.hot) {
+    // Enable Webpack hot module replacement for reducers
+    module.hot.accept(path.resolve("../reducers"), () => {
+      const nextRootReducer = require("../reducers/rootReducer");
+      store.replaceReducer(nextRootReducer);
+    });
+  }
 }
 
 sagaMiddleware.run(mainSaga);

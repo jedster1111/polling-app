@@ -1,5 +1,5 @@
-import express = require("express");
-import { passport } from "../app";
+import express from "express";
+import passport from "passport";
 import db from "../models/database";
 
 const userRouter = express.Router();

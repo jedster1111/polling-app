@@ -4,19 +4,25 @@
 
 - To install dependencies run: `yarn install`
 - In order for the github authentication to work, you must
-  - Follow  [github's tutorial for creating an OAuth app](https://developer.github.com/apps/building-oauth-apps/creating-an-oauth-app/)  
+  - Follow [github's tutorial for creating an OAuth app](https://developer.github.com/apps/building-oauth-apps/creating-an-oauth-app/)
     - Homepage Url might be `http://127.0.0.1:8000` while developing locally
     - Authorization callback URL would then be
       `http://127.0.0.1:8000/auth/github/callback`  
       ![github OAuth example](http://puu.sh/BExqF/c1e010896b.png)
   - You will then be provided with a clientId and a clientSecret.
-  - create a secret file in `${rootDirectory}/secret/github.ts`.
-    It must contain the following constants:
-    ```json
-      export const clientId = "githubProvidedClientId";
-      export const clientSecret = "githubProvidedClientSecret";
-      export const secret = "aUserGeneratedSecretKey";
+  - You must then set the following environment variables in order for the app
+    to run in both development and production.  
+    _Note the `URL` must match the `Homepage URL` provided when creating your
+    GitHub OAuth app_
+    ```txt
+    CLIENT_ID=YourGitHubProvidedClientId
+    Client_SECRET=YoutGitHubProvidedClientSecret
+    SECRET_KEY=ASecretKeyGeneratedByYou
+    URL=http://127.0.0.1:8000
     ```
+    - Dotenv is set up, so create a file in the root directory called `dev.env`
+      and store the env variables in there as shown above. They will be loaded into
+      your code automatically.
 
 ## Development Server
 
@@ -29,16 +35,25 @@
 
 ## Testing
 
-- To execute tests with jest, run: `yarn test`
-- To execute tests using testcafe, first ensure development server is running
-  and run: `yarn run testcafe`
+- To execute unit/integration tests with jest, run: `yarn test`
+- To execute end-to-end tests using testcafe, first ensure development server is running
+  and run: `yarn testcafe`
+  - **Add the github account you'd like to use for testing to `dev.env` file in the format shown below**  
+    Probably best not to use your real github account especially if you share passwords between multiple accounts.
+  ```
+    TEST_USERNAME=YourGithubUsername
+    TEST_PASSWORD=YourPassword
+  ```
+
+## Deployment
+
+On the deployment server, run `yarn build` to bundle all the front end
+code using webpack, and compile the server to javascript.  
+Run `yarn start:prod` to run the server.
 
 ## Other Commands
 
 - To start Storybook run: `yarn run storybook`
-- To build, run: `yarn run build`  
-  To run in watch mode, run `yarn run build -w`  
-  _Note as ts-node is installed there's no need to build during development_
 - To launch a debug Chrome instance, run: `yarn start chrome`  
   Attach to port `9222` using your debugger and you can debug in your IDE now!
 
@@ -94,6 +109,7 @@ Json:
     "creator": { "displayName": "Roy", "id": "1234" },
     "pollName": "What furniture?",
     "description": "We are going to get some new furniture in the office!",
+    "isOpen": true,
     "options": [
       { "optionId": 1, "value": "bean bags", "votes": [] },
       { "optionId": 2, "value": "rocking chairs", "votes": [] },
@@ -139,6 +155,7 @@ Json:
       "creator": { "id": "1234", "displayName": "Roy" },
       "pollName": "What furniture?",
       "description": "We are going to get some new furniture in the office!",
+      "isOpen": true,
       "options": [
         {
           "optionId": "1",
@@ -153,6 +170,7 @@ Json:
       "creator": { "id": "2345", "displayName": "Jed" },
       "pollName": "New monitors?",
       "description": "What type of monitor would you guys like?",
+      "isOpen": true,
       "options": [
         {
           "optionId": "1",
@@ -211,6 +229,7 @@ JSON:
     "creatorName": "Changed Name",
     "pollName": "What furniture?",
     "description": "What furniture do you want?",
+    "isOpen": true,
     "options": [
       {
         "optionId": 1,
@@ -267,6 +286,7 @@ JSON:
     "creator": { "id": "1234", "displayName": "Roy" },
     "pollName": "What furniture?",
     "description": "What furniture do you want?",
+    "isOpen": true,
     "options": [
       {
         "optionId": 1,
@@ -353,6 +373,7 @@ JSON:
     "creator": { "id": "1234", "displayName": "Roy" },
     "pollName": "What furniture?",
     "description": "What furniture do you want?",
+    "isOpen": true,
     "options": [
       {
         "optionId": 1,
@@ -379,6 +400,102 @@ JSON:
 Response Code: `400`  
 Description: Vote was rejected, possibly due to invalid option id  
 JSON: N/A
+
+Response Code: `401`  
+Description: Unauthorized, you are not logged in or JWT is invalid  
+JSON: N/A
+
+## `/api/polls/:id/open`
+
+### `POST`
+
+#### Usage
+
+Sets a poll as open (users are able to vote on it) and returns the updated poll.
+
+#### Expects
+
+N/A
+
+#### Returns
+
+Response Code: `200`  
+Description: Poll was successfully set to open  
+JSON:
+
+```json
+{
+  "poll": {
+    "pollId": "1",
+    "creatorName": "Changed Name",
+    "pollName": "What furniture?",
+    "description": "What furniture do you want?",
+    "isOpen": true,
+    "options": [
+      {
+        "optionId": 1,
+        "value": "new option value",
+        "votes": []
+      },
+      {
+        "optionId": 2,
+        "value": "rocking chairs",
+        "votes": [{ "id": "1234", "displayName": "Roy" }]
+      },
+      { "optionId": 3, "value": "updated option 3", "votes": [] },
+      { "optionId": 4, "value": "new option!", "votes": [] }
+    ]
+  }
+}
+```
+
+Response Code: `401`  
+Description: Unauthorized, you are not logged in or JWT is invalid  
+JSON: N/A
+
+## `/api/polls/:id/close`
+
+### `POST`
+
+#### Usage
+
+Sets a poll as closed (users will be unable to vote on it) and returns the updated poll.
+
+#### Expects
+
+N/A
+
+#### Returns
+
+Response Code: `200`  
+Description: Poll was successfully set to closed  
+JSON:
+
+```json
+{
+  "poll": {
+    "pollId": "1",
+    "creatorName": "Changed Name",
+    "pollName": "What furniture?",
+    "description": "What furniture do you want?",
+    "isOpen": false,
+    "options": [
+      {
+        "optionId": 1,
+        "value": "new option value",
+        "votes": []
+      },
+      {
+        "optionId": 2,
+        "value": "rocking chairs",
+        "votes": [{ "id": "1234", "displayName": "Roy" }]
+      },
+      { "optionId": 3, "value": "updated option 3", "votes": [] },
+      { "optionId": 4, "value": "new option!", "votes": [] }
+    ]
+  }
+}
+```
 
 Response Code: `401`  
 Description: Unauthorized, you are not logged in or JWT is invalid  

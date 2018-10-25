@@ -6,6 +6,9 @@
 /secret/github.ts
 /secret/githubTestAuth.ts
 
+dev.env
+prod.env
+
 jedCookie.ts
 
 # dependencies
