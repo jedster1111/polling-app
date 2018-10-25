@@ -186,4 +186,52 @@ describe("Testing pollsState reducer", () => {
       )
     ).toEqual(initialPollsState);
   });
+
+  it("should handle CLOSE_POLL_LOADING", () => {
+    loadingTest(types.CLOSE_POLL_LOADING);
+  });
+
+  it("should handle CLOSE_POLL_ERROR", () => {
+    errorTest(types.CLOSE_POLL_ERROR);
+  });
+
+  it("should handle CLOSE_POLL_SUCCESS", () => {
+    const initPolls = generatePolls(3);
+
+    const updatedPoll = generatePoll(1);
+    updatedPoll.isOpen = false;
+
+    const newPolls = [updatedPoll, initPolls[1], initPolls[2]];
+
+    expect(
+      reducer(
+        { ...initialPollsState, isLoading: true, polls: initPolls },
+        { type: types.CLOSE_POLL_SUCCESS, payload: { poll: updatedPoll } }
+      )
+    ).toEqual({ ...initialPollsState, polls: newPolls });
+  });
+
+  it("should handle OPEN_POLL_LOADING", () => {
+    loadingTest(types.OPEN_POLL_LOADING);
+  });
+
+  it("should handle OPEN_POLL_ERROR", () => {
+    errorTest(types.OPEN_POLL_ERROR);
+  });
+
+  it("should handle OPEN_POLL_SUCCESS", () => {
+    const initPolls = generatePolls(3);
+
+    const updatedPoll = generatePoll(1);
+    updatedPoll.isOpen = false;
+
+    const newPolls = [updatedPoll, initPolls[1], initPolls[2]];
+
+    expect(
+      reducer(
+        { ...initialPollsState, isLoading: true, polls: initPolls },
+        { type: types.OPEN_POLL_SUCCESS, payload: { poll: updatedPoll } }
+      )
+    ).toEqual({ ...initialPollsState, polls: newPolls });
+  });
 });

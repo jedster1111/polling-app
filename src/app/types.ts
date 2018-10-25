@@ -5,6 +5,7 @@ export interface Poll {
   pollId: string;
   options: PollOption[];
   voteLimit: number;
+  isOpen: boolean;
 }
 export interface User {
   id: string;

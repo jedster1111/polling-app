@@ -1,7 +1,8 @@
 import { Button, Icon } from "antd";
 import { ButtonType } from "antd/lib/button";
 import * as React from "react";
-export const ActionButton: React.SFC<{
+
+const ActionButton: React.SFC<{
   iconType: string;
   text: string;
   handleClick?: () => void;
@@ -18,3 +19,5 @@ export const ActionButton: React.SFC<{
   const button = link ? <a>{actionButtonTemplate}</a> : actionButtonTemplate;
   return button;
 };
+
+export default ActionButton;

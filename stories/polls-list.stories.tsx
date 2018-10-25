@@ -36,7 +36,8 @@ const examplePolls: Poll[] = [
     pollId: "1",
     pollName: "New Furniture?",
     creator: { id: "1", userName: "Jed" },
-    voteLimit: 1
+    voteLimit: 1,
+    isOpen: true
   },
   {
     creator: { id: "2", userName: "Joy" },
@@ -44,7 +45,8 @@ const examplePolls: Poll[] = [
     options: createOptions(6),
     pollId: "2",
     pollName: "Lunch today?",
-    voteLimit: 1
+    voteLimit: 1,
+    isOpen: true
   }
 ];
 
@@ -120,6 +122,8 @@ storiesOf("Polls List", module)
           showEditForm={action("showEditForm")}
           navigateToPoll={action("navigated")}
           isLoggedIn={false}
+          closePoll={action("Closed poll")}
+          openPoll={action("Opened poll")}
         />
         <PollCard
           user={{ id: "1", userName: "Joy" }}
@@ -131,6 +135,8 @@ storiesOf("Polls List", module)
           showEditForm={action("showEditForm")}
           navigateToPoll={action("navigated")}
           isLoggedIn={true}
+          closePoll={action("Closed poll")}
+          openPoll={action("Opened poll")}
         />
       </Fragment>
     );
@@ -150,6 +156,8 @@ storiesOf("Polls List", module)
         isLoading={false}
         navigateToPoll={action("navigated to poll")}
         isLoggedIn={true}
+        closePoll={action("Closed poll")}
+        openPoll={action("Opened poll")}
       />
     );
   })

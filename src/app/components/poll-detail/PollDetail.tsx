@@ -4,9 +4,10 @@ import * as React from "react";
 import styled from "styled-components";
 import { Poll, PollOption, User } from "../../types";
 import PollForm from "../create-poll-form/PollFormContainer";
-import { ActionButton } from "../polls-list/ActionButton";
+import ActionButton from "../polls-list/ActionButton";
 import FetchPollsButton from "../polls-list/FetchPollsButton";
 import VoteDisplay from "../VoteDisplay";
+import { getRankings } from "./getRankings";
 import VoteBar from "./VoteBar";
 
 interface PollDetailProps {
@@ -20,6 +21,8 @@ interface PollDetailProps {
   deletePoll: (userId: string, pollId: string) => void;
   fetchPolls: () => void;
   isEditing: boolean;
+  openPoll: () => void;
+  closePoll: () => void;
 }
 
 const RefreshButtonContainer = styled.div`
@@ -36,11 +39,15 @@ const PollDetail: React.SFC<PollDetailProps> = ({
   isEditing,
   discardUpdatePollForm,
   fetchPolls,
-  isLoggedIn
+  isLoggedIn,
+  openPoll,
+  closePoll
 }) => {
   if (!pollData) {
     return <p>That poll doesn't exist</p>;
   }
+
+  const optionRankings = getRankings(pollData.options);
 
   const columns: Array<ColumnProps<PollOption>> = [
     {
@@ -85,12 +92,19 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       title: "Votes",
       dataIndex: "votes",
       key: "votes",
-      render: (text, option) => (
-        <VoteBar
-          numberOfVotes={option.votes.length}
-          maxVotes={Math.max(...pollData.options.map(opt => opt.votes.length))}
-        />
-      ),
+      render: (text, option) => {
+        const numberOfVotes = option.votes.length;
+        const ranking = optionRankings[numberOfVotes];
+        return (
+          <VoteBar
+            numberOfVotes={numberOfVotes}
+            maxVotes={Math.max(
+              ...pollData.options.map(opt => opt.votes.length)
+            )}
+            ranking={ranking}
+          />
+        );
+      },
       sorter: (a, b) => a.votes.length - b.votes.length
     }
   ];
@@ -113,7 +127,25 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       block
     />
   );
-  const actions = isOwner ? [EditButton, DeleteButton] : [];
+  const closeButton = (
+    <ActionButton
+      iconType="unlock"
+      text="Poll is open"
+      handleClick={closePoll}
+      block
+    />
+  );
+  const openButton = (
+    <ActionButton
+      iconType="lock"
+      text="Poll is closed"
+      handleClick={openPoll}
+      block
+    />
+  );
+  const actions = isOwner
+    ? [EditButton, DeleteButton, pollData.isOpen ? closeButton : openButton]
+    : [];
 
   return (
     <Card title={pollName} actions={actions}>

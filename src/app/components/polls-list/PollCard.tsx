@@ -3,7 +3,7 @@ import * as React from "react";
 import { Poll, User } from "../../types";
 import PollForm from "../create-poll-form/PollFormContainer";
 import VoteDisplay from "../VoteDisplay";
-import { ActionButton } from "./ActionButton";
+import ActionButton from "./ActionButton";
 
 export interface PollCardProps {
   poll: Poll;
@@ -17,6 +17,8 @@ export interface PollCardProps {
   isOwner?: boolean;
   navigateToPoll: () => void;
   isLoggedIn: boolean;
+  closePoll: () => void;
+  openPoll: () => void;
 }
 
 const PollCard = (props: PollCardProps) => {
@@ -43,9 +45,30 @@ const PollCard = (props: PollCardProps) => {
       handleClick={() => props.showEditForm(props.poll.pollId)}
     />
   );
+  const closeButton = (
+    <ActionButton
+      iconType="unlock"
+      text="Poll is open"
+      handleClick={props.closePoll}
+      block
+    />
+  );
+  const openButton = (
+    <ActionButton
+      iconType="lock"
+      text="Poll is closed"
+      handleClick={props.openPoll}
+      block
+    />
+  );
 
   const actions = props.isOwner
-    ? [detailButton, editButton, deleteButton]
+    ? [
+        detailButton,
+        editButton,
+        deleteButton,
+        props.poll.isOpen ? closeButton : openButton
+      ]
     : [detailButton];
 
   return (

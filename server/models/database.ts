@@ -139,6 +139,7 @@ class Database {
     this.polls.update(poll);
     return this.stripMeta<Poll>(poll);
   }
+
   /**
    * Casts a vote on a specific poll. If the name already exists on the option the vote will be removed.
    * @param pollId Id of poll to be voted on
@@ -148,28 +149,8 @@ class Database {
   votePoll(pollId: string, voteInput: VoteInput): Poll {
     const poll: StoredPoll = this.polls.findOne({ pollId });
 
-    const numberOfExistingVotes = poll.options.filter(option =>
-      option.votes.find(vote => vote === voteInput.voterId)
-    ).length;
+    this.checkValidVoteAndThrowErrors(poll, voteInput);
 
-    const optionBeingVotedOn = poll.options.find(
-      option => option.optionId === voteInput.optionId
-    );
-    const isValidVote =
-      poll &&
-      optionBeingVotedOn &&
-      voteInput.voterId &&
-      (numberOfExistingVotes < poll.voteLimit ||
-        optionBeingVotedOn.votes.find(vote => vote === voteInput.voterId));
-
-    if (!isValidVote) {
-      const err = new Error(
-        `Invalid vote input: either vote/poll doesn't exist,
-         username is empty, or you have reached the vote limit.`
-      ) as ErrorWithStatusCode;
-      err.statusCode = 400;
-      throw err;
-    }
     for (const option of poll.options) {
       if (option.optionId === voteInput.optionId) {
         const indexOfId: number = option.votes.findIndex(
@@ -186,6 +167,34 @@ class Database {
     }
     this.polls.update(poll);
     return this.stripMeta<Poll>(poll);
+  }
+  openPoll(userId: string, pollId: string): Poll {
+    const poll: StoredPoll = this.polls.findOne({ pollId });
+    if (poll.creatorId !== userId) {
+      const error = new Error(
+        "Can't open a poll that you didn't create!"
+      ) as ErrorWithStatusCode;
+      error.statusCode = 401;
+      throw error;
+    } else {
+      poll.isOpen = true;
+      this.polls.update(poll);
+      return this.stripMeta<Poll>(poll);
+    }
+  }
+  closePoll(userId: string, pollId: string): Poll {
+    const poll: StoredPoll = this.polls.findOne({ pollId });
+    if (poll.creatorId !== userId) {
+      const error = new Error(
+        "Can't close a poll that you didn't create!"
+      ) as ErrorWithStatusCode;
+      error.statusCode = 401;
+      throw error;
+    } else {
+      poll.isOpen = false;
+      this.polls.update(poll);
+      return this.stripMeta<Poll>(poll);
+    }
   }
   /**
    * Removes a poll with the specified Id.
@@ -226,6 +235,52 @@ class Database {
   }
   resetUsers(): void {
     this.users.clear();
+  }
+
+  /**
+   * Checks if a vote input for a given poll is valid or not, and then throws appropiate error messages.
+   * @param poll The poll that is being voted on, can be undefined.
+   * @param voteInput VoteInput containing voterId and optionId
+   */
+  private checkValidVoteAndThrowErrors(
+    poll: StoredPoll | undefined,
+    voteInput: VoteInput
+  ): void {
+    let messages: string = "";
+    if (!poll) {
+      this.throwErrorWithStatusCode("Poll was not found!", 400);
+      return;
+    }
+
+    const optionBeingVotedOn = poll.options.find(
+      option => option.optionId === voteInput.optionId
+    );
+    const numberOfExistingVotes = poll.options.filter(option =>
+      option.votes.find(vote => vote === voteInput.voterId)
+    ).length;
+
+    if (!poll.isOpen) {
+      messages = "This poll has been closed!";
+    } else if (!optionBeingVotedOn) {
+      messages = "That option doesn't exist!";
+    } else if (
+      !(
+        numberOfExistingVotes < poll.voteLimit ||
+        optionBeingVotedOn.votes.find(vote => vote === voteInput.voterId)
+      )
+    ) {
+      messages = "You've used up all of your votes!";
+    }
+
+    if (messages) {
+      this.throwErrorWithStatusCode(messages, 400);
+    }
+  }
+
+  private throwErrorWithStatusCode(message: string, statusCode: number) {
+    const err = new Error(message) as ErrorWithStatusCode;
+    err.statusCode = statusCode;
+    throw err;
   }
 
   private stripResultsMetadata<T>(results: Array<T & { $loki: string }>) {

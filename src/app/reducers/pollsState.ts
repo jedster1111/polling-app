@@ -179,6 +179,50 @@ const pollsStateReducer: Reducer<PollsState, AnyAction> = (
         editingPoll: null
       };
     }
+    case actionTypes.CLOSE_POLL_LOADING: {
+      return {
+        ...pollsState,
+        isLoading: true,
+        error: null
+      };
+    }
+    case actionTypes.CLOSE_POLL_SUCCESS: {
+      const newPolls = calculateNewPolls(pollsState, action);
+      return {
+        ...pollsState,
+        isLoading: false,
+        polls: newPolls
+      };
+    }
+    case actionTypes.CLOSE_POLL_ERROR: {
+      return {
+        ...pollsState,
+        isLoading: false,
+        error: action.payload.error
+      };
+    }
+    case actionTypes.OPEN_POLL_LOADING: {
+      return {
+        ...pollsState,
+        isLoading: true,
+        error: null
+      };
+    }
+    case actionTypes.OPEN_POLL_SUCCESS: {
+      const newPolls = calculateNewPolls(pollsState, action);
+      return {
+        ...pollsState,
+        isLoading: false,
+        polls: newPolls
+      };
+    }
+    case actionTypes.OPEN_POLL_ERROR: {
+      return {
+        ...pollsState,
+        isLoading: false,
+        error: action.payload.error
+      };
+    }
     default:
       return pollsState;
   }

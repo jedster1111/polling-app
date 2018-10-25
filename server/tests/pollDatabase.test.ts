@@ -12,7 +12,8 @@ const generatePollInputs = (n: number) => {
       pollName: `pollName${index}`,
       description: `description${index}`,
       options: ["option1", "option2"],
-      voteLimit: 1
+      voteLimit: 1,
+      isOpen: true
     });
   }
   return polls;
@@ -24,6 +25,7 @@ const generateExpectedPolls = (n: number) => {
     description: string;
     options: Array<{ optionId: string; value: string; votes: string[] }>;
     voteLimit: number;
+    isOpen: boolean;
   }> = [];
 
   for (let i = 0; i < n; i++) {
@@ -36,7 +38,8 @@ const generateExpectedPolls = (n: number) => {
         { optionId: "1", value: "option1", votes: [] },
         { optionId: "2", value: "option2", votes: [] }
       ],
-      voteLimit: 1
+      voteLimit: 1,
+      isOpen: true
     });
   }
   return expectedPolls;
@@ -123,7 +126,8 @@ describe("Testing poll related database methods:", () => {
         pollName: updateInput.pollName,
         description: updateInput.description,
         options: expectedPollOptions,
-        voteLimit: updateInput.voteLimit
+        voteLimit: updateInput.voteLimit,
+        isOpen: true
       };
 
       const poll = db.updatePoll(
@@ -156,7 +160,7 @@ describe("Testing poll related database methods:", () => {
       const updatePoll = db.updatePoll(inputPoll.creatorId, inputPoll.pollId, {
         options: [{ optionId: "1", value: "" }]
       });
-      expect(updatePoll).toEqual(inputPoll);
+      expect(updatePoll).toMatchObject(inputPoll);
     });
   });
 
@@ -184,6 +188,44 @@ describe("Testing poll related database methods:", () => {
 
       const voteInput2 = { optionId: "2", voterId: "1" };
       expect(() => db.votePoll("1", voteInput2)).toThrow();
+    });
+
+    test("Voting on a poll that's closed should thrown an error", () => {
+      let pollToVote = db.getPolls()[0];
+
+      pollToVote = db.closePoll(pollToVote.creatorId, pollToVote.pollId);
+
+      expect(() =>
+        db.votePoll(pollToVote.pollId, {
+          voterId: "1",
+          optionId: pollToVote.options[0].optionId
+        })
+      ).toThrowError();
+      expect(pollToVote).toEqual(db.getPoll(pollToVote.pollId));
+    });
+  });
+
+  describe("Testing open and close Poll", () => {
+    test("Can I close a poll? And then re-open it?", () => {
+      // const expectedPoll = generateExpectedPolls(1)[0];
+      const expectedPoll = db.getPolls()[0];
+      expectedPoll.isOpen = false;
+
+      let poll = db.closePoll(expectedPoll.creatorId, expectedPoll.pollId);
+
+      expect(poll).toEqual(expectedPoll);
+
+      expectedPoll.isOpen = true;
+
+      poll = db.openPoll(expectedPoll.creatorId, expectedPoll.pollId);
+
+      expect(poll).toEqual(expectedPoll);
+    });
+    test("Does trying to open/close a poll with wrong userId throw an error?", () => {
+      const pollToChange = db.getPolls()[0];
+
+      expect(() => db.closePoll("wrongId", pollToChange.pollId)).toThrowError();
+      expect(() => db.openPoll("wrongId", pollToChange.pollId)).toThrowError();
     });
   });
 
