@@ -36,6 +36,7 @@ const PollCard = (props: PollCardProps) => {
       buttonType="danger"
       text="Delete"
       handleClick={() => props.deletePoll(props.user.id, props.poll.pollId)}
+      className="delete"
     />
   );
   const editButton = (
@@ -43,6 +44,7 @@ const PollCard = (props: PollCardProps) => {
       iconType="edit"
       text="Edit"
       handleClick={() => props.showEditForm(props.poll.pollId)}
+      className="edit"
     />
   );
   const closeButton = (
@@ -51,6 +53,7 @@ const PollCard = (props: PollCardProps) => {
       text="Poll is open"
       handleClick={props.closePoll}
       block
+      className="open"
     />
   );
   const openButton = (
@@ -59,6 +62,7 @@ const PollCard = (props: PollCardProps) => {
       text="Poll is closed"
       handleClick={props.openPoll}
       block
+      className="closed"
     />
   );
 
@@ -79,11 +83,11 @@ const PollCard = (props: PollCardProps) => {
             <Avatar src={props.poll.creator.photos[0].value} />
           )
         }
-        title={<p>{props.poll.pollName}</p>}
+        title={<p className="title">{props.poll.pollName}</p>}
         description={
           <span>
-            <p>{props.poll.description}</p>
-            <p>
+            <p className="description">{props.poll.description}</p>
+            <p className="name">
               {props.poll.creator.displayName || props.poll.creator.userName}
             </p>
             <VoteDisplay
