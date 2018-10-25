@@ -79,12 +79,7 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       }
     },
     {
-      title: (
-        <span>
-          Option
-          {isLoading && <Icon type="loading" style={{ marginLeft: "10px" }} />}
-        </span>
-      ),
+      title: <span>Option</span>,
       dataIndex: "option",
       key: "option",
       render: (text, option) => option.value,
