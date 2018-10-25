@@ -85,6 +85,7 @@ describe("Testing poll related database methods:", () => {
     test("Can I add a poll?", () => {
       const insertPollData = generatePollInputs(1)[0];
       const poll = db.insertPoll(insertPollData);
+
       expect(poll).toMatchObject(expectedPoll);
     });
 
