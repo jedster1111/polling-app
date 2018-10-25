@@ -114,8 +114,8 @@ describe("Testing poll related database methods:", () => {
         pollName: "changedName",
         description: "changedDescription",
         options: [
-          { optionId: "1", value: "changed" },
-          { optionId: "2", value: "changed2" }
+          { optionId: pollToUpdate.options[0].optionId, value: "changed" },
+          { optionId: pollToUpdate.options[1].optionId, value: "changed2" }
         ],
         voteLimit: 3
       };
@@ -158,38 +158,61 @@ describe("Testing poll related database methods:", () => {
 
     test("Should delete an option when I input an empty string", () => {
       const inputPoll = db.getPolls()[0];
-      inputPoll.options.shift();
+
       const updatePoll = db.updatePoll(inputPoll.creatorId, inputPoll.pollId, {
-        options: [{ optionId: "1", value: "" }]
+        options: [{ optionId: inputPoll.options[0].optionId, value: "" }]
       });
+
+      inputPoll.options.shift();
+
       expect(updatePoll).toMatchObject(inputPoll);
     });
   });
 
   describe("Testing votePoll:", () => {
+    const userId = "1";
+
     test("Can I vote on a poll?", () => {
       const expectedPoll = generateExpectedPolls(1)[0];
-      expectedPoll.options[0].votes = ["1"];
-      const poll = db.votePoll("1", {
-        optionId: "1",
+      expectedPoll.options[0].votes = [userId];
+      const poll = db.votePoll(userId, {
+        optionId: expectedPoll.options[0].optionId,
         voterId: expectedPoll.creatorId
       });
       expect(poll).toMatchObject(expectedPoll);
     });
     test("Can I vote on a poll and then remove the vote", () => {
+      const pollToVote = db.getPolls()[0];
+
       const expectedPoll = generateExpectedPolls(1)[0];
-      db.votePoll("1", { optionId: "1", voterId: "1" });
-      const poll = db.votePoll("1", { optionId: "1", voterId: "1" });
+      db.votePoll(pollToVote.pollId, {
+        optionId: expectedPoll.options[0].optionId,
+        voterId: userId
+      });
+      const poll = db.votePoll(pollToVote.pollId, {
+        optionId: expectedPoll.options[0].optionId,
+        voterId: userId
+      });
       expect(poll).toMatchObject(expectedPoll);
     });
     it("should restrict my vote if the voteLimit has been reached", () => {
+      const pollToVote = db.getPolls()[0];
+
       const expectedPoll = generateExpectedPolls(1)[0];
-      expectedPoll.options[0].votes = ["1"];
-      const poll = db.votePoll("1", { optionId: "1", voterId: "1" });
+      expectedPoll.options[0].votes = [userId];
+      const poll = db.votePoll(pollToVote.pollId, {
+        optionId: expectedPoll.options[0].optionId,
+        voterId: userId
+      });
       expect(poll).toMatchObject(expectedPoll);
 
-      const voteInput2 = { optionId: "2", voterId: "1" };
-      expect(() => db.votePoll("1", voteInput2)).toThrow();
+      const voteInput2 = {
+        optionId: expectedPoll.options[1].optionId,
+        voterId: userId
+      };
+      expect(() =>
+        db.votePoll(expectedPoll.options[0].optionId, voteInput2)
+      ).toThrow();
     });
 
     test("Voting on a poll that's closed should thrown an error", () => {
@@ -199,7 +222,7 @@ describe("Testing poll related database methods:", () => {
 
       expect(() =>
         db.votePoll(pollToVote.pollId, {
-          voterId: "1",
+          voterId: userId,
           optionId: pollToVote.options[0].optionId
         })
       ).toThrowError();
