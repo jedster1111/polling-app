@@ -30,7 +30,9 @@ const NavBar: React.SFC<NavBarProps> = ({
       </NavLink>
     </Menu.Item>
     <Menu.Item disabled={!isLoggedIn} key="/create-poll">
-      <div onClick={navigateToPollForm}>Create a Poll</div>
+      <div onClick={navigateToPollForm} id="createPollLink">
+        Create a Poll
+      </div>
     </Menu.Item>
     <Menu.Item>
       {isLoading ? (

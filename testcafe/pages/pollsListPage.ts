@@ -8,23 +8,15 @@ export default class PollsListPage {
 
   getPollCard = (id: string) => this.pollCards.withText(id);
 
-  pollName = (id: string) =>
-    this.getPollCard(id).findReact("PollTitleContainer");
+  pollName = (id: string) => this.getPollCard(id).find("p.title");
 
-  pollDescription = (id: string) =>
-    this.getPollCard(id).findReact("DescriptionContainer");
+  pollDescription = (id: string) => this.getPollCard(id).find("p.description");
 
-  pollCreatorName = (id: string) =>
-    this.getPollCard(id).findReact("CreatorContainer");
+  pollCreatorName = (id: string) => this.getPollCard(id).find("p.name");
 
-  pollOptions = (id: string) => this.getPollCard(id).findReact("OptionDisplay");
+  pollDeleteButton = (id: string) => this.getPollCard(id).find("button.delete");
 
-  pollOption = (id: string, index: number) => this.pollOptions(id).nth(index);
-
-  pollDeleteButton = (id: string) =>
-    this.getPollCard(id).findReact("DeletePollButton");
-
-  pollEditButton = (id: string) => this.getPollCard(id).findReact("EditButton");
+  pollEditButton = (id: string) => this.getPollCard(id).find("button.edit");
 
   checkField = async (t: TestController, field: Selector, input: string) => {
     await t.expect(field.innerText).eql(input);
@@ -42,10 +34,5 @@ export default class PollsListPage {
     await this.checkField(t, this.pollName(id), pollInput.pollName);
     await this.checkField(t, this.pollDescription(id), pollInput.description);
     await this.checkField(t, this.pollCreatorName(id), username);
-
-    await t.expect(this.pollOptions(id).count).eql(pollInput.options.length);
-    for (const [index, option] of pollInput.options.entries()) {
-      await this.checkField(t, this.pollOption(id, index), option);
-    }
   };
 }
