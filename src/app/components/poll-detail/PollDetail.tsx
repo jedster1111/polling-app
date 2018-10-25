@@ -55,8 +55,15 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       dataIndex: "voted",
       key: "voted",
       render: (text, option) =>
-        option.votes.find(voters => voters.id === userData.id) && (
+        // option.votes.find(voters => voters.id === userData.id) && (
+        //   <Icon type={isLoading ? "loading" : "check"} />
+        // ),
+        isLoading ? (
+          <Icon type="loading" />
+        ) : option.votes.find(voters => voters.id === userData.id) ? (
           <Icon type="check" />
+        ) : (
+          undefined
         ),
       width: "100px",
       sorter: (a, b) => {
@@ -72,7 +79,12 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       }
     },
     {
-      title: "Option",
+      title: (
+        <span>
+          Option
+          {isLoading && <Icon type="loading" style={{ marginLeft: "10px" }} />}
+        </span>
+      ),
       dataIndex: "option",
       key: "option",
       render: (text, option) => option.value,
@@ -172,6 +184,7 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       />
 
       <Table
+        loading={isLoading}
         columns={columns}
         dataSource={options}
         rowKey={option => option.optionId}
