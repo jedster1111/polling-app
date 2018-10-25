@@ -75,6 +75,7 @@ describe("Testing poll related database methods:", () => {
     test("Can I get all the polls?", () => {
       const expectedPolls = generateExpectedPolls(numberOfPolls);
       const polls = db.getPolls();
+
       expect(polls).toMatchObject(expectedPolls);
     });
   });
