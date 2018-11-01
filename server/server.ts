@@ -13,7 +13,13 @@ console.log(`You are running in ${ENV} mode!`);
 if (ENV === "development") {
   console.log("hot module and dev middleware is loaded");
   const compiler = webpack(webpackConfig as any);
-  app.use(webpackDevMiddleware(compiler));
+  app.use(
+    webpackDevMiddleware(compiler, {
+      publicPath: "/assets/",
+      watchOptions: { poll: false },
+      stats: "minimal"
+    })
+  );
   app.use(webpackHotMiddleware(compiler));
 }
 app.get("*", (req, res) => {
