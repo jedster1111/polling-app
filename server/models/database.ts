@@ -170,50 +170,72 @@ class Database {
     return this.stripMeta<Poll>(poll);
   }
 
+  removeVotePoll(pollId: string, voteInput: VoteInput): Poll {
+    const poll: StoredPoll = this.polls.findOne({ pollId });
+
+    if (poll === undefined) {
+      this.throwErrorWithStatusCode("That poll does not exist", 400);
+    }
+
+    const optionToVote = poll.options.find(
+      option => option.optionId === voteInput.optionId
+    );
+
+    if (!optionToVote) {
+      this.throwErrorWithStatusCode("That option does not exist", 400);
+    } else if (!optionToVote.votes[voteInput.voterId]) {
+      this.throwErrorWithStatusCode(
+        "Can't remove a vote from an option that you don't have any existing votes on!",
+        400
+      );
+    } else {
+      optionToVote.votes[voteInput.voterId]--;
+    }
+
+    this.polls.update(poll);
+
+    return this.stripMeta<Poll>(poll);
+  }
+
   openPoll(userId: string, pollId: string): Poll {
     const poll: StoredPoll = this.polls.findOne({ pollId });
     if (poll.creatorId !== userId) {
-      const error = new Error(
-        "Can't open a poll that you didn't create!"
-      ) as ErrorWithStatusCode;
-      error.statusCode = 401;
-      throw error;
-    } else {
-      poll.isOpen = true;
-      this.polls.update(poll);
-      return this.stripMeta<Poll>(poll);
+      this.throwErrorWithStatusCode(
+        "Can't open a poll that you didn't create!",
+        401
+      );
     }
+    poll.isOpen = true;
+    this.polls.update(poll);
+    return this.stripMeta<Poll>(poll);
   }
+
   closePoll(userId: string, pollId: string): Poll {
     const poll: StoredPoll = this.polls.findOne({ pollId });
     if (poll.creatorId !== userId) {
-      const error = new Error(
-        "Can't close a poll that you didn't create!"
-      ) as ErrorWithStatusCode;
-      error.statusCode = 401;
-      throw error;
-    } else {
-      poll.isOpen = false;
-      this.polls.update(poll);
-      return this.stripMeta<Poll>(poll);
+      this.throwErrorWithStatusCode(
+        "Can't close a poll that you didn't create!",
+        401
+      );
     }
+    poll.isOpen = false;
+    this.polls.update(poll);
+    return this.stripMeta<Poll>(poll);
   }
+
   /**
    * Removes a poll with the specified Id.
    * @param pollId Id of the poll you wish to remove from the database.
    */
   removePoll(userId: string, pollId: string): void {
-    // this.polls.findAndRemove({ pollId });
     const poll: Poll = this.polls.findOne({ pollId });
     if (poll.creatorId !== userId) {
-      const error = new Error(
-        `Can't delete a poll that you didn't create!`
-      ) as ErrorWithStatusCode;
-      error.statusCode = 401;
-      throw error;
-    } else {
-      this.polls.remove(poll);
+      this.throwErrorWithStatusCode(
+        "Can't delete a poll that you didn't create!",
+        400
+      );
     }
+    this.polls.remove(poll);
   }
   resetPolls(): void {
     this.removeAllPollsData();
