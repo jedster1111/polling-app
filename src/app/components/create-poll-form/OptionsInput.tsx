@@ -29,7 +29,7 @@ const OptionsInput = (props: OptionsInputProps) => {
               props.edit
                 ? option.value === ""
                   ? `"${originalOption.value}" will be deleted`
-                  : `"${originalOption.value}" will bechanged to "${
+                  : `"${originalOption.value}" will be changed to "${
                       option.value
                     }"`
                 : undefined
