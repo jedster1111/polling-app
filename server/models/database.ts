@@ -4,13 +4,14 @@ import {
   Poll,
   PollInput,
   StoredPoll,
-  StoredPollOptions,
+  StoredPollOption,
   StoredUser,
   UpdatePollInput,
   UpdatePollInputOption,
   User,
   VoteInput
 } from "../types";
+import calculateNumberOfVotesFromUser from "./caculateNumberOfVotesFromUser";
 
 class Database {
   static checkValidPollInput(pollInput: PollInput) {
@@ -64,12 +65,12 @@ class Database {
     const filteredOptions: string[] = pollInput.options.filter(
       option => option
     );
-    const newOptions: StoredPollOptions[] = filteredOptions.map(
+    const newOptions: StoredPollOption[] = filteredOptions.map(
       (option: string, index: number) => {
         return {
           optionId: `${index + 1}`,
           value: option,
-          votes: []
+          votes: {}
         };
       }
     );
@@ -124,7 +125,7 @@ class Database {
                   10
                 ) + 1}`,
                 value: optionInput.value,
-                votes: []
+                votes: {}
               });
             }
           }
@@ -141,10 +142,10 @@ class Database {
   }
 
   /**
-   * Casts a vote on a specific poll. If the name already exists on the option the vote will be removed.
+   * Casts a vote on a specific poll. Can cast multiple votes on a single option.
    * @param pollId Id of poll to be voted on
    * @param voteInput An object containing name of person voting and the Id of the option they're voting on
-   * @returns Returns the poll that was updated
+   * @returns Returns the poll that was voted on
    */
   votePoll(pollId: string, voteInput: VoteInput): Poll {
     const poll: StoredPoll = this.polls.findOne({ pollId });
@@ -156,13 +157,11 @@ class Database {
     );
 
     if (optionToVote) {
-      const indexOfExistingVote = optionToVote.votes.findIndex(
-        existingVoteId => existingVoteId === voteInput.voterId
-      );
-      if (indexOfExistingVote === -1) {
-        optionToVote.votes.push(voteInput.voterId);
+      const numberOfVotes = optionToVote.votes[voteInput.voterId];
+      if (!numberOfVotes) {
+        optionToVote.votes[voteInput.voterId] = 1;
       } else {
-        optionToVote.votes.splice(indexOfExistingVote, 1);
+        optionToVote.votes[voteInput.voterId]++;
       }
     }
 
@@ -258,20 +257,16 @@ class Database {
     const optionBeingVotedOn = poll.options.find(
       option => option.optionId === voteInput.optionId
     );
-    const numberOfExistingVotes = poll.options.filter(option =>
-      option.votes.find(vote => vote === voteInput.voterId)
-    ).length;
+    const numberOfExistingVotes = calculateNumberOfVotesFromUser(
+      poll.options,
+      voteInput.voterId
+    );
 
     if (!poll.isOpen) {
       messages = "This poll has been closed!";
     } else if (!optionBeingVotedOn) {
       messages = "That option doesn't exist!";
-    } else if (
-      !(
-        numberOfExistingVotes < poll.voteLimit ||
-        optionBeingVotedOn.votes.find(vote => vote === voteInput.voterId)
-      )
-    ) {
+    } else if (numberOfExistingVotes >= poll.voteLimit) {
       messages = "You've used up all of your votes!";
     }
 

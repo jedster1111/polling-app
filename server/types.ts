@@ -5,9 +5,9 @@ export interface CreatePollRequest {
   voteLimit: number;
 }
 
-interface UserVoteCount {
-  [userId: string]: number;
-}
+// export interface UserVoteCount {
+//   [userId: string]: number;
+// }
 
 /**
  * The format the database is expecting polls' data to be in.
@@ -30,10 +30,10 @@ export interface Poll {
   pollName: string;
   description: string;
   pollId: string;
-  options: StoredPollOptions[];
+  options: StoredPollOption[];
   voteLimit: number;
   isOpen: boolean;
-  userVoteCount: UserVoteCount;
+  // userVoteCount: UserVoteCount;
 }
 export interface StoredPoll extends Poll {
   $loki: string;
@@ -41,16 +41,17 @@ export interface StoredPoll extends Poll {
 /**
  * @param votes refers to the id of the user that voted.
  */
-export interface StoredPollOptions {
+export interface StoredPollOption {
   optionId: string;
   value: string;
-  votes: string[];
+  // votes: string[];
+  votes: { [userId: string]: number };
 }
 /**
  * The format a poll should be in when it is sent to the front end
  */
 export interface PollResponse {
-  creator: PollResponseUser;
+  creator: PollResponseCreator;
   pollName: string;
   description: string;
   pollId: string;
@@ -63,11 +64,14 @@ export interface PollResponseOption {
   value: string;
   votes: PollResponseUser[];
 }
-export interface PollResponseUser {
+export interface PollResponseCreator {
   id: string;
   displayName?: string;
   userName: string;
   photos?: Array<{ value: string }>;
+}
+export interface PollResponseUser extends PollResponseCreator {
+  numberOfVotes: number;
 }
 export interface UpdatePollInput {
   pollName?: string;

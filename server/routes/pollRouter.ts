@@ -1,12 +1,15 @@
 import express from "express";
 import passport from "passport";
 import db from "../models/database";
-import { CreatePollRequest, VoteInputRequest } from "../types";
+import {
+  CreatePollRequest,
+  PollResponseUser,
+  VoteInputRequest
+} from "../types";
 import {
   Poll,
   PollResponse,
   PollResponseOption,
-  PollResponseUser,
   UpdatePollInput
 } from "../types";
 
@@ -38,19 +41,19 @@ export const getResponsePoll = (storedPoll: Poll): PollResponse => {
       userName: creator.userName,
       photos: creator.photos
     },
-    options: options.map<PollResponseOption>(option => ({
-      optionId: option.optionId,
-      value: option.value,
-      votes: option.votes.map<PollResponseUser>(userId => {
-        const user = db.getUser(userId);
-        return {
-          id: userId,
-          displayName: user.displayName,
-          userName: user.userName,
-          photos: user.photos
-        };
-      })
-    })),
+    options: options.map<PollResponseOption>(option => {
+      return {
+        optionId: option.optionId,
+        value: option.value,
+        votes: Object.keys(option.votes).map<PollResponseUser>(userId => {
+          const user = db.getUser(userId);
+          return {
+            ...user,
+            numberOfVotes: option.votes[userId] || 0
+          };
+        })
+      };
+    }),
     isOpen
   };
 };
