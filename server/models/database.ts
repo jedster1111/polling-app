@@ -151,23 +151,26 @@ class Database {
 
     this.checkValidVoteAndThrowErrors(poll, voteInput);
 
-    for (const option of poll.options) {
-      if (option.optionId === voteInput.optionId) {
-        const indexOfId: number = option.votes.findIndex(
-          vote => voteInput.voterId === vote
-        );
-        if (indexOfId !== -1) {
-          option.votes.splice(indexOfId, 1);
-        } else {
-          option.votes.push(voteInput.voterId);
-        }
-        // if you've found the needed option then break
-        break;
+    const optionToVote = poll.options.find(
+      option => option.optionId === voteInput.optionId
+    );
+
+    if (optionToVote) {
+      const indexOfExistingVote = optionToVote.votes.findIndex(
+        existingVoteId => existingVoteId === voteInput.voterId
+      );
+      if (indexOfExistingVote === -1) {
+        optionToVote.votes.push(voteInput.voterId);
+      } else {
+        optionToVote.votes.splice(indexOfExistingVote, 1);
       }
     }
+
     this.polls.update(poll);
+
     return this.stripMeta<Poll>(poll);
   }
+
   openPoll(userId: string, pollId: string): Poll {
     const poll: StoredPoll = this.polls.findOne({ pollId });
     if (poll.creatorId !== userId) {

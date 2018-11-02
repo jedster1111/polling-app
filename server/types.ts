@@ -5,6 +5,10 @@ export interface CreatePollRequest {
   voteLimit: number;
 }
 
+interface UserVoteCount {
+  [userId: string]: number;
+}
+
 /**
  * The format the database is expecting polls' data to be in.
  * @param options should be an array of the text values for the options.
@@ -29,6 +33,7 @@ export interface Poll {
   options: StoredPollOptions[];
   voteLimit: number;
   isOpen: boolean;
+  userVoteCount: UserVoteCount;
 }
 export interface StoredPoll extends Poll {
   $loki: string;
