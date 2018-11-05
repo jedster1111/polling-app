@@ -222,13 +222,26 @@ describe("Testing poll related database methods:", () => {
       ).toThrow();
     });
 
-    test("Voting on a poll that's closed should thrown an error", () => {
+    test("Adding or removing a vote on a poll that's closed should throw an error", () => {
       let pollToVote = db.getPolls()[0];
+
+      db.votePoll(pollToVote.pollId, {
+        optionId: pollToVote.options[0].optionId,
+        voterId: userId
+      });
 
       pollToVote = db.closePoll(pollToVote.creatorId, pollToVote.pollId);
 
       expect(() =>
         db.votePoll(pollToVote.pollId, {
+          voterId: userId,
+          optionId: pollToVote.options[0].optionId
+        })
+      ).toThrowError();
+      expect(pollToVote).toEqual(db.getPoll(pollToVote.pollId));
+
+      expect(() =>
+        db.removeVotePoll(pollToVote.pollId, {
           voterId: userId,
           optionId: pollToVote.options[0].optionId
         })

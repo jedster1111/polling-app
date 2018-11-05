@@ -176,6 +176,9 @@ class Database {
     if (poll === undefined) {
       this.throwErrorWithStatusCode("That poll does not exist", 400);
     }
+    if (!poll.isOpen) {
+      this.throwErrorWithStatusCode("This poll has been closed!", 400);
+    }
 
     const optionToVote = poll.options.find(
       option => option.optionId === voteInput.optionId
