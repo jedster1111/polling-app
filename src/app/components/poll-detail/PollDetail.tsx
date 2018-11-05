@@ -114,16 +114,26 @@ const PollDetail: React.SFC<PollDetailProps> = ({
           <VoteBar
             numberOfVotes={numberOfVotes}
             maxVotes={Math.max(
-              ...pollData.options.map(opt => opt.votes.length)
+              ...pollData.options.map(opt =>
+                opt.votes.reduce((prev, user) => prev + user.numberOfVotes, 0)
+              )
             )}
             ranking={ranking}
+            handleVote={(isAddingVote: boolean) =>
+              voteOption(
+                isAddingVote,
+                userData.id,
+                pollData.pollId,
+                option.optionId
+              )
+            }
           />
         );
       },
       sorter: (a, b) => a.votes.length - b.votes.length
     }
   ];
-  const { creator, description, pollName, options, pollId } = pollData;
+  const { creator, description, pollName, options } = pollData;
   const isOwner = creator.id === userData.id;
   const EditButton = (
     <ActionButton
@@ -193,7 +203,7 @@ const PollDetail: React.SFC<PollDetailProps> = ({
         rowKey={option => option.optionId}
         pagination={false}
         // onRow={option => ({
-        //   onClick: () => voteOption(userData.id, pollId, option.optionId)
+        //   onClick: () => voteOption(false, userData.id, pollId, option.optionId)
         // })}
       />
       <Modal

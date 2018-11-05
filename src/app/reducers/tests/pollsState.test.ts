@@ -64,10 +64,10 @@ describe("Testing pollsState reducer", () => {
 
     const votedPoll = generatePoll(1);
     votedPoll.options = generateOptions(3);
-    votedPoll.options[0].votes = [voter];
+    votedPoll.options[0].votes = [{ ...voter, numberOfVotes: 1 }];
 
     const resultPolls = generatePolls(3);
-    resultPolls[0].options[0].votes = [voter];
+    resultPolls[0].options[0].votes = [{ ...voter, numberOfVotes: 1 }];
 
     expect(
       reducer(

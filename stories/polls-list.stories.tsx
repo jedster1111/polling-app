@@ -22,9 +22,9 @@ const createOptions = (n: number) => {
       optionId: `${index + 1}`,
       value: `Bean bags, green and black asdfasdf asdfasd asdffdas asdfasdf`,
       votes: [
-        { id: "1", userName: "Jed" },
-        { id: "2", userName: "Joy" },
-        { id: "3", userName: "Josh" }
+        { id: "1", userName: "Jed", numberOfVotes: 1 },
+        { id: "2", userName: "Joy", numberOfVotes: 1 },
+        { id: "3", userName: "Josh", numberOfVotes: 1 }
       ]
     }));
   return options;
@@ -164,7 +164,10 @@ storiesOf("Polls List", module)
   .add("Result Column", () => (
     <ResultsColumn
       option={{
-        votes: [{ userName: "Jed", id: "1" }, { userName: "Joy", id: "2" }],
+        votes: [
+          { userName: "Jed", id: "1", numberOfVotes: 1 },
+          { userName: "Joy", id: "2", numberOfVotes: 1 }
+        ],
         value: "Bean bags",
         optionId: "1"
       }}

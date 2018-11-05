@@ -1,3 +1,4 @@
+import { Button } from "antd";
 import * as React from "react";
 import styled from "styled-components";
 
@@ -5,6 +6,7 @@ interface VoteBarProps {
   maxVotes: number;
   numberOfVotes: number;
   ranking: number;
+  handleVote: (isAddingVote: boolean) => void;
 }
 
 const BarContainer = styled.div``;
@@ -42,7 +44,8 @@ const VoteText = styled.div`
 const VoteBar: React.SFC<VoteBarProps> = ({
   maxVotes,
   numberOfVotes,
-  ranking
+  ranking,
+  handleVote
 }) => {
   const percentageWidth = maxVotes
     ? `${(numberOfVotes * 100) / maxVotes}%`
@@ -53,7 +56,9 @@ const VoteBar: React.SFC<VoteBarProps> = ({
         <InnerVoteBar percentageWidth={percentageWidth} ranking={ranking} />
         Ranking: {ranking}
       </BarContainer>
+      <Button icon="minus-circle" onClick={() => handleVote(false)} />
       <VoteText>{numberOfVotes}</VoteText>
+      <Button icon="plus-circle" onClick={() => handleVote(true)} />
     </div>
   );
 };
