@@ -73,30 +73,65 @@ describe("Testing sagas:", () => {
   });
 
   describe("Testing voteOption", () => {
-    const action = {
-      type: actionTypes.VOTE_OPTION_LOADING,
-      payload: { pollId: "1" }
-    };
-    it("voteOption saga should put VOTE_OPTION_SUCCESS with poll in payload", () => {
-      return expectSaga(sagas.voteOption, action)
-        .provide([[matchers.call.fn(api.voteOption), { data: { poll } }]])
-        .put({
-          type: actionTypes.VOTE_OPTION_SUCCESS,
-          payload: { poll }
-        })
-        .run();
+    describe("Testing adding votes", () => {
+      const action = {
+        type: actionTypes.VOTE_OPTION_LOADING,
+        payload: { pollId: "1", isAddingVote: true }
+      };
+      it("voteOption saga should put VOTE_OPTION_SUCCESS with poll in payload", () => {
+        return expectSaga(sagas.voteOption, action)
+          .provide([[matchers.call.fn(api.voteOption), { data: { poll } }]])
+          .put({
+            type: actionTypes.VOTE_OPTION_SUCCESS,
+            payload: { poll }
+          })
+          .run();
+      });
+
+      it("voteOption saga should put VOTE_OPTION_ERROR with error in payload", () => {
+        return expectSaga(sagas.voteOption, action)
+          .provide([
+            [matchers.call.fn(api.voteOption), throwError(new Error(errorText))]
+          ])
+          .put({
+            type: actionTypes.VOTE_OPTION_ERROR,
+            payload: { error: errorText }
+          })
+          .run();
+      });
     });
 
-    it("voteOption saga should put VOTE_OPTION_ERROR with error in payload", () => {
-      return expectSaga(sagas.voteOption, action)
-        .provide([
-          [matchers.call.fn(api.voteOption), throwError(new Error(errorText))]
-        ])
-        .put({
-          type: actionTypes.VOTE_OPTION_ERROR,
-          payload: { error: errorText }
-        })
-        .run();
+    describe("Testing removing votes", () => {
+      const action = {
+        type: actionTypes.REMOVE_VOTE_OPTION_LOADING,
+        payload: { pollId: "1", isAddingVote: false }
+      };
+      it("voteOption saga should put REMOVE_VOTE_OPTION_SUCCESS with poll in payload", () => {
+        return expectSaga(sagas.voteOption, action)
+          .provide([
+            [matchers.call.fn(api.removeVoteOption), { data: { poll } }]
+          ])
+          .put({
+            type: actionTypes.REMOVE_VOTE_OPTION_SUCCESS,
+            payload: { poll }
+          })
+          .run();
+      });
+
+      it("voteOption saga should put REMOVE_VOTE_OPTION_ERROR with error in payload", () => {
+        return expectSaga(sagas.voteOption, action)
+          .provide([
+            [
+              matchers.call.fn(api.removeVoteOption),
+              throwError(new Error(errorText))
+            ]
+          ])
+          .put({
+            type: actionTypes.REMOVE_VOTE_OPTION_ERROR,
+            payload: { error: errorText }
+          })
+          .run();
+      });
     });
   });
 
