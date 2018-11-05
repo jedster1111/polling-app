@@ -1,6 +1,6 @@
 import { PollOption } from "../../types";
 
-function getTotalVotesOnOption(option: PollOption): number {
+export function getTotalVotesOnOption(option: PollOption): number {
   return option.votes.reduce((prev, user) => prev + user.numberOfVotes, 0);
 }
 

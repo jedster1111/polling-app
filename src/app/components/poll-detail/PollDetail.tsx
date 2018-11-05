@@ -7,7 +7,7 @@ import PollForm from "../create-poll-form/PollFormContainer";
 import ActionButton from "../polls-list/ActionButton";
 import FetchPollsButton from "../polls-list/FetchPollsButton";
 import VoteDisplay from "../VoteDisplay";
-import { getRankings } from "./getRankings";
+import { getRankings, getTotalVotesOnOption } from "./getRankings";
 import VoteBar from "./VoteBar";
 
 interface PollDetailProps {
@@ -60,12 +60,11 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       dataIndex: "voted",
       key: "voted",
       render: (text, option) =>
-        // option.votes.find(voters => voters.id === userData.id) && (
-        //   <Icon type={isLoading ? "loading" : "check"} />
-        // ),
         isLoading ? (
           <Icon type="loading" />
-        ) : option.votes.find(voters => voters.id === userData.id) ? (
+        ) : option.votes.find(
+          voter => voter.id === userData.id && voter.numberOfVotes !== 0
+        ) ? (
           <Icon type="check" />
         ) : (
           undefined
@@ -73,8 +72,12 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       width: "100px",
       sorter: (a, b) => {
         let result = 0;
-        const aIndex = a.votes.find(userVote => userVote.id === userData.id);
-        const bIndex = b.votes.find(userVote => userVote.id === userData.id);
+        const aIndex = a.votes.find(
+          voter => voter.id === userData.id && voter.numberOfVotes !== 0
+        );
+        const bIndex = b.votes.find(
+          voter => voter.id === userData.id && voter.numberOfVotes !== 0
+        );
         if (aIndex && !bIndex) {
           result = 1;
         } else if (!aIndex && bIndex) {
@@ -105,20 +108,18 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       dataIndex: "votes",
       key: "votes",
       render: (text, option) => {
-        const numberOfVotes = option.votes.reduce(
-          (previous, user) => previous + user.numberOfVotes,
-          0
-        );
+        const numberOfVotes = getTotalVotesOnOption(option);
+        const voteUserData = option.votes.find(user => user.id === userData.id);
+        const votesByUser = voteUserData ? voteUserData.numberOfVotes : 0;
         const ranking = optionRankings[numberOfVotes];
         return (
           <VoteBar
             numberOfVotes={numberOfVotes}
             maxVotes={Math.max(
-              ...pollData.options.map(opt =>
-                opt.votes.reduce((prev, user) => prev + user.numberOfVotes, 0)
-              )
+              ...pollData.options.map(opt => getTotalVotesOnOption(opt))
             )}
             ranking={ranking}
+            votesByUser={votesByUser}
             handleVote={(isAddingVote: boolean) =>
               voteOption(
                 isAddingVote,
@@ -130,7 +131,9 @@ const PollDetail: React.SFC<PollDetailProps> = ({
           />
         );
       },
-      sorter: (a, b) => a.votes.length - b.votes.length
+      sorter: (a, b) => {
+        return getTotalVotesOnOption(a) - getTotalVotesOnOption(b);
+      }
     }
   ];
   const { creator, description, pollName, options } = pollData;
