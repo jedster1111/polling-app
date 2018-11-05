@@ -232,7 +232,7 @@ class Database {
     if (poll.creatorId !== userId) {
       this.throwErrorWithStatusCode(
         "Can't delete a poll that you didn't create!",
-        400
+        401
       );
     }
     this.polls.remove(poll);
