@@ -1,5 +1,5 @@
 import { StoredPollOption } from "../types";
-import calculateNumberOfVotes from "./caculateNumberOfVotesFromUser";
+import calculateNumberOfVotes from "./calculateNumberOfVotesFromUser";
 
 function generateOptionsWithVotes(
   userId: string,

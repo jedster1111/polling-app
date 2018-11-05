@@ -156,11 +156,12 @@ Json:
       "pollName": "What furniture?",
       "description": "We are going to get some new furniture in the office!",
       "isOpen": true,
+      "voteLimit": 1,
       "options": [
         {
           "optionId": "1",
           "value": "rocking chairs",
-          "votes": [{ "id": "2345", "displayName": "Jed" }]
+          "votes": [{ "id": "2345", "displayName": "Jed", "numberOfVotes": 1 }]
         },
         { "optionId": "2", "value": "garden bench", "votes": [] }
       ]
@@ -171,13 +172,14 @@ Json:
       "pollName": "New monitors?",
       "description": "What type of monitor would you guys like?",
       "isOpen": true,
+      "voteLimit": 2,
       "options": [
         {
           "optionId": "1",
           "value": "dell",
           "votes": [
-            { "id": "1234", "displayName": "Roy" },
-            { "id": "2345", "displayName": "Jed" }
+            { "id": "1234", "displayName": "Roy", "numberOfVotes": 2 },
+            { "id": "2345", "displayName": "Jed", "numberOfVotes": 0 }
           ]
         },
         { "optionId": "2", "value": "acer", "votes": [] }
@@ -208,6 +210,7 @@ Updates a specific poll
 {
   "description": "What furniture do you want?",
   "pollName": "Changed Name",
+  "voteLimit": 3
   "options": [
     { "optionId": "1", "value": "new option value" },
     { "optionId": "3", "value": "updated option 3" },
@@ -230,19 +233,20 @@ JSON:
     "pollName": "What furniture?",
     "description": "What furniture do you want?",
     "isOpen": true,
+    "voteLimit": 3,
     "options": [
       {
         "optionId": 1,
         "value": "new option value",
         "votes": [
-          { "id": "1234", "displayName": "Roy" },
-          { "id": "1234", "displayName": "Jed" }
+          { "id": "1234", "displayName": "Roy", "numberOfVotes": 1 },
+          { "id": "1234", "displayName": "Jed", "numberOfVotes": 1 }
         ]
       },
       {
         "optionId": 2,
         "value": "rocking chairs",
-        "votes": [{ "id": "1234", "displayName": "Roy" }]
+        "votes": [{ "id": "1234", "displayName": "Roy", "numberOfVotes": 1 }]
       },
       { "optionId": 3, "value": "updated option 3", "votes": [] },
       { "optionId": 4, "value": "new option!", "votes": [] }
@@ -287,19 +291,20 @@ JSON:
     "pollName": "What furniture?",
     "description": "What furniture do you want?",
     "isOpen": true,
+    "voteLimit": 3
     "options": [
       {
         "optionId": 1,
         "value": "bean-bags",
         "votes": [
-          { "id": "2345", "displayName": "Jed" },
-          { "id": "3456", "displayName": "Joy" }
+          { "id": "2345", "displayName": "Jed", "numberOfVotes": 3 },
+          { "id": "3456", "displayName": "Joy", "numberOfVotes": 0 }
         ]
       },
       {
         "optionId": 2,
         "value": "rocking chairs",
-        "votes": [{ "id": "1234", "displayName": "Roy" }]
+        "votes": [{ "id": "1234", "displayName": "Roy", "numberOfVotes": 2 }]
       },
       { "optionId": 3, "value": "garden bench", "votes": [] }
     ]
@@ -348,14 +353,14 @@ JSON: N/A
 
 #### Usage
 
-Casts a vote on an option within a specific poll.  
+Casts a vote on an option within a specific poll and returns the updated poll.  
 If the user has already voted on the option chosen, his previous vote should be removed.
 
 #### Expects
 
 ```json
 {
-  "voterName": "Jimmy",
+  "voterId": "4567",
   "optionId": "2"
 }
 ```
@@ -374,21 +379,22 @@ JSON:
     "pollName": "What furniture?",
     "description": "What furniture do you want?",
     "isOpen": true,
+    "voteLimit": 2
     "options": [
       {
         "optionId": 1,
         "value": "bean-bags",
         "votes": [
-          { "id": "1234", "displayName": "Roy" },
-          { "id": "2345", "displayName": "Jed" }
+          { "id": "1234", "displayName": "Roy", "numberOfVotes": 1 },
+          { "id": "2345", "displayName": "Jed", "numberOfVotes": 1 }
         ]
       },
       {
         "optionId": 2,
         "value": "rocking chairs",
         "votes": [
-          { "id": "1234", "displayName": "Roy" },
-          { "id": "4567", "displayName": "Jimmy" }
+          { "id": "1234", "displayName": "Roy", "numberOfVotes": 1 },
+          { "id": "4567", "displayName": "Jimmy", "numberOfVotes": 1 }
         ]
       },
       { "optionId": 3, "value": "garden bench", "votes": [] }
@@ -404,6 +410,59 @@ JSON: N/A
 Response Code: `401`  
 Description: Unauthorized, you are not logged in or JWT is invalid  
 JSON: N/A
+
+## `/api/polls/:id/remove-vote`
+
+### `POST`
+
+#### Usage
+
+Rmoves a vote on an option within a specific poll and returns the updated poll.  
+If the user does not have any votes on the option chosen, a 400 error will be returned.
+
+#### Expects
+
+```json
+{
+  "voterId": "4567",
+  "optionId": "2"
+}
+```
+
+#### Returns
+
+Response Code: `200`
+Description: Succesfully removed a vote on an option in a poll.
+JSON:
+
+```json
+{
+  "poll": {
+    "pollId": "1",
+    "creator": { "id": "1234", "displayName": "Roy" },
+    "pollName": "What furniture?",
+    "description": "What furniture do you want?",
+    "isOpen": true,
+    "voteLimit": 3
+    "options": [
+      {
+        "optionId": 1,
+        "value": "bean-bags",
+        "votes": [
+          { "id": "1234", "displayName": "Roy", "numberOfVotes": 1 },
+          { "id": "2345", "displayName": "Jed", "numberOfVotes": 1 }
+        ]
+      },
+      {
+        "optionId": 2,
+        "value": "rocking chairs",
+        "votes": [{ "id": "1234", "displayName": "Roy", "numberOfVotes": 1 }]
+      },
+      { "optionId": 3, "value": "garden bench", "votes": [] }
+    ]
+  }
+}
+```
 
 ## `/api/polls/:id/open`
 
@@ -431,6 +490,7 @@ JSON:
     "pollName": "What furniture?",
     "description": "What furniture do you want?",
     "isOpen": true,
+    "voteLimit": 2
     "options": [
       {
         "optionId": 1,
@@ -440,7 +500,7 @@ JSON:
       {
         "optionId": 2,
         "value": "rocking chairs",
-        "votes": [{ "id": "1234", "displayName": "Roy" }]
+        "votes": [{ "id": "1234", "displayName": "Roy", "numberOfVotes": 1 }]
       },
       { "optionId": 3, "value": "updated option 3", "votes": [] },
       { "optionId": 4, "value": "new option!", "votes": [] }
@@ -479,6 +539,7 @@ JSON:
     "pollName": "What furniture?",
     "description": "What furniture do you want?",
     "isOpen": false,
+    "voteLimit": 3
     "options": [
       {
         "optionId": 1,
@@ -488,7 +549,7 @@ JSON:
       {
         "optionId": 2,
         "value": "rocking chairs",
-        "votes": [{ "id": "1234", "displayName": "Roy" }]
+        "votes": [{ "id": "1234", "displayName": "Roy", "numberOfVotes": 1 }]
       },
       { "optionId": 3, "value": "updated option 3", "votes": [] },
       { "optionId": 4, "value": "new option!", "votes": [] }

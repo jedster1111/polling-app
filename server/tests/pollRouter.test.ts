@@ -237,6 +237,37 @@ describe("Testing poll related routes:", () => {
       expect(postResponse.options[1].votes).toEqual([]);
     });
   });
+
+  describe("Testing /api/poll/:id/remove-vote", () => {
+    test("Can I remove a vote on a poll?", async () => {
+      const pollToVote = db.getPolls()[0];
+      const userToUse = db.getUser(pollToVote.creatorId);
+      const voteInput: VoteInputRequest = { optionId: "1" };
+
+      const token = createJwtCookie(userToUse.id);
+
+      await request(app)
+        .post(`/api/polls/${pollToVote.pollId}/vote`)
+        .send(voteInput)
+        .set("Accept", "application/json")
+        .set("Cookie", token)
+        .expect(200);
+
+      const response = await request(app)
+        .post(`/api/polls/${pollToVote.pollId}/remove-vote`)
+        .send(voteInput)
+        .set("Accept", "application/json")
+        .set("Cookie", token)
+        .expect(200);
+
+      const postResponse: PollResponse = JSON.parse(response.text).poll;
+
+      expect(postResponse.options[0].votes).toEqual([
+        { ...userToUse, numberOfVotes: 0 }
+      ]);
+    });
+  });
+
   describe("Testing /api/polls/:id/open and /api/polls/:id/close", () => {
     test("Can I close a poll and then re-open it?", async () => {
       const pollToChange = db.getPolls()[0];

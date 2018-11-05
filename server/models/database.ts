@@ -11,7 +11,7 @@ import {
   User,
   VoteInput
 } from "../types";
-import calculateNumberOfVotesFromUser from "./caculateNumberOfVotesFromUser";
+import calculateNumberOfVotesFromUser from "./calculateNumberOfVotesFromUser";
 
 class Database {
   static checkValidPollInput(pollInput: PollInput) {

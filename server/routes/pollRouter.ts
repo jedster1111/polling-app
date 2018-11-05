@@ -131,6 +131,28 @@ pollRouter
   );
 
 pollRouter
+  .route("/:pollId/remove-vote")
+  .post(
+    passport.authenticate(["jwt"], { session: false }),
+    (req, res, next) => {
+      try {
+        const userId: string = req.user.id;
+        const pollId: string = req.params.pollId;
+        const voteInput: VoteInputRequest = req.body;
+        const poll = getResponsePoll(
+          db.removeVotePoll(pollId, {
+            optionId: voteInput.optionId,
+            voterId: userId
+          })
+        );
+        res.status(200).json({ poll });
+      } catch (error) {
+        next(error);
+      }
+    }
+  );
+
+pollRouter
   .route("/:pollId/open")
   .post(
     passport.authenticate(["jwt"], { session: false }),
