@@ -15,7 +15,12 @@ interface PollDetailProps {
   isLoading: boolean;
   userData: User;
   isLoggedIn: boolean;
-  voteOption: (userId: string, pollId: string, optionId: string) => void;
+  voteOption: (
+    isAddingVote: boolean,
+    userId: string,
+    pollId: string,
+    optionId: string
+  ) => void;
   showEditForm: (pollId: string, poll: Poll) => void;
   discardUpdatePollForm: () => void;
   deletePoll: (userId: string, pollId: string) => void;
@@ -100,7 +105,10 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       dataIndex: "votes",
       key: "votes",
       render: (text, option) => {
-        const numberOfVotes = option.votes.length;
+        const numberOfVotes = option.votes.reduce(
+          (previous, user) => previous + user.numberOfVotes,
+          0
+        );
         const ranking = optionRankings[numberOfVotes];
         return (
           <VoteBar
@@ -184,9 +192,9 @@ const PollDetail: React.SFC<PollDetailProps> = ({
         dataSource={options}
         rowKey={option => option.optionId}
         pagination={false}
-        onRow={option => ({
-          onClick: () => voteOption(userData.id, pollId, option.optionId)
-        })}
+        // onRow={option => ({
+        //   onClick: () => voteOption(userData.id, pollId, option.optionId)
+        // })}
       />
       <Modal
         visible={isEditing}

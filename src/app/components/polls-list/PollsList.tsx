@@ -8,7 +8,7 @@ export interface PollsListProps {
   polls: Poll[];
   user: User;
   fetchPolls: () => any;
-  handleVote: (pollId: string, optionId: string) => void;
+  handleVote: (isAddingVote: boolean, pollId: string, optionId: string) => void;
   toggleShowResults: (pollId: string) => any;
   deletePoll: (userId: string, pollId: string) => any;
   showResults: { [pollId: string]: boolean };

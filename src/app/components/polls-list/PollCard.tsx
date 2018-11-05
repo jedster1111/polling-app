@@ -8,7 +8,7 @@ import ActionButton from "./ActionButton";
 export interface PollCardProps {
   poll: Poll;
   user: User;
-  handleVote: (pollId: string, optionId: string) => void;
+  handleVote: (isAddingVote: boolean, pollId: string, optionId: string) => void;
   deletePoll: (userId: string, pollId: string) => void;
   toggleShowResults: (pollId: string) => void;
   showResults: boolean;

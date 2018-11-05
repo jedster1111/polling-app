@@ -14,13 +14,15 @@ export interface User {
   photos?: Array<{ value: string }>;
   profileUrl?: string;
 }
+export interface UserWithVotes extends User {
+  numberOfVotes: number;
+}
 export interface PollOption {
   optionId: string;
   value: string;
-  votes: User[];
+  votes: UserWithVotes[];
 }
 export interface PollInput {
-  // [key: string]: string | string[];
   creatorId?: string;
   pollName: string;
   description: string;
