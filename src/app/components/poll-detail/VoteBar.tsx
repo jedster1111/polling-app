@@ -84,7 +84,9 @@ const VoteBar: React.SFC<VoteBarProps> = ({
             {ranking}
           </RankingContainer>
         </InnerVoteBar>
-        <div>Total votes: {numberOfVotes}</div>
+        <div>
+          {numberOfVotes ? `Total votes: ${numberOfVotes}` : "No votes"}
+        </div>
       </BarContainer>
       <ButtonsContainer>
         <Button icon="minus-circle" onClick={() => handleVote(false)} />
