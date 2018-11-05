@@ -36,9 +36,20 @@ const InnerVoteBar = styled.div<{ percentageWidth: string; ranking: number }>`
   height: 50px;
 `;
 const VoteText = styled.div`
+  display: flex;
+  align-items: center;
   font-weight: bold;
   text-align: center;
-  width: 100%;
+  border: 1px solid #d9d9d9;
+  background-color: #fff;
+  padding-left: 12px;
+  padding-right: 12px;
+  line-height: 0;
+`;
+
+const ButtonsContainer = styled.div`
+  display: flex;
+  justify-content: center;
 `;
 
 const VoteBar: React.SFC<VoteBarProps> = ({
@@ -56,9 +67,11 @@ const VoteBar: React.SFC<VoteBarProps> = ({
         <InnerVoteBar percentageWidth={percentageWidth} ranking={ranking} />
         Ranking: {ranking}
       </BarContainer>
-      <Button icon="minus-circle" onClick={() => handleVote(false)} />
-      <VoteText>{numberOfVotes}</VoteText>
-      <Button icon="plus-circle" onClick={() => handleVote(true)} />
+      <ButtonsContainer>
+        <Button icon="minus-circle" onClick={() => handleVote(false)} />
+        <VoteText>{numberOfVotes}</VoteText>
+        <Button icon="plus-circle" onClick={() => handleVote(true)} />
+      </ButtonsContainer>
     </div>
   );
 };
