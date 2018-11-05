@@ -185,20 +185,23 @@ describe("Testing poll related database methods:", () => {
       });
       expect(poll).toMatchObject(expectedPoll);
     });
-    // test("Can I vote on a poll and then remove the vote", () => {
-    //   const pollToVote = db.getPolls()[0];
+    test("Can I vote on a poll and then remove the vote", () => {
+      const pollToVote = db.getPolls()[0];
 
-    //   const expectedPoll = generateExpectedPolls(1)[0];
-    //   db.votePoll(pollToVote.pollId, {
-    //     optionId: expectedPoll.options[0].optionId,
-    //     voterId: userId
-    //   });
-    //   const poll = db.votePoll(pollToVote.pollId, {
-    //     optionId: expectedPoll.options[0].optionId,
-    //     voterId: userId
-    //   });
-    //   expect(poll).toMatchObject(expectedPoll);
-    // });
+      const expectedPoll = generateExpectedPolls(1)[0];
+
+      db.votePoll(pollToVote.pollId, {
+        optionId: expectedPoll.options[0].optionId,
+        voterId: userId
+      });
+
+      const poll = db.removeVotePoll(pollToVote.pollId, {
+        optionId: expectedPoll.options[0].optionId,
+        voterId: userId
+      });
+
+      expect(poll).toMatchObject(expectedPoll);
+    });
     it("should restrict my vote if the voteLimit has been reached", () => {
       const pollToVote = db.getPolls()[0];
 
