@@ -38,8 +38,8 @@ const VoteDisplay: React.SFC<VoteDisplayProps> = props => {
   );
   return (
     <React.Fragment>
-      {VoteCount}
-      <VoteDisplayContainer isOpen={isOpen}>
+      <span id="vote-display-count">{VoteCount}</span>
+      <VoteDisplayContainer isOpen={isOpen} id="vote-display-is-open">
         Poll is{" "}
         {props.poll.isOpen ? (
           <span>

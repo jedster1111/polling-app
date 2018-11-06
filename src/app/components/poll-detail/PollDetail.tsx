@@ -67,16 +67,19 @@ const PollDetail: React.SFC<PollDetailProps> = ({
     title: "Voted",
     dataIndex: "voted",
     key: "voted",
-    render: (text, option) =>
-      isLoading ? (
-        <Icon type="loading" />
-      ) : option.votes.find(
-        voter => voter.id === userData.id && voter.numberOfVotes !== 0
-      ) ? (
-        <Icon type="check" />
-      ) : (
-        undefined
-      ),
+    render: (text, option) => (
+      <span className="voted">
+        {isLoading ? (
+          <Icon type="loading" />
+        ) : option.votes.find(
+          voter => voter.id === userData.id && voter.numberOfVotes !== 0
+        ) ? (
+          <Icon type="check" />
+        ) : (
+          undefined
+        )}
+      </span>
+    ),
     width: "100px",
     sorter: (a, b) => {
       let result = 0;
@@ -99,7 +102,7 @@ const PollDetail: React.SFC<PollDetailProps> = ({
     title: <span>Option</span>,
     dataIndex: "option",
     key: "option",
-    render: (text, option) => option.value,
+    render: (text, option) => <span className="value">{option.value}</span>,
     sorter: (a, b) => {
       const aValue = a.value.toLowerCase();
       const bValue = b.value.toLowerCase();
@@ -197,7 +200,10 @@ const PollDetail: React.SFC<PollDetailProps> = ({
     : [];
 
   return (
-    <Card title={pollName} className="poll-detail">
+    <Card
+      title={<span id="poll-detail-title">{pollName}</span>}
+      className="poll-detail"
+    >
       <RefreshButtonContainer>
         <FetchPollsButton fetchPolls={fetchPolls} isLoading={isLoading} />
       </RefreshButtonContainer>
@@ -206,7 +212,9 @@ const PollDetail: React.SFC<PollDetailProps> = ({
         title={description}
         description={
           <span>
-            <p>{creator.displayName || creator.userName}</p>
+            <p id="poll-detail-creator-name">
+              {creator.displayName || creator.userName}
+            </p>
             {
               <VoteDisplay
                 poll={pollData}
