@@ -35,6 +35,13 @@ const RefreshButtonContainer = styled.div`
   margin-bottom: 24px;
 `;
 
+const ActionButtonContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 10px 4px;
+`;
+
 const PollDetail: React.SFC<PollDetailProps> = ({
   pollData,
   isLoading,
@@ -146,12 +153,17 @@ const PollDetail: React.SFC<PollDetailProps> = ({
 
   const { creator, description, pollName, options } = pollData;
   const isOwner = creator.id === userData.id;
+
+  const style: React.CSSProperties = {
+    margin: "5px"
+  };
+
   const EditButton = (
     <ActionButton
       iconType="edit"
       text="Edit"
       handleClick={() => showEditForm(pollData.pollId, pollData)}
-      block
+      style={style}
     />
   );
   const DeleteButton = (
@@ -160,7 +172,7 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       buttonType="danger"
       text="Delete"
       handleClick={() => deletePoll(userData.id, pollData.pollId)}
-      block
+      style={style}
     />
   );
   const closeButton = (
@@ -168,7 +180,7 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       iconType="unlock"
       text="Poll is open"
       handleClick={closePoll}
-      block
+      style={style}
     />
   );
   const openButton = (
@@ -176,15 +188,16 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       iconType="lock"
       text="Poll is closed"
       handleClick={openPoll}
-      block
+      style={style}
     />
   );
+
   const actions = isOwner
     ? [EditButton, DeleteButton, pollData.isOpen ? closeButton : openButton]
     : [];
 
   return (
-    <Card title={pollName} actions={actions}>
+    <Card title={pollName} className="poll-detail">
       <RefreshButtonContainer>
         <FetchPollsButton fetchPolls={fetchPolls} isLoading={isLoading} />
       </RefreshButtonContainer>
@@ -217,6 +230,9 @@ const PollDetail: React.SFC<PollDetailProps> = ({
         //   onClick: () => voteOption(false, userData.id, pollId, option.optionId)
         // })}
       />
+      <ActionButtonContainer>
+        {actions.map(actionButton => actionButton)}
+      </ActionButtonContainer>
       <Modal
         visible={isEditing}
         onCancel={() => discardUpdatePollForm()}
