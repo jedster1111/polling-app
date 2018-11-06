@@ -2,7 +2,7 @@ import { Button, Form, Input } from "antd";
 import { ColProps } from "antd/lib/col";
 import * as React from "react";
 import { PollFormInput } from "../../reducers/pollForm";
-import "./antd-override.css";
+import "./antd-poll-form-override.css";
 import OptionsInput from "./OptionsInput";
 
 interface CreatePollFormProps {
