@@ -23,7 +23,7 @@ it("should return th for any other numbers", () => {
 
 it("should return th for all numbers between 10 and 20", () => {
   for (let i = 11; i < 20; i++) {
-    expect(getRankingWithOrdinalIndicator(11)).toBe("11th");
+    expect(getRankingWithOrdinalIndicator(i)).toBe(`${i}th`);
   }
   expect(getRankingWithOrdinalIndicator(113)).toBe("113th");
 });
