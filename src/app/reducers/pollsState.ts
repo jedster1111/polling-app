@@ -71,7 +71,8 @@ const pollsStateReducer: Reducer<PollsState, AnyAction> = (
         isLoading: true,
         error: null
       };
-    case actionTypes.VOTE_OPTION_SUCCESS: {
+    case actionTypes.VOTE_OPTION_SUCCESS:
+    case actionTypes.REMOVE_VOTE_OPTION_SUCCESS: {
       const newPolls = calculateNewPolls(pollsState, action);
       return {
         ...pollsState,
@@ -80,6 +81,7 @@ const pollsStateReducer: Reducer<PollsState, AnyAction> = (
       };
     }
     case actionTypes.VOTE_OPTION_ERROR:
+    case actionTypes.REMOVE_VOTE_OPTION_ERROR:
       return {
         ...pollsState,
         isLoading: false,

@@ -21,9 +21,7 @@ const VoteDisplayContainer = styled.p<{
 `;
 
 const VoteDisplay: React.SFC<VoteDisplayProps> = props => {
-  const numberOfVotes = props.poll.options.filter(option =>
-    option.votes.find(vote => vote.id === props.user.id)
-  ).length;
+  const numberOfVotes = calculateTotalVotesByUser(props.user.id, props.poll);
   const { isOpen } = props.poll;
   const VoteCount = props.isLoggedIn ? (
     <VoteDisplayContainer
@@ -56,5 +54,20 @@ const VoteDisplay: React.SFC<VoteDisplayProps> = props => {
     </React.Fragment>
   );
 };
+
+export function calculateTotalVotesByUser(userId: string, pollData: Poll) {
+  return pollData.options.reduce(
+    (prev, option) =>
+      prev +
+      option.votes.reduce((previous, voteUser) => {
+        if (voteUser.id === userId) {
+          return previous + voteUser.numberOfVotes;
+        } else {
+          return previous;
+        }
+      }, 0),
+    0
+  );
+}
 
 export default VoteDisplay;

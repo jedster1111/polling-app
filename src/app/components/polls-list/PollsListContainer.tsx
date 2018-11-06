@@ -19,7 +19,12 @@ interface PollsListContainerProps {
   user: User;
   polls: Poll[];
   fetchPolls: () => any;
-  voteOption: (userId: string, pollId: string, optionId: string) => any;
+  voteOption: (
+    isAddingVote: boolean,
+    userId: string,
+    pollId: string,
+    optionId: string
+  ) => any;
   toggleShowResults: (pollId: string) => void;
   deletePoll: (userId: string, pollId: string) => any;
   showResults: { [pollId: string]: boolean };
@@ -64,8 +69,8 @@ class PollsListContainer extends React.Component<PollsListContainerProps> {
   componentDidMount() {
     this.props.fetchPolls();
   }
-  handleVote = (pollId: string, optionId: string) => {
-    this.props.voteOption(this.props.user.id, pollId, optionId);
+  handleVote = (isAddingVote: boolean, pollId: string, optionId: string) => {
+    this.props.voteOption(isAddingVote, this.props.user.id, pollId, optionId);
   };
   handleToggleShowResults = (pollId: string) => {
     this.props.toggleShowResults(pollId);

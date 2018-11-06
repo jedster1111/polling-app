@@ -23,7 +23,12 @@ interface StateProps {
 }
 interface DispatchProps {
   fetchPolls: () => any;
-  voteOption: (userId: string, pollId: string, optionId: string) => any;
+  voteOption: (
+    isAddingVote: boolean,
+    userId: string,
+    pollId: string,
+    optionId: string
+  ) => any;
   showUpdatePollForm: (pollId: string, poll: Poll) => any;
   discardUpdatePollForm: () => any;
   deletePoll: (userId: string, pollId: string) => any;

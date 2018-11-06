@@ -37,14 +37,20 @@ export const discardPoll: () => Action = () => ({
 });
 
 export const voteOption: (
+  isAddingVote: boolean,
   userId: string,
   pollId: string,
   optionId: string
 ) => Action & {
-  payload: { userId: string; pollId: string; optionId: string };
-} = (userId, pollId, optionId) => ({
+  payload: {
+    isAddingVote: boolean;
+    userId: string;
+    pollId: string;
+    optionId: string;
+  };
+} = (isAddingVote, userId, pollId, optionId) => ({
   type: actionTypes.VOTE_OPTION_LOADING,
-  payload: { userId, pollId, optionId }
+  payload: { isAddingVote, userId, pollId, optionId }
 });
 
 export const toggleShowResults: (

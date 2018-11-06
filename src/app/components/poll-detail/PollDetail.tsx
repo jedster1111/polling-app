@@ -7,7 +7,7 @@ import PollForm from "../create-poll-form/PollFormContainer";
 import ActionButton from "../polls-list/ActionButton";
 import FetchPollsButton from "../polls-list/FetchPollsButton";
 import VoteDisplay from "../VoteDisplay";
-import { getRankings } from "./getRankings";
+import { getRankings, getTotalVotesOnOption } from "./getRankings";
 import VoteBar from "./VoteBar";
 
 interface PollDetailProps {
@@ -15,7 +15,12 @@ interface PollDetailProps {
   isLoading: boolean;
   userData: User;
   isLoggedIn: boolean;
-  voteOption: (userId: string, pollId: string, optionId: string) => void;
+  voteOption: (
+    isAddingVote: boolean,
+    userId: string,
+    pollId: string,
+    optionId: string
+  ) => void;
   showEditForm: (pollId: string, poll: Poll) => void;
   discardUpdatePollForm: () => void;
   deletePoll: (userId: string, pollId: string) => void;
@@ -55,12 +60,11 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       dataIndex: "voted",
       key: "voted",
       render: (text, option) =>
-        // option.votes.find(voters => voters.id === userData.id) && (
-        //   <Icon type={isLoading ? "loading" : "check"} />
-        // ),
         isLoading ? (
           <Icon type="loading" />
-        ) : option.votes.find(voters => voters.id === userData.id) ? (
+        ) : option.votes.find(
+          voter => voter.id === userData.id && voter.numberOfVotes !== 0
+        ) ? (
           <Icon type="check" />
         ) : (
           undefined
@@ -68,8 +72,12 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       width: "100px",
       sorter: (a, b) => {
         let result = 0;
-        const aIndex = a.votes.find(userVote => userVote.id === userData.id);
-        const bIndex = b.votes.find(userVote => userVote.id === userData.id);
+        const aIndex = a.votes.find(
+          voter => voter.id === userData.id && voter.numberOfVotes !== 0
+        );
+        const bIndex = b.votes.find(
+          voter => voter.id === userData.id && voter.numberOfVotes !== 0
+        );
         if (aIndex && !bIndex) {
           result = 1;
         } else if (!aIndex && bIndex) {
@@ -100,22 +108,35 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       dataIndex: "votes",
       key: "votes",
       render: (text, option) => {
-        const numberOfVotes = option.votes.length;
+        const numberOfVotes = getTotalVotesOnOption(option);
+        const voteUserData = option.votes.find(user => user.id === userData.id);
+        const votesByUser = voteUserData ? voteUserData.numberOfVotes : 0;
         const ranking = optionRankings[numberOfVotes];
         return (
           <VoteBar
             numberOfVotes={numberOfVotes}
             maxVotes={Math.max(
-              ...pollData.options.map(opt => opt.votes.length)
+              ...pollData.options.map(opt => getTotalVotesOnOption(opt))
             )}
             ranking={ranking}
+            votesByUser={votesByUser}
+            handleVote={(isAddingVote: boolean) =>
+              voteOption(
+                isAddingVote,
+                userData.id,
+                pollData.pollId,
+                option.optionId
+              )
+            }
           />
         );
       },
-      sorter: (a, b) => a.votes.length - b.votes.length
+      sorter: (a, b) => {
+        return getTotalVotesOnOption(a) - getTotalVotesOnOption(b);
+      }
     }
   ];
-  const { creator, description, pollName, options, pollId } = pollData;
+  const { creator, description, pollName, options } = pollData;
   const isOwner = creator.id === userData.id;
   const EditButton = (
     <ActionButton
@@ -184,9 +205,9 @@ const PollDetail: React.SFC<PollDetailProps> = ({
         dataSource={options}
         rowKey={option => option.optionId}
         pagination={false}
-        onRow={option => ({
-          onClick: () => voteOption(userData.id, pollId, option.optionId)
-        })}
+        // onRow={option => ({
+        //   onClick: () => voteOption(false, userData.id, pollId, option.optionId)
+        // })}
       />
       <Modal
         visible={isEditing}

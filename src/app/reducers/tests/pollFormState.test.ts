@@ -141,7 +141,13 @@ describe("Testing pollForm Reducer", () => {
     const poll: Poll = {
       creator,
       description: "description",
-      options: [{ optionId: "1", value: "option1", votes: [creator] }],
+      options: [
+        {
+          optionId: "1",
+          value: "option1",
+          votes: [{ ...creator, numberOfVotes: 1 }]
+        }
+      ],
       pollId: "1",
       pollName: "pollName",
       voteLimit: 1,

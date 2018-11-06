@@ -45,6 +45,7 @@ describe("Testing actions:", () => {
 
   it("should create an action to vote on a poll", () => {
     const voteInput = {
+      isAddingVote: true,
       userId: "userId",
       pollId: "pollId",
       optionId: "optionId"
@@ -55,7 +56,12 @@ describe("Testing actions:", () => {
     };
 
     expect(
-      actions.voteOption(voteInput.userId, voteInput.pollId, voteInput.optionId)
+      actions.voteOption(
+        voteInput.isAddingVote,
+        voteInput.userId,
+        voteInput.pollId,
+        voteInput.optionId
+      )
     ).toEqual(expectedAction);
   });
 
@@ -105,7 +111,7 @@ describe("Testing actions:", () => {
         {
           optionId: "1",
           value: "value1",
-          votes: [user1]
+          votes: [{ ...user1, numberOfVotes: 1 }]
         }
       ],
       creator: user1,
