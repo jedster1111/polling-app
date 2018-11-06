@@ -25,54 +25,37 @@ const NavBar: React.SFC<NavBarProps> = ({
   navigateToPollForm,
   layout
 }) => (
-  <>
-    <Menu mode={layout} defaultSelectedKeys={["/"]} selectedKeys={[location]}>
-      <Menu.Item key="/">
-        <NavLink to="/" id="pollsListLink">
-          Polls
-        </NavLink>
-      </Menu.Item>
-      <Menu.Item disabled={!isLoggedIn} key="/create-poll">
-        <div onClick={navigateToPollForm} id="createPollLink">
-          Create a Poll
-        </div>
-      </Menu.Item>
-      <Menu.Item>
-        {isLoading ? (
-          <NavBarButton type="Loading" />
-        ) : isLoggedIn ? (
-          <NavBarButton type="Logout" handleClick={handleLogout} />
-        ) : (
-          <NavBarButton type="Login" handleClick={handleLogin} />
-        )}
-      </Menu.Item>
-      {isLoggedIn && (
-        <Menu.Item>
-          <a href={userData.profileUrl} target="_blank">
-            <Avatar
-              src={userData.photos && userData.photos[0].value}
-              alt={userData.userName}
-            />
-          </a>
-        </Menu.Item>
+  <Menu mode={layout} defaultSelectedKeys={["/"]} selectedKeys={[location]}>
+    <Menu.Item key="/">
+      <NavLink to="/" id="pollsListLink">
+        Polls
+      </NavLink>
+    </Menu.Item>
+    <Menu.Item disabled={!isLoggedIn} key="/create-poll">
+      <div onClick={navigateToPollForm} id="createPollLink">
+        Create a Poll
+      </div>
+    </Menu.Item>
+    <Menu.Item>
+      {isLoading ? (
+        <NavBarButton type="Loading" />
+      ) : isLoggedIn ? (
+        <NavBarButton type="Logout" handleClick={handleLogout} />
+      ) : (
+        <NavBarButton type="Login" handleClick={handleLogin} />
       )}
-    </Menu>
-    {/* {isLoading ? (
-      <NavBarButton type="Loading" />
-    ) : isLoggedIn ? (
-      <NavBarButton type="Logout" handleClick={handleLogout} />
-    ) : (
-      <NavBarButton type="Login" handleClick={handleLogin} />
-    )}
+    </Menu.Item>
     {isLoggedIn && (
-      <a href={userData.profileUrl} target="_blank">
-        <Avatar
-          src={userData.photos && userData.photos[0].value}
-          alt={userData.userName}
-        />
-      </a>
-    )} */}
-  </>
+      <Menu.Item>
+        <a href={userData.profileUrl} target="_blank">
+          <Avatar
+            src={userData.photos && userData.photos[0].value}
+            alt={userData.userName}
+          />
+        </a>
+      </Menu.Item>
+    )}
+  </Menu>
 );
 
 export default NavBar;
