@@ -1,6 +1,7 @@
 import { Button } from "antd";
 import * as React from "react";
 import styled from "styled-components";
+import getRankingWithOrdinalIndicator from "./getRankingWithOrdinalIndicator";
 
 interface VoteBarProps {
   maxVotes: number;
@@ -20,6 +21,7 @@ const InnerVoteBar = styled.div<{ percentageWidth: string; ranking: number }>`
   box-sizing: border-box;
   transition: all 0.5s;
   overflow: hidden;
+  white-space: nowrap;
   background-color: ${({ ranking }) => {
     let color;
     switch (ranking) {
@@ -73,6 +75,8 @@ const VoteBar: React.SFC<VoteBarProps> = ({
   votesByUser,
   handleVote
 }) => {
+  const rankingWithOrdinalIndicator = getRankingWithOrdinalIndicator(ranking);
+
   const percentageWidth = maxVotes
     ? `${(numberOfVotes * 100) / maxVotes}%`
     : "0%";
@@ -81,7 +85,7 @@ const VoteBar: React.SFC<VoteBarProps> = ({
       <BarContainer>
         <InnerVoteBar percentageWidth={percentageWidth} ranking={ranking}>
           <RankingContainer numberOfVotes={numberOfVotes}>
-            {ranking}
+            {rankingWithOrdinalIndicator}
           </RankingContainer>
         </InnerVoteBar>
         <div>
