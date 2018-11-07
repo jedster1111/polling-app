@@ -56,18 +56,8 @@ test("The created poll should have the correct initial information", async t => 
   });
 });
 
-test.only("Can I vote and remove votes? Does it stop me from going over the limits?", async t => {
+test("Can I vote and remove votes? Does it stop me from going over the limits?", async t => {
   const pollInput = t.ctx.pollInput as PollInput;
-  // const expectedValues: ExpectedValues = {
-  //   pollName: pollInput.pollName,
-  //   username,
-  //   description: pollInput.description,
-  //   userVotes: detailPage.voteCount,
-  //   voteLimit: pollInput.voteLimit.toString(),
-  //   isOpenText: IsOpenText.open,
-  //   options: pollInput.options
-  // };
-
   const optionToVote = detailPage.getOptionByIndex(0);
 
   // click button max number of times
