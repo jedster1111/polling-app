@@ -18,6 +18,8 @@ export default class PollsListPage {
 
   pollEditButton = (id: string) => this.getPollCard(id).find("button.edit");
 
+  pollDetailButton = (id: string) => this.getPollCard(id).find("button.detail");
+
   checkField = async (t: TestController, field: Selector, input: string) => {
     await t.expect(field.innerText).eql(input);
   };

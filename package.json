@@ -14,6 +14,7 @@
     "server:dev": "nodemon --exec ./node_modules/.bin/ts-node --project tsconfig.server.json --watch server server/server.ts",
     "test": "jest",
     "testcafe": "testcafe chrome testcafe/",
+    "testcafe:path": "testcafe chrome",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
     "chrome": "start chrome http://localhost:8000 --remote-debugging-port=9222"

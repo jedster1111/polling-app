@@ -28,6 +28,7 @@ const PollCard = (props: PollCardProps) => {
       buttonType="primary"
       text="Details"
       handleClick={props.navigateToPoll}
+      className="detail"
     />
   );
   const deleteButton = (

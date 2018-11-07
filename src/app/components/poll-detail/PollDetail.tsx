@@ -167,6 +167,7 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       text="Edit"
       handleClick={() => showEditForm(pollData.pollId, pollData)}
       style={style}
+      key="edit-button"
     />
   );
   const DeleteButton = (
@@ -176,6 +177,7 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       text="Delete"
       handleClick={() => deletePoll(userData.id, pollData.pollId)}
       style={style}
+      key="delete-button"
     />
   );
   const closeButton = (
@@ -184,6 +186,7 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       text="Poll is open"
       handleClick={closePoll}
       style={style}
+      key="close-button"
     />
   );
   const openButton = (
@@ -192,6 +195,7 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       text="Poll is closed"
       handleClick={openPoll}
       style={style}
+      key="open-button"
     />
   );
 
@@ -209,7 +213,7 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       </RefreshButtonContainer>
 
       <Card.Meta
-        title={description}
+        title={<span id="poll-detail-description">{description}</span>}
         description={
           <span>
             <p id="poll-detail-creator-name">
@@ -238,9 +242,7 @@ const PollDetail: React.SFC<PollDetailProps> = ({
         //   onClick: () => voteOption(false, userData.id, pollId, option.optionId)
         // })}
       />
-      <ActionButtonContainer>
-        {actions.map(actionButton => actionButton)}
-      </ActionButtonContainer>
+      <ActionButtonContainer>{actions}</ActionButtonContainer>
       <Modal
         visible={isEditing}
         onCancel={() => discardUpdatePollForm()}
