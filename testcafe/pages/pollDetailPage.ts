@@ -12,7 +12,17 @@ export default class PollDetailPage {
   votesHeader = this.tableHeaders.withText("Votes");
 
   options = Selector(".ant-table-row");
-  getOptionByText = (text: string): Selector => this.options.withText(text);
-  optionVotedCol = (text: string) => this.getOptionByText(text).find(".voted");
-  optionValue = (text: string) => this.getOptionByText(text).find(".value");
+  getOptionByText = (text: string) => {
+    const option = this.options.withText(text);
+    const voteBar = option.findReact("VoteBar");
+    return {
+      VotedColumn: option.find(".voted"),
+      ValueColumn: option.find(".value"),
+      ranking: voteBar.find(".ranking"),
+      totalVotes: voteBar.find(".total-votes"),
+      userVotes: voteBar.find(".user-votes"),
+      removeVoteButton: voteBar.find(".remove-vote-button"),
+      addVoteButton: voteBar.find(".add-vote-button")
+    };
+  };
 }
