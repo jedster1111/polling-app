@@ -32,7 +32,7 @@ test("Can I create a poll, then see it in the list of polls?", async t => {
 
   await createPoll(t, pollInput);
 
-  await pollsListPage.checkCreatedPoll(t, pollInput.pollName, pollInput);
+  await pollsListPage.checkCreatedPoll(pollInput.pollName, pollInput);
 });
 
 test("I can't delete or edit polls if I'm not logged in", async t => {

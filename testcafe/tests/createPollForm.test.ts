@@ -30,7 +30,7 @@ test("When a poll is submitted succesfully, should be redirected to Polls page."
   await t.click(page.createPollButton);
 
   await t.expect(getPageUrl()).contains("127.0.0.1:8000", { timeout: 10000 });
-  await t.expect(listPage.checkCreatedPoll(t, titleToUse, pollInput));
+  await t.expect(listPage.checkCreatedPoll(titleToUse, pollInput));
 });
 
 test("If I'm not logged in submitting the form should result in no changes", async t => {

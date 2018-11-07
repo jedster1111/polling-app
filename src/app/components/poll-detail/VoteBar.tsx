@@ -81,7 +81,7 @@ const VoteBar: React.SFC<VoteBarProps> = ({
     ? `${(numberOfVotes * 100) / maxVotes}%`
     : "0%";
   return (
-    <div>
+    <div className="vote-bar">
       <BarContainer>
         <InnerVoteBar percentageWidth={percentageWidth} ranking={ranking}>
           <RankingContainer numberOfVotes={numberOfVotes} className="ranking">
