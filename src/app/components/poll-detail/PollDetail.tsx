@@ -233,7 +233,7 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       />
 
       <Table
-        loading={isLoading}
+        // loading={isLoading}
         columns={columns}
         dataSource={options}
         rowKey={option => option.optionId}
