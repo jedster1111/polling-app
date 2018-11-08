@@ -168,6 +168,7 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       handleClick={() => showEditForm(pollData.pollId, pollData)}
       style={style}
       key="edit-button"
+      className="edit-button"
     />
   );
   const DeleteButton = (
@@ -178,6 +179,7 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       handleClick={() => deletePoll(userData.id, pollData.pollId)}
       style={style}
       key="delete-button"
+      className="delete-button"
     />
   );
   const closeButton = (
@@ -187,6 +189,7 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       handleClick={closePoll}
       style={style}
       key="close-button"
+      className="open-button"
     />
   );
   const openButton = (
@@ -196,6 +199,7 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       handleClick={openPoll}
       style={style}
       key="open-button"
+      className="open-button"
     />
   );
 

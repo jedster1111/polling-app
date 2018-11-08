@@ -3,9 +3,12 @@ import { ReactSelector } from "testcafe-react-selectors";
 import { PollInput } from "../../src/app/types";
 
 const typeText = async (t: TestController, input: Selector, text: string) => {
-  text
-    ? await t.typeText(input, text, { replace: true })
-    : await t.selectText(input).pressKey("delete");
+  const currentValue = await input.value;
+  if (currentValue !== text) {
+    text
+      ? await t.typeText(input, text, { replace: true })
+      : await t.selectText(input).pressKey("delete");
+  }
 };
 
 const checkInput = async (

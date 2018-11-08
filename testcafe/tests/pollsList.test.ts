@@ -65,7 +65,7 @@ test("I can delete a poll that I created", async t => {
     .expect(pollsListPage.pollEditButton(pollInput.pollName).exists)
     .ok("You should see an edit button");
 
-  await t.click(pollsListPage.pollDeleteButton(pollInput.pollName));
+  await t.click(pollsListPage.pollDeleteButton(pollInput.pollName)).wait(5000);
 
   await t
     .expect(pollsListPage.getPollCard(pollInput.pollName).exists)

@@ -10,7 +10,7 @@ export interface ExpectedValues {
   description: string;
   pollName: string;
   userVotes: number;
-  voteLimit: string;
+  voteLimit: number;
   isOpenText: IsOpenText;
   options: string[];
 }
@@ -24,9 +24,12 @@ export default class PollDetailPage {
     isOpen: Selector("#vote-display-is-open")
   };
 
-  voteCount = 0;
-
   options = Selector(".ant-table-row");
+  actionButtons = {
+    editButton: Selector(".edit-button"),
+    deleteButton: Selector(".delete-button"),
+    openButton: Selector(".open-button")
+  };
 
   getOptionByIndex(index: number) {
     const option = this.options.nth(index);
@@ -38,9 +41,6 @@ export default class PollDetailPage {
     const option = this.options.withText(text);
     const voteBar = findReactVoteBar(option);
     return this.getOptionSelectorObject(option, voteBar);
-  }
-  resetVoteCount() {
-    this.voteCount = 0;
   }
 
   getHeaders = () => {
@@ -74,12 +74,37 @@ export default class PollDetailPage {
     await this.checkOptions(expectedValues);
   };
 
-  private addVote() {
-    this.voteCount++;
-  }
-  private removeVote() {
-    this.voteCount--;
-  }
+  checkIsOpenText = async (isOpen: boolean) =>
+    await t
+      .expect(this.values.isOpen.innerText)
+      .eql(isOpen ? IsOpenText.open : IsOpenText.closed);
+
+  checkActionButtons = async (
+    checkIsVisible: "isVisible" | "notVisible" = "isVisible"
+  ) => {
+    if (checkIsVisible === "isVisible") {
+      await t
+        .expect(this.actionButtons.deleteButton.exists)
+        .ok("Delete button is not showing")
+        .expect(this.actionButtons.editButton.exists)
+        .ok("Edit button is not showing")
+        .expect(this.actionButtons.openButton.exists)
+        .ok("Open button is not showing");
+    } else {
+      await t
+        .expect(this.actionButtons.deleteButton.exists)
+        .notOk("Delete button is showing")
+        .expect(this.actionButtons.editButton.exists)
+        .notOk("Edit button is showing")
+        .expect(this.actionButtons.openButton.exists)
+        .notOk("Open button is showing");
+    }
+  };
+
+  clickEditButton = async () => await t.click(this.actionButtons.editButton);
+  clickDeleteButton = async () =>
+    await t.click(this.actionButtons.deleteButton);
+  clickOpenButton = async () => await t.click(this.actionButtons.openButton);
 
   private async checkOptions(expectedValues: ExpectedValues) {
     await t.expect(this.options.count).eql(expectedValues.options.length);
@@ -101,6 +126,7 @@ export default class PollDetailPage {
       removeVoteButton: voteBar.find(".remove-vote-button"),
       addVoteButton: voteBar.find(".add-vote-button")
     };
+
     const functions = {
       /**
        * @param timesToClick Default number of times to click is 1
@@ -108,7 +134,6 @@ export default class PollDetailPage {
       clickVoteButton: async (timesToClick: number = 1) => {
         for (let i = 0; i < timesToClick; i++) {
           await t.click(selectors.addVoteButton);
-          this.addVote();
         }
       },
       /**
@@ -117,7 +142,6 @@ export default class PollDetailPage {
       clickRemoveVoteButton: async (timesToClick: number = 1) => {
         for (let i = 0; i < timesToClick; i++) {
           await t.click(selectors.removeVoteButton);
-          this.removeVote();
         }
       },
       checkNumberOfVotesFromUser: async (expectedNumberOfVotes: number) => {
