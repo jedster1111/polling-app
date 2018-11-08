@@ -7,6 +7,20 @@ import PollDetailPage, { IsOpenText } from "../pages/pollDetailPage";
 import PollsListPage from "../pages/pollsListPage";
 import { githubTestUser, username } from "../roles/roles";
 
+enum OptionText {
+  b = "banana",
+  d = "deer",
+  c = "carrot",
+  a = "apple"
+}
+
+const optionsInDefaultOrder = [
+  OptionText.b,
+  OptionText.d,
+  OptionText.c,
+  OptionText.a
+];
+
 const navbar = new Navbar();
 const detailPage = new PollDetailPage();
 const createPollPage = new CreatePollPage();
@@ -230,4 +244,107 @@ test(`Can I edit a poll, will it not lose my votes?
   await firstOption.clickRemoveVoteButton();
   await newOption.clickVoteButton();
   await newOption.checkNumberOfVotesFromUser(1);
+
+  // shouldn't be able to vote again as should be at max votes
+  await newOption.clickVoteButton();
+  await newOption.checkNumberOfVotesFromUser(1);
+});
+
+test("Can I sort alphabetically, by # of votes and by if you've voted or not", async t => {
+  async function checkOptionValues(values: OptionText[]) {
+    await t.expect(detailPage.options.count).eql(values.length);
+    for (const [index, value] of values.entries()) {
+      await t
+        .expect(detailPage.getOptionByIndex(index).ValueColumn.innerText)
+        .eql(value);
+    }
+  }
+
+  const pollInput = t.ctx.pollInput as PollInput;
+
+  const optionA = detailPage.getOptionByText(OptionText.a);
+  const optionB = detailPage.getOptionByText(OptionText.b);
+  const optionC = detailPage.getOptionByText(OptionText.c);
+  const optionD = detailPage.getOptionByText(OptionText.d);
+
+  const optionsInAlphabeticalOrder = [
+    OptionText.a,
+    OptionText.b,
+    OptionText.c,
+    OptionText.d
+  ];
+  const optionsInReverseAlphabeticalOrder = [
+    OptionText.d,
+    OptionText.c,
+    OptionText.b,
+    OptionText.a
+  ];
+
+  const optionsInVotedOrder = optionsInDefaultOrder.filter(
+    option => option !== OptionText.d
+  );
+  optionsInVotedOrder.push(OptionText.d);
+
+  const optionsInReverseVotedOrder = optionsInDefaultOrder.filter(
+    option => option !== OptionText.d
+  );
+  optionsInReverseVotedOrder.unshift(OptionText.d);
+
+  const headers = detailPage.getHeaders();
+
+  await optionA.clickVoteButton(3);
+  await optionB.clickVoteButton(2);
+  await optionC.clickVoteButton(1);
+
+  // Sort by number of votes and check
+  await t.click(headers.votesHeader);
+  await checkOptionValues(optionsInAlphabeticalOrder);
+
+  // Sort by reverse number of votes and check
+  await t.click(headers.votesHeader);
+  await checkOptionValues(optionsInReverseAlphabeticalOrder);
+
+  // Can I go back to default by clicking a third time?
+  await t.click(headers.votesHeader);
+  await checkOptionValues(optionsInDefaultOrder);
+
+  // Sort into alphabetical order
+  await t.click(headers.optionHeader);
+  await checkOptionValues(optionsInAlphabeticalOrder);
+
+  // Sort into reverse alphabetical order
+  await t.click(headers.optionHeader);
+  await checkOptionValues(optionsInReverseAlphabeticalOrder);
+
+  // Go back to default order
+  await t.click(headers.optionHeader);
+  await checkOptionValues(optionsInDefaultOrder);
+
+  // Sort by voted
+  await t.click(headers.votedHeader);
+  await checkOptionValues(optionsInVotedOrder);
+
+  // Sort by reverse voted
+  await t.click(headers.votedHeader);
+  await checkOptionValues(optionsInReverseVotedOrder);
+
+  // Return back to default
+  await t.click(headers.votedHeader);
+  await checkOptionValues(optionsInDefaultOrder);
+}).before(async t => {
+  await t.useRole(githubTestUser);
+
+  const id = uuid();
+  const pollInput: PollInput = {
+    pollName: id,
+    description: "description",
+    options: optionsInDefaultOrder,
+    voteLimit: 6
+  };
+
+  t.ctx.pollInput = pollInput;
+
+  await createPoll(t, pollInput);
+
+  await pollsListPage.clickDetailButton(id);
 });
