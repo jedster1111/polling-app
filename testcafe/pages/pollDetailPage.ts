@@ -103,22 +103,27 @@ export default class PollDetailPage {
     };
     const functions = {
       /**
-       * Default # of times to click is 1
+       * @param timesToClick Default number of times to click is 1
        */
-      clickVoteButton: async (n: number = 1) => {
-        for (let i = 0; i < n; i++) {
+      clickVoteButton: async (timesToClick: number = 1) => {
+        for (let i = 0; i < timesToClick; i++) {
           await t.click(selectors.addVoteButton);
           this.addVote();
         }
       },
       /**
-       * Default # of times to click is 1
+       * @param timesToClick Default number of times to click is 1
        */
-      clickRemoveVoteButton: async (n: number = 1) => {
-        for (let i = 0; i < n; i++) {
+      clickRemoveVoteButton: async (timesToClick: number = 1) => {
+        for (let i = 0; i < timesToClick; i++) {
           await t.click(selectors.removeVoteButton);
           this.removeVote();
         }
+      },
+      checkNumberOfVotesFromUser: async (expectedNumberOfVotes: number) => {
+        await t
+          .expect(selectors.userVotes.innerText)
+          .eql(`${expectedNumberOfVotes}`);
       }
     };
     return {

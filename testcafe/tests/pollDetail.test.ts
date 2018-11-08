@@ -58,25 +58,49 @@ test("The created poll should have the correct initial information", async t => 
 
 test("Can I vote and remove votes? Does it stop me from going over the limits?", async t => {
   const pollInput = t.ctx.pollInput as PollInput;
-  const optionToVote = detailPage.getOptionByIndex(0);
+  const firstOption = detailPage.getOptionByIndex(0);
+  const secondOption = detailPage.getOptionByIndex(1);
+  const thirdOption = detailPage.getOptionByIndex(2);
 
   // click button max number of times
-  await optionToVote.clickVoteButton(pollInput.voteLimit);
-  await t
-    .expect(optionToVote.userVotes.innerText)
-    .eql(pollInput.voteLimit.toString());
+  await firstOption.clickVoteButton(pollInput.voteLimit);
+  await firstOption.checkNumberOfVotesFromUser(pollInput.voteLimit);
 
   // click button once more, votes should stay the same
-  await optionToVote.clickVoteButton();
-  await t
-    .expect(optionToVote.userVotes.innerText)
-    .eql(pollInput.voteLimit.toString());
+  await firstOption.clickVoteButton();
+  await firstOption.checkNumberOfVotesFromUser(pollInput.voteLimit);
 
   // remove all votes
-  await optionToVote.clickRemoveVoteButton(pollInput.voteLimit);
-  await t.expect(optionToVote.userVotes.innerText).eql("0");
+  await firstOption.clickRemoveVoteButton(pollInput.voteLimit);
+  await firstOption.checkNumberOfVotesFromUser(0);
 
-  await t.expect(optionToVote.userVotes.innerText).eql("0");
   // click once more, votes should still be 0
-  await optionToVote.clickRemoveVoteButton();
+  await firstOption.clickRemoveVoteButton();
+  await firstOption.checkNumberOfVotesFromUser(0);
+
+  const secondOptionNumberOfClicks = pollInput.voteLimit - 2;
+
+  // add two votes to first option and then hit the limit using the second option
+  await firstOption.clickVoteButton(2);
+  await secondOption.clickVoteButton(secondOptionNumberOfClicks);
+
+  await firstOption.checkNumberOfVotesFromUser(2);
+  await secondOption.checkNumberOfVotesFromUser(secondOptionNumberOfClicks);
+
+  await secondOption.clickVoteButton();
+  await secondOption.checkNumberOfVotesFromUser(secondOptionNumberOfClicks);
+
+  // try to vote on third option, shouldn't work
+  await thirdOption.clickVoteButton();
+  await thirdOption.checkNumberOfVotesFromUser(0);
+
+  await thirdOption.clickRemoveVoteButton();
+  await thirdOption.checkNumberOfVotesFromUser(0);
+
+  // remove a vote from number two, can I now add one to the third option?
+  await secondOption.clickRemoveVoteButton();
+  await thirdOption.clickVoteButton();
+
+  await secondOption.checkNumberOfVotesFromUser(secondOptionNumberOfClicks - 1);
+  await thirdOption.checkNumberOfVotesFromUser(1);
 });
