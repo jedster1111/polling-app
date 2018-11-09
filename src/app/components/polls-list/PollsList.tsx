@@ -1,6 +1,7 @@
 import { List } from "antd";
 import * as React from "react";
 import { Poll, User } from "../../types";
+import "./antd-polls-list-override.css";
 import FetchPollsButton from "./FetchPollsButton";
 import PollCard from "./PollCard";
 
@@ -23,12 +24,15 @@ export interface PollsListProps {
 
 const PollsList = (props: PollsListProps) => (
   <List
+    className="polls-list"
     header={
       <FetchPollsButton
         fetchPolls={props.fetchPolls}
         isLoading={props.isLoading}
       />
     }
+    // itemLayout="vertical"
+    size="large"
     pagination={{ pageSize: 5 }}
     dataSource={props.polls}
     renderItem={(poll: Poll) => (

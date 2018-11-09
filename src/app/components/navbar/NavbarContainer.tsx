@@ -20,6 +20,10 @@ interface DispatchProps {
 
 type NavBarContainerProps = StateProps & DispatchProps;
 
+interface State {
+  windowWidth: number;
+}
+
 const mapStateToProps: (state: StoreState) => StateProps = state => ({
   isLoading: state.userState.isLoading,
   isLoggedIn: state.userState.isLoggedIn,
@@ -32,11 +36,29 @@ const mapDispatchToProps: DispatchProps = {
   discardPoll
 };
 
-class NavBarContainer extends React.Component<NavBarContainerProps> {
+class NavBarContainer extends React.Component<NavBarContainerProps, State> {
+  state = {
+    windowWidth: document.body.clientWidth
+  };
+
+  handleResize = () => {
+    this.setState({
+      windowWidth: document.body.clientWidth
+    });
+  };
+
+  componentDidMount() {
+    window.addEventListener("resize", this.handleResize);
+    setTimeout(this.handleResize, 1000);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.handleResize);
+  }
+
   handleLogin = () => (window.location.href = "/auth/github");
   handleLogout = () => (window.location.href = "/auth/logout");
   navigateToPollForm = () => {
-    console.log("navigating");
     this.props.discardPoll();
     this.props.navigateToPollForm();
   };
@@ -44,6 +66,7 @@ class NavBarContainer extends React.Component<NavBarContainerProps> {
     const location = this.props.location;
     return (
       <NavBar
+        layout={this.state.windowWidth > 500 ? "horizontal" : "inline"}
         isLoading={this.props.isLoading}
         isLoggedIn={this.props.isLoggedIn}
         userData={this.props.userData}

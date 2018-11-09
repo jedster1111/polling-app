@@ -10,13 +10,24 @@ const ActionButton: React.SFC<{
   link?: boolean;
   block?: boolean;
   className?: string;
-}> = ({ iconType, text, handleClick, buttonType, link, block, className }) => {
+  style?: React.CSSProperties;
+}> = ({
+  iconType,
+  text,
+  handleClick,
+  buttonType,
+  link,
+  block,
+  className,
+  style
+}) => {
   const actionButtonTemplate = (
     <Button
       onClick={handleClick}
       type={buttonType || "default"}
       block={block}
       className={className}
+      style={{ ...style }}
     >
       {text}
       {<Icon type={iconType} style={{ marginRight: 8 }} />}

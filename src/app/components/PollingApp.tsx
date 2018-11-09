@@ -6,6 +6,7 @@ import { Route, Switch } from "react-router";
 import { getUserData } from "../actions/actions";
 import { InitialState } from "../reducers/rootReducer";
 import { history } from "../store/index";
+import "./antd-main-override.css";
 import NavBar from "./navbar/NavbarContainer";
 import CreatePollPage from "./pages/CreatePollPage";
 import PollDetailPage from "./pages/PollDetailPage";

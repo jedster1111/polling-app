@@ -15,6 +15,7 @@ interface PollDetailProps {
   isLoading: boolean;
   userData: User;
   isLoggedIn: boolean;
+  windowWidth: number;
   voteOption: (
     isAddingVote: boolean,
     userId: string,
@@ -34,6 +35,13 @@ const RefreshButtonContainer = styled.div`
   margin-bottom: 24px;
 `;
 
+const ActionButtonContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 10px 4px;
+`;
+
 const PollDetail: React.SFC<PollDetailProps> = ({
   pollData,
   isLoading,
@@ -46,7 +54,8 @@ const PollDetail: React.SFC<PollDetailProps> = ({
   fetchPolls,
   isLoggedIn,
   openPoll,
-  closePoll
+  closePoll,
+  windowWidth
 }) => {
   if (!pollData) {
     return <p>That poll doesn't exist</p>;
@@ -54,96 +63,107 @@ const PollDetail: React.SFC<PollDetailProps> = ({
 
   const optionRankings = getRankings(pollData.options);
 
-  const columns: Array<ColumnProps<PollOption>> = [
-    {
-      title: "Voted",
-      dataIndex: "voted",
-      key: "voted",
-      render: (text, option) =>
-        isLoading ? (
-          <Icon type="loading" />
-        ) : option.votes.find(
-          voter => voter.id === userData.id && voter.numberOfVotes !== 0
-        ) ? (
-          <Icon type="check" />
-        ) : (
-          undefined
-        ),
-      width: "100px",
-      sorter: (a, b) => {
-        let result = 0;
-        const aIndex = a.votes.find(
-          voter => voter.id === userData.id && voter.numberOfVotes !== 0
-        );
-        const bIndex = b.votes.find(
-          voter => voter.id === userData.id && voter.numberOfVotes !== 0
-        );
-        if (aIndex && !bIndex) {
-          result = 1;
-        } else if (!aIndex && bIndex) {
-          result = -1;
-        }
-        return result;
+  const votedColumn: ColumnProps<PollOption> = {
+    title: "Voted",
+    dataIndex: "voted",
+    key: "voted",
+    render: (text, option) =>
+      isLoading ? (
+        <Icon type="loading" />
+      ) : option.votes.find(
+        voter => voter.id === userData.id && voter.numberOfVotes !== 0
+      ) ? (
+        <Icon type="check" />
+      ) : (
+        undefined
+      ),
+    width: "100px",
+    sorter: (a, b) => {
+      let result = 0;
+      const aIndex = a.votes.find(
+        voter => voter.id === userData.id && voter.numberOfVotes !== 0
+      );
+      const bIndex = b.votes.find(
+        voter => voter.id === userData.id && voter.numberOfVotes !== 0
+      );
+      if (aIndex && !bIndex) {
+        result = 1;
+      } else if (!aIndex && bIndex) {
+        result = -1;
       }
-    },
-    {
-      title: <span>Option</span>,
-      dataIndex: "option",
-      key: "option",
-      render: (text, option) => option.value,
-      sorter: (a, b) => {
-        const aValue = a.value.toLowerCase();
-        const bValue = b.value.toLowerCase();
-        let result = 0;
-        if (aValue > bValue) {
-          result = -1;
-        } else if (aValue < bValue) {
-          result = 1;
-        }
-        return result;
-      }
-    },
-    {
-      title: "Votes",
-      dataIndex: "votes",
-      key: "votes",
-      render: (text, option) => {
-        const numberOfVotes = getTotalVotesOnOption(option);
-        const voteUserData = option.votes.find(user => user.id === userData.id);
-        const votesByUser = voteUserData ? voteUserData.numberOfVotes : 0;
-        const ranking = optionRankings[numberOfVotes];
-        return (
-          <VoteBar
-            numberOfVotes={numberOfVotes}
-            maxVotes={Math.max(
-              ...pollData.options.map(opt => getTotalVotesOnOption(opt))
-            )}
-            ranking={ranking}
-            votesByUser={votesByUser}
-            handleVote={(isAddingVote: boolean) =>
-              voteOption(
-                isAddingVote,
-                userData.id,
-                pollData.pollId,
-                option.optionId
-              )
-            }
-          />
-        );
-      },
-      sorter: (a, b) => {
-        return getTotalVotesOnOption(a) - getTotalVotesOnOption(b);
-      }
+      return result;
     }
-  ];
+  };
+
+  const optionColumn: ColumnProps<PollOption> = {
+    title: <span>Option</span>,
+    dataIndex: "option",
+    key: "option",
+    render: (text, option) => option.value,
+    sorter: (a, b) => {
+      const aValue = a.value.toLowerCase();
+      const bValue = b.value.toLowerCase();
+      let result = 0;
+      if (aValue > bValue) {
+        result = -1;
+      } else if (aValue < bValue) {
+        result = 1;
+      }
+      return result;
+    }
+  };
+
+  const votesColumn: ColumnProps<PollOption> = {
+    title: "Votes",
+    dataIndex: "votes",
+    key: "votes",
+    render: (text, option) => {
+      const numberOfVotes = getTotalVotesOnOption(option);
+      const voteUserData = option.votes.find(user => user.id === userData.id);
+      const votesByUser = voteUserData ? voteUserData.numberOfVotes : 0;
+      const ranking = optionRankings[numberOfVotes];
+      return (
+        <VoteBar
+          numberOfVotes={numberOfVotes}
+          maxVotes={Math.max(
+            ...pollData.options.map(opt => getTotalVotesOnOption(opt))
+          )}
+          ranking={ranking}
+          votesByUser={votesByUser}
+          handleVote={(isAddingVote: boolean) =>
+            voteOption(
+              isAddingVote,
+              userData.id,
+              pollData.pollId,
+              option.optionId
+            )
+          }
+        />
+      );
+    },
+    sorter: (a, b) => {
+      return getTotalVotesOnOption(a) - getTotalVotesOnOption(b);
+    }
+  };
+
+  const columns: Array<ColumnProps<PollOption>> =
+    windowWidth > 500
+      ? [votedColumn, optionColumn, votesColumn]
+      : [optionColumn, votesColumn];
+
   const { creator, description, pollName, options } = pollData;
   const isOwner = creator.id === userData.id;
+
+  const style: React.CSSProperties = {
+    margin: "5px"
+  };
+
   const EditButton = (
     <ActionButton
       iconType="edit"
       text="Edit"
       handleClick={() => showEditForm(pollData.pollId, pollData)}
-      block
+      style={style}
     />
   );
   const DeleteButton = (
@@ -152,7 +172,7 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       buttonType="danger"
       text="Delete"
       handleClick={() => deletePoll(userData.id, pollData.pollId)}
-      block
+      style={style}
     />
   );
   const closeButton = (
@@ -160,7 +180,7 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       iconType="unlock"
       text="Poll is open"
       handleClick={closePoll}
-      block
+      style={style}
     />
   );
   const openButton = (
@@ -168,15 +188,16 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       iconType="lock"
       text="Poll is closed"
       handleClick={openPoll}
-      block
+      style={style}
     />
   );
+
   const actions = isOwner
     ? [EditButton, DeleteButton, pollData.isOpen ? closeButton : openButton]
     : [];
 
   return (
-    <Card title={pollName} actions={actions}>
+    <Card title={pollName} className="poll-detail">
       <RefreshButtonContainer>
         <FetchPollsButton fetchPolls={fetchPolls} isLoading={isLoading} />
       </RefreshButtonContainer>
@@ -209,6 +230,9 @@ const PollDetail: React.SFC<PollDetailProps> = ({
         //   onClick: () => voteOption(false, userData.id, pollId, option.optionId)
         // })}
       />
+      <ActionButtonContainer>
+        {actions.map(actionButton => actionButton)}
+      </ActionButtonContainer>
       <Modal
         visible={isEditing}
         onCancel={() => discardUpdatePollForm()}

@@ -26,6 +26,7 @@ storiesOf("Navbar", module)
   .add("Navbar", () => (
     <React.Fragment>
       <Navbar
+        layout="horizontal"
         isLoggedIn={false}
         userData={userData}
         handleLogin={loggedIn()}
@@ -35,6 +36,7 @@ storiesOf("Navbar", module)
         navigateToPollForm={navigateToPollForm}
       />
       <Navbar
+        layout="horizontal"
         isLoggedIn={true}
         userData={userData}
         handleLogin={loggedIn()}
