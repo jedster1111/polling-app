@@ -67,16 +67,19 @@ const PollDetail: React.SFC<PollDetailProps> = ({
     title: "Voted",
     dataIndex: "voted",
     key: "voted",
-    render: (text, option) =>
-      isLoading ? (
-        <Icon type="loading" />
-      ) : option.votes.find(
-        voter => voter.id === userData.id && voter.numberOfVotes !== 0
-      ) ? (
-        <Icon type="check" />
-      ) : (
-        undefined
-      ),
+    render: (text, option) => (
+      <span className="voted">
+        {isLoading ? (
+          <Icon type="loading" />
+        ) : option.votes.find(
+          voter => voter.id === userData.id && voter.numberOfVotes !== 0
+        ) ? (
+          <Icon type="check" />
+        ) : (
+          undefined
+        )}
+      </span>
+    ),
     width: "100px",
     sorter: (a, b) => {
       let result = 0;
@@ -99,7 +102,7 @@ const PollDetail: React.SFC<PollDetailProps> = ({
     title: <span>Option</span>,
     dataIndex: "option",
     key: "option",
-    render: (text, option) => option.value,
+    render: (text, option) => <span className="value">{option.value}</span>,
     sorter: (a, b) => {
       const aValue = a.value.toLowerCase();
       const bValue = b.value.toLowerCase();
@@ -164,6 +167,8 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       text="Edit"
       handleClick={() => showEditForm(pollData.pollId, pollData)}
       style={style}
+      key="edit-button"
+      className="edit-button"
     />
   );
   const DeleteButton = (
@@ -173,6 +178,8 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       text="Delete"
       handleClick={() => deletePoll(userData.id, pollData.pollId)}
       style={style}
+      key="delete-button"
+      className="delete-button"
     />
   );
   const closeButton = (
@@ -181,6 +188,8 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       text="Poll is open"
       handleClick={closePoll}
       style={style}
+      key="close-button"
+      className="open-button"
     />
   );
   const openButton = (
@@ -189,6 +198,8 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       text="Poll is closed"
       handleClick={openPoll}
       style={style}
+      key="open-button"
+      className="open-button"
     />
   );
 
@@ -197,16 +208,21 @@ const PollDetail: React.SFC<PollDetailProps> = ({
     : [];
 
   return (
-    <Card title={pollName} className="poll-detail">
+    <Card
+      title={<span id="poll-detail-title">{pollName}</span>}
+      className="poll-detail"
+    >
       <RefreshButtonContainer>
         <FetchPollsButton fetchPolls={fetchPolls} isLoading={isLoading} />
       </RefreshButtonContainer>
 
       <Card.Meta
-        title={description}
+        title={<span id="poll-detail-description">{description}</span>}
         description={
           <span>
-            <p>{creator.displayName || creator.userName}</p>
+            <p id="poll-detail-creator-name">
+              {creator.displayName || creator.userName}
+            </p>
             {
               <VoteDisplay
                 poll={pollData}
@@ -221,7 +237,7 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       />
 
       <Table
-        loading={isLoading}
+        // loading={isLoading}
         columns={columns}
         dataSource={options}
         rowKey={option => option.optionId}
@@ -230,9 +246,7 @@ const PollDetail: React.SFC<PollDetailProps> = ({
         //   onClick: () => voteOption(false, userData.id, pollId, option.optionId)
         // })}
       />
-      <ActionButtonContainer>
-        {actions.map(actionButton => actionButton)}
-      </ActionButtonContainer>
+      <ActionButtonContainer>{actions}</ActionButtonContainer>
       <Modal
         visible={isEditing}
         onCancel={() => discardUpdatePollForm()}

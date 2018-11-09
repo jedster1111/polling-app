@@ -32,7 +32,7 @@ test("Can I create a poll, then see it in the list of polls?", async t => {
 
   await createPoll(t, pollInput);
 
-  await pollsListPage.checkCreatedPoll(t, pollInput.pollName, pollInput);
+  await pollsListPage.checkCreatedPoll(pollInput.pollName, pollInput);
 });
 
 test("I can't delete or edit polls if I'm not logged in", async t => {
@@ -65,7 +65,7 @@ test("I can delete a poll that I created", async t => {
     .expect(pollsListPage.pollEditButton(pollInput.pollName).exists)
     .ok("You should see an edit button");
 
-  await t.click(pollsListPage.pollDeleteButton(pollInput.pollName));
+  await t.click(pollsListPage.pollDeleteButton(pollInput.pollName)).wait(5000);
 
   await t
     .expect(pollsListPage.getPollCard(pollInput.pollName).exists)
