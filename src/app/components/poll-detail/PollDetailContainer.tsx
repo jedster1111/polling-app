@@ -23,7 +23,12 @@ interface StateProps {
 }
 interface DispatchProps {
   fetchPolls: () => any;
-  voteOption: (userId: string, pollId: string, optionId: string) => any;
+  voteOption: (
+    isAddingVote: boolean,
+    userId: string,
+    pollId: string,
+    optionId: string
+  ) => any;
   showUpdatePollForm: (pollId: string, poll: Poll) => any;
   discardUpdatePollForm: () => any;
   deletePoll: (userId: string, pollId: string) => any;
@@ -57,12 +62,36 @@ const mapDispatchToProps: MapDispatchToProps<DispatchProps, OwnProps> = {
   closePoll
 };
 
-class PollDetailContainer extends React.Component<PollDetailContainerProps> {
+interface State {
+  windowWidth: number;
+}
+
+class PollDetailContainer extends React.Component<
+  PollDetailContainerProps,
+  State
+> {
+  state = {
+    windowWidth: document.body.clientWidth
+  };
+
+  handleResize = () => {
+    this.setState({
+      windowWidth: document.body.clientWidth
+    });
+  };
+
   componentDidMount() {
     if (!this.props.pollData) {
       this.props.fetchPolls();
     }
+    window.addEventListener("resize", this.handleResize);
+    setTimeout(this.handleResize, 1000);
   }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.handleResize);
+  }
+
   openPoll = () => {
     const pollData = this.props.pollData;
     if (pollData) {
@@ -93,6 +122,7 @@ class PollDetailContainer extends React.Component<PollDetailContainerProps> {
         isLoggedIn={this.props.isLoggedIn}
         openPoll={this.openPoll}
         closePoll={this.closePoll}
+        windowWidth={this.state.windowWidth}
       />
     );
   }

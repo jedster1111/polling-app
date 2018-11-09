@@ -1,12 +1,15 @@
 import express from "express";
 import passport from "passport";
 import db from "../models/database";
-import { CreatePollRequest, VoteInputRequest } from "../types";
+import {
+  CreatePollRequest,
+  PollResponseUser,
+  VoteInputRequest
+} from "../types";
 import {
   Poll,
   PollResponse,
   PollResponseOption,
-  PollResponseUser,
   UpdatePollInput
 } from "../types";
 
@@ -38,19 +41,19 @@ export const getResponsePoll = (storedPoll: Poll): PollResponse => {
       userName: creator.userName,
       photos: creator.photos
     },
-    options: options.map<PollResponseOption>(option => ({
-      optionId: option.optionId,
-      value: option.value,
-      votes: option.votes.map<PollResponseUser>(userId => {
-        const user = db.getUser(userId);
-        return {
-          id: userId,
-          displayName: user.displayName,
-          userName: user.userName,
-          photos: user.photos
-        };
-      })
-    })),
+    options: options.map<PollResponseOption>(option => {
+      return {
+        optionId: option.optionId,
+        value: option.value,
+        votes: Object.keys(option.votes).map<PollResponseUser>(userId => {
+          const user = db.getUser(userId);
+          return {
+            ...user,
+            numberOfVotes: option.votes[userId] || 0
+          };
+        })
+      };
+    }),
     isOpen
   };
 };
@@ -119,6 +122,28 @@ pollRouter
         const voteInput: VoteInputRequest = req.body;
         const poll = getResponsePoll(
           db.votePoll(pollId, { optionId: voteInput.optionId, voterId: userId })
+        );
+        res.status(200).json({ poll });
+      } catch (error) {
+        next(error);
+      }
+    }
+  );
+
+pollRouter
+  .route("/:pollId/remove-vote")
+  .post(
+    passport.authenticate(["jwt"], { session: false }),
+    (req, res, next) => {
+      try {
+        const userId: string = req.user.id;
+        const pollId: string = req.params.pollId;
+        const voteInput: VoteInputRequest = req.body;
+        const poll = getResponsePoll(
+          db.removeVotePoll(pollId, {
+            optionId: voteInput.optionId,
+            voterId: userId
+          })
         );
         res.status(200).json({ poll });
       } catch (error) {

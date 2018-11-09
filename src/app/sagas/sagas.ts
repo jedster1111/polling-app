@@ -52,11 +52,30 @@ export function* postPollsSaga(action: any) {
     message.error(errorMessage);
   }
 }
-export function* voteOption(action: AnyAction) {
+
+export function* voteOption(
+  action: Action & {
+    payload: {
+      isAddingVote: boolean;
+      userId: string;
+      pollId: string;
+      optionId: string;
+    };
+  }
+) {
+  const { isAddingVote, ...voteInput } = action.payload;
   try {
-    const response = yield call(api.voteOption, action.payload);
+    const response = yield call(
+      isAddingVote ? api.voteOption : api.removeVoteOption,
+      voteInput
+    );
     const poll: Poll = response.data.poll;
-    yield put({ type: actionTypes.VOTE_OPTION_SUCCESS, payload: { poll } });
+    yield put({
+      type: isAddingVote
+        ? actionTypes.VOTE_OPTION_SUCCESS
+        : actionTypes.REMOVE_VOTE_OPTION_SUCCESS,
+      payload: { poll }
+    });
   } catch (error) {
     const err: AxiosError = error;
     const errorMessage =
@@ -64,7 +83,9 @@ export function* voteOption(action: AnyAction) {
         ? err.response.data.error
         : err.message;
     yield put({
-      type: actionTypes.VOTE_OPTION_ERROR,
+      type: isAddingVote
+        ? actionTypes.VOTE_OPTION_ERROR
+        : actionTypes.REMOVE_VOTE_OPTION_ERROR,
       payload: { error: errorMessage }
     });
     yield put(fetchPolls());

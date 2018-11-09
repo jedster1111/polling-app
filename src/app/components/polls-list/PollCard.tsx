@@ -8,7 +8,7 @@ import ActionButton from "./ActionButton";
 export interface PollCardProps {
   poll: Poll;
   user: User;
-  handleVote: (pollId: string, optionId: string) => void;
+  handleVote: (isAddingVote: boolean, pollId: string, optionId: string) => void;
   deletePoll: (userId: string, pollId: string) => void;
   toggleShowResults: (pollId: string) => void;
   showResults: boolean;
@@ -28,6 +28,7 @@ const PollCard = (props: PollCardProps) => {
       buttonType="primary"
       text="Details"
       handleClick={props.navigateToPoll}
+      className="detail"
     />
   );
   const deleteButton = (
@@ -76,28 +77,31 @@ const PollCard = (props: PollCardProps) => {
     : [detailButton];
 
   return (
-    <List.Item key={props.poll.pollId} actions={actions}>
-      <List.Item.Meta
-        avatar={
-          props.poll.creator.photos && (
-            <Avatar src={props.poll.creator.photos[0].value} />
-          )
-        }
-        title={<p className="title">{props.poll.pollName}</p>}
-        description={
-          <span>
-            <p className="description">{props.poll.description}</p>
-            <p className="name">
-              {props.poll.creator.displayName || props.poll.creator.userName}
-            </p>
-            <VoteDisplay
-              poll={props.poll}
-              user={props.user}
-              isLoggedIn={props.isLoggedIn}
-            />
-          </span>
-        }
-      />
+    <>
+      <List.Item key={props.poll.pollId} actions={actions}>
+        <List.Item.Meta
+          avatar={
+            props.poll.creator.photos && (
+              <Avatar src={props.poll.creator.photos[0].value} />
+            )
+          }
+          style={{ minWidth: "280px" }}
+          title={<p className="title">{props.poll.pollName}</p>}
+          description={
+            <span>
+              <p className="description">{props.poll.description}</p>
+              <p className="name">
+                {props.poll.creator.displayName || props.poll.creator.userName}
+              </p>
+              <VoteDisplay
+                poll={props.poll}
+                user={props.user}
+                isLoggedIn={props.isLoggedIn}
+              />
+            </span>
+          }
+        />
+      </List.Item>
       <Modal
         visible={props.isEditing}
         onCancel={() => props.showEditForm(props.poll.pollId)}
@@ -107,7 +111,7 @@ const PollCard = (props: PollCardProps) => {
       >
         <PollForm edit pollId={props.poll.pollId} />
       </Modal>
-    </List.Item>
+    </>
   );
 };
 

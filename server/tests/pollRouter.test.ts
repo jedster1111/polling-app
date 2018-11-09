@@ -143,7 +143,7 @@ describe("Testing poll related routes:", () => {
           {
             optionId: "2",
             value: "changed2",
-            votes: [creator]
+            votes: [{ ...creator, numberOfVotes: 1 }]
           }
         ],
         pollId: pollToUse.pollId,
@@ -213,7 +213,7 @@ describe("Testing poll related routes:", () => {
   });
 
   describe("Testing /api/polls/:id/vote:", () => {
-    test("Can I vote on a poll and then remove the vote?", async () => {
+    test("Can I vote on a poll?", async () => {
       const pollToVote = db.getPolls()[0];
       const userToUse = db.getUser(pollToVote.creatorId);
       const voteInput: VoteInputRequest = { optionId: "1" };
@@ -230,21 +230,41 @@ describe("Testing poll related routes:", () => {
         .expect(200);
       const postResponse: PollResponse = JSON.parse(response.text).poll;
 
-      expect(postResponse.options[0].votes).toEqual([userToUse]);
+      expect(postResponse.options[0].votes).toEqual([
+        { ...userToUse, numberOfVotes: 1 }
+      ]);
       expect(postResponse.options[0].votes.length).toBe(1);
       expect(postResponse.options[1].votes).toEqual([]);
+    });
+  });
 
-      const response2 = await request(app)
+  describe("Testing /api/poll/:id/remove-vote", () => {
+    test("Can I remove a vote on a poll?", async () => {
+      const pollToVote = db.getPolls()[0];
+      const userToUse = db.getUser(pollToVote.creatorId);
+      const voteInput: VoteInputRequest = { optionId: "1" };
+
+      const token = createJwtCookie(userToUse.id);
+
+      await request(app)
         .post(`/api/polls/${pollToVote.pollId}/vote`)
         .send(voteInput)
         .set("Accept", "application/json")
         .set("Cookie", token)
         .expect(200);
-      const postResponse2 = JSON.parse(response2.text).poll;
 
-      // expect(postResponse.options[0]).toMatchObject(expectedPolls[1]);
-      expect(postResponse2.options[0].votes).toEqual([]);
-      expect(postResponse2.options[1].votes).toEqual([]);
+      const response = await request(app)
+        .post(`/api/polls/${pollToVote.pollId}/remove-vote`)
+        .send(voteInput)
+        .set("Accept", "application/json")
+        .set("Cookie", token)
+        .expect(200);
+
+      const postResponse: PollResponse = JSON.parse(response.text).poll;
+
+      expect(postResponse.options[0].votes).toEqual([
+        { ...userToUse, numberOfVotes: 0 }
+      ]);
     });
   });
 

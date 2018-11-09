@@ -18,6 +18,17 @@ export function voteOption(payload: {
     optionId
   });
 }
+export function removeVoteOption(payload: {
+  userId: string;
+  optionId: string;
+  pollId: string;
+}) {
+  const { userId, pollId, optionId } = payload;
+  return axios.post(`/api/polls/${pollId}/remove-vote`, {
+    userId,
+    optionId
+  });
+}
 export function getPoll(pollId: string) {
   return axios.get(`/api/polls/${pollId}`);
 }

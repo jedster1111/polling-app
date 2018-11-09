@@ -1,0 +1,24 @@
+.polls-list .ant-list-item {
+  flex-wrap: wrap;
+}
+
+.polls-list .ant-list-item-meta {
+  display:inline-flex;
+  flex: 1;
+}
+
+.polls-list .ant-list-item-action {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.polls-list .ant-list-item-action li {
+  padding: 3px 0;
+  margin: 0 4px;
+}
+
+.polls-list .ant-list-item-action-split {
+  display: none;
+}

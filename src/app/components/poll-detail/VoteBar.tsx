@@ -1,17 +1,27 @@
+import { Button } from "antd";
 import * as React from "react";
 import styled from "styled-components";
+import getRankingWithOrdinalIndicator from "./getRankingWithOrdinalIndicator";
 
 interface VoteBarProps {
   maxVotes: number;
   numberOfVotes: number;
   ranking: number;
+  votesByUser: number;
+  handleVote: (isAddingVote: boolean) => void;
 }
 
 const BarContainer = styled.div``;
 const InnerVoteBar = styled.div<{ percentageWidth: string; ranking: number }>`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
   border: 1px solid black;
   box-sizing: border-box;
   transition: all 0.5s;
+  overflow: hidden;
+  white-space: nowrap;
   background-color: ${({ ranking }) => {
     let color;
     switch (ranking) {
@@ -33,27 +43,68 @@ const InnerVoteBar = styled.div<{ percentageWidth: string; ranking: number }>`
   width: ${({ percentageWidth }) => percentageWidth};
   height: 50px;
 `;
-const VoteText = styled.div`
+const TextContainer = styled.div`
+  display: flex;
+  align-items: center;
   font-weight: bold;
   text-align: center;
-  width: 100%;
+  border: 1px solid #d9d9d9;
+  background-color: #fff;
+  padding-left: 12px;
+  padding-right: 12px;
+  line-height: 0;
+  margin: 0 4px;
+  min-height: 30px;
+`;
+
+const ButtonsContainer = styled.div`
+  margin: 3px 0;
+  display: flex;
+  justify-content: center;
+`;
+
+const RankingContainer = styled.span<{ numberOfVotes: number }>`
+  transition: all 0.5s;
+  opacity: ${({ numberOfVotes }) => numberOfVotes && "1"};
 `;
 
 const VoteBar: React.SFC<VoteBarProps> = ({
   maxVotes,
   numberOfVotes,
-  ranking
+  ranking,
+  votesByUser,
+  handleVote
 }) => {
+  const rankingWithOrdinalIndicator = getRankingWithOrdinalIndicator(ranking);
+
   const percentageWidth = maxVotes
     ? `${(numberOfVotes * 100) / maxVotes}%`
     : "0%";
   return (
-    <div>
+    <div className="vote-bar">
       <BarContainer>
-        <InnerVoteBar percentageWidth={percentageWidth} ranking={ranking} />
-        Ranking: {ranking}
+        <InnerVoteBar percentageWidth={percentageWidth} ranking={ranking}>
+          <RankingContainer numberOfVotes={numberOfVotes} className="ranking">
+            {rankingWithOrdinalIndicator}
+          </RankingContainer>
+        </InnerVoteBar>
+        <div className="total-votes">
+          {numberOfVotes ? `Total votes: ${numberOfVotes}` : "No votes"}
+        </div>
       </BarContainer>
-      <VoteText>{numberOfVotes}</VoteText>
+      <ButtonsContainer>
+        <Button
+          icon="minus-circle"
+          onClick={() => handleVote(false)}
+          className="remove-vote-button"
+        />
+        <TextContainer className="user-votes">{votesByUser}</TextContainer>
+        <Button
+          icon="plus-circle"
+          onClick={() => handleVote(true)}
+          className="add-vote-button"
+        />
+      </ButtonsContainer>
     </div>
   );
 };

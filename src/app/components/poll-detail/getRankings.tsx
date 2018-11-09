@@ -1,4 +1,9 @@
 import { PollOption } from "../../types";
+
+export function getTotalVotesOnOption(option: PollOption): number {
+  return option.votes.reduce((prev, user) => prev + user.numberOfVotes, 0);
+}
+
 /**
  * Calculates rankings for a given array of options based on the number of votes they have.
  * @param options The options to generate rankings from.
@@ -7,12 +12,12 @@ import { PollOption } from "../../types";
 export const getRankings = (options: PollOption[]) => {
   const shallowOptions = [...options];
   const sortedOptions = shallowOptions.sort(
-    (a, b) => b.votes.length - a.votes.length
+    (a, b) => getTotalVotesOnOption(b) - getTotalVotesOnOption(a)
   );
   const rankings = sortedOptions.reduce<{
-    [key: number]: number;
+    [votes: number]: number;
   }>((acc, option, index) => {
-    const noOfVotes = option.votes.length;
+    const noOfVotes = getTotalVotesOnOption(option);
     if (acc[noOfVotes]) {
       return acc;
     }

@@ -30,11 +30,15 @@ export const generateUsers = (n: number) => {
   const users: User[] = [];
   for (let i = 0; i < n; i++) {
     const index = i + 1;
-    users.push({
-      id: `${index}`,
-      displayName: `displayName${index}`,
-      userName: `userName${index}`
-    });
+    users.push(generateUser(index));
   }
   return users;
 };
+
+export function generateUser(index: number): User {
+  return {
+    id: `${index}`,
+    displayName: `displayName${index}`,
+    userName: `userName${index}`
+  };
+}

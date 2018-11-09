@@ -1,6 +1,6 @@
 import uuid from "uuid/v1";
 import db from "../models/database";
-import { Poll, PollInput } from "../types";
+import { Poll, PollInput, StoredPollOption } from "../types";
 
 const numberOfPolls = 3;
 const generatePollInputs = (n: number) => {
@@ -18,12 +18,16 @@ const generatePollInputs = (n: number) => {
   }
   return polls;
 };
-const generateExpectedPolls = (n: number) => {
+function generateExpectedPolls(n: number) {
   const expectedPolls: Array<{
     creatorId: string;
     pollName: string;
     description: string;
-    options: Array<{ optionId: string; value: string; votes: string[] }>;
+    options: Array<{
+      optionId: string;
+      value: string;
+      votes: { [userId: string]: number };
+    }>;
     voteLimit: number;
     isOpen: boolean;
   }> = [];
@@ -35,20 +39,20 @@ const generateExpectedPolls = (n: number) => {
       pollName: `pollName${index}`,
       description: `description${index}`,
       options: [
-        { optionId: "1", value: "option1", votes: [] },
-        { optionId: "2", value: "option2", votes: [] }
+        { optionId: "1", value: "option1", votes: {} },
+        { optionId: "2", value: "option2", votes: {} }
       ],
       voteLimit: 1,
       isOpen: true
     });
   }
   return expectedPolls;
-};
-const generateExpectedOptions = (updateInput: {
+}
+function generateExpectedOptions(updateInput: {
   pollName: string;
   description: string;
   options: Array<{ optionId: string; value: string }>;
-}) => {
+}): StoredPollOption[] {
   const expectedPollOptions = generateExpectedPolls(1)[0].options;
   updateInput.options.forEach(option => {
     const optionToChange = expectedPollOptions.find(
@@ -59,7 +63,7 @@ const generateExpectedOptions = (updateInput: {
     }
   });
   return expectedPollOptions;
-};
+}
 
 describe("Testing poll related database methods:", () => {
   beforeEach(() => {
@@ -174,7 +178,7 @@ describe("Testing poll related database methods:", () => {
 
     test("Can I vote on a poll?", () => {
       const expectedPoll = generateExpectedPolls(1)[0];
-      expectedPoll.options[0].votes = [userId];
+      expectedPoll.options[0].votes[userId] = 1;
       const poll = db.votePoll(userId, {
         optionId: expectedPoll.options[0].optionId,
         voterId: expectedPoll.creatorId
@@ -185,21 +189,24 @@ describe("Testing poll related database methods:", () => {
       const pollToVote = db.getPolls()[0];
 
       const expectedPoll = generateExpectedPolls(1)[0];
+
       db.votePoll(pollToVote.pollId, {
         optionId: expectedPoll.options[0].optionId,
         voterId: userId
       });
-      const poll = db.votePoll(pollToVote.pollId, {
+
+      const poll = db.removeVotePoll(pollToVote.pollId, {
         optionId: expectedPoll.options[0].optionId,
         voterId: userId
       });
+
       expect(poll).toMatchObject(expectedPoll);
     });
     it("should restrict my vote if the voteLimit has been reached", () => {
       const pollToVote = db.getPolls()[0];
 
       const expectedPoll = generateExpectedPolls(1)[0];
-      expectedPoll.options[0].votes = [userId];
+      expectedPoll.options[0].votes[userId] = 1;
       const poll = db.votePoll(pollToVote.pollId, {
         optionId: expectedPoll.options[0].optionId,
         voterId: userId
@@ -215,13 +222,26 @@ describe("Testing poll related database methods:", () => {
       ).toThrow();
     });
 
-    test("Voting on a poll that's closed should thrown an error", () => {
+    test("Adding or removing a vote on a poll that's closed should throw an error", () => {
       let pollToVote = db.getPolls()[0];
+
+      db.votePoll(pollToVote.pollId, {
+        optionId: pollToVote.options[0].optionId,
+        voterId: userId
+      });
 
       pollToVote = db.closePoll(pollToVote.creatorId, pollToVote.pollId);
 
       expect(() =>
         db.votePoll(pollToVote.pollId, {
+          voterId: userId,
+          optionId: pollToVote.options[0].optionId
+        })
+      ).toThrowError();
+      expect(pollToVote).toEqual(db.getPoll(pollToVote.pollId));
+
+      expect(() =>
+        db.removeVotePoll(pollToVote.pollId, {
           voterId: userId,
           optionId: pollToVote.options[0].optionId
         })

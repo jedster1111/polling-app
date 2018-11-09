@@ -1,6 +1,7 @@
 import { List } from "antd";
 import * as React from "react";
 import { Poll, User } from "../../types";
+import "./antd-polls-list-override.css";
 import FetchPollsButton from "./FetchPollsButton";
 import PollCard from "./PollCard";
 
@@ -8,7 +9,7 @@ export interface PollsListProps {
   polls: Poll[];
   user: User;
   fetchPolls: () => any;
-  handleVote: (pollId: string, optionId: string) => void;
+  handleVote: (isAddingVote: boolean, pollId: string, optionId: string) => void;
   toggleShowResults: (pollId: string) => any;
   deletePoll: (userId: string, pollId: string) => any;
   showResults: { [pollId: string]: boolean };
@@ -23,12 +24,15 @@ export interface PollsListProps {
 
 const PollsList = (props: PollsListProps) => (
   <List
+    className="polls-list"
     header={
       <FetchPollsButton
         fetchPolls={props.fetchPolls}
         isLoading={props.isLoading}
       />
     }
+    // itemLayout="vertical"
+    size="large"
     pagination={{ pageSize: 5 }}
     dataSource={props.polls}
     renderItem={(poll: Poll) => (

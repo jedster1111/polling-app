@@ -4,13 +4,14 @@ import {
   Poll,
   PollInput,
   StoredPoll,
-  StoredPollOptions,
+  StoredPollOption,
   StoredUser,
   UpdatePollInput,
   UpdatePollInputOption,
   User,
   VoteInput
 } from "../types";
+import calculateNumberOfVotesFromUser from "./calculateNumberOfVotesFromUser";
 
 class Database {
   static checkValidPollInput(pollInput: PollInput) {
@@ -64,12 +65,12 @@ class Database {
     const filteredOptions: string[] = pollInput.options.filter(
       option => option
     );
-    const newOptions: StoredPollOptions[] = filteredOptions.map(
+    const newOptions: StoredPollOption[] = filteredOptions.map(
       (option: string, index: number) => {
         return {
           optionId: `${index + 1}`,
           value: option,
-          votes: []
+          votes: {}
         };
       }
     );
@@ -124,7 +125,7 @@ class Database {
                   10
                 ) + 1}`,
                 value: optionInput.value,
-                votes: []
+                votes: {}
               });
             }
           }
@@ -141,77 +142,103 @@ class Database {
   }
 
   /**
-   * Casts a vote on a specific poll. If the name already exists on the option the vote will be removed.
+   * Casts a vote on a specific poll. Can cast multiple votes on a single option.
    * @param pollId Id of poll to be voted on
    * @param voteInput An object containing name of person voting and the Id of the option they're voting on
-   * @returns Returns the poll that was updated
+   * @returns Returns the poll that was voted on
    */
   votePoll(pollId: string, voteInput: VoteInput): Poll {
     const poll: StoredPoll = this.polls.findOne({ pollId });
 
     this.checkValidVoteAndThrowErrors(poll, voteInput);
 
-    for (const option of poll.options) {
-      if (option.optionId === voteInput.optionId) {
-        const indexOfId: number = option.votes.findIndex(
-          vote => voteInput.voterId === vote
-        );
-        if (indexOfId !== -1) {
-          option.votes.splice(indexOfId, 1);
-        } else {
-          option.votes.push(voteInput.voterId);
-        }
-        // if you've found the needed option then break
-        break;
+    const optionToVote = poll.options.find(
+      option => option.optionId === voteInput.optionId
+    );
+
+    if (optionToVote) {
+      const numberOfVotes = optionToVote.votes[voteInput.voterId];
+      if (!numberOfVotes) {
+        optionToVote.votes[voteInput.voterId] = 1;
+      } else {
+        optionToVote.votes[voteInput.voterId]++;
       }
     }
+
     this.polls.update(poll);
+
     return this.stripMeta<Poll>(poll);
   }
+
+  removeVotePoll(pollId: string, voteInput: VoteInput): Poll {
+    const poll: StoredPoll = this.polls.findOne({ pollId });
+
+    if (poll === undefined) {
+      this.throwErrorWithStatusCode("That poll does not exist", 400);
+    }
+    if (!poll.isOpen) {
+      this.throwErrorWithStatusCode("This poll has been closed!", 400);
+    }
+
+    const optionToVote = poll.options.find(
+      option => option.optionId === voteInput.optionId
+    );
+
+    if (!optionToVote) {
+      this.throwErrorWithStatusCode("That option does not exist", 400);
+    } else if (!optionToVote.votes[voteInput.voterId]) {
+      this.throwErrorWithStatusCode(
+        "Can't remove a vote from an option that you don't have any existing votes on!",
+        400
+      );
+    } else {
+      optionToVote.votes[voteInput.voterId]--;
+    }
+
+    this.polls.update(poll);
+
+    return this.stripMeta<Poll>(poll);
+  }
+
   openPoll(userId: string, pollId: string): Poll {
     const poll: StoredPoll = this.polls.findOne({ pollId });
     if (poll.creatorId !== userId) {
-      const error = new Error(
-        "Can't open a poll that you didn't create!"
-      ) as ErrorWithStatusCode;
-      error.statusCode = 401;
-      throw error;
-    } else {
-      poll.isOpen = true;
-      this.polls.update(poll);
-      return this.stripMeta<Poll>(poll);
+      this.throwErrorWithStatusCode(
+        "Can't open a poll that you didn't create!",
+        401
+      );
     }
+    poll.isOpen = true;
+    this.polls.update(poll);
+    return this.stripMeta<Poll>(poll);
   }
+
   closePoll(userId: string, pollId: string): Poll {
     const poll: StoredPoll = this.polls.findOne({ pollId });
     if (poll.creatorId !== userId) {
-      const error = new Error(
-        "Can't close a poll that you didn't create!"
-      ) as ErrorWithStatusCode;
-      error.statusCode = 401;
-      throw error;
-    } else {
-      poll.isOpen = false;
-      this.polls.update(poll);
-      return this.stripMeta<Poll>(poll);
+      this.throwErrorWithStatusCode(
+        "Can't close a poll that you didn't create!",
+        401
+      );
     }
+    poll.isOpen = false;
+    this.polls.update(poll);
+    return this.stripMeta<Poll>(poll);
   }
+
   /**
    * Removes a poll with the specified Id.
    * @param pollId Id of the poll you wish to remove from the database.
    */
   removePoll(userId: string, pollId: string): void {
-    // this.polls.findAndRemove({ pollId });
     const poll: Poll = this.polls.findOne({ pollId });
     if (poll.creatorId !== userId) {
-      const error = new Error(
-        `Can't delete a poll that you didn't create!`
-      ) as ErrorWithStatusCode;
-      error.statusCode = 401;
-      throw error;
-    } else {
-      this.polls.remove(poll);
+      this.throwErrorWithStatusCode(
+        "Can't delete a poll that you didn't create!",
+        401
+      );
     }
+    this.polls.remove(poll);
   }
   resetPolls(): void {
     this.removeAllPollsData();
@@ -255,20 +282,16 @@ class Database {
     const optionBeingVotedOn = poll.options.find(
       option => option.optionId === voteInput.optionId
     );
-    const numberOfExistingVotes = poll.options.filter(option =>
-      option.votes.find(vote => vote === voteInput.voterId)
-    ).length;
+    const numberOfExistingVotes = calculateNumberOfVotesFromUser(
+      poll.options,
+      voteInput.voterId
+    );
 
     if (!poll.isOpen) {
       messages = "This poll has been closed!";
     } else if (!optionBeingVotedOn) {
       messages = "That option doesn't exist!";
-    } else if (
-      !(
-        numberOfExistingVotes < poll.voteLimit ||
-        optionBeingVotedOn.votes.find(vote => vote === voteInput.voterId)
-      )
-    ) {
+    } else if (numberOfExistingVotes >= poll.voteLimit) {
       messages = "You've used up all of your votes!";
     }
 

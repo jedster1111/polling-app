@@ -6,22 +6,18 @@ it("should return the correct rankings", () => {
 
   const options = generateOptions(3);
   options.forEach((option, index) => {
-    for (let i = 0; i < index; i++) {
-      option.votes.push(user);
-    }
+    option.votes.push({ ...user, numberOfVotes: index });
   });
 
   expect(getRankings(options)).toEqual({ 2: 1, 1: 2, 0: 3 });
 
   options.forEach((option, index) => {
-    for (let i = 0; i < index; i++) {
-      option.votes.push(user);
-    }
+    option.votes.push({ ...user, numberOfVotes: index });
   });
 
   expect(getRankings(options)).toEqual({ 4: 1, 2: 2, 0: 3 });
 
-  options[1].votes.push(user, user);
+  options[1].votes[0].numberOfVotes += 2;
 
   // console.log(options);
 

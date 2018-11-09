@@ -3,9 +3,12 @@ import { ReactSelector } from "testcafe-react-selectors";
 import { PollInput } from "../../src/app/types";
 
 const typeText = async (t: TestController, input: Selector, text: string) => {
-  text
-    ? await t.typeText(input, text, { replace: true })
-    : await t.selectText(input).pressKey("delete");
+  const currentValue = await input.value;
+  if (currentValue !== text) {
+    text
+      ? await t.typeText(input, text, { replace: true })
+      : await t.selectText(input).pressKey("delete");
+  }
 };
 
 const checkInput = async (
@@ -22,6 +25,7 @@ export default class CreatePollPage {
   discardPollButton = Selector("#discardButton");
   removeOptionButtons = Selector("button.removeOption");
   addOptionButton = Selector("#addOption");
+  voteLimitInput = Selector("#voteLimit");
   allInputs = ReactSelector("PollForm").find("input[type='text']");
   removeOptionButton = (index: number) => this.removeOptionButtons.nth(index);
 
@@ -31,6 +35,7 @@ export default class CreatePollPage {
     for (const [index, option] of pollInput.options.entries()) {
       await typeText(t, this.optionInputs.nth(index), option);
     }
+    await typeText(t, this.voteLimitInput, pollInput.voteLimit.toString());
   };
 
   checkFormInputs = async (t: TestController, pollInput: PollInput) => {

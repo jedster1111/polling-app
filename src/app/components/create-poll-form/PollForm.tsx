@@ -2,7 +2,7 @@ import { Button, Form, Input } from "antd";
 import { ColProps } from "antd/lib/col";
 import * as React from "react";
 import { PollFormInput } from "../../reducers/pollForm";
-import "./antd-override.css";
+import "./antd-poll-form-override.css";
 import OptionsInput from "./OptionsInput";
 
 interface CreatePollFormProps {
@@ -92,7 +92,7 @@ const PollForm: React.SFC<CreatePollFormProps> = props => {
           value={props.values.voteLimit}
           onChange={props.handleChange}
           min={numberOfOptions ? 1 : 0}
-          max={numberOfOptions}
+          // max={numberOfOptions}
           type="number"
           id="voteLimit"
           placeholder="Vote Limit"
