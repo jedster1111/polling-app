@@ -123,3 +123,9 @@ export const openPoll: (
   type: actionTypes.OPEN_POLL_LOADING,
   payload: { pollId }
 });
+
+export function closedWarning(): Action {
+  return {
+    type: actionTypes.CLOSED_WARNING
+  };
+}
