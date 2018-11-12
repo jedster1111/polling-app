@@ -20,7 +20,8 @@ class Database {
       "description",
       "pollName",
       "options",
-      "voteLimit"
+      "voteLimit",
+      "optionVoteLimit"
     ];
     const missingProperties: string[] = [];
     necessaryProperties.forEach(property => {
@@ -273,7 +274,7 @@ class Database {
     poll: StoredPoll | undefined,
     voteInput: VoteInput
   ): void {
-    let messages: string = "";
+    let message: string = "";
     if (!poll) {
       this.throwErrorWithStatusCode("Poll was not found!", 400);
       return;
@@ -288,15 +289,19 @@ class Database {
     );
 
     if (!poll.isOpen) {
-      messages = "This poll has been closed!";
+      message = "This poll has been closed!";
     } else if (!optionBeingVotedOn) {
-      messages = "That option doesn't exist!";
+      message = "That option doesn't exist!";
     } else if (numberOfExistingVotes >= poll.voteLimit) {
-      messages = "You've used up all of your votes!";
+      message = "You've used up all of your votes!";
+    } else if (
+      optionBeingVotedOn.votes[voteInput.voterId] >= poll.optionVoteLimit
+    ) {
+      message = "You can't add anymore votes to this option!";
     }
 
-    if (messages) {
-      this.throwErrorWithStatusCode(messages, 400);
+    if (message) {
+      this.throwErrorWithStatusCode(message, 400);
     }
   }
 

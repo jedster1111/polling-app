@@ -3,6 +3,7 @@ import db from "../models/database";
 import { Poll, PollInput, StoredPollOption } from "../types";
 
 const numberOfPolls = 3;
+const voteLimit = 3;
 const generatePollInputs = (n: number) => {
   const polls: PollInput[] = [];
   for (let i = 0; i < n; i++) {
@@ -12,8 +13,9 @@ const generatePollInputs = (n: number) => {
       pollName: `pollName${index}`,
       description: `description${index}`,
       options: ["option1", "option2"],
-      voteLimit: 1,
-      isOpen: true
+      voteLimit,
+      isOpen: true,
+      optionVoteLimit: 3
     });
   }
   return polls;
@@ -42,7 +44,7 @@ function generateExpectedPolls(n: number) {
         { optionId: "1", value: "option1", votes: {} },
         { optionId: "2", value: "option2", votes: {} }
       ],
-      voteLimit: 1,
+      voteLimit,
       isOpen: true
     });
   }
@@ -133,7 +135,8 @@ describe("Testing poll related database methods:", () => {
         description: updateInput.description,
         options: expectedPollOptions,
         voteLimit: updateInput.voteLimit,
-        isOpen: true
+        isOpen: true,
+        optionVoteLimit: pollToUpdate.optionVoteLimit
       };
 
       const poll = db.updatePoll(
@@ -203,20 +206,24 @@ describe("Testing poll related database methods:", () => {
       expect(poll).toMatchObject(expectedPoll);
     });
     it("should restrict my vote if the voteLimit has been reached", () => {
-      const pollToVote = db.getPolls()[0];
+      const { optionVoteLimit, pollId, options } = db.getPolls()[0];
 
       const expectedPoll = generateExpectedPolls(1)[0];
-      expectedPoll.options[0].votes[userId] = 1;
-      const poll = db.votePoll(pollToVote.pollId, {
-        optionId: expectedPoll.options[0].optionId,
+      expectedPoll.options[0].votes[userId] = optionVoteLimit;
+      const voteInput = {
+        optionId: options[0].optionId,
         voterId: userId
-      });
+      };
+
+      const poll = voteOnPollNTimes(optionVoteLimit, pollId, voteInput);
+
       expect(poll).toMatchObject(expectedPoll);
 
       const voteInput2 = {
         optionId: expectedPoll.options[1].optionId,
         voterId: userId
       };
+
       expect(() =>
         db.votePoll(expectedPoll.options[0].optionId, voteInput2)
       ).toThrow();
@@ -247,6 +254,20 @@ describe("Testing poll related database methods:", () => {
         })
       ).toThrowError();
       expect(pollToVote).toEqual(db.getPoll(pollToVote.pollId));
+    });
+
+    test("Adding a vote on an option that has reached the optionVoteLimit should throw an error", () => {
+      const pollToVote = db.getPolls()[0];
+
+      const pollId = pollToVote.pollId;
+      const voteInput = {
+        optionId: pollToVote.options[0].optionId,
+        voterId: userId
+      };
+
+      voteOnPollNTimes(pollToVote.optionVoteLimit, pollId, voteInput);
+
+      expect(() => db.votePoll(pollId, voteInput)).toThrowError();
     });
   });
 
@@ -284,3 +305,14 @@ describe("Testing poll related database methods:", () => {
     });
   });
 });
+function voteOnPollNTimes(
+  numberOfVotes: number = 1,
+  pollId: string,
+  voteInput: { optionId: string; voterId: string }
+) {
+  for (let i = 0; i < numberOfVotes - 1; i++) {
+    db.votePoll(pollId, voteInput);
+  }
+  // return the last vote
+  return db.votePoll(pollId, voteInput);
+}

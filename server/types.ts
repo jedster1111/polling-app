@@ -3,6 +3,7 @@ export interface CreatePollRequest {
   description: string;
   options: string[];
   voteLimit: number;
+  optionVoteLimit: number;
 }
 
 // export interface UserVoteCount {
@@ -20,6 +21,7 @@ export interface PollInput {
   description: string;
   options: string[];
   voteLimit: number;
+  optionVoteLimit: number;
   isOpen: boolean;
 }
 /**
@@ -32,6 +34,7 @@ export interface Poll {
   pollId: string;
   options: StoredPollOption[];
   voteLimit: number;
+  optionVoteLimit: number;
   isOpen: boolean;
   // userVoteCount: UserVoteCount;
 }
@@ -57,6 +60,7 @@ export interface PollResponse {
   pollId: string;
   options: PollResponseOption[];
   voteLimit: number;
+  optionVoteLimit: number;
   isOpen: boolean;
   totalVotes: number;
 }
@@ -78,6 +82,8 @@ export interface UpdatePollInput {
   pollName?: string;
   description?: string;
   options?: UpdatePollInputOption[];
+  voteLimit?: number;
+  optionVoteLimit?: number;
 }
 export interface UpdatePollInputOption {
   optionId: string;
