@@ -6,6 +6,7 @@ export interface Poll {
   options: PollOption[];
   voteLimit: number;
   isOpen: boolean;
+  totalVotes: number;
 }
 export interface User {
   id: string;

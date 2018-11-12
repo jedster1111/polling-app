@@ -29,7 +29,7 @@ const VoteDisplay: React.SFC<VoteDisplayProps> = props => {
       voteLimit={props.poll.voteLimit}
       isOpen={isOpen}
     >
-      Votes: {numberOfVotes} / {props.poll.voteLimit}
+      Your Votes: {numberOfVotes} / {props.poll.voteLimit}
     </VoteDisplayContainer>
   ) : (
     <VoteDisplayContainer isOpen={isOpen}>

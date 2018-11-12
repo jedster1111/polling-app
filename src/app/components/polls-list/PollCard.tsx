@@ -98,6 +98,7 @@ const PollCard = (props: PollCardProps) => {
                 user={props.user}
                 isLoggedIn={props.isLoggedIn}
               />
+              <p>Total votes: {props.poll.totalVotes}</p>
             </span>
           }
         />

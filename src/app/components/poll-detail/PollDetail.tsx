@@ -42,6 +42,17 @@ const ActionButtonContainer = styled.div`
   margin: 10px 4px;
 `;
 
+const MetaDescriptionContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+`;
+
+const MetaDescriptionChild = styled.div`
+  flex: 1;
+  padding: 2px 5px;
+  min-width: 130px;
+`;
+
 const PollDetail: React.SFC<PollDetailProps> = ({
   pollData,
   isLoading,
@@ -219,18 +230,23 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       <Card.Meta
         title={<span id="poll-detail-description">{description}</span>}
         description={
-          <span>
-            <p id="poll-detail-creator-name">
-              {creator.displayName || creator.userName}
-            </p>
-            {
-              <VoteDisplay
-                poll={pollData}
-                user={userData}
-                isLoggedIn={isLoggedIn}
-              />
-            }
-          </span>
+          <MetaDescriptionContainer>
+            <MetaDescriptionChild>
+              <p id="poll-detail-creator-name">
+                {creator.displayName || creator.userName}
+              </p>
+              {
+                <VoteDisplay
+                  poll={pollData}
+                  user={userData}
+                  isLoggedIn={isLoggedIn}
+                />
+              }
+            </MetaDescriptionChild>
+            <MetaDescriptionChild>
+              Total votes: {pollData.totalVotes}
+            </MetaDescriptionChild>
+          </MetaDescriptionContainer>
         }
         avatar={creator.photos && <Avatar src={creator.photos[0].value} />}
         style={{ marginBottom: "15px" }}
