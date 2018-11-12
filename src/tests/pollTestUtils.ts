@@ -18,7 +18,8 @@ export const generatePoll: (index: number) => Poll = i => ({
   creator: { id: `${i}`, userName: `user${i}` },
   voteLimit: 1,
   isOpen: true,
-  totalVotes: 4
+  totalVotes: 4,
+  optionVoteLimit: 4
 });
 export const generatePolls: (n: number) => Poll[] = n => {
   const polls = [];

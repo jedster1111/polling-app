@@ -8,6 +8,7 @@ interface VoteBarProps {
   numberOfVotes: number;
   ranking: number;
   votesByUser: number;
+  optionVoteLimit: number;
   handleVote: (isAddingVote: boolean) => void;
 }
 
@@ -73,6 +74,7 @@ const VoteBar: React.SFC<VoteBarProps> = ({
   numberOfVotes,
   ranking,
   votesByUser,
+  optionVoteLimit,
   handleVote
 }) => {
   const rankingWithOrdinalIndicator = getRankingWithOrdinalIndicator(ranking);
@@ -98,7 +100,9 @@ const VoteBar: React.SFC<VoteBarProps> = ({
           onClick={() => handleVote(false)}
           className="remove-vote-button"
         />
-        <TextContainer className="user-votes">{votesByUser}</TextContainer>
+        <TextContainer className="user-votes">
+          {votesByUser} / {optionVoteLimit}
+        </TextContainer>
         <Button
           icon="plus-circle"
           onClick={() => handleVote(true)}

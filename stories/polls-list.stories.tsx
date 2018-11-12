@@ -38,7 +38,8 @@ const examplePolls: Poll[] = [
     creator: { id: "1", userName: "Jed" },
     voteLimit: 1,
     isOpen: true,
-    totalVotes: 6
+    totalVotes: 6,
+    optionVoteLimit: 6
   },
   {
     creator: { id: "2", userName: "Joy" },
@@ -48,7 +49,8 @@ const examplePolls: Poll[] = [
     pollName: "Lunch today?",
     voteLimit: 1,
     isOpen: true,
-    totalVotes: 7
+    totalVotes: 7,
+    optionVoteLimit: 7
   }
 ];
 
