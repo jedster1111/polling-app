@@ -39,6 +39,9 @@ class Database {
     if (pollInput.options.length === 0) {
       errorMessage += ` Can't create a poll with no options`;
     }
+    if (pollInput.optionVoteLimit > pollInput.voteLimit) {
+      errorMessage += ` Option-vote limit can't be bigger than the vote-limit.`;
+    }
     if (errorMessage) {
       const err = new Error(errorMessage) as ErrorWithStatusCode;
       err.statusCode = 400;
@@ -94,11 +97,19 @@ class Database {
       throw new Error(`Poll with Id ${pollId} could not be found`);
     }
     if (poll.creatorId !== userId) {
-      const error = new Error(
-        `Can't edit a poll that you didn't create!`
-      ) as ErrorWithStatusCode;
-      error.statusCode = 401;
-      throw error;
+      this.throwErrorWithStatusCode(
+        "Can't edit a poll that you didn't create!",
+        401
+      );
+    }
+    if (
+      (updatePollInput.optionVoteLimit || poll.optionVoteLimit) >
+      (updatePollInput.voteLimit || poll.voteLimit)
+    ) {
+      this.throwErrorWithStatusCode(
+        "Can't set the option-vote limit to be lower than the vote-limit!",
+        400
+      );
     }
     const updateKeys = Object.keys(updatePollInput) as Array<
       keyof UpdatePollInput

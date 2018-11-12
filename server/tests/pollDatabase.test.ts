@@ -3,7 +3,7 @@ import db from "../models/database";
 import { Poll, PollInput, StoredPollOption } from "../types";
 
 const numberOfPolls = 3;
-const voteLimit = 3;
+
 const generatePollInputs = (n: number) => {
   const polls: PollInput[] = [];
   for (let i = 0; i < n; i++) {
@@ -13,7 +13,7 @@ const generatePollInputs = (n: number) => {
       pollName: `pollName${index}`,
       description: `description${index}`,
       options: ["option1", "option2"],
-      voteLimit,
+      voteLimit: 3,
       isOpen: true,
       optionVoteLimit: 3
     });
@@ -44,7 +44,7 @@ function generateExpectedPolls(n: number) {
         { optionId: "1", value: "option1", votes: {} },
         { optionId: "2", value: "option2", votes: {} }
       ],
-      voteLimit,
+      voteLimit: 3,
       isOpen: true
     });
   }
@@ -102,6 +102,13 @@ describe("Testing poll related database methods:", () => {
       const result = generateExpectedPolls(1)[0];
       expect(poll).toMatchObject(result);
       expect(poll.options.length).toBe(result.options.length);
+    });
+
+    test("If I create a poll with optionVoteLimit greater than voteLimit an error sould be thrown", () => {
+      const pollInput = generatePollInputs(1)[0];
+      pollInput.optionVoteLimit = pollInput.voteLimit + 1;
+
+      expect(() => db.insertPoll(pollInput)).toThrowError();
     });
 
     test("Can I get a poll by Id?", () => {
@@ -173,6 +180,14 @@ describe("Testing poll related database methods:", () => {
       inputPoll.options.shift();
 
       expect(updatePoll).toMatchObject(inputPoll);
+    });
+
+    test("Updating a poll to have an optionVoteLimit greater than the voteLimit should throw an error", () => {
+      const { creatorId, pollId, voteLimit } = db.getPolls()[0];
+
+      expect(() =>
+        db.updatePoll(creatorId, pollId, { optionVoteLimit: voteLimit + 1 })
+      ).toThrowError();
     });
   });
 
