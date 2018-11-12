@@ -111,6 +111,26 @@ describe("Testing poll related database methods:", () => {
       expect(() => db.insertPoll(pollInput)).toThrowError();
     });
 
+    test("creating a poll with voteLimit <= 0 should throw an error", () => {
+      const pollInput = generatePollInputs(1)[0];
+      pollInput.voteLimit = 0;
+
+      expect(() => db.insertPoll(pollInput)).toThrowError();
+
+      pollInput.voteLimit = -1;
+      expect(() => db.insertPoll(pollInput)).toThrowError();
+    });
+
+    test("creating a poll with optionVoteLimit <= 0 should throw an error", () => {
+      const pollInput = generatePollInputs(1)[0];
+      pollInput.optionVoteLimit = 0;
+
+      expect(() => db.insertPoll(pollInput)).toThrowError();
+
+      pollInput.optionVoteLimit = -1;
+      expect(() => db.insertPoll(pollInput)).toThrowError();
+    });
+
     test("Can I get a poll by Id?", () => {
       const storedPolls = db.getPolls();
       const poll = db.getPoll(storedPolls[0].pollId);
@@ -187,6 +207,30 @@ describe("Testing poll related database methods:", () => {
 
       expect(() =>
         db.updatePoll(creatorId, pollId, { optionVoteLimit: voteLimit + 1 })
+      ).toThrowError();
+    });
+
+    test("Setting voteLimit less than or equal to zero should throw an error", () => {
+      const { creatorId, pollId } = db.getPolls()[0];
+
+      expect(() =>
+        db.updatePoll(creatorId, pollId, { voteLimit: 0 })
+      ).toThrowError();
+
+      expect(() =>
+        db.updatePoll(creatorId, pollId, { voteLimit: -2 })
+      ).toThrowError();
+    });
+
+    test("Setting optionVoteLimit less than or equal to zero should throw an error", () => {
+      const { creatorId, pollId } = db.getPolls()[0];
+
+      expect(() =>
+        db.updatePoll(creatorId, pollId, { optionVoteLimit: 0 })
+      ).toThrowError();
+
+      expect(() =>
+        db.updatePoll(creatorId, pollId, { optionVoteLimit: -2 })
       ).toThrowError();
     });
   });

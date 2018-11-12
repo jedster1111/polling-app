@@ -25,7 +25,12 @@ class Database {
     ];
     const missingProperties: string[] = [];
     necessaryProperties.forEach(property => {
-      if (!pollInput.hasOwnProperty(property) || !pollInput[property]) {
+      if (
+        !pollInput.hasOwnProperty(property) ||
+        pollInput[property] === undefined ||
+        pollInput[property] === "" ||
+        (property === "options" && pollInput[property].length === 0)
+      ) {
         missingProperties.push(property);
       }
     });
@@ -41,6 +46,12 @@ class Database {
     }
     if (pollInput.optionVoteLimit > pollInput.voteLimit) {
       errorMessage += ` Option-vote limit can't be bigger than the vote-limit.`;
+    }
+    if (pollInput.voteLimit <= 0) {
+      errorMessage += ` Vote limit can't be less than or equal to 0!`;
+    }
+    if (pollInput.optionVoteLimit <= 0) {
+      errorMessage += ` Option vote limit can't be less than or equal to 0!`;
     }
     if (errorMessage) {
       const err = new Error(errorMessage) as ErrorWithStatusCode;
@@ -108,6 +119,24 @@ class Database {
     ) {
       this.throwErrorWithStatusCode(
         "Can't set the option-vote limit to be lower than the vote-limit!",
+        400
+      );
+    }
+    if (
+      updatePollInput.voteLimit !== undefined &&
+      updatePollInput.voteLimit <= 0
+    ) {
+      this.throwErrorWithStatusCode(
+        "Can't create a poll with a vote limit of 0 or less!",
+        400
+      );
+    }
+    if (
+      updatePollInput.optionVoteLimit !== undefined &&
+      updatePollInput.optionVoteLimit <= 0
+    ) {
+      this.throwErrorWithStatusCode(
+        "Can't create a poll with a option vote limit of 0 or less!",
         400
       );
     }
