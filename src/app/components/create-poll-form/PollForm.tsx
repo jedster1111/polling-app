@@ -98,6 +98,17 @@ const PollForm: React.SFC<CreatePollFormProps> = props => {
           placeholder="Vote Limit"
         />
       </Form.Item>
+      <Form.Item label="Option Vote Limit" {...itemLayout}>
+        <Input
+          value={props.values.optionVoteLimit}
+          onChange={props.handleChange}
+          min={numberOfOptions ? 1 : 0}
+          max={props.values.voteLimit}
+          type="number"
+          id="optionVoteLimit"
+          placeholder="Option Vote Limit"
+        />
+      </Form.Item>
       <Form.Item wrapperCol={{ xs: { span: 16 }, sm: { span: 16, offset: 4 } }}>
         <Button
           id="createButton"

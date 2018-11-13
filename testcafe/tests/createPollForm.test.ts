@@ -14,7 +14,8 @@ const defaultPollInput: PollInput = {
   pollName: "pollName",
   description: "description",
   options: ["option1", "option2", "option3", "option4"],
-  voteLimit: 1
+  voteLimit: 1,
+  optionVoteLimit: 1
 };
 
 fixture("Testing the create a poll form").page(
