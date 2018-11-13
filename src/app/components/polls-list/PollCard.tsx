@@ -2,6 +2,7 @@ import { Avatar, List, Modal } from "antd";
 import * as React from "react";
 import { Poll, User } from "../../types";
 import PollForm from "../create-poll-form/PollFormContainer";
+import IsOpenDisplay from "../IsOpenDisplay";
 import VoteDisplay from "../VoteDisplay";
 import ActionButton from "./ActionButton";
 
@@ -98,6 +99,8 @@ const PollCard = (props: PollCardProps) => {
                 user={props.user}
                 isLoggedIn={props.isLoggedIn}
               />
+              <IsOpenDisplay isOpen={props.poll.isOpen} />
+              <p>Total votes: {props.poll.totalVotes}</p>
             </span>
           }
         />

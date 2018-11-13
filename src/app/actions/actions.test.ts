@@ -118,7 +118,8 @@ describe("Testing actions:", () => {
       description: "description",
       pollId,
       voteLimit: 1,
-      isOpen: true
+      isOpen: true,
+      totalVotes: 3
     };
     const expectedAction = {
       type: types.SHOW_UPDATE_POLL_FORM,

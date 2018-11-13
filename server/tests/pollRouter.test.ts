@@ -149,7 +149,8 @@ describe("Testing poll related routes:", () => {
         pollId: pollToUse.pollId,
         pollName: "pollNameChanged",
         voteLimit,
-        isOpen: true
+        isOpen: true,
+        totalVotes: 1
       };
 
       const token = createJwtCookie(creator.id);

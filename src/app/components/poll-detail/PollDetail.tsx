@@ -4,6 +4,7 @@ import * as React from "react";
 import styled from "styled-components";
 import { Poll, PollOption, User } from "../../types";
 import PollForm from "../create-poll-form/PollFormContainer";
+import IsOpenDisplay from "../IsOpenDisplay";
 import ActionButton from "../polls-list/ActionButton";
 import FetchPollsButton from "../polls-list/FetchPollsButton";
 import VoteDisplay from "../VoteDisplay";
@@ -40,6 +41,17 @@ const ActionButtonContainer = styled.div`
   flex-wrap: wrap;
   justify-content: center;
   margin: 10px 4px;
+`;
+
+const MetaDescriptionContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+`;
+
+const MetaDescriptionChild = styled.div`
+  flex: 1;
+  padding: 2px 5px;
+  min-width: 155px;
 `;
 
 const PollDetail: React.SFC<PollDetailProps> = ({
@@ -219,18 +231,24 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       <Card.Meta
         title={<span id="poll-detail-description">{description}</span>}
         description={
-          <span>
-            <p id="poll-detail-creator-name">
-              {creator.displayName || creator.userName}
-            </p>
-            {
-              <VoteDisplay
-                poll={pollData}
-                user={userData}
-                isLoggedIn={isLoggedIn}
-              />
-            }
-          </span>
+          <MetaDescriptionContainer>
+            <MetaDescriptionChild>
+              <p id="poll-detail-creator-name">
+                {creator.displayName || creator.userName}
+              </p>
+              <p>Total votes: {pollData.totalVotes}</p>
+              <IsOpenDisplay isOpen={pollData.isOpen} />
+            </MetaDescriptionChild>
+            <MetaDescriptionChild>
+              {
+                <VoteDisplay
+                  poll={pollData}
+                  user={userData}
+                  isLoggedIn={isLoggedIn}
+                />
+              }
+            </MetaDescriptionChild>
+          </MetaDescriptionContainer>
         }
         avatar={creator.photos && <Avatar src={creator.photos[0].value} />}
         style={{ marginBottom: "15px" }}

@@ -58,6 +58,7 @@ export interface PollResponse {
   options: PollResponseOption[];
   voteLimit: number;
   isOpen: boolean;
+  totalVotes: number;
 }
 export interface PollResponseOption {
   optionId: string;

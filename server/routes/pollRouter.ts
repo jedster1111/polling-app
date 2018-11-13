@@ -4,6 +4,7 @@ import db from "../models/database";
 import {
   CreatePollRequest,
   PollResponseUser,
+  StoredPollOption,
   VoteInputRequest
 } from "../types";
 import {
@@ -54,7 +55,8 @@ export const getResponsePoll = (storedPoll: Poll): PollResponse => {
         })
       };
     }),
-    isOpen
+    isOpen,
+    totalVotes: calculateTotalVotes(options)
   };
 };
 
@@ -186,5 +188,12 @@ pollRouter
       }
     }
   );
+
+export function calculateTotalVotes(options: StoredPollOption[]): number {
+  return options.reduce((accum, option) => {
+    Object.values(option.votes).forEach(voteNumber => (accum += voteNumber));
+    return accum;
+  }, 0);
+}
 
 export default pollRouter;

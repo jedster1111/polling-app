@@ -151,7 +151,8 @@ describe("Testing pollForm Reducer", () => {
       pollId: "1",
       pollName: "pollName",
       voteLimit: 1,
-      isOpen: true
+      isOpen: true,
+      totalVotes: 4
     };
     expect(
       reducer(initialPollFormState, {
