@@ -3,16 +3,14 @@ import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import express from "express";
 import { ErrorRequestHandler } from "express";
+import { Request } from "express-serve-static-core";
 import jwt from "jsonwebtoken";
 import passport from "passport";
 import { Strategy } from "passport-github2";
-// import session = require("express-session");
-// import morgan = require("morgan");
 import passportJwt from "passport-jwt";
+import { VerifyCallback } from "passport-oauth2";
 import path from "path";
-// import * as secrets from "../secret/github";
 import db from "./models/database";
-// import authRouter from "./routes/authRouter";
 import pollRouter from "./routes/pollRouter";
 import userRouter from "./routes/userRouter";
 
@@ -41,10 +39,7 @@ const errorHandlerMiddleware: ErrorRequestHandler = (
   if (!err.statusCode) {
     err.statusCode = 500;
   }
-  // console.log("Something went wrong!");
-  // console.error(err);
   res.status(err.statusCode).json({ error: err.message });
-  // console.log("Carrying on then...");
 };
 const jwtCookieExtractor = (req: express.Request) => {
   let token = null;
@@ -56,8 +51,6 @@ const jwtCookieExtractor = (req: express.Request) => {
 const jwtOptions: passportJwt.StrategyOptions = {
   jwtFromRequest: jwtCookieExtractor,
   secretOrKey: secretKey
-  // issuer: config.get('authentication.token.issuer'),
-  // audience: config.get('authentication.token.audience')
 };
 export const generateAccessToken = (userId: string) => {
   const expiresIn = "1 hour";
@@ -79,15 +72,31 @@ passport.use(
   })
 );
 
+interface User {
+  id: string;
+  displayName?: string;
+  username: string;
+  photos?: Array<{ value: string }>;
+  profileUrl?: string;
+  emails: Array<{ value: string }>;
+}
+
 const callbackURL = `${rootUrl}/auth/github/callback`;
 passport.use(
   new Strategy(
     {
       clientID: clientId,
       clientSecret,
-      callbackURL
+      callbackURL,
+      passReqToCallback: true
     },
-    (accessToken: any, refreshToken: any, profile: any, done: any) => {
+    (
+      req: Request,
+      accessToken: string,
+      refreshToken: string,
+      profile: User,
+      done: VerifyCallback
+    ) => {
       const cleanedProfile = {
         id: profile.id,
         displayName: profile.displayName,
@@ -97,7 +106,6 @@ passport.use(
         profileUrl: profile.profileUrl
       };
       const user = db.getUser(profile.id) || db.insertUser(cleanedProfile);
-      // console.log(user);
       return done(null, user);
     }
   )
@@ -115,19 +123,6 @@ passport.deserializeUser<any, string>((id, done) => {
 
 const app = express();
 
-// app.use(
-//   session({
-//     secret: secrets.secret,
-//     resave: false,
-//     saveUninitialized: false,
-//     cookie: {
-//       secure: true,
-//       httpOnly: true
-//     }
-//   })
-// );
-// app.use(morgan("combined"));
-// app.use(passport.session());
 app.use(cookieParser());
 app.use(express.static(path.resolve("dist")));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -139,6 +134,10 @@ app.use("/api/users", userRouter);
 
 app.get(
   "/auth/github",
+  (req, res, next) => {
+    res.cookie("originalUrl", req.headers.referer);
+    next();
+  },
   passport.authenticate("github", { scope: ["user:email"], session: false })
 );
 app.get(
@@ -149,7 +148,7 @@ app.get(
   (req, res) => {
     const token = generateAccessToken(req.user.id);
     res.cookie("jwt", token, { httpOnly: true });
-    res.redirect("/");
+    res.redirect(req.cookies.originalUrl || "/");
   }
 );
 app.get("/auth/logout", (req, res) => {
