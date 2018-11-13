@@ -3,7 +3,7 @@ import { ConnectedRouter } from "connected-react-router";
 import * as React from "react";
 import { connect } from "react-redux";
 import { Route, Switch } from "react-router";
-import { getUserData } from "../actions/actions";
+import { closedWarning, getUserData } from "../actions/actions";
 import { InitialState } from "../reducers/rootReducer";
 import { history } from "../store/index";
 import "./antd-main-override.css";
@@ -17,13 +17,17 @@ const { Header, Content, Footer } = Layout;
 
 interface PollingAppProps {
   getUserData: () => any;
+  closedWarning: () => any;
   isLoggedIn: boolean;
+  hasClosedWarning: boolean;
 }
 const mapStateToProps = (state: InitialState) => ({
-  isLoggedIn: state.userState.isLoggedIn
+  isLoggedIn: state.userState.isLoggedIn,
+  hasClosedWarning: state.userState.hasClosedWarning
 });
 const mapDispatchToProps = {
-  getUserData
+  getUserData,
+  closedWarning
 };
 class PollingApp extends React.Component<PollingAppProps> {
   componentDidMount() {
@@ -45,7 +49,16 @@ class PollingApp extends React.Component<PollingAppProps> {
           <Content>
             <div style={{ background: "#fff", padding: 24, minHeight: 280 }}>
               <Switch>
-                <Route path="/" exact component={PollsListPage} />
+                <Route
+                  path="/"
+                  exact
+                  component={() => (
+                    <PollsListPage
+                      hasClosedWarning={this.props.hasClosedWarning}
+                      onClosedWarning={this.props.closedWarning}
+                    />
+                  )}
+                />
                 <Route path="/create-poll" component={CreatePollPage} />
                 <Route path="/:id" component={PollDetailPage} />
               </Switch>

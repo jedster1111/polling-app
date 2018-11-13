@@ -7,6 +7,7 @@ export interface UserState {
   isLoading: boolean;
   error: Error | null;
   isLoggedIn: boolean;
+  hasClosedWarning: boolean;
 }
 
 export const initialUserState: UserState = {
@@ -17,7 +18,8 @@ export const initialUserState: UserState = {
   },
   isLoading: false,
   error: null,
-  isLoggedIn: false
+  isLoggedIn: false,
+  hasClosedWarning: false
 };
 
 const userStateReducer: Reducer = (
@@ -50,6 +52,11 @@ const userStateReducer: Reducer = (
         isLoading: false,
         isLoggedIn: false,
         data: { ...initialUserState.data }
+      };
+    case actionTypes.CLOSED_WARNING:
+      return {
+        ...userState,
+        hasClosedWarning: true
       };
     default:
       return userState;
