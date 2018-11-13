@@ -4,6 +4,7 @@ import * as React from "react";
 import styled from "styled-components";
 import { Poll, PollOption, User } from "../../types";
 import PollForm from "../create-poll-form/PollFormContainer";
+import IsOpenDisplay from "../IsOpenDisplay";
 import ActionButton from "../polls-list/ActionButton";
 import FetchPollsButton from "../polls-list/FetchPollsButton";
 import VoteDisplay from "../VoteDisplay";
@@ -50,7 +51,7 @@ const MetaDescriptionContainer = styled.div`
 const MetaDescriptionChild = styled.div`
   flex: 1;
   padding: 2px 5px;
-  min-width: 130px;
+  min-width: 155px;
 `;
 
 const PollDetail: React.SFC<PollDetailProps> = ({
@@ -236,6 +237,10 @@ const PollDetail: React.SFC<PollDetailProps> = ({
               <p id="poll-detail-creator-name">
                 {creator.displayName || creator.userName}
               </p>
+              <p>Total votes: {pollData.totalVotes}</p>
+              <IsOpenDisplay isOpen={pollData.isOpen} />
+            </MetaDescriptionChild>
+            <MetaDescriptionChild>
               {
                 <VoteDisplay
                   poll={pollData}
@@ -243,9 +248,6 @@ const PollDetail: React.SFC<PollDetailProps> = ({
                   isLoggedIn={isLoggedIn}
                 />
               }
-            </MetaDescriptionChild>
-            <MetaDescriptionChild>
-              Total votes: {pollData.totalVotes}
             </MetaDescriptionChild>
           </MetaDescriptionContainer>
         }
