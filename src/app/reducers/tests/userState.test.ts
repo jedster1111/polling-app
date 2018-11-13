@@ -36,7 +36,7 @@ describe("Testing userState reducer:", () => {
     const error = "Whoops";
     expect(
       reducer(
-        { data: user, isLoading: true, isLoggedIn: true },
+        { ...initialUserState, data: user, isLoading: true, isLoggedIn: true },
         {
           type: types.GET_USER_DATA_ERROR,
           payload: { error }

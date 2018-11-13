@@ -66,7 +66,8 @@ class PollFormContainer extends React.Component<
         description: this.props.pollFormData.description,
         pollName: this.props.pollFormData.pollName,
         options: this.props.pollFormData.options.map(option => option.value),
-        voteLimit: this.props.pollFormData.voteLimit
+        voteLimit: this.props.pollFormData.voteLimit,
+        optionVoteLimit: this.props.pollFormData.optionVoteLimit
       };
       this.props.submitPoll(inputData);
     } else if (this.props.edit && this.props.pollId) {

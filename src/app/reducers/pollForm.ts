@@ -13,6 +13,7 @@ export interface PollFormInput {
   pollName: string;
   options: Array<{ optionId: string; value: string }>;
   voteLimit: number;
+  optionVoteLimit: number;
 }
 
 const initData = {
@@ -24,7 +25,8 @@ const initData = {
     { optionId: "", value: "" }
   ],
   pollName: "",
-  voteLimit: 1
+  voteLimit: 1,
+  optionVoteLimit: 1
 };
 
 export const initialPollFormState: PollForm = {

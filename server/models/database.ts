@@ -20,11 +20,17 @@ class Database {
       "description",
       "pollName",
       "options",
-      "voteLimit"
+      "voteLimit",
+      "optionVoteLimit"
     ];
     const missingProperties: string[] = [];
     necessaryProperties.forEach(property => {
-      if (!pollInput.hasOwnProperty(property) || !pollInput[property]) {
+      if (
+        !pollInput.hasOwnProperty(property) ||
+        pollInput[property] === undefined ||
+        pollInput[property] === "" ||
+        (property === "options" && pollInput[property].length === 0)
+      ) {
         missingProperties.push(property);
       }
     });
@@ -37,6 +43,15 @@ class Database {
     }
     if (pollInput.options.length === 0) {
       errorMessage += ` Can't create a poll with no options`;
+    }
+    if (pollInput.optionVoteLimit > pollInput.voteLimit) {
+      errorMessage += ` Option-vote limit can't be bigger than the vote-limit.`;
+    }
+    if (pollInput.voteLimit <= 0) {
+      errorMessage += ` Vote limit can't be less than or equal to 0!`;
+    }
+    if (pollInput.optionVoteLimit <= 0) {
+      errorMessage += ` Option vote limit can't be less than or equal to 0!`;
     }
     if (errorMessage) {
       const err = new Error(errorMessage) as ErrorWithStatusCode;
@@ -93,11 +108,37 @@ class Database {
       throw new Error(`Poll with Id ${pollId} could not be found`);
     }
     if (poll.creatorId !== userId) {
-      const error = new Error(
-        `Can't edit a poll that you didn't create!`
-      ) as ErrorWithStatusCode;
-      error.statusCode = 401;
-      throw error;
+      this.throwErrorWithStatusCode(
+        "Can't edit a poll that you didn't create!",
+        401
+      );
+    }
+    if (
+      (updatePollInput.optionVoteLimit || poll.optionVoteLimit) >
+      (updatePollInput.voteLimit || poll.voteLimit)
+    ) {
+      this.throwErrorWithStatusCode(
+        "Can't set the option-vote limit to be lower than the vote-limit!",
+        400
+      );
+    }
+    if (
+      updatePollInput.voteLimit !== undefined &&
+      updatePollInput.voteLimit <= 0
+    ) {
+      this.throwErrorWithStatusCode(
+        "Can't create a poll with a vote limit of 0 or less!",
+        400
+      );
+    }
+    if (
+      updatePollInput.optionVoteLimit !== undefined &&
+      updatePollInput.optionVoteLimit <= 0
+    ) {
+      this.throwErrorWithStatusCode(
+        "Can't create a poll with a option vote limit of 0 or less!",
+        400
+      );
     }
     const updateKeys = Object.keys(updatePollInput) as Array<
       keyof UpdatePollInput
@@ -273,7 +314,7 @@ class Database {
     poll: StoredPoll | undefined,
     voteInput: VoteInput
   ): void {
-    let messages: string = "";
+    let message: string = "";
     if (!poll) {
       this.throwErrorWithStatusCode("Poll was not found!", 400);
       return;
@@ -288,15 +329,19 @@ class Database {
     );
 
     if (!poll.isOpen) {
-      messages = "This poll has been closed!";
+      message = "This poll has been closed!";
     } else if (!optionBeingVotedOn) {
-      messages = "That option doesn't exist!";
+      message = "That option doesn't exist!";
     } else if (numberOfExistingVotes >= poll.voteLimit) {
-      messages = "You've used up all of your votes!";
+      message = "You've used up all of your votes!";
+    } else if (
+      optionBeingVotedOn.votes[voteInput.voterId] >= poll.optionVoteLimit
+    ) {
+      message = "You can't add anymore votes to this option!";
     }
 
-    if (messages) {
-      this.throwErrorWithStatusCode(messages, 400);
+    if (message) {
+      this.throwErrorWithStatusCode(message, 400);
     }
   }
 

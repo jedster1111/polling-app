@@ -13,6 +13,7 @@ import {
 import createJwtCookie from "./createJwtCookie";
 
 const voteLimit = 3;
+const optionVoteLimit = 3;
 
 const generateInputPolls = (n: number) => {
   const polls: PollInput[] = [];
@@ -24,7 +25,8 @@ const generateInputPolls = (n: number) => {
       creatorId: `${index}`,
       options: ["option1", "option2"],
       voteLimit,
-      isOpen: true
+      isOpen: true,
+      optionVoteLimit
     });
   }
   return polls;
@@ -84,7 +86,8 @@ describe("Testing poll related routes:", () => {
         options: ["option1", "option2"],
         pollName: "pollNamePOST",
         voteLimit,
-        isOpen: true
+        isOpen: true,
+        optionVoteLimit
       };
 
       const expectedResponse = {
@@ -149,7 +152,9 @@ describe("Testing poll related routes:", () => {
         pollId: pollToUse.pollId,
         pollName: "pollNameChanged",
         voteLimit,
-        isOpen: true
+        isOpen: true,
+        totalVotes: 1,
+        optionVoteLimit
       };
 
       const token = createJwtCookie(creator.id);

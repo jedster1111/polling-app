@@ -42,7 +42,8 @@ fixture("Testing the poll detail page")
       pollName: id,
       description: "description",
       options: ["option1", "option2", "option3", "option4"],
-      voteLimit: 5
+      voteLimit: 5,
+      optionVoteLimit: 5
     };
 
     t.ctx.pollInput = pollInput;
@@ -170,7 +171,8 @@ test(`Can I edit a poll, will it not lose my votes?
       "option3 changed",
       "option4 changed"
     ],
-    voteLimit: 4
+    voteLimit: 4,
+    optionVoteLimit: 4
   };
 
   const firstOption = detailPage.getOptionByIndex(0);
@@ -339,7 +341,8 @@ test("Can I sort alphabetically, by # of votes and by if you've voted or not", a
     pollName: id,
     description: "description",
     options: optionsInDefaultOrder,
-    voteLimit: 6
+    voteLimit: 6,
+    optionVoteLimit: 6
   };
 
   t.ctx.pollInput = pollInput;

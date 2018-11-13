@@ -21,7 +21,8 @@ const values = {
     { value: "test2", optionId: "2" },
     { value: "test3", optionId: "3" }
   ],
-  voteLimit: 1
+  voteLimit: 1,
+  optionVoteLimit: 1
 };
 storiesOf("Create Poll Form", module)
   .add("Buttons", () => (
