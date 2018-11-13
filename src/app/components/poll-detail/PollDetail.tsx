@@ -145,6 +145,7 @@ const PollDetail: React.SFC<PollDetailProps> = ({
           )}
           ranking={ranking}
           votesByUser={votesByUser}
+          optionVoteLimit={pollData.optionVoteLimit}
           handleVote={(isAddingVote: boolean) =>
             voteOption(
               isAddingVote,

@@ -18,7 +18,8 @@ describe("Testing actions:", () => {
       description: "description",
       options: ["option1", "option2", "option3"],
       pollName: "pollName",
-      voteLimit: 1
+      voteLimit: 1,
+      optionVoteLimit: 1
     };
     const expectedAction = {
       type: types.POST_POLLS_REQUEST,
@@ -119,7 +120,8 @@ describe("Testing actions:", () => {
       pollId,
       voteLimit: 1,
       isOpen: true,
-      totalVotes: 3
+      totalVotes: 3,
+      optionVoteLimit: 3
     };
     const expectedAction = {
       type: types.SHOW_UPDATE_POLL_FORM,

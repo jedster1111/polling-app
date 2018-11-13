@@ -20,7 +20,8 @@ const createPollInput = (): PollInput => ({
   pollName: uuid(),
   description: "pollListDescriptionTest",
   options: ["option1", "option2", "option3", "option4"],
-  voteLimit: 1
+  voteLimit: 1,
+  optionVoteLimit: 1
 });
 
 fixture("Testing the polls list page").page("http://127.0.0.1:8000");

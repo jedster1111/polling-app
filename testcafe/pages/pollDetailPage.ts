@@ -65,7 +65,9 @@ export default class PollDetailPage {
       .eql(expectedValues.username)
       // voteLimit && userVotes
       .expect(this.values.voteCount.innerText)
-      .eql(`Votes: ${expectedValues.userVotes} / ${expectedValues.voteLimit}`)
+      .eql(
+        `Your Votes: ${expectedValues.userVotes} / ${expectedValues.voteLimit}`
+      )
       // isOpenText
       .expect(this.values.isOpen.innerText)
       .eql(expectedValues.isOpenText);
@@ -147,7 +149,7 @@ export default class PollDetailPage {
       checkNumberOfVotesFromUser: async (expectedNumberOfVotes: number) => {
         await t
           .expect(selectors.userVotes.innerText)
-          .eql(`${expectedNumberOfVotes}`);
+          .match(new RegExp(`^${expectedNumberOfVotes} \/ \d*`));
       }
     };
     return {
