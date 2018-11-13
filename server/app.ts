@@ -148,7 +148,11 @@ app.get(
   (req, res) => {
     const token = generateAccessToken(req.user.id);
     res.cookie("jwt", token, { httpOnly: true });
-    res.redirect(req.cookies.originalUrl || "/");
+    res.redirect(
+      !req.cookies.originalUrl || req.cookies.originalUrl === "undefined"
+        ? "/"
+        : req.cookies.originalUrl
+    );
   }
 );
 app.get("/auth/logout", (req, res) => {
