@@ -29,7 +29,8 @@ export const getResponsePoll = (storedPoll: Poll): PollResponse => {
     pollId,
     voteLimit,
     isOpen,
-    optionVoteLimit
+    optionVoteLimit,
+    namespace
   } = storedPoll;
   const creator = db.getUser(creatorId);
   return {
@@ -58,7 +59,8 @@ export const getResponsePoll = (storedPoll: Poll): PollResponse => {
     }),
     isOpen,
     totalVotes: calculateTotalVotes(options),
-    optionVoteLimit
+    optionVoteLimit,
+    namespace
   };
 };
 

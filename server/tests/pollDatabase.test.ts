@@ -15,7 +15,8 @@ const generatePollInputs = (n: number) => {
       options: ["option1", "option2"],
       voteLimit: 3,
       isOpen: true,
-      optionVoteLimit: 3
+      optionVoteLimit: 3,
+      namespace: "jeds-room"
     });
   }
   return polls;
@@ -31,7 +32,9 @@ function generateExpectedPolls(n: number) {
       votes: { [userId: string]: number };
     }>;
     voteLimit: number;
+    optionVoteLimit: number;
     isOpen: boolean;
+    namespace: string;
   }> = [];
 
   for (let i = 0; i < n; i++) {
@@ -45,7 +48,9 @@ function generateExpectedPolls(n: number) {
         { optionId: "2", value: "option2", votes: {} }
       ],
       voteLimit: 3,
-      isOpen: true
+      optionVoteLimit: 3,
+      isOpen: true,
+      namespace: "jeds-room"
     });
   }
   return expectedPolls;
@@ -131,6 +136,22 @@ describe("Testing poll related database methods:", () => {
       expect(() => db.insertPoll(pollInput)).toThrowError();
     });
 
+    test("namespace should have capitals, punctuation and white spaces removed", () => {
+      const pollInput = generatePollInputs(1)[0];
+      pollInput.namespace = "  jed's room";
+
+      const poll = db.insertPoll(pollInput);
+      expect(poll).toMatchObject({ ...expectedPoll, namespace: "jeds-room" });
+    });
+
+    test("creating a poll with a falsey namespace should return public as the namespace", () => {
+      const pollInput = generatePollInputs(1)[0];
+      pollInput.namespace = "";
+
+      const poll = db.insertPoll(pollInput);
+      expect(poll).toMatchObject({ ...expectedPoll, namespace: "public" });
+    });
+
     test("Can I get a poll by Id?", () => {
       const storedPolls = db.getPolls();
       const poll = db.getPoll(storedPolls[0].pollId);
@@ -163,7 +184,8 @@ describe("Testing poll related database methods:", () => {
         options: expectedPollOptions,
         voteLimit: updateInput.voteLimit,
         isOpen: true,
-        optionVoteLimit: pollToUpdate.optionVoteLimit
+        optionVoteLimit: pollToUpdate.optionVoteLimit,
+        namespace: pollToUpdate.namespace
       };
 
       const poll = db.updatePoll(
@@ -364,6 +386,7 @@ describe("Testing poll related database methods:", () => {
     });
   });
 });
+
 function voteOnPollNTimes(
   numberOfVotes: number = 1,
   pollId: string,

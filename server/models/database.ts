@@ -1,4 +1,5 @@
 import Loki from "lokijs";
+import UrlSafeString from "url-safe-string";
 import { ErrorWithStatusCode } from "../app";
 import {
   Poll,
@@ -12,6 +13,8 @@ import {
   VoteInput
 } from "../types";
 import calculateNumberOfVotesFromUser from "./calculateNumberOfVotesFromUser";
+
+const { generate: makeStringUrlSafe } = new UrlSafeString();
 
 class Database {
   static checkValidPollInput(pollInput: PollInput) {
@@ -91,7 +94,8 @@ class Database {
     );
     const cleanedPollInput = Object.assign(pollInput, {
       options: newOptions,
-      pollId: `${this.pollsCount + 1}`
+      pollId: `${this.pollsCount + 1}`,
+      namespace: makeStringUrlSafe(pollInput.namespace) || "public"
     });
     const newPoll: StoredPoll = this.polls.insert(cleanedPollInput);
     this.pollsCount++;

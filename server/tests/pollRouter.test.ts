@@ -26,7 +26,8 @@ const generateInputPolls = (n: number) => {
       options: ["option1", "option2"],
       voteLimit,
       isOpen: true,
-      optionVoteLimit
+      optionVoteLimit,
+      namespace: "jeds-room"
     });
   }
   return polls;
@@ -87,7 +88,8 @@ describe("Testing poll related routes:", () => {
         pollName: "pollNamePOST",
         voteLimit,
         isOpen: true,
-        optionVoteLimit
+        optionVoteLimit,
+        namespace: "jeds-room"
       };
 
       const expectedResponse = {
@@ -154,7 +156,8 @@ describe("Testing poll related routes:", () => {
         voteLimit,
         isOpen: true,
         totalVotes: 1,
-        optionVoteLimit
+        optionVoteLimit,
+        namespace: pollToUse.namespace
       };
 
       const token = createJwtCookie(creator.id);
