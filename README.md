@@ -91,6 +91,7 @@ An application to create and vote on polls, written in Typescript.
 - Backend
   - Express
   - Passport (Github & JWT auth)
+  - LokiJS
 - Testing
   - Jest
   - SuperTest
