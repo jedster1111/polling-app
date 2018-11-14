@@ -183,14 +183,14 @@ describe("Testing poll related routes:", () => {
 
     test("Can I remove a specific poll?", async () => {
       const pollToRemove = db.getPolls()[0];
-      const pollId = pollToRemove.pollId;
+      const { pollId, namespace } = pollToRemove;
       // expect(db.getPoll(`${noOfPolls + 1}`).description).toBe("descriptionJed");
       await request(app)
         .delete(`/api/polls/${pollId}`)
         .set("Cookie", createJwtCookie(pollToRemove.creatorId))
         .expect(200);
 
-      expect(db.getPoll(`${pollId}`)).toBeNull();
+      expect(db.getPoll(`${pollId}`, namespace)).toBeNull();
     });
 
     test("Am I unable to remove a poll that I didn't create?", async () => {
