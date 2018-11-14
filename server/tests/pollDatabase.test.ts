@@ -211,9 +211,12 @@ describe("Testing poll related database methods:", () => {
 
     test("If I try and update a non existent poll, is an error thrown?", () => {
       const PollId = uuid();
+      const namespace = "public";
       expect(() => {
-        db.updatePoll("1", PollId, { description: "changed" }, "public");
-      }).toThrow(`Poll with Id ${PollId} could not be found`);
+        db.updatePoll("1", PollId, { description: "changed" }, namespace);
+      }).toThrow(
+        `Poll with Id ${PollId} in namespace ${namespace} could not be found`
+      );
     });
 
     test("If I try and update a poll using empty strings, are the changes ignored?", () => {
@@ -462,11 +465,9 @@ describe("Testing poll related database methods:", () => {
 
   describe("Testing removePoll:", () => {
     test("Can I remove a poll?", () => {
-      db.removePoll("1", "1", "public");
-      const polls = db.getPolls();
-      const expectedPolls = generateExpectedPolls(numberOfPolls);
-      expectedPolls.shift();
-      expect(polls).toMatchObject(expectedPolls);
+      const { creatorId, pollId, namespace } = db.getPolls()[0];
+      db.removePoll(creatorId, pollId, namespace);
+      expect(db.getPoll(pollId, namespace)).toBeFalsy();
     });
   });
 });
