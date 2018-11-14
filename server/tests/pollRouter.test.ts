@@ -221,7 +221,7 @@ describe("Testing poll related routes:", () => {
       const pollToEdit = db.getPolls()[0];
       const userToUse = getAnotherUser(pollToEdit);
       await request(app)
-        .post(`/api/polls/${pollToEdit.pollId}`)
+        .post(`/api/polls/${pollToEdit.namespace}/${pollToEdit.pollId}`)
         .send({
           pollName: "pollNameChanged",
           options: [
@@ -234,7 +234,7 @@ describe("Testing poll related routes:", () => {
     });
   });
 
-  describe("Testing /api/polls/:id/vote:", () => {
+  describe("Testing /api/polls/:namespace/:id/vote:", () => {
     test("Can I vote on a poll?", async () => {
       const pollToVote = db.getPolls()[0];
       const userToUse = db.getUser(pollToVote.creatorId);
@@ -245,7 +245,7 @@ describe("Testing poll related routes:", () => {
       // console.log(object);
 
       const response = await request(app)
-        .post(`/api/polls/${pollToVote.pollId}/vote`)
+        .post(`/api/polls/${pollToVote.namespace}/${pollToVote.pollId}/vote`)
         .send(voteInput)
         .set("Accept", "application/json")
         .set("Cookie", token)
@@ -260,7 +260,7 @@ describe("Testing poll related routes:", () => {
     });
   });
 
-  describe("Testing /api/poll/:id/remove-vote", () => {
+  describe("Testing /api/poll/:namespace/:id/remove-vote", () => {
     test("Can I remove a vote on a poll?", async () => {
       const pollToVote = db.getPolls()[0];
       const userToUse = db.getUser(pollToVote.creatorId);
@@ -269,14 +269,16 @@ describe("Testing poll related routes:", () => {
       const token = createJwtCookie(userToUse.id);
 
       await request(app)
-        .post(`/api/polls/${pollToVote.pollId}/vote`)
+        .post(`/api/polls/${pollToVote.namespace}/${pollToVote.pollId}/vote`)
         .send(voteInput)
         .set("Accept", "application/json")
         .set("Cookie", token)
         .expect(200);
 
       const response = await request(app)
-        .post(`/api/polls/${pollToVote.pollId}/remove-vote`)
+        .post(
+          `/api/polls/${pollToVote.namespace}/${pollToVote.pollId}/remove-vote`
+        )
         .send(voteInput)
         .set("Accept", "application/json")
         .set("Cookie", token)
@@ -290,7 +292,7 @@ describe("Testing poll related routes:", () => {
     });
   });
 
-  describe("Testing /api/polls/:id/open and /api/polls/:id/close", () => {
+  describe("Testing /api/polls/:namespace/:id/open and /api/polls/:namespace/:id/close", () => {
     test("Can I close a poll and then re-open it?", async () => {
       const pollToChange = db.getPolls()[0];
       const userToUse = db.getUser(pollToChange.creatorId);
@@ -300,7 +302,9 @@ describe("Testing poll related routes:", () => {
       const token = createJwtCookie(userToUse.id);
 
       let response = await request(app)
-        .post(`/api/polls/${pollToChange.pollId}/close`)
+        .post(
+          `/api/polls/${pollToChange.namespace}/${pollToChange.pollId}/close`
+        )
         .set("Accept", "application/json")
         .set("Cookie", token)
         .expect(200);
@@ -311,7 +315,9 @@ describe("Testing poll related routes:", () => {
       pollToChange.isOpen = true;
 
       response = await request(app)
-        .post(`/api/polls/${pollToChange.pollId}/open`)
+        .post(
+          `/api/polls/${pollToChange.namespace}/${pollToChange.pollId}/open`
+        )
         .set("Accept", "application/json")
         .set("Cookie", token)
         .expect(200);
@@ -326,13 +332,17 @@ describe("Testing poll related routes:", () => {
       const token = createJwtCookie(userToUse.id);
 
       await request(app)
-        .post(`/api/polls/${pollToChange.pollId}/close`)
+        .post(
+          `/api/polls/${pollToChange.namespace}/${pollToChange.pollId}/close`
+        )
         .set("Accept", "application/json")
         .set("Cookie", token)
         .expect(401);
 
       await request(app)
-        .post(`/api/polls/${pollToChange.pollId}/open`)
+        .post(
+          `/api/polls/${pollToChange.namespace}/${pollToChange.pollId}/open`
+        )
         .set("Accept", "application/json")
         .set("Cookie", token)
         .expect(401);
