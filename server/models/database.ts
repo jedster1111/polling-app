@@ -14,7 +14,7 @@ import {
 } from "../types";
 import calculateNumberOfVotesFromUser from "./calculateNumberOfVotesFromUser";
 
-const { generate: makeStringUrlSafe } = new UrlSafeString();
+const { generate: makeStringUrlSafe } = UrlSafeString();
 
 class Database {
   static checkValidPollInput(pollInput: PollInput) {
