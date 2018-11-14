@@ -1,8 +1,106 @@
 # Polling App
 
+An application to create and vote on polls, written in Typescript.  
+
+[See the live version here.](https://polling-app-jed.herokuapp.com) 
+
+![Polling app run through](https://s2.gifyu.com/images/runThrough.gif)
+
+## Table of Contents
+
+- [Polling App](#polling-app)
+  - [Table of Contents](#table-of-contents)
+  - [Tech Used](#tech-used)
+  - [Setup](#setup)
+  - [Development Server](#development-server)
+  - [Testing](#testing)
+  - [Deployment](#deployment)
+  - [Other Commands](#other-commands)
+  - [Auth](#auth)
+    - [`/auth/github`](#authgithub)
+      - [`/auth/logout`](#authlogout)
+      - [`/test`](#test)
+  - [Api Design](#api-design)
+  - [`/api/polls`](#apipolls)
+    - [`POST`](#post)
+      - [Usage](#usage)
+      - [Expects](#expects)
+      - [Returns](#returns)
+    - [`GET`](#get)
+      - [Usage](#usage-1)
+      - [Expects](#expects-1)
+      - [Returns](#returns-1)
+  - [`/api/polls/:id`](#apipollsid)
+    - [`POST`](#post-1)
+      - [Usage](#usage-2)
+      - [Expects](#expects-2)
+      - [Returns](#returns-2)
+    - [`GET`](#get-1)
+      - [Usage](#usage-3)
+      - [Expects](#expects-3)
+      - [Returns](#returns-3)
+    - [`DELETE`](#delete)
+      - [Usage](#usage-4)
+      - [Expects](#expects-4)
+      - [Returns](#returns-4)
+  - [`/api/polls/:id/vote`](#apipollsidvote)
+    - [`POST`](#post-2)
+      - [Usage](#usage-5)
+      - [Expects](#expects-5)
+      - [Returns](#returns-5)
+  - [`/api/polls/:id/remove-vote`](#apipollsidremove-vote)
+    - [`POST`](#post-3)
+      - [Usage](#usage-6)
+      - [Expects](#expects-6)
+      - [Returns](#returns-6)
+  - [`/api/polls/:id/open`](#apipollsidopen)
+    - [`POST`](#post-4)
+      - [Usage](#usage-7)
+      - [Expects](#expects-7)
+      - [Returns](#returns-7)
+  - [`/api/polls/:id/close`](#apipollsidclose)
+    - [`POST`](#post-5)
+      - [Usage](#usage-8)
+      - [Expects](#expects-8)
+      - [Returns](#returns-8)
+  - [`/api/users`](#apiusers)
+    - [`GET`](#get-2)
+      - [Usage](#usage-9)
+      - [Expects](#expects-9)
+      - [Returns](#returns-9)
+  - [`/api/users/:id`](#apiusersid)
+    - [`GET`](#get-3)
+      - [Usage](#usage-10)
+      - [Expects](#expects-10)
+      - [Returns](#returns-10)
+  - [`/api/users/me`](#apiusersme)
+    - [`GET`](#get-4)
+      - [Usage](#usage-11)
+      - [Expects](#expects-11)
+      - [Returns](#returns-11)
+
+## Tech Used
+
+- Frontend
+  - React
+  - Redux
+  - Redux-Saga
+  - styled components
+  - Ant Design
+  - Axios
+- Backend
+  - Express
+  - Passport (Github & JWT auth)
+- Testing
+  - Jest
+  - SuperTest
+  - TestCafe
+
+
+
 ## Setup
 
-- To install dependencies run: `yarn install`
+- To install dependencies run: `yarn` or `yarn install`
 - In order for the github authentication to work, you must
   - Follow [github's tutorial for creating an OAuth app](https://developer.github.com/apps/building-oauth-apps/creating-an-oauth-app/)
     - Homepage Url might be `http://127.0.0.1:8000` while developing locally
@@ -40,6 +138,7 @@
   and run: `yarn testcafe`
   - **Add the github account you'd like to use for testing to `dev.env` file in the format shown below**  
     Probably best not to use your real github account especially if you share passwords between multiple accounts.
+
   ```
     TEST_USERNAME=YourGithubUsername
     TEST_PASSWORD=YourPassword
@@ -92,7 +191,9 @@ Create a new poll.
   "creatorId": "1234",
   "pollName": "What furniture?",
   "description": "We are going to get some new furniture in the office!",
-  "options": ["bean bags", "rocking chairs", "garden bench"]
+  "options": ["bean bags", "rocking chairs", "garden bench"],
+  "voteLimit": 1,
+  "optionVoteLimit": 1
 }
 ```
 
@@ -110,6 +211,8 @@ Json:
     "pollName": "What furniture?",
     "description": "We are going to get some new furniture in the office!",
     "isOpen": true,
+    "voteLimit": 1,
+    "optionVoteLimit": 1,
     "options": [
       { "optionId": 1, "value": "bean bags", "votes": [] },
       { "optionId": 2, "value": "rocking chairs", "votes": [] },
@@ -157,6 +260,7 @@ Json:
       "description": "We are going to get some new furniture in the office!",
       "isOpen": true,
       "voteLimit": 1,
+      "optionVoteLimit": 1,
       "options": [
         {
           "optionId": "1",
@@ -173,6 +277,7 @@ Json:
       "description": "What type of monitor would you guys like?",
       "isOpen": true,
       "voteLimit": 2,
+      "optionVoteLimit": 1,
       "options": [
         {
           "optionId": "1",
@@ -210,7 +315,8 @@ Updates a specific poll
 {
   "description": "What furniture do you want?",
   "pollName": "Changed Name",
-  "voteLimit": 3
+  "voteLimit": 3,
+  "optionVoteLimit": 1,
   "options": [
     { "optionId": "1", "value": "new option value" },
     { "optionId": "3", "value": "updated option 3" },
@@ -234,6 +340,7 @@ JSON:
     "description": "What furniture do you want?",
     "isOpen": true,
     "voteLimit": 3,
+    "optionVoteLimit": 1,
     "options": [
       {
         "optionId": 1,
@@ -291,7 +398,8 @@ JSON:
     "pollName": "What furniture?",
     "description": "What furniture do you want?",
     "isOpen": true,
-    "voteLimit": 3
+    "voteLimit": 3,
+    "optionVoteLimit": 1,
     "options": [
       {
         "optionId": 1,
@@ -379,7 +487,8 @@ JSON:
     "pollName": "What furniture?",
     "description": "What furniture do you want?",
     "isOpen": true,
-    "voteLimit": 2
+    "voteLimit": 2,
+    "optionVoteLimit": 1,
     "options": [
       {
         "optionId": 1,
@@ -443,7 +552,8 @@ JSON:
     "pollName": "What furniture?",
     "description": "What furniture do you want?",
     "isOpen": true,
-    "voteLimit": 3
+    "voteLimit": 3,
+    "optionVoteLimit": 1,
     "options": [
       {
         "optionId": 1,
@@ -490,7 +600,8 @@ JSON:
     "pollName": "What furniture?",
     "description": "What furniture do you want?",
     "isOpen": true,
-    "voteLimit": 2
+    "voteLimit": 2,
+    "optionVoteLimit": 1,
     "options": [
       {
         "optionId": 1,
@@ -539,7 +650,8 @@ JSON:
     "pollName": "What furniture?",
     "description": "What furniture do you want?",
     "isOpen": false,
-    "voteLimit": 3
+    "voteLimit": 3,
+    "optionVoteLimit": 1,
     "options": [
       {
         "optionId": 1,
