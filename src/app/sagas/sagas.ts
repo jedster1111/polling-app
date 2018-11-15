@@ -1,19 +1,32 @@
 import { message } from "antd";
 import { AxiosError, AxiosResponse } from "axios";
 import { push } from "connected-react-router";
-import { Action, AnyAction } from "redux";
+import { Action } from "redux";
 import { all, call, put, takeLatest } from "redux-saga/effects";
-import * as actionTypes from "../actions/action-types";
-import { fetchPolls } from "../actions/actions";
+import * as actionTypes from "../actions/action-types.old";
+import {
+  ClosePollAction,
+  CreatePollAction,
+  DeletePollAction,
+  fetchPolls,
+  FetchPollsAction,
+  GetUserDataAction,
+  OpenPollAction,
+  UpdatePollAction,
+  VoteOptionAction
+} from "../actions/actions";
 import * as api from "../api/api";
-import { Poll, User } from "../types";
+import { Poll, PollInput, UpdatePollInput, User } from "../types";
 
 // function fetchPolls() {
 //   return axios.get("http://localhost:8000/api/polls");
 // }
-export function* getPollsSaga() {
+export function* getPollsSaga(action: FetchPollsAction) {
   try {
-    const response = yield call(api.getPolls);
+    const response = yield call(
+      api.getPollsInNamespace,
+      action.payload.namespace
+    );
     const polls: Poll[] = response.data.polls;
     yield put({ type: actionTypes.GET_POLLS_SUCCESS, payload: { polls } });
   } catch (error) {
@@ -30,7 +43,7 @@ export function* getPollsSaga() {
     message.error(errorMessage);
   }
 }
-export function* postPollsSaga(action: any) {
+export function* postPollsSaga(action: CreatePollAction) {
   try {
     const response = yield call(api.createPoll, action.payload);
     const poll: Poll = response.data.poll;
@@ -53,21 +66,13 @@ export function* postPollsSaga(action: any) {
   }
 }
 
-export function* voteOption(
-  action: Action & {
-    payload: {
-      isAddingVote: boolean;
-      userId: string;
-      pollId: string;
-      optionId: string;
-    };
-  }
-) {
-  const { isAddingVote, ...voteInput } = action.payload;
+export function* voteOption(action: VoteOptionAction) {
+  const { isAddingVote, namespace, voteInput } = action.payload;
   try {
     const response = yield call(
       isAddingVote ? api.voteOption : api.removeVoteOption,
-      voteInput
+      voteInput,
+      namespace
     );
     const poll: Poll = response.data.poll;
     yield put({
@@ -88,15 +93,15 @@ export function* voteOption(
         : actionTypes.REMOVE_VOTE_OPTION_ERROR,
       payload: { error: errorMessage }
     });
-    yield put(fetchPolls());
+    yield put(fetchPolls(namespace));
 
     message.error(errorMessage);
   }
 }
 
-export function* deletePoll(action: AnyAction) {
+export function* deletePoll(action: DeletePollAction) {
   try {
-    yield call(api.deletePoll, action.payload);
+    yield call(api.deletePoll, action.payload.input, action.payload.namespace);
     yield put({
       type: actionTypes.DELETE_POLL_SUCCESS,
       payload: action.payload
@@ -117,9 +122,13 @@ export function* deletePoll(action: AnyAction) {
     message.error(errorMessage);
   }
 }
-export function* updatePoll(action: AnyAction) {
+export function* updatePoll(action: UpdatePollAction) {
   try {
-    const response = yield call(api.updatePoll, action.payload);
+    const response = yield call(
+      api.updatePoll,
+      action.payload.input,
+      action.payload.namespace
+    );
     const poll: Poll = response.data.poll;
     yield put({
       type: actionTypes.UPDATE_POLL_SUCCESS,
@@ -141,7 +150,7 @@ export function* updatePoll(action: AnyAction) {
     message.error(errorMessage);
   }
 }
-export function* getUserData(action: AnyAction) {
+export function* getUserData(action: GetUserDataAction) {
   try {
     const response: AxiosResponse = yield call(api.getUserData);
     const user: User = response.data.user;
@@ -172,9 +181,13 @@ export function* getUserData(action: AnyAction) {
     }
   }
 }
-export function* closePoll(action: Action & { payload: { pollId: string } }) {
+export function* closePoll(action: ClosePollAction) {
   try {
-    const response: AxiosResponse = yield call(api.closePoll, action.payload);
+    const response: AxiosResponse = yield call(
+      api.closePoll,
+      action.payload.input,
+      action.payload.namespace
+    );
     const poll: Poll = response.data.poll;
     yield put({
       type: actionTypes.CLOSE_POLL_SUCCESS,
@@ -197,9 +210,13 @@ export function* closePoll(action: Action & { payload: { pollId: string } }) {
   }
 }
 
-export function* openPoll(action: Action & { payload: { pollId: string } }) {
+export function* openPoll(action: OpenPollAction) {
   try {
-    const response: AxiosResponse = yield call(api.openPoll, action.payload);
+    const response: AxiosResponse = yield call(
+      api.openPoll,
+      action.payload.input,
+      action.payload.namespace
+    );
     const poll: Poll = response.data.poll;
     yield put({
       type: actionTypes.OPEN_POLL_SUCCESS,

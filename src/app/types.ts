@@ -31,6 +31,7 @@ export interface PollInput {
   options: string[];
   voteLimit: number;
   optionVoteLimit: number;
+  namespace?: string;
 }
 export interface UpdatePollInput {
   pollName?: string;

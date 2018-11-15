@@ -15,7 +15,7 @@ export function fetchPolls(namespace: string): FetchPollsAction {
 }
 
 export interface CreatePollAction extends Action<ActionTypes.postPollsRequest> {
-  payload: PollInput;
+  payload: { poll: PollInput };
 }
 
 export function createPoll(pollInput: PollInput): CreatePollAction {
@@ -24,7 +24,7 @@ export function createPoll(pollInput: PollInput): CreatePollAction {
   cleanedPoll.options = newOptions;
   return {
     type: ActionTypes.postPollsRequest,
-    payload: cleanedPoll
+    payload: { poll: cleanedPoll }
   };
 }
 
@@ -58,22 +58,32 @@ export function discardPoll(): DiscardPollAction {
 export interface VoteOptionAction
   extends Action<ActionTypes.voteOptionLoading> {
   payload: {
+    voteInput: {
+      userId: string;
+      pollId: string;
+      optionId: string;
+    };
     isAddingVote: boolean;
-    userId: string;
-    pollId: string;
-    optionId: string;
+    namespace: string;
   };
 }
 
 export function voteOption(
+  voteInput: {
+    userId: string;
+    pollId: string;
+    optionId: string;
+  },
   isAddingVote: boolean,
-  userId: string,
-  pollId: string,
-  optionId: string
+  namespace: string
 ): VoteOptionAction {
   return {
     type: ActionTypes.voteOptionLoading,
-    payload: { isAddingVote, userId, pollId, optionId }
+    payload: {
+      voteInput,
+      isAddingVote,
+      namespace
+    }
   };
 }
 
@@ -113,15 +123,22 @@ export function removePollOption(index: number): RemovePollOptionAction {
 export interface DeletePollAction
   extends Action<ActionTypes.deletePollLoading> {
   payload: {
-    userId: string;
-    pollId: string;
+    input: {
+      userId: string;
+      pollId: string;
+    };
+    namespace: string;
   };
 }
 
-export function deletePoll(userId: string, pollId: string): DeletePollAction {
+export function deletePoll(
+  userId: string,
+  pollId: string,
+  namespace: string
+): DeletePollAction {
   return {
     type: ActionTypes.deletePollLoading,
-    payload: { userId, pollId }
+    payload: { input: { userId, pollId }, namespace }
   };
 }
 
@@ -151,17 +168,21 @@ export function discardUpdatePollForm(): DiscardUpdatePollFormAction {
 
 export interface UpdatePollAction
   extends Action<ActionTypes.updatePollLoading> {
-  payload: { userId: string; pollId: string; updatePollInput: UpdatePollInput };
+  payload: {
+    input: { userId: string; pollId: string; updatePollInput: UpdatePollInput };
+    namespace: string;
+  };
 }
 
 export function updatePoll(
   userId: string,
   pollId: string,
-  updatePollInput: UpdatePollInput
+  updatePollInput: UpdatePollInput,
+  namespace: string
 ): UpdatePollAction {
   return {
     type: ActionTypes.updatePollLoading,
-    payload: { userId, pollId, updatePollInput }
+    payload: { input: { userId, pollId, updatePollInput }, namespace }
   };
 }
 
@@ -181,24 +202,24 @@ export function navigateToPollForm(): NavigateToPollFormAction {
 }
 
 export interface ClosePollAction extends Action<ActionTypes.closePollLoading> {
-  payload: { pollId: string };
+  payload: { input: { pollId: string }; namespace: string };
 }
 
-export function closePoll(pollId: string): ClosePollAction {
+export function closePoll(pollId: string, namespace: string): ClosePollAction {
   return {
     type: ActionTypes.closePollLoading,
-    payload: { pollId }
+    payload: { input: { pollId }, namespace }
   };
 }
 
 export interface OpenPollAction extends Action<ActionTypes.openPollLoading> {
-  payload: { pollId: string };
+  payload: { input: { pollId: string }; namespace: string };
 }
 
-export function openPoll(pollId: string): OpenPollAction {
+export function openPoll(pollId: string, namespace: string): OpenPollAction {
   return {
     type: ActionTypes.openPollLoading,
-    payload: { pollId }
+    payload: { input: { pollId }, namespace }
   };
 }
 
