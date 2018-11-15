@@ -1,131 +1,212 @@
 import { push } from "connected-react-router";
 import { Action } from "redux";
 import { Poll, PollInput, UpdatePollInput } from "../types";
-import * as actionTypes from "./action-types";
+import { ActionTypes } from "./action-types";
 
-export const fetchPolls: () => Action = () => ({
-  type: actionTypes.GET_POLLS_REQUEST
-});
+export interface FetchPollsAction extends Action<ActionTypes.getPollsReqest> {
+  payload: { namespace: string };
+}
 
-export const createPoll: (
-  pollInput: PollInput
-) => Action & { payload: PollInput } = poll => {
-  const cleanedPoll = { ...poll };
+export function fetchPolls(namespace: string): FetchPollsAction {
+  return {
+    type: ActionTypes.getPollsReqest,
+    payload: { namespace }
+  };
+}
+
+export interface CreatePollAction extends Action<ActionTypes.postPollsRequest> {
+  payload: PollInput;
+}
+
+export function createPoll(pollInput: PollInput): CreatePollAction {
+  const cleanedPoll = { ...pollInput };
   const newOptions = cleanedPoll.options.filter(option => option);
   cleanedPoll.options = newOptions;
   return {
-    type: actionTypes.POST_POLLS_REQUEST,
+    type: ActionTypes.postPollsRequest,
     payload: cleanedPoll
   };
-};
+}
 
-export const changeFormData: (
+export interface ChangeFormDataAction
+  extends Action<ActionTypes.changeFormData> {
+  payload: { fieldId: string; value: string | number };
+}
+
+export function changeFormData(
   fieldId: string,
   value: string | number
-) => Action & { payload: { fieldId: string; value: string | number } } = (
-  fieldId,
-  value
-) => ({
-  type: actionTypes.CHANGE_FORM_DATA,
-  payload: {
-    fieldId,
-    value
-  }
-});
-export const discardPoll: () => Action = () => ({
-  type: actionTypes.DISCARD_FORM_DATA
-});
+): ChangeFormDataAction {
+  return {
+    type: ActionTypes.changeFormData,
+    payload: {
+      fieldId,
+      value
+    }
+  };
+}
 
-export const voteOption: (
-  isAddingVote: boolean,
-  userId: string,
-  pollId: string,
-  optionId: string
-) => Action & {
+export interface DiscardPollAction
+  extends Action<ActionTypes.discardFormData> {}
+
+export function discardPoll(): DiscardPollAction {
+  return {
+    type: ActionTypes.discardFormData
+  };
+}
+
+export interface VoteOptionAction
+  extends Action<ActionTypes.voteOptionLoading> {
   payload: {
     isAddingVote: boolean;
     userId: string;
     pollId: string;
     optionId: string;
   };
-} = (isAddingVote, userId, pollId, optionId) => ({
-  type: actionTypes.VOTE_OPTION_LOADING,
-  payload: { isAddingVote, userId, pollId, optionId }
-});
+}
 
-export const toggleShowResults: (
-  pollId: string
-) => Action & { payload: { pollId: string } } = pollId => ({
-  type: actionTypes.TOGGLE_SHOW_RESULTS_LOADING,
-  payload: { pollId }
-});
-
-export const addPollOption: () => Action = () => ({
-  type: actionTypes.ADD_POLL_FORM_OPTION
-});
-
-export const removePollOption: (
-  index: number
-) => Action & { payload: { index: number } } = index => ({
-  type: actionTypes.REMOVE_POLL_FORM_OPTION,
-  payload: { index }
-});
-
-export const deletePoll: (
+export function voteOption(
+  isAddingVote: boolean,
   userId: string,
-  pollId: string
-) => Action & {
-  payload: { userId: string; pollId: string };
-} = (userId, pollId) => ({
-  type: actionTypes.DELETE_POLL_LOADING,
-  payload: { userId, pollId }
-});
+  pollId: string,
+  optionId: string
+): VoteOptionAction {
+  return {
+    type: ActionTypes.voteOptionLoading,
+    payload: { isAddingVote, userId, pollId, optionId }
+  };
+}
 
-export const showUpdatePollForm: (
+export interface ToggleShowResultsAction
+  extends Action<ActionTypes.toggleShowResultsLoading> {
+  payload: { pollId: string };
+}
+
+export function toggleShowResults(pollId: string): ToggleShowResultsAction {
+  return {
+    type: ActionTypes.toggleShowResultsLoading,
+    payload: { pollId }
+  };
+}
+
+export interface AddPollOptionAction
+  extends Action<ActionTypes.addPollFormOption> {}
+
+export function addPollOption(): AddPollOptionAction {
+  return {
+    type: ActionTypes.addPollFormOption
+  };
+}
+
+export interface RemovePollOptionAction
+  extends Action<ActionTypes.removePollFormOption> {
+  payload: { index: number };
+}
+
+export function removePollOption(index: number): RemovePollOptionAction {
+  return {
+    type: ActionTypes.removePollFormOption,
+    payload: { index }
+  };
+}
+
+export interface DeletePollAction
+  extends Action<ActionTypes.deletePollLoading> {
+  payload: {
+    userId: string;
+    pollId: string;
+  };
+}
+
+export function deletePoll(userId: string, pollId: string): DeletePollAction {
+  return {
+    type: ActionTypes.deletePollLoading,
+    payload: { userId, pollId }
+  };
+}
+
+export interface ShowUpdatePollFormAction
+  extends Action<ActionTypes.showUpdatePollForm> {
+  payload: { pollId: string; poll: Poll };
+}
+
+export function showUpdatePollForm(
   pollId: string,
   poll: Poll
-) => Action & { payload: { pollId: string; poll: Poll } } = (pollId, poll) => ({
-  type: actionTypes.SHOW_UPDATE_POLL_FORM,
-  payload: { pollId, poll }
-});
+): ShowUpdatePollFormAction {
+  return {
+    type: ActionTypes.showUpdatePollForm,
+    payload: { pollId, poll }
+  };
+}
 
-export const discardUpdatePollForm: () => Action = () => ({
-  type: actionTypes.DISCARD_UPDATE_POLL_FORM
-});
+export interface DiscardUpdatePollFormAction
+  extends Action<ActionTypes.discardUpdatePollForm> {}
 
-export const updatePoll: (
+export function discardUpdatePollForm(): DiscardUpdatePollFormAction {
+  return {
+    type: ActionTypes.discardUpdatePollForm
+  };
+}
+
+export interface UpdatePollAction
+  extends Action<ActionTypes.updatePollLoading> {
+  payload: { userId: string; pollId: string; updatePollInput: UpdatePollInput };
+}
+
+export function updatePoll(
   userId: string,
   pollId: string,
   updatePollInput: UpdatePollInput
-) => Action & {
-  payload: { userId: string; pollId: string; updatePollInput: UpdatePollInput };
-} = (userId, pollId, updatePollInput) => ({
-  type: actionTypes.UPDATE_POLL_LOADING,
-  payload: { userId, pollId, updatePollInput }
-});
-
-export const getUserData: () => Action = () => ({
-  type: actionTypes.GET_USER_DATA_LOADING
-});
-
-export const navigateToPollForm: () => Action = () => push("/create-poll");
-
-export const closePoll: (
-  pollId: string
-) => Action & { payload: { pollId: string } } = pollId => ({
-  type: actionTypes.CLOSE_POLL_LOADING,
-  payload: { pollId }
-});
-
-export const openPoll: (
-  pollId: string
-) => Action & { payload: { pollId: string } } = pollId => ({
-  type: actionTypes.OPEN_POLL_LOADING,
-  payload: { pollId }
-});
-
-export function closedWarning(): Action {
+): UpdatePollAction {
   return {
-    type: actionTypes.CLOSED_WARNING
+    type: ActionTypes.updatePollLoading,
+    payload: { userId, pollId, updatePollInput }
+  };
+}
+
+export interface GetUserDataAction
+  extends Action<ActionTypes.getUserDataLoading> {}
+
+export function getUserData(): GetUserDataAction {
+  return {
+    type: ActionTypes.getUserDataLoading
+  };
+}
+
+export interface NavigateToPollFormAction extends Action {}
+
+export function navigateToPollForm(): NavigateToPollFormAction {
+  return push("/create-poll");
+}
+
+export interface ClosePollAction extends Action<ActionTypes.closePollLoading> {
+  payload: { pollId: string };
+}
+
+export function closePoll(pollId: string): ClosePollAction {
+  return {
+    type: ActionTypes.closePollLoading,
+    payload: { pollId }
+  };
+}
+
+export interface OpenPollAction extends Action<ActionTypes.openPollLoading> {
+  payload: { pollId: string };
+}
+
+export function openPoll(pollId: string): OpenPollAction {
+  return {
+    type: ActionTypes.openPollLoading,
+    payload: { pollId }
+  };
+}
+
+export interface ClosedWarningAction
+  extends Action<ActionTypes.closedWarning> {}
+
+export function closedWarning(): ClosedWarningAction {
+  return {
+    type: ActionTypes.closedWarning
   };
 }
