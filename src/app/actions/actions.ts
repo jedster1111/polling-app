@@ -3,13 +3,13 @@ import { Action } from "redux";
 import { Poll, PollInput, UpdatePollInput } from "../types";
 import { ActionTypes } from "./action-types";
 
-export interface FetchPollsAction extends Action<ActionTypes.getPollsReqest> {
+export interface FetchPollsAction extends Action<ActionTypes.getPollsRequest> {
   payload: { namespace: string };
 }
 
 export function fetchPolls(namespace: string): FetchPollsAction {
   return {
-    type: ActionTypes.getPollsReqest,
+    type: ActionTypes.getPollsRequest,
     payload: { namespace }
   };
 }

@@ -1,7 +1,6 @@
 import { message } from "antd";
 import { AxiosError, AxiosResponse } from "axios";
 import { push } from "connected-react-router";
-import { Action } from "redux";
 import { all, call, put, takeLatest } from "redux-saga/effects";
 import * as actionTypes from "../actions/action-types.old";
 import {
@@ -16,7 +15,7 @@ import {
   VoteOptionAction
 } from "../actions/actions";
 import * as api from "../api/api";
-import { Poll, PollInput, UpdatePollInput, User } from "../types";
+import { Poll, User } from "../types";
 
 // function fetchPolls() {
 //   return axios.get("http://localhost:8000/api/polls");

@@ -1,7 +1,7 @@
 export enum ActionTypes {
   locationChanged = "@@router/LOCATION_CHANGE",
 
-  getPollsReqest = "GET_POLLS_REQUEST",
+  getPollsRequest = "GET_POLLS_REQUEST",
   getPollsSuccess = "GET_POLLS_SUCCESS",
   getPollsError = "GET_POLLS_ERROR",
 

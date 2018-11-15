@@ -1,15 +1,17 @@
 import { UpdatePollInput } from "../../../server/types";
 import { Poll, PollInput, UpdatePollInputOption } from "../types";
-import * as types from "./action-types";
+import { ActionTypes } from "./action-types";
 import * as actions from "./actions";
 
 describe("Testing actions:", () => {
+  const namespace = "public";
   it("should create an action to fetch polls", () => {
-    const expectedAction = {
-      type: types.GET_POLLS_REQUEST
+    const expectedAction: actions.FetchPollsAction = {
+      type: ActionTypes.getPollsRequest,
+      payload: { namespace }
     };
 
-    expect(actions.fetchPolls()).toEqual(expectedAction);
+    expect(actions.fetchPolls(namespace)).toEqual(expectedAction);
   });
 
   it("should create an action to create a poll", () => {
@@ -21,9 +23,9 @@ describe("Testing actions:", () => {
       voteLimit: 1,
       optionVoteLimit: 1
     };
-    const expectedAction = {
-      type: types.POST_POLLS_REQUEST,
-      payload: pollInput
+    const expectedAction: actions.CreatePollAction = {
+      type: ActionTypes.postPollsRequest,
+      payload: { poll: pollInput }
     };
 
     expect(actions.createPoll(pollInput)).toEqual(expectedAction);
@@ -31,7 +33,10 @@ describe("Testing actions:", () => {
 
   it("should create an action to update form data", () => {
     const formInput = { fieldId: "name", value: "banana" };
-    const expectedAction = { type: types.CHANGE_FORM_DATA, payload: formInput };
+    const expectedAction = {
+      type: ActionTypes.changeFormData,
+      payload: formInput
+    };
 
     expect(actions.changeFormData(formInput.fieldId, formInput.value)).toEqual(
       expectedAction
@@ -39,37 +44,33 @@ describe("Testing actions:", () => {
   });
 
   it("should create an action to discard poll form data", () => {
-    const expectedAction = { type: types.DISCARD_FORM_DATA };
+    const expectedAction = { type: ActionTypes.discardFormData };
 
     expect(actions.discardPoll()).toEqual(expectedAction);
   });
 
   it("should create an action to vote on a poll", () => {
+    const isAddingVote = true;
     const voteInput = {
-      isAddingVote: true,
       userId: "userId",
       pollId: "pollId",
       optionId: "optionId"
     };
-    const expectedAction = {
-      type: types.VOTE_OPTION_LOADING,
-      payload: voteInput
+
+    const expectedAction: actions.VoteOptionAction = {
+      type: ActionTypes.voteOptionLoading,
+      payload: { voteInput, isAddingVote, namespace }
     };
 
-    expect(
-      actions.voteOption(
-        voteInput.isAddingVote,
-        voteInput.userId,
-        voteInput.pollId,
-        voteInput.optionId
-      )
-    ).toEqual(expectedAction);
+    expect(actions.voteOption(voteInput, isAddingVote, namespace)).toEqual(
+      expectedAction
+    );
   });
 
   it("should create an action to toggle if a result is showing or not", () => {
     const pollId = "pollId";
     const expectedAction = {
-      type: types.TOGGLE_SHOW_RESULTS_LOADING,
+      type: ActionTypes.toggleShowResultsLoading,
       payload: { pollId }
     };
 
@@ -77,7 +78,7 @@ describe("Testing actions:", () => {
   });
 
   it("should create an action to add a form's poll option", () => {
-    const expectedAction = { type: types.ADD_POLL_FORM_OPTION };
+    const expectedAction = { type: ActionTypes.addPollFormOption };
 
     expect(actions.addPollOption()).toEqual(expectedAction);
   });
@@ -85,7 +86,7 @@ describe("Testing actions:", () => {
   it("should create an action to remove a form's poll option", () => {
     const index = 1;
     const expectedAction = {
-      type: types.REMOVE_POLL_FORM_OPTION,
+      type: ActionTypes.removePollFormOption,
       payload: { index }
     };
 
@@ -95,12 +96,14 @@ describe("Testing actions:", () => {
   it("should create an action to delete a poll", () => {
     const userId = "userId";
     const pollId = "pollId";
-    const expectedAction = {
-      type: types.DELETE_POLL_LOADING,
-      payload: { userId, pollId }
+    const expectedAction: actions.DeletePollAction = {
+      type: ActionTypes.deletePollLoading,
+      payload: { input: { userId, pollId }, namespace }
     };
 
-    expect(actions.deletePoll(userId, pollId)).toEqual(expectedAction);
+    expect(actions.deletePoll(userId, pollId, namespace)).toEqual(
+      expectedAction
+    );
   });
 
   it("should create an action to show a poll's update form", () => {
@@ -124,7 +127,7 @@ describe("Testing actions:", () => {
       optionVoteLimit: 3
     };
     const expectedAction = {
-      type: types.SHOW_UPDATE_POLL_FORM,
+      type: ActionTypes.showUpdatePollForm,
       payload: { pollId, poll }
     };
 
@@ -132,7 +135,7 @@ describe("Testing actions:", () => {
   });
 
   it("should create an action to discard a poll's update form", () => {
-    const expectedAction = { type: types.DISCARD_UPDATE_POLL_FORM };
+    const expectedAction = { type: ActionTypes.discardUpdatePollForm };
     expect(actions.discardUpdatePollForm()).toEqual(expectedAction);
   });
 
@@ -145,18 +148,18 @@ describe("Testing actions:", () => {
       { optionId: "1", value: "value1" }
     ];
     const updatePollInput: UpdatePollInput = { pollName, description, options };
-    const expectedAction = {
-      type: types.UPDATE_POLL_LOADING,
-      payload: { userId, pollId, updatePollInput }
+    const expectedAction: actions.UpdatePollAction = {
+      type: ActionTypes.updatePollLoading,
+      payload: { input: { userId, pollId, updatePollInput }, namespace }
     };
 
-    expect(actions.updatePoll(userId, pollId, updatePollInput)).toEqual(
-      expectedAction
-    );
+    expect(
+      actions.updatePoll(userId, pollId, updatePollInput, namespace)
+    ).toEqual(expectedAction);
   });
 
   it("should create an action that gets user data ", () => {
-    const expectedAction = { type: types.GET_USER_DATA_LOADING };
+    const expectedAction = { type: ActionTypes.getUserDataLoading };
     expect(actions.getUserData()).toEqual(expectedAction);
   });
 });
