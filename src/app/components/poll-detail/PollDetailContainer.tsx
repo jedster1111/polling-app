@@ -10,7 +10,7 @@ import {
   showUpdatePollForm,
   voteOption
 } from "../../actions/actions";
-import { InitialState } from "../../reducers/rootReducer";
+import { StoreState } from "../../reducers/rootReducer";
 import { Poll, User } from "../../types";
 import PollDetail from "./PollDetail";
 
@@ -20,36 +20,49 @@ interface StateProps {
   userData: User;
   editingPoll: null | string;
   isLoggedIn: boolean;
+  namespace: string;
+  pollId: string;
+}
+
+export interface VoteInput {
+  userId: string;
+  pollId: string;
+  optionId: string;
 }
 interface DispatchProps {
-  fetchPolls: () => any;
+  fetchPolls: (namespace: string) => any;
   voteOption: (
+    voteInput: VoteInput,
     isAddingVote: boolean,
-    userId: string,
-    pollId: string,
-    optionId: string
+    namespace: string
   ) => any;
   showUpdatePollForm: (pollId: string, poll: Poll) => any;
   discardUpdatePollForm: () => any;
-  deletePoll: (userId: string, pollId: string) => any;
-  openPoll: (pollId: string) => any;
-  closePoll: (pollId: string) => any;
+  deletePoll: (userId: string, pollId: string, namespace: string) => any;
+  openPoll: (pollId: string, namespace: string) => any;
+  closePoll: (pollId: string, namespace: string) => any;
 }
 type OwnProps = RouteComponentProps<{ id: string }>;
 
 type PollDetailContainerProps = StateProps & DispatchProps & OwnProps;
 
-const mapStateToProps: MapStateToProps<StateProps, OwnProps, InitialState> = (
+const mapStateToProps: MapStateToProps<StateProps, OwnProps, StoreState> = (
   state,
   ownProps
 ) => {
   const { id } = ownProps.match.params;
+  const [
+    namespace = "public",
+    pollId = "error"
+  ] = state.router.location.pathname.slice(1).split("/");
   return {
     pollData: state.pollsState.polls.find(poll => poll.pollId === id),
     isLoading: state.pollsState.isLoading,
     userData: state.userState.data,
     editingPoll: state.pollsState.editingPoll,
-    isLoggedIn: state.userState.isLoggedIn
+    isLoggedIn: state.userState.isLoggedIn,
+    namespace,
+    pollId
   };
 };
 const mapDispatchToProps: MapDispatchToProps<DispatchProps, OwnProps> = {
@@ -82,7 +95,7 @@ class PollDetailContainer extends React.Component<
 
   componentDidMount() {
     if (!this.props.pollData) {
-      this.props.fetchPolls();
+      this.props.fetchPolls(this.props.namespace);
     }
     window.addEventListener("resize", this.handleResize);
     setTimeout(this.handleResize, 1000);
@@ -95,14 +108,31 @@ class PollDetailContainer extends React.Component<
   openPoll = () => {
     const pollData = this.props.pollData;
     if (pollData) {
-      this.props.openPoll(pollData.pollId);
+      this.props.openPoll(pollData.pollId, this.props.namespace);
     }
   };
   closePoll = () => {
     const pollData = this.props.pollData;
     if (pollData) {
-      this.props.closePoll(pollData.pollId);
+      this.props.closePoll(pollData.pollId, this.props.namespace);
     }
+  };
+  voteOption = (optionId: string, isAddingVote: boolean) => {
+    this.props.voteOption(
+      { userId: this.props.userData.id, pollId: this.props.pollId, optionId },
+      isAddingVote,
+      this.props.namespace
+    );
+  };
+  deletePoll = () => {
+    this.props.deletePoll(
+      this.props.userData.id,
+      this.props.pollId,
+      this.props.namespace
+    );
+  };
+  fetchPolls = () => {
+    this.props.fetchPolls(this.props.namespace);
   };
   render() {
     const isEditing = this.props.pollData
@@ -113,12 +143,12 @@ class PollDetailContainer extends React.Component<
         pollData={this.props.pollData}
         isLoading={this.props.isLoading}
         userData={this.props.userData}
-        voteOption={this.props.voteOption}
+        voteOption={this.voteOption}
         showEditForm={this.props.showUpdatePollForm}
         discardUpdatePollForm={this.props.discardUpdatePollForm}
-        deletePoll={this.props.deletePoll}
+        deletePoll={this.deletePoll}
         isEditing={isEditing}
-        fetchPolls={this.props.fetchPolls}
+        fetchPolls={this.fetchPolls}
         isLoggedIn={this.props.isLoggedIn}
         openPoll={this.openPoll}
         closePoll={this.closePoll}

@@ -70,7 +70,8 @@ describe("Testing pollForm Reducer", () => {
             description: "description",
             options: [{ optionId: "1", value: " value1" }],
             voteLimit: 1,
-            optionVoteLimit: 1
+            optionVoteLimit: 1,
+            namespace: "public"
           }
         },
         { type: ActionTypes.discardFormData }

@@ -355,3 +355,7 @@ export function closedWarning(): ClosedWarningAction {
     type: ActionTypes.closedWarning
   };
 }
+
+export function navigateToPoll(namespace: string, pollId: string) {
+  return push(`/${namespace || "public"}/${pollId}`);
+}

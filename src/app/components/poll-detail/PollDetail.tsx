@@ -17,15 +17,10 @@ interface PollDetailProps {
   userData: User;
   isLoggedIn: boolean;
   windowWidth: number;
-  voteOption: (
-    isAddingVote: boolean,
-    userId: string,
-    pollId: string,
-    optionId: string
-  ) => void;
+  voteOption: (optionId: string, isAddingVote: boolean) => void;
   showEditForm: (pollId: string, poll: Poll) => void;
   discardUpdatePollForm: () => void;
-  deletePoll: (userId: string, pollId: string) => void;
+  deletePoll: () => void;
   fetchPolls: () => void;
   isEditing: boolean;
   openPoll: () => void;
@@ -147,12 +142,7 @@ const PollDetail: React.SFC<PollDetailProps> = ({
           votesByUser={votesByUser}
           optionVoteLimit={pollData.optionVoteLimit}
           handleVote={(isAddingVote: boolean) =>
-            voteOption(
-              isAddingVote,
-              userData.id,
-              pollData.pollId,
-              option.optionId
-            )
+            voteOption(option.optionId, isAddingVote)
           }
         />
       );
@@ -189,7 +179,7 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       iconType="close"
       buttonType="danger"
       text="Delete"
-      handleClick={() => deletePoll(userData.id, pollData.pollId)}
+      handleClick={() => deletePoll()}
       style={style}
       key="delete-button"
       className="delete-button"

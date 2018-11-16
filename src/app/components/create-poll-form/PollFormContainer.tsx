@@ -28,7 +28,8 @@ interface PollFormContainerProps {
   updatePoll: (
     userId: string,
     pollId: string,
-    updatePollInput: UpdatePollInput
+    updatePollInput: UpdatePollInput,
+    namespace: string
   ) => any;
 }
 interface OwnProps {
@@ -71,9 +72,14 @@ class PollFormContainer extends React.Component<
       };
       this.props.submitPoll(inputData);
     } else if (this.props.edit && this.props.pollId) {
-      this.props.updatePoll(this.props.user.id, this.props.pollId, {
-        ...this.props.pollFormData
-      });
+      this.props.updatePoll(
+        this.props.user.id,
+        this.props.pollId,
+        {
+          ...this.props.pollFormData
+        },
+        this.props.pollFormData.namespace || "public"
+      );
     }
   };
   handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

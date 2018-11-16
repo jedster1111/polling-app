@@ -1,5 +1,5 @@
 import { AnyAction, Reducer } from "redux";
-import {ActionTypes} from "../actions/action-types";
+import { ActionTypes } from "../actions/action-types";
 
 export interface PollForm {
   data: PollFormInput;
@@ -14,9 +14,10 @@ export interface PollFormInput {
   options: Array<{ optionId: string; value: string }>;
   voteLimit: number;
   optionVoteLimit: number;
+  namespace: string;
 }
 
-const initData = {
+const initData: PollFormInput = {
   description: "",
   options: [
     { optionId: "", value: "" },
@@ -26,7 +27,8 @@ const initData = {
   ],
   pollName: "",
   voteLimit: 1,
-  optionVoteLimit: 1
+  optionVoteLimit: 1,
+  namespace: "public"
 };
 
 export const initialPollFormState: PollForm = {

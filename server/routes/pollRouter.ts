@@ -76,7 +76,7 @@ pollRouter
     (req, res, next) => {
       try {
         const user = req.user;
-        const newPoll: CreatePollRequest = req.body;
+        const newPoll: CreatePollRequest = req.body.poll;
         const poll = getResponsePoll(
           db.insertPoll({
             ...newPoll,
