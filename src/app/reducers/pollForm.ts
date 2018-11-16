@@ -1,5 +1,5 @@
 import { AnyAction, Reducer } from "redux";
-import * as actionTypes from "../actions/action-types";
+import {ActionTypes} from "../actions/action-types";
 
 export interface PollForm {
   data: PollFormInput;
@@ -41,7 +41,7 @@ const pollFormReducer: Reducer<PollForm, AnyAction> = (
   action
 ): PollForm => {
   switch (action.type) {
-    case actionTypes.CHANGE_FORM_DATA:
+    case ActionTypes.changeFormData:
       const { fieldId, value } = action.payload;
       if (/^(optionInput)/.test(fieldId)) {
         const newOptions = [...pollFormState.data.options];
@@ -65,24 +65,24 @@ const pollFormReducer: Reducer<PollForm, AnyAction> = (
           }
         };
       }
-    case actionTypes.DISCARD_FORM_DATA: {
+    case ActionTypes.discardFormData: {
       return initialPollFormState;
     }
-    case actionTypes.POST_POLLS_REQUEST:
+    case ActionTypes.postPollsRequest:
       return {
         ...pollFormState,
         isLoading: true,
         error: null
       };
-    case actionTypes.POST_POLLS_SUCCESS:
+    case ActionTypes.postPollsSuccess:
       return initialPollFormState;
-    case actionTypes.POST_POLLS_ERROR:
+    case ActionTypes.postPollsError:
       return {
         ...pollFormState,
         isLoading: false,
         error: action.payload.error
       };
-    case actionTypes.ADD_POLL_FORM_OPTION: {
+    case ActionTypes.addPollFormOption: {
       const newOptions = [
         ...pollFormState.data.options,
         { optionId: "", value: "" }
@@ -92,7 +92,7 @@ const pollFormReducer: Reducer<PollForm, AnyAction> = (
         data: { ...pollFormState.data, options: newOptions }
       };
     }
-    case actionTypes.REMOVE_POLL_FORM_OPTION: {
+    case ActionTypes.removePollFormOption: {
       const newOptions = [...pollFormState.data.options];
       const indexToRemove = action.payload.index;
       newOptions.splice(indexToRemove, 1);
@@ -108,7 +108,7 @@ const pollFormReducer: Reducer<PollForm, AnyAction> = (
         }
       };
     }
-    case actionTypes.SHOW_UPDATE_POLL_FORM: {
+    case ActionTypes.showUpdatePollForm: {
       const poll = action.payload.poll;
       return {
         ...pollFormState,
@@ -116,20 +116,20 @@ const pollFormReducer: Reducer<PollForm, AnyAction> = (
         originalData: { ...poll }
       };
     }
-    case actionTypes.UPDATE_POLL_LOADING: {
+    case ActionTypes.updatePollLoading: {
       return {
         ...pollFormState,
         isLoading: true,
         error: null
       };
     }
-    case actionTypes.UPDATE_POLL_SUCCESS: {
+    case ActionTypes.updatePollSuccess: {
       return {
         ...pollFormState,
         isLoading: false
       };
     }
-    case actionTypes.UPDATE_POLL_ERROR: {
+    case ActionTypes.updatePollError: {
       return {
         ...pollFormState,
         isLoading: false,

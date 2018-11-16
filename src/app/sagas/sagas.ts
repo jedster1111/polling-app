@@ -2,24 +2,40 @@ import { message } from "antd";
 import { AxiosError, AxiosResponse } from "axios";
 import { push } from "connected-react-router";
 import { all, call, put, takeLatest } from "redux-saga/effects";
-import * as actionTypes from "../actions/action-types.old";
+import { ActionTypes } from "../actions/action-types";
 import {
   ClosePollAction,
-  CreatePollAction,
+  closePollError,
+  closePollSuccess,
+  createPollError,
+  CreatePollLoadingAction,
+  createPollSuccess,
   DeletePollAction,
+  deletePollError,
+  deletePollSuccess,
   fetchPolls,
   FetchPollsAction,
+  fetchPollsError,
+  fetchPollsSuccess,
   GetUserDataAction,
+  getUserDataError,
+  getUserDataNotLoggedIn,
+  getUserDataSuccess,
   OpenPollAction,
+  openPollError,
+  openPollSuccess,
+  removeVoteOptionError,
+  removeVoteOptionSuccess,
   UpdatePollAction,
-  VoteOptionAction
+  updatePollError,
+  updatePollSuccess,
+  VoteOptionAction,
+  voteOptionError,
+  voteOptionSuccess
 } from "../actions/actions";
 import * as api from "../api/api";
 import { Poll, User } from "../types";
 
-// function fetchPolls() {
-//   return axios.get("http://localhost:8000/api/polls");
-// }
 export function* getPollsSaga(action: FetchPollsAction) {
   try {
     const response = yield call(
@@ -27,26 +43,23 @@ export function* getPollsSaga(action: FetchPollsAction) {
       action.payload.namespace
     );
     const polls: Poll[] = response.data.polls;
-    yield put({ type: actionTypes.GET_POLLS_SUCCESS, payload: { polls } });
+    yield put(fetchPollsSuccess(polls));
   } catch (error) {
     const err: AxiosError = error;
     const errorMessage =
       err.response && err.response.data.error
         ? err.response.data.error
         : err.message;
-    yield put({
-      type: actionTypes.GET_POLLS_ERROR,
-      payload: { error: errorMessage }
-    });
+    yield put(fetchPollsError(errorMessage));
 
     message.error(errorMessage);
   }
 }
-export function* postPollsSaga(action: CreatePollAction) {
+export function* postPollsSaga(action: CreatePollLoadingAction) {
   try {
     const response = yield call(api.createPoll, action.payload);
     const poll: Poll = response.data.poll;
-    yield put({ type: actionTypes.POST_POLLS_SUCCESS, payload: { poll } });
+    yield put(createPollSuccess(poll));
     yield put(push("/"));
 
     message.success("Poll Created!");
@@ -56,10 +69,7 @@ export function* postPollsSaga(action: CreatePollAction) {
       err.response && err.response.data.error
         ? err.response.data.error
         : err.message;
-    yield put({
-      type: actionTypes.POST_POLLS_ERROR,
-      payload: { error: errorMessage }
-    });
+    yield put(createPollError(errorMessage));
 
     message.error(errorMessage);
   }
@@ -74,24 +84,23 @@ export function* voteOption(action: VoteOptionAction) {
       namespace
     );
     const poll: Poll = response.data.poll;
-    yield put({
-      type: isAddingVote
-        ? actionTypes.VOTE_OPTION_SUCCESS
-        : actionTypes.REMOVE_VOTE_OPTION_SUCCESS,
-      payload: { poll }
-    });
+    if (isAddingVote) {
+      yield put(voteOptionSuccess(poll));
+    } else {
+      yield put(removeVoteOptionSuccess(poll));
+    }
   } catch (error) {
     const err: AxiosError = error;
     const errorMessage =
       err.response && err.response.data.error
         ? err.response.data.error
         : err.message;
-    yield put({
-      type: isAddingVote
-        ? actionTypes.VOTE_OPTION_ERROR
-        : actionTypes.REMOVE_VOTE_OPTION_ERROR,
-      payload: { error: errorMessage }
-    });
+    if (isAddingVote) {
+      yield put(voteOptionError(errorMessage));
+    } else {
+      yield put(removeVoteOptionError(errorMessage));
+    }
+
     yield put(fetchPolls(namespace));
 
     message.error(errorMessage);
@@ -101,10 +110,7 @@ export function* voteOption(action: VoteOptionAction) {
 export function* deletePoll(action: DeletePollAction) {
   try {
     yield call(api.deletePoll, action.payload.input, action.payload.namespace);
-    yield put({
-      type: actionTypes.DELETE_POLL_SUCCESS,
-      payload: action.payload
-    });
+    yield put(deletePollSuccess(action.payload.input.pollId));
 
     message.success("Successfully deleted poll!");
   } catch (error) {
@@ -113,15 +119,12 @@ export function* deletePoll(action: DeletePollAction) {
       err.response && err.response.data.error
         ? err.response.data.error
         : err.message;
-    yield put({
-      type: actionTypes.DELETE_POLL_ERROR,
-      payload: { error: errorMessage }
-    });
+    yield put(deletePollError(errorMessage));
 
     message.error(errorMessage);
   }
 }
-export function* updatePoll(action: UpdatePollAction) {
+export function* updatePollSaga(action: UpdatePollAction) {
   try {
     const response = yield call(
       api.updatePoll,
@@ -129,10 +132,7 @@ export function* updatePoll(action: UpdatePollAction) {
       action.payload.namespace
     );
     const poll: Poll = response.data.poll;
-    yield put({
-      type: actionTypes.UPDATE_POLL_SUCCESS,
-      payload: { poll }
-    });
+    yield put(updatePollSuccess(poll));
 
     message.success("Poll successfully updated!");
   } catch (error) {
@@ -141,10 +141,7 @@ export function* updatePoll(action: UpdatePollAction) {
       err.response && err.response.data.error
         ? err.response.data.error
         : err.message;
-    yield put({
-      type: actionTypes.UPDATE_POLL_ERROR,
-      payload: { error: errorMessage }
-    });
+    yield put(updatePollError(errorMessage));
 
     message.error(errorMessage);
   }
@@ -155,26 +152,18 @@ export function* getUserData(action: GetUserDataAction) {
     const user: User = response.data.user;
     if (response.status === 200) {
       message.success(`Welcome ${user.displayName || user.userName}`);
-      yield put({
-        type: actionTypes.GET_USER_DATA_SUCCESS,
-        payload: { user }
-      });
+      yield put(getUserDataSuccess(user));
     }
   } catch (error) {
     const err: AxiosError = error;
     if (err.response && err.response.status === 401) {
-      yield put({
-        type: actionTypes.GET_USER_DATA_NOT_LOGGED_IN
-      });
+      yield put(getUserDataNotLoggedIn());
     } else {
       const errorMessage =
         err.response && err.response.data.error
           ? err.response.data.error
           : err.message;
-      yield put({
-        type: actionTypes.GET_USER_DATA_ERROR,
-        payload: { error: errorMessage }
-      });
+      yield put(getUserDataError(errorMessage));
 
       message.error(errorMessage);
     }
@@ -188,10 +177,7 @@ export function* closePoll(action: ClosePollAction) {
       action.payload.namespace
     );
     const poll: Poll = response.data.poll;
-    yield put({
-      type: actionTypes.CLOSE_POLL_SUCCESS,
-      payload: { poll }
-    });
+    yield put(closePollSuccess(poll));
 
     message.success("Poll was successfully closed!");
   } catch (error) {
@@ -200,10 +186,7 @@ export function* closePoll(action: ClosePollAction) {
       err.response && err.response.data.error
         ? err.response.data.error
         : err.message;
-    yield put({
-      type: actionTypes.CLOSE_POLL_ERROR,
-      payload: { error: errorMessage }
-    });
+    yield put(closePollError(errorMessage));
 
     message.error(errorMessage);
   }
@@ -217,10 +200,7 @@ export function* openPoll(action: OpenPollAction) {
       action.payload.namespace
     );
     const poll: Poll = response.data.poll;
-    yield put({
-      type: actionTypes.OPEN_POLL_SUCCESS,
-      payload: { poll }
-    });
+    yield put(openPollSuccess(poll));
 
     message.success("Poll was successfully opened!");
   } catch (error) {
@@ -229,10 +209,7 @@ export function* openPoll(action: OpenPollAction) {
       err.response && err.response.data.error
         ? err.response.data.error
         : err.message;
-    yield put({
-      type: actionTypes.OPEN_POLL_ERROR,
-      payload: { error: errorMessage }
-    });
+    yield put(openPollError(errorMessage));
 
     message.error(errorMessage);
   }
@@ -240,13 +217,13 @@ export function* openPoll(action: OpenPollAction) {
 
 export function* mainSaga() {
   yield all([
-    takeLatest(actionTypes.GET_POLLS_REQUEST, getPollsSaga),
-    takeLatest(actionTypes.POST_POLLS_REQUEST, postPollsSaga),
-    takeLatest(actionTypes.VOTE_OPTION_LOADING, voteOption),
-    takeLatest(actionTypes.DELETE_POLL_LOADING, deletePoll),
-    takeLatest(actionTypes.UPDATE_POLL_LOADING, updatePoll),
-    takeLatest(actionTypes.GET_USER_DATA_LOADING, getUserData),
-    takeLatest(actionTypes.CLOSE_POLL_LOADING, closePoll),
-    takeLatest(actionTypes.OPEN_POLL_LOADING, openPoll)
+    takeLatest(ActionTypes.getPollsRequest, getPollsSaga),
+    takeLatest(ActionTypes.postPollsRequest, postPollsSaga),
+    takeLatest(ActionTypes.voteOptionLoading, voteOption),
+    takeLatest(ActionTypes.deletePollLoading, deletePoll),
+    takeLatest(ActionTypes.updatePollLoading, updatePollSaga),
+    takeLatest(ActionTypes.getUserDataLoading, getUserData),
+    takeLatest(ActionTypes.closePollLoading, closePoll),
+    takeLatest(ActionTypes.openPollLoading, openPoll)
   ]);
 }

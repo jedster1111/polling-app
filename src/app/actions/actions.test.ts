@@ -23,7 +23,7 @@ describe("Testing actions:", () => {
       voteLimit: 1,
       optionVoteLimit: 1
     };
-    const expectedAction: actions.CreatePollAction = {
+    const expectedAction: actions.CreatePollLoadingAction = {
       type: ActionTypes.postPollsRequest,
       payload: { poll: pollInput }
     };

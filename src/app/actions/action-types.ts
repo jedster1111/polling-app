@@ -48,7 +48,7 @@ export enum ActionTypes {
   getUserDataLoading = "GET_USER_DATA_LOADING",
   getUserDataSuccess = "GET_USER_DATA_SUCCESS",
   getUserDataError = "GET_USER_DATA_ERROR",
-  getUserData = "GET_USER_DATA_NOT_LOGGED_IN",
+  getUserDataNotLoggedIn = "GET_USER_DATA_NOT_LOGGED_IN",
 
   openPollLoading = "OPEN_POLL_LOADING",
   openPollSuccess = "OPEN_POLL_SUCCESS",

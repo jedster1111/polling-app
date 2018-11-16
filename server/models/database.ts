@@ -115,7 +115,7 @@ class Database {
       pollId,
       namespace: urlNamespace
     });
-    if (poll === null) {
+    if (!poll) {
       throw new Error(
         `Poll with Id ${pollId} in namespace ${urlNamespace} could not be found`
       );

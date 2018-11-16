@@ -1,7 +1,37 @@
 import { push } from "connected-react-router";
 import { Action } from "redux";
-import { Poll, PollInput, UpdatePollInput } from "../types";
+import { Poll, PollInput, UpdatePollInput, User } from "../types";
 import { ActionTypes } from "./action-types";
+
+export interface SuccessActionWithPoll<Type> extends Action<Type> {
+  payload: { poll: Poll };
+}
+
+export interface SuccessActionWithPolls<Type> extends Action<Type> {
+  payload: { polls: Poll[] };
+}
+
+export interface ErrorAction<Type> extends Action<Type> {
+  payload: { error: string };
+}
+
+function successPollActionCreatorFactory(
+  type: ActionTypes
+): (poll: Poll) => SuccessActionWithPoll<typeof type> {
+  return (poll: Poll) => ({ type, payload: { poll } });
+}
+
+function successPollsActionCreatorFactory(
+  type: ActionTypes
+): (polls: Poll[]) => SuccessActionWithPolls<typeof type> {
+  return (polls: Poll[]) => ({ type, payload: { polls } });
+}
+
+function errorActionCreatorFactory(
+  type: ActionTypes
+): (error: string) => ErrorAction<typeof type> {
+  return error => ({ type, payload: { error } });
+}
 
 export interface FetchPollsAction extends Action<ActionTypes.getPollsRequest> {
   payload: { namespace: string };
@@ -14,11 +44,19 @@ export function fetchPolls(namespace: string): FetchPollsAction {
   };
 }
 
-export interface CreatePollAction extends Action<ActionTypes.postPollsRequest> {
+export const fetchPollsSuccess = successPollsActionCreatorFactory(
+  ActionTypes.getPollsSuccess
+);
+export const fetchPollsError = errorActionCreatorFactory(
+  ActionTypes.getPollsError
+);
+
+export interface CreatePollLoadingAction
+  extends Action<ActionTypes.postPollsRequest> {
   payload: { poll: PollInput };
 }
 
-export function createPoll(pollInput: PollInput): CreatePollAction {
+export function createPoll(pollInput: PollInput): CreatePollLoadingAction {
   const cleanedPoll = { ...pollInput };
   const newOptions = cleanedPoll.options.filter(option => option);
   cleanedPoll.options = newOptions;
@@ -27,6 +65,12 @@ export function createPoll(pollInput: PollInput): CreatePollAction {
     payload: { poll: cleanedPoll }
   };
 }
+export const createPollSuccess = successPollActionCreatorFactory(
+  ActionTypes.postPollsSuccess
+);
+export const createPollError = errorActionCreatorFactory(
+  ActionTypes.postPollsError
+);
 
 export interface ChangeFormDataAction
   extends Action<ActionTypes.changeFormData> {
@@ -87,6 +131,20 @@ export function voteOption(
   };
 }
 
+export const voteOptionSuccess = successPollActionCreatorFactory(
+  ActionTypes.voteOptionSuccess
+);
+export const voteOptionError = errorActionCreatorFactory(
+  ActionTypes.voteOptionError
+);
+
+export const removeVoteOptionSuccess = successPollActionCreatorFactory(
+  ActionTypes.removeVoteOptionSuccess
+);
+export const removeVoteOptionError = errorActionCreatorFactory(
+  ActionTypes.removeVoteOptionError
+);
+
 export interface ToggleShowResultsAction
   extends Action<ActionTypes.toggleShowResultsLoading> {
   payload: { pollId: string };
@@ -142,6 +200,21 @@ export function deletePoll(
   };
 }
 
+export interface DeletePollSuccessAction
+  extends Action<ActionTypes.deletePollSuccess> {
+  payload: { pollId: string };
+}
+
+export function deletePollSuccess(pollId: string): DeletePollSuccessAction {
+  return {
+    type: ActionTypes.deletePollSuccess,
+    payload: { pollId }
+  };
+}
+export const deletePollError = errorActionCreatorFactory(
+  ActionTypes.deletePollError
+);
+
 export interface ShowUpdatePollFormAction
   extends Action<ActionTypes.showUpdatePollForm> {
   payload: { pollId: string; poll: Poll };
@@ -186,12 +259,49 @@ export function updatePoll(
   };
 }
 
+export const updatePollSuccess = successPollActionCreatorFactory(
+  ActionTypes.updatePollSuccess
+);
+export const updatePollError = errorActionCreatorFactory(
+  ActionTypes.updatePollError
+);
+
 export interface GetUserDataAction
   extends Action<ActionTypes.getUserDataLoading> {}
 
 export function getUserData(): GetUserDataAction {
   return {
     type: ActionTypes.getUserDataLoading
+  };
+}
+
+export interface GetUserDataSuccessAction
+  extends Action<ActionTypes.getUserDataSuccess> {
+  payload: { user: User };
+}
+
+export function getUserDataSuccess(user: User): GetUserDataSuccessAction {
+  return {
+    type: ActionTypes.getUserDataSuccess,
+    payload: { user }
+  };
+}
+
+export function getUserDataError(
+  error: string
+): ErrorAction<ActionTypes.getUserDataError> {
+  return {
+    type: ActionTypes.getUserDataError,
+    payload: { error }
+  };
+}
+
+export interface GetUserDataNotLoggedInAction
+  extends Action<ActionTypes.getUserDataNotLoggedIn> {}
+
+export function getUserDataNotLoggedIn(): GetUserDataNotLoggedInAction {
+  return {
+    type: ActionTypes.getUserDataNotLoggedIn
   };
 }
 
@@ -212,6 +322,13 @@ export function closePoll(pollId: string, namespace: string): ClosePollAction {
   };
 }
 
+export const closePollSuccess = successPollActionCreatorFactory(
+  ActionTypes.closePollSuccess
+);
+export const closePollError = errorActionCreatorFactory(
+  ActionTypes.closePollError
+);
+
 export interface OpenPollAction extends Action<ActionTypes.openPollLoading> {
   payload: { input: { pollId: string }; namespace: string };
 }
@@ -222,6 +339,13 @@ export function openPoll(pollId: string, namespace: string): OpenPollAction {
     payload: { input: { pollId }, namespace }
   };
 }
+
+export const openPollSuccess = successPollActionCreatorFactory(
+  ActionTypes.openPollSuccess
+);
+export const openPollError = errorActionCreatorFactory(
+  ActionTypes.openPollError
+);
 
 export interface ClosedWarningAction
   extends Action<ActionTypes.closedWarning> {}

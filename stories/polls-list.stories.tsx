@@ -29,7 +29,7 @@ const createOptions = (n: number) => {
     }));
   return options;
 };
-const examplePolls: Poll[] = [
+export const examplePolls: Poll[] = [
   {
     description: "What furniture do people want for the office?",
     options: createOptions(4),
