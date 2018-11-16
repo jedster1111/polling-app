@@ -116,7 +116,7 @@ describe("Testing poll related routes:", () => {
 
       const payload = await request(app)
         .post("/api/polls")
-        .send(inputData)
+        .send({ poll: inputData })
         .set("Accept", "application/json")
         .set("Cookie", token)
         .expect(201);

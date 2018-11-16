@@ -33,6 +33,10 @@ function errorActionCreatorFactory(
   return error => ({ type, payload: { error } });
 }
 
+function namespaceDefault(namespace: string): string {
+  return namespace || "public";
+}
+
 export interface FetchPollsAction extends Action<ActionTypes.getPollsRequest> {
   payload: { namespace: string };
 }
@@ -40,7 +44,7 @@ export interface FetchPollsAction extends Action<ActionTypes.getPollsRequest> {
 export function fetchPolls(namespace: string): FetchPollsAction {
   return {
     type: ActionTypes.getPollsRequest,
-    payload: { namespace }
+    payload: { namespace: namespaceDefault(namespace) }
   };
 }
 
@@ -126,7 +130,7 @@ export function voteOption(
     payload: {
       voteInput,
       isAddingVote,
-      namespace
+      namespace: namespaceDefault(namespace)
     }
   };
 }
@@ -196,7 +200,10 @@ export function deletePoll(
 ): DeletePollAction {
   return {
     type: ActionTypes.deletePollLoading,
-    payload: { input: { userId, pollId }, namespace }
+    payload: {
+      input: { userId, pollId },
+      namespace: namespaceDefault(namespace)
+    }
   };
 }
 
@@ -255,7 +262,10 @@ export function updatePoll(
 ): UpdatePollAction {
   return {
     type: ActionTypes.updatePollLoading,
-    payload: { input: { userId, pollId, updatePollInput }, namespace }
+    payload: {
+      input: { userId, pollId, updatePollInput },
+      namespace: namespaceDefault(namespace)
+    }
   };
 }
 
@@ -318,7 +328,7 @@ export interface ClosePollAction extends Action<ActionTypes.closePollLoading> {
 export function closePoll(pollId: string, namespace: string): ClosePollAction {
   return {
     type: ActionTypes.closePollLoading,
-    payload: { input: { pollId }, namespace }
+    payload: { input: { pollId }, namespace: namespaceDefault(namespace) }
   };
 }
 
@@ -336,7 +346,7 @@ export interface OpenPollAction extends Action<ActionTypes.openPollLoading> {
 export function openPoll(pollId: string, namespace: string): OpenPollAction {
   return {
     type: ActionTypes.openPollLoading,
-    payload: { input: { pollId }, namespace }
+    payload: { input: { pollId }, namespace: namespaceDefault(namespace) }
   };
 }
 
@@ -357,5 +367,5 @@ export function closedWarning(): ClosedWarningAction {
 }
 
 export function navigateToPoll(namespace: string, pollId: string) {
-  return push(`/${namespace || "public"}/${pollId}`);
+  return push(`/${namespaceDefault(namespace)}/${pollId}`);
 }

@@ -94,7 +94,9 @@ class PollsListContainer extends React.Component<PollsListContainerProps> {
     return (
       <PollsList
         polls={this.props.polls}
-        fetchPolls={() => this.props.fetchPolls(this.props.namespace)}
+        fetchPolls={() =>
+          this.props.fetchPolls(this.props.namespace || "public")
+        }
         handleVote={this.handleVote}
         user={this.props.user}
         showResults={this.props.showResults}
@@ -103,7 +105,7 @@ class PollsListContainer extends React.Component<PollsListContainerProps> {
           this.props.deletePoll(
             this.props.user.id,
             pollId,
-            this.props.namespace
+            this.props.namespace || "public"
           )
         }
         showEditForm={this.showEditForm}

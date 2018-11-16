@@ -11,7 +11,7 @@ export interface PollsListProps {
   fetchPolls: () => any;
   handleVote: (isAddingVote: boolean, pollId: string, optionId: string) => void;
   toggleShowResults: (pollId: string) => any;
-  deletePoll: (userId: string, pollId: string) => any;
+  deletePoll: (pollId: string) => any;
   showResults: { [pollId: string]: boolean };
   showEditForm: (pollId: string) => void;
   editingPoll: null | string;
