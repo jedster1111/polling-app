@@ -23,5 +23,10 @@ app.get("*", (req, res) => {
     res.sendFile(path.resolve(__dirname, "..", "index.html"));
   }
 });
+// if (ENV === "development") {
+//   app.use(express.static(`${__dirname}/../dist/index.html`));
+// } else {
+//   app.use(express.static(`${__dirname}/../index.html`));
+// }
 
 app.listen(PORT, () => console.log(`App is running on port: ${PORT}`));
