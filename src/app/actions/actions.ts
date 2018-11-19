@@ -1,7 +1,10 @@
-import { push } from "connected-react-router";
+import { push, RouterAction } from "connected-react-router";
 import { Action } from "redux";
+import UrlSafeString from "url-safe-string";
 import { Poll, PollInput, UpdatePollInput, User } from "../types";
 import { ActionTypes } from "./action-types";
+
+const { generate: makeStringUrlSafe } = UrlSafeString();
 
 export interface SuccessActionWithPoll<Type> extends Action<Type> {
   payload: { poll: Poll };
@@ -33,8 +36,8 @@ function errorActionCreatorFactory(
   return error => ({ type, payload: { error } });
 }
 
-function namespaceDefault(namespace: string): string {
-  return namespace || "public";
+function namespaceClean(namespace: string): string {
+  return makeStringUrlSafe(namespace) || "public";
 }
 
 export interface FetchPollsAction extends Action<ActionTypes.getPollsRequest> {
@@ -44,7 +47,7 @@ export interface FetchPollsAction extends Action<ActionTypes.getPollsRequest> {
 export function fetchPolls(namespace: string): FetchPollsAction {
   return {
     type: ActionTypes.getPollsRequest,
-    payload: { namespace: namespaceDefault(namespace) }
+    payload: { namespace: namespaceClean(namespace) }
   };
 }
 
@@ -130,7 +133,7 @@ export function voteOption(
     payload: {
       voteInput,
       isAddingVote,
-      namespace: namespaceDefault(namespace)
+      namespace: namespaceClean(namespace)
     }
   };
 }
@@ -202,7 +205,7 @@ export function deletePoll(
     type: ActionTypes.deletePollLoading,
     payload: {
       input: { userId, pollId },
-      namespace: namespaceDefault(namespace)
+      namespace: namespaceClean(namespace)
     }
   };
 }
@@ -264,7 +267,7 @@ export function updatePoll(
     type: ActionTypes.updatePollLoading,
     payload: {
       input: { userId, pollId, updatePollInput },
-      namespace: namespaceDefault(namespace)
+      namespace: namespaceClean(namespace)
     }
   };
 }
@@ -315,7 +318,7 @@ export function getUserDataNotLoggedIn(): GetUserDataNotLoggedInAction {
   };
 }
 
-export interface NavigateToPollFormAction extends Action {}
+export interface NavigateToPollFormAction extends RouterAction {}
 
 export function navigateToPollForm(): NavigateToPollFormAction {
   return push("/create-poll");
@@ -328,7 +331,7 @@ export interface ClosePollAction extends Action<ActionTypes.closePollLoading> {
 export function closePoll(pollId: string, namespace: string): ClosePollAction {
   return {
     type: ActionTypes.closePollLoading,
-    payload: { input: { pollId }, namespace: namespaceDefault(namespace) }
+    payload: { input: { pollId }, namespace: namespaceClean(namespace) }
   };
 }
 
@@ -346,7 +349,7 @@ export interface OpenPollAction extends Action<ActionTypes.openPollLoading> {
 export function openPoll(pollId: string, namespace: string): OpenPollAction {
   return {
     type: ActionTypes.openPollLoading,
-    payload: { input: { pollId }, namespace: namespaceDefault(namespace) }
+    payload: { input: { pollId }, namespace: namespaceClean(namespace) }
   };
 }
 
@@ -367,5 +370,49 @@ export function closedWarning(): ClosedWarningAction {
 }
 
 export function navigateToPoll(namespace: string, pollId: string) {
-  return push(`/${namespaceDefault(namespace)}/${pollId}`);
+  return push(`/${namespaceClean(namespace)}/${pollId}`);
+}
+
+export type NamespaceActions =
+  | ChangeNamespaceFormAction
+  | UpdateNamespaceAction
+  | DiscardNamespaceAction;
+
+export type FieldId = "namespace";
+export interface ChangeNamespaceFormAction
+  extends Action<ActionTypes.changeNamespaceForm> {
+  payload: { fieldId: FieldId; value: string };
+}
+
+export function changeNamespaceForm(
+  fieldId: FieldId,
+  value: string
+): ChangeNamespaceFormAction {
+  return {
+    type: ActionTypes.changeNamespaceForm,
+    payload: { fieldId, value }
+  };
+}
+
+export interface UpdateNamespaceAction
+  extends Action<ActionTypes.updateNamespace> {
+  payload: { namespace: string };
+}
+
+export function updateNamespace(namespace: string): UpdateNamespaceAction {
+  return {
+    type: ActionTypes.updateNamespace,
+    payload: { namespace: namespaceClean(namespace) }
+  };
+}
+
+export interface DiscardNamespaceAction
+  extends Action<ActionTypes.discardNamespaceForm> {}
+
+export function discardNamespaceForm(): DiscardNamespaceAction {
+  return { type: ActionTypes.discardNamespaceForm };
+}
+
+export function navigateToNamespace(namespace: string): RouterAction {
+  return push(`/${namespaceClean(namespace)}`);
 }

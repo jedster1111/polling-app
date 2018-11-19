@@ -68,8 +68,15 @@ class PollsListContainer extends React.Component<PollsListContainerProps> {
     super(props);
   }
   componentDidMount() {
-    this.props.fetchPolls(this.props.namespace);
+    this.props.fetchPolls(this.props.namespace || "public");
   }
+
+  componentDidUpdate(prevProps: PollsListContainerProps) {
+    if (this.props.namespace !== prevProps.namespace) {
+      this.props.fetchPolls(this.props.namespace || "public");
+    }
+  }
+
   handleVote = (isAddingVote: boolean, pollId: string, optionId: string) => {
     this.props.voteOption(
       { userId: this.props.user.id, pollId, optionId },
@@ -121,6 +128,7 @@ class PollsListContainer extends React.Component<PollsListContainerProps> {
         closePoll={(pollId: string) =>
           this.props.closePoll(pollId, this.props.namespace)
         }
+        namespace={this.props.namespace || "public"}
       />
     );
   }

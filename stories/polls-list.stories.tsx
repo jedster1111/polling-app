@@ -164,6 +164,7 @@ storiesOf("Polls List", module)
         isLoggedIn={true}
         closePoll={action("Closed poll")}
         openPoll={action("Opened poll")}
+        namespace="public"
       />
     );
   })

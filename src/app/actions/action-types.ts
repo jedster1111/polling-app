@@ -58,5 +58,9 @@ export enum ActionTypes {
   closePollSuccess = "CLOSE_POLL_SUCCESS",
   closePollError = "CLOSE_POLL_ERROR",
 
-  closedWarning = "CLOSED_WARNING"
+  closedWarning = "CLOSED_WARNING",
+
+  changeNamespaceForm = "CHANGE_NAMESPACE_FORM",
+  discardNamespaceForm = "DISCARD_NAMESPACE_FORM",
+  updateNamespace = "UPDATE_NAMESPACE"
 }
