@@ -124,7 +124,8 @@ describe("Testing actions:", () => {
       voteLimit: 1,
       isOpen: true,
       totalVotes: 3,
-      optionVoteLimit: 3
+      optionVoteLimit: 3,
+      namespace: "public"
     };
     const expectedAction = {
       type: ActionTypes.showUpdatePollForm,

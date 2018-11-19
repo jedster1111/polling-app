@@ -60,7 +60,7 @@ export function* postPollsSaga(action: CreatePollLoadingAction) {
     const response = yield call(api.createPoll, action.payload);
     const poll: Poll = response.data.poll;
     yield put(createPollSuccess(poll));
-    yield put(push("/"));
+    yield put(push(`/${poll.namespace}/${poll.pollId}`));
 
     message.success("Poll Created!");
   } catch (error) {
@@ -135,6 +135,9 @@ export function* updatePollSaga(action: UpdatePollAction) {
     yield put(updatePollSuccess(poll));
 
     message.success("Poll successfully updated!");
+    if (poll.namespace !== action.payload.namespace) {
+      yield put(push(`/${poll.namespace}/${poll.pollId}`));
+    }
   } catch (error) {
     const err: AxiosError = error;
     const errorMessage =

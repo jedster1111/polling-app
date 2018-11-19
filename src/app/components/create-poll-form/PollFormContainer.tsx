@@ -1,5 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
+import UrlSafeString from "url-safe-string";
 import {
   addPollOption,
   changeFormData,
@@ -13,6 +14,8 @@ import { PollFormInput } from "../../reducers/pollForm";
 import { InitialState } from "../../reducers/rootReducer";
 import { PollInput, UpdatePollInput, User } from "../../types";
 import PollForm from "./PollForm";
+
+const { generate: makeStringUrlSafe } = UrlSafeString();
 
 interface PollFormContainerProps {
   pollFormData: PollFormInput;
@@ -68,7 +71,8 @@ class PollFormContainer extends React.Component<
         pollName: this.props.pollFormData.pollName,
         options: this.props.pollFormData.options.map(option => option.value),
         voteLimit: this.props.pollFormData.voteLimit,
-        optionVoteLimit: this.props.pollFormData.optionVoteLimit
+        optionVoteLimit: this.props.pollFormData.optionVoteLimit,
+        namespace: this.props.pollFormData.namespace
       };
       this.props.submitPoll(inputData);
     } else if (this.props.edit && this.props.pollId) {
@@ -76,9 +80,10 @@ class PollFormContainer extends React.Component<
         this.props.user.id,
         this.props.pollId,
         {
-          ...this.props.pollFormData
+          ...this.props.pollFormData,
+          namespace: makeStringUrlSafe(this.props.pollFormData.namespace)
         },
-        this.props.pollFormData.namespace || "public"
+        this.props.originalData.namespace || "public"
       );
     }
   };

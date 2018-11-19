@@ -1,9 +1,12 @@
 import { Button, Form, Input } from "antd";
 import { ColProps } from "antd/lib/col";
 import * as React from "react";
+import UrlSafeString from "url-safe-string";
 import { PollFormInput } from "../../reducers/pollForm";
 import "./antd-poll-form-override.css";
 import OptionsInput from "./OptionsInput";
+
+const { generate: makeStringUrlSafe } = UrlSafeString();
 
 interface CreatePollFormProps {
   values: PollFormInput;
@@ -31,8 +34,27 @@ const PollForm: React.SFC<CreatePollFormProps> = props => {
     return previousVal;
   }, 0);
 
+  const safeNamespace = makeStringUrlSafe(props.values.namespace) || "public";
+  const namespaceHelpText = props.edit
+    ? safeNamespace !== props.originalValues.namespace
+      ? `"/${
+          props.originalValues.namespace
+        }" will be changed to "/${safeNamespace}"`
+      : undefined
+    : `This poll will be created in "/${safeNamespace || "public"}`;
+
   return (
     <Form onSubmit={props.handleSubmit} id="createPollForm" layout="vertical">
+      <Form.Item label="Namespace" {...itemLayout} help={namespaceHelpText}>
+        <Input
+          value={props.values.namespace}
+          onChange={props.handleChange}
+          id="namespace"
+          placeholder={
+            props.edit ? `${props.originalValues.namespace}` : "namespace"
+          }
+        />
+      </Form.Item>
       <Form.Item
         {...itemLayout}
         label="Poll name"

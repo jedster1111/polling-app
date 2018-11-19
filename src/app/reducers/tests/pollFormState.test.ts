@@ -155,7 +155,8 @@ describe("Testing pollForm Reducer", () => {
       voteLimit: 1,
       isOpen: true,
       totalVotes: 4,
-      optionVoteLimit: 4
+      optionVoteLimit: 4,
+      namespace: "public"
     };
     expect(
       reducer(initialPollFormState, {
