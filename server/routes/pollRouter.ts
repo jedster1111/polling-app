@@ -105,7 +105,7 @@ pollRouter
     (req, res, next) => {
       try {
         const user = req.user;
-        const newPoll: CreatePollRequest = req.body;
+        const newPoll: CreatePollRequest = req.body.poll;
         const urlNamespace = req.params.namespace;
 
         const poll = getResponsePoll(
