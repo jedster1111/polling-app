@@ -1,6 +1,8 @@
 import { Button, Form, Input } from "antd";
 import * as React from "react";
 import { connect } from "react-redux";
+import styled from "styled-components";
+import UrlSafeString from "url-safe-string";
 import {
   changeNamespaceForm,
   discardNamespaceForm,
@@ -9,9 +11,6 @@ import {
 } from "../../actions/actions";
 import { NameSpaceFormState } from "../../reducers/namespaceReducer";
 import { StoreState } from "../../reducers/rootReducer";
-// import styled from "styled-components";
-
-import UrlSafeString from "url-safe-string";
 
 const { generate: makeStringUrlSafe } = UrlSafeString();
 
@@ -43,6 +42,10 @@ const mapDispatchToProps: DispatchProps = {
   navigateToNamespace
 };
 
+const NamespaceDisplayContainer = styled.div`
+  margin-top: 8px;
+`;
+
 class NamespaceDisplay extends React.Component<NamespaceDisplayProps> {
   handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,6 +57,13 @@ class NamespaceDisplay extends React.Component<NamespaceDisplayProps> {
     }
   };
 
+  componentDidMount() {
+    this.props.changeNamespaceForm(
+      "namespace",
+      this.props.namespace || "public"
+    );
+  }
+
   componentDidUpdate(prevProps: NamespaceDisplayProps) {
     if (this.props.namespace !== prevProps.namespace) {
       this.props.changeNamespaceForm("namespace", this.props.namespace);
@@ -62,7 +72,7 @@ class NamespaceDisplay extends React.Component<NamespaceDisplayProps> {
 
   render() {
     return (
-      <div>
+      <NamespaceDisplayContainer>
         <p>You are in /{this.props.namespace || "public"}</p>
         <Form onSubmit={this.handleSubmit} layout="inline">
           <Form.Item>
@@ -85,7 +95,7 @@ class NamespaceDisplay extends React.Component<NamespaceDisplayProps> {
             </Button>
           </Form.Item>
         </Form>
-      </div>
+      </NamespaceDisplayContainer>
     );
   }
 }

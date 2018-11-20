@@ -1,6 +1,7 @@
-import { Avatar, Card, Icon, Modal, Table } from "antd";
+import { Avatar, Breadcrumb, Card, Icon, Modal, Table } from "antd";
 import { ColumnProps } from "antd/lib/table";
 import * as React from "react";
+import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 import { Poll, PollOption, User } from "../../types";
 import PollForm from "../create-poll-form/PollFormContainer";
@@ -211,61 +212,69 @@ const PollDetail: React.SFC<PollDetailProps> = ({
     : [];
 
   return (
-    <Card
-      title={<span id="poll-detail-title">{pollName}</span>}
-      className="poll-detail"
-    >
-      <RefreshButtonContainer>
-        <FetchPollsButton fetchPolls={fetchPolls} isLoading={isLoading} />
-      </RefreshButtonContainer>
-
-      <Card.Meta
-        title={<span id="poll-detail-description">{description}</span>}
-        description={
-          <MetaDescriptionContainer>
-            <MetaDescriptionChild>
-              <p id="poll-detail-creator-name">
-                {creator.displayName || creator.userName}
-              </p>
-              <p>Total votes: {pollData.totalVotes}</p>
-              <IsOpenDisplay isOpen={pollData.isOpen} />
-            </MetaDescriptionChild>
-            <MetaDescriptionChild>
-              {
-                <VoteDisplay
-                  poll={pollData}
-                  user={userData}
-                  isLoggedIn={isLoggedIn}
-                />
-              }
-            </MetaDescriptionChild>
-          </MetaDescriptionContainer>
-        }
-        avatar={creator.photos && <Avatar src={creator.photos[0].value} />}
-        style={{ marginBottom: "15px" }}
-      />
-
-      <Table
-        // loading={isLoading}
-        columns={columns}
-        dataSource={options}
-        rowKey={option => option.optionId}
-        pagination={false}
-        // onRow={option => ({
-        //   onClick: () => voteOption(false, userData.id, pollId, option.optionId)
-        // })}
-      />
-      <ActionButtonContainer>{actions}</ActionButtonContainer>
-      <Modal
-        visible={isEditing}
-        onCancel={() => discardUpdatePollForm()}
-        footer={null}
-        width="75%"
-        style={{ maxWidth: "800px" }}
+    <>
+      <Breadcrumb style={{ marginBottom: "8px" }}>
+        <Breadcrumb.Item>
+          <NavLink to={`/${pollData.namespace}`}>{pollData.namespace}</NavLink>
+        </Breadcrumb.Item>
+        <Breadcrumb.Item>{pollData.pollName}</Breadcrumb.Item>
+      </Breadcrumb>
+      <Card
+        title={<span id="poll-detail-title">{pollName}</span>}
+        className="poll-detail"
       >
-        <PollForm edit pollId={pollData.pollId} />
-      </Modal>
-    </Card>
+        <RefreshButtonContainer>
+          <FetchPollsButton fetchPolls={fetchPolls} isLoading={isLoading} />
+        </RefreshButtonContainer>
+
+        <Card.Meta
+          title={<span id="poll-detail-description">{description}</span>}
+          description={
+            <MetaDescriptionContainer>
+              <MetaDescriptionChild>
+                <p id="poll-detail-creator-name">
+                  {creator.displayName || creator.userName}
+                </p>
+                <p>Total votes: {pollData.totalVotes}</p>
+                <IsOpenDisplay isOpen={pollData.isOpen} />
+              </MetaDescriptionChild>
+              <MetaDescriptionChild>
+                {
+                  <VoteDisplay
+                    poll={pollData}
+                    user={userData}
+                    isLoggedIn={isLoggedIn}
+                  />
+                }
+              </MetaDescriptionChild>
+            </MetaDescriptionContainer>
+          }
+          avatar={creator.photos && <Avatar src={creator.photos[0].value} />}
+          style={{ marginBottom: "15px" }}
+        />
+
+        <Table
+          // loading={isLoading}
+          columns={columns}
+          dataSource={options}
+          rowKey={option => option.optionId}
+          pagination={false}
+          // onRow={option => ({
+          //   onClick: () => voteOption(false, userData.id, pollId, option.optionId)
+          // })}
+        />
+        <ActionButtonContainer>{actions}</ActionButtonContainer>
+        <Modal
+          visible={isEditing}
+          onCancel={() => discardUpdatePollForm()}
+          footer={null}
+          width="75%"
+          style={{ maxWidth: "800px" }}
+        >
+          <PollForm edit pollId={pollData.pollId} />
+        </Modal>
+      </Card>
+    </>
   );
 };
 
