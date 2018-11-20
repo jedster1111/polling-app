@@ -23,16 +23,16 @@ const NavBar: React.SFC<NavBarProps> = ({
   handleLogout,
   layout
 }) => {
-  const [namespace] = location.slice(1).split("/");
+  const [namespace, page] = location.slice(1).split("/");
 
   return (
-    <Menu mode={layout} defaultSelectedKeys={["/"]} selectedKeys={[location]}>
+    <Menu mode={layout} defaultSelectedKeys={[""]} selectedKeys={[page || "/"]}>
       <Menu.Item key="/">
         <NavLink to={`/${namespace || "public"}`} id="pollsListLink">
           Polls
         </NavLink>
       </Menu.Item>
-      <Menu.Item disabled={!isLoggedIn} key="/create-poll">
+      <Menu.Item disabled={!isLoggedIn} key="create-poll">
         <NavLink
           to={`/${namespace || "public"}/create-poll`}
           id="createPollLink"

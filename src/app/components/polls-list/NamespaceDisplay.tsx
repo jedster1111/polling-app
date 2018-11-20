@@ -85,7 +85,14 @@ class NamespaceDisplay extends React.Component<NamespaceDisplayProps> {
             />
           </Form.Item>
           <Form.Item>
-            <Button htmlType="button" onClick={this.props.discardNamespaceForm}>
+            <Button
+              htmlType="button"
+              onClick={() =>
+                this.props.discardNamespaceForm(
+                  this.props.namespace || "public"
+                )
+              }
+            >
               Discard
             </Button>
           </Form.Item>

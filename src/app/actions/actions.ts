@@ -412,10 +412,14 @@ export function updateNamespace(namespace: string): UpdateNamespaceAction {
 }
 
 export interface DiscardNamespaceAction
-  extends Action<ActionTypes.discardNamespaceForm> {}
+  extends Action<ActionTypes.discardNamespaceForm> {
+  payload: { namespace: string };
+}
 
-export function discardNamespaceForm(): DiscardNamespaceAction {
-  return { type: ActionTypes.discardNamespaceForm };
+export function discardNamespaceForm(
+  namespace: string
+): DiscardNamespaceAction {
+  return { type: ActionTypes.discardNamespaceForm, payload: { namespace } };
 }
 
 export function navigateToNamespace(namespace: string): RouterAction {

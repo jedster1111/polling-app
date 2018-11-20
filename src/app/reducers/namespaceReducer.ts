@@ -36,7 +36,7 @@ const namespaceReducer: Reducer<NamespaceState, NamespaceActions> = (
         ...currentState,
         formData: {
           ...currentState.formData,
-          namespace: currentState.namespace
+          namespace: action.payload.namespace
         }
       };
     }
