@@ -1,3 +1,4 @@
+import { Button, Form, Input } from "antd";
 import * as React from "react";
 import { connect } from "react-redux";
 import {
@@ -9,6 +10,10 @@ import {
 import { NameSpaceFormState } from "../../reducers/namespaceReducer";
 import { StoreState } from "../../reducers/rootReducer";
 // import styled from "styled-components";
+
+import UrlSafeString from "url-safe-string";
+
+const { generate: makeStringUrlSafe } = UrlSafeString();
 
 interface StateProps {
   values: NameSpaceFormState;
@@ -38,26 +43,52 @@ const mapDispatchToProps: DispatchProps = {
   navigateToNamespace
 };
 
-const NamespaceDisplay: React.SFC<NamespaceDisplayProps> = props => (
-  <div>
-    <p>You are in /{props.namespace || "public"}</p>
-    <input
-      id="namespace"
-      value={props.values.namespace}
-      onChange={event =>
-        props.changeNamespaceForm("namespace", event.target.value)
-      }
-    />
-    <div>
-      <button onClick={event => props.discardNamespaceForm()}>Discard</button>
-      <button
-        onClick={event => props.navigateToNamespace(props.values.namespace)}
-      >
-        Submit
-      </button>
-    </div>
-  </div>
-);
+class NamespaceDisplay extends React.Component<NamespaceDisplayProps> {
+  handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (
+      this.props.namespace !== makeStringUrlSafe(this.props.values.namespace)
+    ) {
+      this.props.navigateToNamespace(this.props.values.namespace);
+      this.props.updateNamespace(this.props.values.namespace);
+    }
+  };
+
+  componentDidUpdate(prevProps: NamespaceDisplayProps) {
+    if (this.props.namespace !== prevProps.namespace) {
+      this.props.changeNamespaceForm("namespace", this.props.namespace);
+    }
+  }
+
+  render() {
+    return (
+      <div>
+        <p>You are in /{this.props.namespace || "public"}</p>
+        <Form onSubmit={this.handleSubmit} layout="inline">
+          <Form.Item>
+            <Input
+              id="namespace"
+              value={this.props.values.namespace}
+              onChange={event =>
+                this.props.changeNamespaceForm("namespace", event.target.value)
+              }
+            />
+          </Form.Item>
+          <Form.Item>
+            <Button htmlType="button" onClick={this.props.discardNamespaceForm}>
+              Discard
+            </Button>
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit">
+              Submit
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
+    );
+  }
+}
 
 export default connect<StateProps, DispatchProps, OwnProps, StoreState>(
   mapStateToProps,
