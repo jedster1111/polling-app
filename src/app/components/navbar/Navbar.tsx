@@ -2,6 +2,7 @@ import { Avatar, Menu } from "antd";
 import * as React from "react";
 import { NavLink } from "react-router-dom";
 import { User } from "../../types";
+import NamespaceDisplay from "../polls-list/NamespaceDisplay";
 import NavBarButton from "./AuthButtons";
 
 interface NavBarProps {
@@ -26,40 +27,47 @@ const NavBar: React.SFC<NavBarProps> = ({
   const [namespace, page] = location.slice(1).split("/");
 
   return (
-    <Menu mode={layout} defaultSelectedKeys={[""]} selectedKeys={[page || "/"]}>
-      <Menu.Item key="/">
-        <NavLink to={`/${namespace || "public"}`} id="pollsListLink">
-          Polls
-        </NavLink>
-      </Menu.Item>
-      <Menu.Item disabled={!isLoggedIn} key="create-poll">
-        <NavLink
-          to={`/${namespace || "public"}/create-poll`}
-          id="createPollLink"
-        >
-          Create a Poll
-        </NavLink>
-      </Menu.Item>
-      <Menu.Item>
-        {isLoading ? (
-          <NavBarButton type="Loading" />
-        ) : isLoggedIn ? (
-          <NavBarButton type="Logout" handleClick={handleLogout} />
-        ) : (
-          <NavBarButton type="Login" handleClick={handleLogin} />
-        )}
-      </Menu.Item>
-      {isLoggedIn && (
-        <Menu.Item>
-          <a href={userData.profileUrl} target="_blank">
-            <Avatar
-              src={userData.photos && userData.photos[0].value}
-              alt={userData.userName}
-            />
-          </a>
+    <>
+      <Menu
+        mode={layout}
+        defaultSelectedKeys={[""]}
+        selectedKeys={[page || "/"]}
+      >
+        <Menu.Item key="/">
+          <NavLink to={`/${namespace || "public"}`} id="pollsListLink">
+            Polls
+          </NavLink>
         </Menu.Item>
-      )}
-    </Menu>
+        <Menu.Item disabled={!isLoggedIn} key="create-poll">
+          <NavLink
+            to={`/${namespace || "public"}/create-poll`}
+            id="createPollLink"
+          >
+            Create a Poll
+          </NavLink>
+        </Menu.Item>
+        <Menu.Item>
+          {isLoading ? (
+            <NavBarButton type="Loading" />
+          ) : isLoggedIn ? (
+            <NavBarButton type="Logout" handleClick={handleLogout} />
+          ) : (
+            <NavBarButton type="Login" handleClick={handleLogin} />
+          )}
+        </Menu.Item>
+        {isLoggedIn && (
+          <Menu.Item>
+            <a href={userData.profileUrl} target="_blank">
+              <Avatar
+                src={userData.photos && userData.photos[0].value}
+                alt={userData.userName}
+              />
+            </a>
+          </Menu.Item>
+        )}
+        <NamespaceDisplay />
+      </Menu>
+    </>
   );
 };
 

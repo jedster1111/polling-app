@@ -3,7 +3,6 @@ import * as React from "react";
 import { Poll, User } from "../../types";
 import "./antd-polls-list-override.css";
 import FetchPollsButton from "./FetchPollsButton";
-import NamespaceDisplay from "./NamespaceDisplay";
 import PollCard from "./PollCard";
 
 export interface PollsListProps {
@@ -26,7 +25,6 @@ export interface PollsListProps {
 
 const PollsList = (props: PollsListProps) => (
   <>
-    <NamespaceDisplay />
     <List
       className="polls-list"
       header={

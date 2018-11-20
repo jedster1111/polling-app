@@ -379,11 +379,26 @@ export function navigateToPoll(namespace: string, pollId: string) {
 }
 
 export type NamespaceActions =
+  | ShowNamespaceFormAction
   | ChangeNamespaceFormAction
   | UpdateNamespaceAction
   | DiscardNamespaceAction;
 
 export type FieldId = "namespace";
+
+export type ShowOrHide = "show" | "hide";
+
+export interface ShowNamespaceFormAction
+  extends Action<ActionTypes.changeNamespaceFormShowing> {
+  payload: { showOrHide: ShowOrHide };
+}
+
+export function showNamespaceForm(action: ShowOrHide): ShowNamespaceFormAction {
+  return {
+    type: ActionTypes.changeNamespaceFormShowing,
+    payload: { showOrHide: action }
+  };
+}
 export interface ChangeNamespaceFormAction
   extends Action<ActionTypes.changeNamespaceForm> {
   payload: { fieldId: FieldId; value: string };

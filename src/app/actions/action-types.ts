@@ -60,6 +60,7 @@ export enum ActionTypes {
 
   closedWarning = "CLOSED_WARNING",
 
+  changeNamespaceFormShowing = "CHANGE_NAMESPACE_FORM_SHOWING",
   changeNamespaceForm = "CHANGE_NAMESPACE_FORM",
   discardNamespaceForm = "DISCARD_NAMESPACE_FORM",
   updateNamespace = "UPDATE_NAMESPACE"

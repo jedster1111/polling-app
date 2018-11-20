@@ -6,12 +6,14 @@ export type NameSpaceFormState = { [key in FieldId]: string };
 export interface NamespaceState {
   formData: NameSpaceFormState;
   namespace: string;
+  isEditing: boolean;
 }
 
 function getInitNamespaceState(): NamespaceState {
   return {
     formData: { namespace: "public" },
-    namespace: "public"
+    namespace: "public",
+    isEditing: false
   };
 }
 
@@ -37,13 +39,21 @@ const namespaceReducer: Reducer<NamespaceState, NamespaceActions> = (
         formData: {
           ...currentState.formData,
           namespace: action.payload.namespace
-        }
+        },
+        isEditing: false
       };
     }
     case ActionTypes.updateNamespace: {
       return {
         ...currentState,
-        namespace: action.payload.namespace
+        namespace: action.payload.namespace,
+        isEditing: false
+      };
+    }
+    case ActionTypes.changeNamespaceFormShowing: {
+      return {
+        ...currentState,
+        isEditing: action.payload.showOrHide === "show" ? true : false
       };
     }
     default: {

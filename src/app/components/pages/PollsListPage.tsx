@@ -20,7 +20,7 @@ const PollsListPage = ({
         onClose={onClosedWarning}
       />
     )}
-    <PollsList />
+    <PollsList key="pollList" />
   </div>
 );
 
