@@ -45,29 +45,6 @@ const PollForm: React.SFC<CreatePollFormProps> = props => {
       : undefined
     : `This poll will be created in "/${safeNamespace || "public"}`;
 
-  const namespaceInput = (
-    <Form.Item label="Namespace" {...itemLayout} help={namespaceHelpText}>
-      {props.isEditingNamespace && (
-        <Input
-          value={props.values.namespace}
-          onChange={props.handleChange}
-          id="namespace"
-          placeholder={
-            props.edit ? `${props.originalValues.namespace}` : "namespace"
-          }
-        />
-      )}
-      <Button
-        icon={props.isEditingNamespace ? "check" : "edit"}
-        size="small"
-        onClick={() =>
-          props.changeIsEditingNamespace(
-            props.isEditingNamespace ? false : true
-          )
-        }
-      />
-    </Form.Item>
-  );
   return (
     <Form onSubmit={props.handleSubmit} id="createPollForm" layout="vertical">
       <Form.Item
@@ -146,7 +123,16 @@ const PollForm: React.SFC<CreatePollFormProps> = props => {
           placeholder="Option Vote Limit"
         />
       </Form.Item>
-      {namespaceInput}
+      <Form.Item label="Namespace" {...itemLayout} help={namespaceHelpText}>
+        <Input
+          value={props.values.namespace}
+          onChange={props.handleChange}
+          id="namespace"
+          placeholder={
+            props.edit ? `${props.originalValues.namespace}` : "namespace"
+          }
+        />
+      </Form.Item>
       <Form.Item wrapperCol={{ xs: { span: 16 }, sm: { span: 16, offset: 4 } }}>
         <Button
           id="createButton"
