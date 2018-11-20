@@ -6,6 +6,7 @@ export interface PollForm {
   originalData: PollFormInput;
   isLoading: boolean;
   error: string | null;
+  isEditingNamespace: boolean;
 }
 
 export interface PollFormInput {
@@ -35,7 +36,8 @@ export const initialPollFormState: PollForm = {
   data: initData,
   originalData: initData,
   isLoading: false,
-  error: null
+  error: null,
+  isEditingNamespace: false
 };
 
 const pollFormReducer: Reducer<PollForm, AnyAction> = (
@@ -73,14 +75,16 @@ const pollFormReducer: Reducer<PollForm, AnyAction> = (
         data: {
           ...initialPollFormState.data,
           namespace: action.payload.namespace
-        }
+        },
+        isEditingNamespace: false
       };
     }
     case ActionTypes.postPollsRequest:
       return {
         ...pollFormState,
         isLoading: true,
-        error: null
+        error: null,
+        isEditingNamespace: false
       };
     case ActionTypes.postPollsSuccess:
       return initialPollFormState;
@@ -128,7 +132,8 @@ const pollFormReducer: Reducer<PollForm, AnyAction> = (
       return {
         ...pollFormState,
         isLoading: true,
-        error: null
+        error: null,
+        isEditingNamespace: false
       };
     }
     case ActionTypes.updatePollSuccess: {
@@ -142,6 +147,12 @@ const pollFormReducer: Reducer<PollForm, AnyAction> = (
         ...pollFormState,
         isLoading: false,
         error: action.payload.error
+      };
+    }
+    case ActionTypes.changeIsEditingNamespace: {
+      return {
+        ...pollFormState,
+        isEditingNamespace: action.payload.isEditing
       };
     }
     default:

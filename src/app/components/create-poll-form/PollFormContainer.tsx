@@ -4,6 +4,7 @@ import UrlSafeString from "url-safe-string";
 import {
   addPollOption,
   changeFormData,
+  changeIsEditingNamespace,
   createPoll,
   discardPoll,
   discardUpdatePollForm,
@@ -23,12 +24,14 @@ interface PollFormContainerProps {
   user: User;
   isLoading: boolean;
   namespace: string;
+  isEditingNamespace: boolean;
   submitPoll: (poll: PollInput) => any;
   handleChange: (fieldId: string, value: string | number) => any;
   discardPoll: (namespace?: string) => any;
   addPollOption: () => any;
   removePollOption: (index: number) => any;
   discardUpdatePollForm: () => any;
+  changeIsEditingNamespace: (isEditing: boolean) => any;
   updatePoll: (
     userId: string,
     pollId: string,
@@ -48,7 +51,8 @@ const mapDispatchToProps = {
   addPollOption,
   removePollOption,
   discardUpdatePollForm,
-  updatePoll
+  updatePoll,
+  changeIsEditingNamespace
 };
 
 const mapStateToProps = (state: StoreState, ownProps: OwnProps) => {
@@ -56,6 +60,7 @@ const mapStateToProps = (state: StoreState, ownProps: OwnProps) => {
     pollFormData: state.pollForm.data,
     originalData: state.pollForm.originalData,
     isLoading: state.pollForm.isLoading,
+    isEditingNamespace: state.pollForm.isEditingNamespace,
     user: state.userState.data,
     namespace: state.router.location.pathname.slice(1).split("/")[0]
   };
@@ -125,6 +130,8 @@ class PollFormContainer extends React.Component<
         isLoading={this.props.isLoading}
         clearOption={this.clearOption}
         originalValues={this.props.originalData}
+        isEditingNamespace={this.props.isEditingNamespace}
+        changeIsEditingNamespace={this.props.changeIsEditingNamespace}
       />
     );
   }

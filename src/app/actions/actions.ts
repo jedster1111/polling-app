@@ -329,6 +329,20 @@ export function navigateToPollForm(): NavigateToPollFormAction {
   return push("/create-poll");
 }
 
+export interface ChangeIsEditingNamespace
+  extends Action<ActionTypes.changeIsEditingNamespace> {
+  payload: { isEditing: boolean };
+}
+
+export function changeIsEditingNamespace(
+  isEditing: boolean
+): ChangeIsEditingNamespace {
+  return {
+    type: ActionTypes.changeIsEditingNamespace,
+    payload: { isEditing }
+  };
+}
+
 export interface ClosePollAction extends Action<ActionTypes.closePollLoading> {
   payload: { input: { pollId: string }; namespace: string };
 }

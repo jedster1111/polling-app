@@ -101,5 +101,7 @@ storiesOf("Create Poll Form", module)
       isLoading={false}
       clearOption={action("Cleared option")}
       originalValues={values}
+      changeIsEditingNamespace={action("changed isEditing namespace")}
+      isEditingNamespace={false}
     />
   ));

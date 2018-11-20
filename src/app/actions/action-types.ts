@@ -9,7 +9,7 @@ export enum ActionTypes {
   postPollsSuccess = "POST_POLLS_SUCCESS",
   postPollsError = "POST_POLLS_ERROR",
 
-  helloSaga = "HELLO_SAGA",
+  changeIsEditingNamespace = "CHANGE_IS_EDITING_NAMESPACE",
 
   changeFormData = "CHANGE_FORM_DATA",
   discardFormData = "DISCARD_FORM_DATA",
