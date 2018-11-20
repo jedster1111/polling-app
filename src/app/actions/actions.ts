@@ -36,7 +36,10 @@ function errorActionCreatorFactory(
   return error => ({ type, payload: { error } });
 }
 
-function namespaceClean(namespace: string): string {
+function namespaceClean(namespace: string | undefined): string {
+  if (!namespace) {
+    return "public";
+  }
   return makeStringUrlSafe(namespace) || "public";
 }
 
@@ -97,12 +100,14 @@ export function changeFormData(
   };
 }
 
-export interface DiscardPollAction
-  extends Action<ActionTypes.discardFormData> {}
+export interface DiscardPollAction extends Action<ActionTypes.discardFormData> {
+  payload: { namespace: string };
+}
 
-export function discardPoll(): DiscardPollAction {
+export function discardPoll(namespace?: string): DiscardPollAction {
   return {
-    type: ActionTypes.discardFormData
+    type: ActionTypes.discardFormData,
+    payload: { namespace: namespaceClean(namespace) }
   };
 }
 

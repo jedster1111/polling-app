@@ -59,7 +59,6 @@ class PollingApp extends React.Component<PollingAppProps> {
                     />
                   )}
                 />
-                <Route path="/create-poll" component={CreatePollPage} />
                 <Route
                   exact
                   path="/:namespace"
@@ -69,6 +68,10 @@ class PollingApp extends React.Component<PollingAppProps> {
                       onClosedWarning={this.props.closedWarning}
                     />
                   )}
+                />
+                <Route
+                  path="/:namespace/create-poll"
+                  component={CreatePollPage}
                 />
                 <Route path="/:namespace/:id" component={PollDetailPage} />
               </Switch>

@@ -77,6 +77,7 @@ const mapDispatchToProps: MapDispatchToProps<DispatchProps, OwnProps> = {
 
 interface State {
   windowWidth: number;
+  timer: NodeJS.Timeout | undefined;
 }
 
 class PollDetailContainer extends React.Component<
@@ -84,7 +85,8 @@ class PollDetailContainer extends React.Component<
   State
 > {
   state = {
-    windowWidth: document.body.clientWidth
+    windowWidth: document.body.clientWidth,
+    timer: undefined
   };
 
   handleResize = () => {
@@ -98,11 +100,13 @@ class PollDetailContainer extends React.Component<
       this.props.fetchPolls(this.props.namespace);
     }
     window.addEventListener("resize", this.handleResize);
-    setTimeout(this.handleResize, 1000);
+    const timer = setTimeout(this.handleResize, 1000);
+    this.setState({ timer });
   }
 
   componentWillUnmount() {
     window.removeEventListener("resize", this.handleResize);
+    clearTimeout(this.state.timer);
   }
 
   openPoll = () => {

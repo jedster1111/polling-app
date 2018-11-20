@@ -11,7 +11,7 @@ import {
   updatePoll
 } from "../../actions/actions";
 import { PollFormInput } from "../../reducers/pollForm";
-import { InitialState } from "../../reducers/rootReducer";
+import { StoreState } from "../../reducers/rootReducer";
 import { PollInput, UpdatePollInput, User } from "../../types";
 import PollForm from "./PollForm";
 
@@ -22,9 +22,10 @@ interface PollFormContainerProps {
   originalData: PollFormInput;
   user: User;
   isLoading: boolean;
+  namespace: string;
   submitPoll: (poll: PollInput) => any;
   handleChange: (fieldId: string, value: string | number) => any;
-  discardPoll: () => any;
+  discardPoll: (namespace?: string) => any;
   addPollOption: () => any;
   removePollOption: (index: number) => any;
   discardUpdatePollForm: () => any;
@@ -50,18 +51,25 @@ const mapDispatchToProps = {
   updatePoll
 };
 
-const mapStateToProps = (state: InitialState, ownProps: OwnProps) => {
+const mapStateToProps = (state: StoreState, ownProps: OwnProps) => {
   return {
     pollFormData: state.pollForm.data,
     originalData: state.pollForm.originalData,
     isLoading: state.pollForm.isLoading,
-    user: state.userState.data
+    user: state.userState.data,
+    namespace: state.router.location.pathname.slice(1).split("/")[0]
   };
 };
 
 class PollFormContainer extends React.Component<
   PollFormContainerProps & OwnProps
 > {
+  componentDidMount = () => {
+    if (!this.props.edit) {
+      this.props.discardPoll(this.props.namespace);
+    }
+  };
+
   handleSubmitPoll = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!this.props.edit) {
@@ -92,18 +100,6 @@ class PollFormContainer extends React.Component<
     let value: string | number = e.target.value;
     if (target === "voteLimit" && value) {
       value = parseInt(value, 10);
-      // const noOfOptions = this.props.pollFormData.options.reduce(
-      //   (prev, option) => {
-      //     if (option.value) {
-      //       prev++;
-      //     }
-      //     return prev;
-      //   },
-      //   0
-      // );
-      // if (value > noOfOptions) {
-      //   value = noOfOptions;
-      // }
     }
     this.props.handleChange(target, value);
   };

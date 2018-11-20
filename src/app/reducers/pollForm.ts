@@ -68,7 +68,13 @@ const pollFormReducer: Reducer<PollForm, AnyAction> = (
         };
       }
     case ActionTypes.discardFormData: {
-      return initialPollFormState;
+      return {
+        ...initialPollFormState,
+        data: {
+          ...initialPollFormState.data,
+          namespace: action.payload.namespace
+        }
+      };
     }
     case ActionTypes.postPollsRequest:
       return {
