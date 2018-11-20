@@ -98,10 +98,14 @@ class NamespaceDisplay extends React.Component<NamespaceDisplayProps> {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            padding: "3px 6px"
+            padding: "8px 14px"
           }}
         >
-          <Form onSubmit={this.handleSubmit} layout="inline">
+          <Form
+            onSubmit={this.handleSubmit}
+            layout="inline"
+            style={{ padding: "8px 4px" }}
+          >
             <Form.Item>
               <Input
                 id="namespace"

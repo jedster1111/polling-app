@@ -8,9 +8,10 @@ import PollForm from "../create-poll-form/PollFormContainer";
 import IsOpenDisplay from "../IsOpenDisplay";
 import ActionButton from "../polls-list/ActionButton";
 import FetchPollsButton from "../polls-list/FetchPollsButton";
-import VoteDisplay from "../VoteDisplay";
+import VoteDisplay, { calculateTotalVotesByUser } from "../VoteDisplay";
 import { getRankings, getTotalVotesOnOption } from "./getRankings";
 import VoteBar from "./VoteBar";
+import VoteButtons from "./VoteButtons";
 
 interface PollDetailProps {
   pollData: Poll | undefined;
@@ -48,6 +49,13 @@ const MetaDescriptionChild = styled.div`
   flex: 1;
   padding: 2px 5px;
   min-width: 155px;
+`;
+
+const VotesContainer = styled.div`
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-wrap: wrap;
 `;
 
 const PollDetail: React.SFC<PollDetailProps> = ({
@@ -110,7 +118,26 @@ const PollDetail: React.SFC<PollDetailProps> = ({
     title: <span>Option</span>,
     dataIndex: "option",
     key: "option",
-    render: (text, option) => <span className="value">{option.value}</span>,
+    render: (text, option) => {
+      const voteUserData = option.votes.find(user => user.id === userData.id);
+      const votesByUser = voteUserData ? voteUserData.numberOfVotes : 0;
+
+      return (
+        <VotesContainer className="value">
+          <span>{option.value}</span>
+          <VoteButtons
+            votesByUser={votesByUser}
+            optionVoteLimit={pollData.optionVoteLimit}
+            handleVote={(isAddingVote: boolean) =>
+              voteOption(option.optionId, isAddingVote)
+            }
+            pollIsOpen={pollData.isOpen}
+            pollVoteLimit={pollData.voteLimit}
+            totalVotesByUser={calculateTotalVotesByUser(userData.id, pollData)}
+          />
+        </VotesContainer>
+      );
+    },
     sorter: (a, b) => {
       const aValue = a.value.toLowerCase();
       const bValue = b.value.toLowerCase();
@@ -128,10 +155,9 @@ const PollDetail: React.SFC<PollDetailProps> = ({
     title: "Votes",
     dataIndex: "votes",
     key: "votes",
+    width: "250px",
     render: (text, option) => {
       const numberOfVotes = getTotalVotesOnOption(option);
-      const voteUserData = option.votes.find(user => user.id === userData.id);
-      const votesByUser = voteUserData ? voteUserData.numberOfVotes : 0;
       const ranking = optionRankings[numberOfVotes];
       return (
         <VoteBar
@@ -140,11 +166,6 @@ const PollDetail: React.SFC<PollDetailProps> = ({
             ...pollData.options.map(opt => getTotalVotesOnOption(opt))
           )}
           ranking={ranking}
-          votesByUser={votesByUser}
-          optionVoteLimit={pollData.optionVoteLimit}
-          handleVote={(isAddingVote: boolean) =>
-            voteOption(option.optionId, isAddingVote)
-          }
         />
       );
     },
@@ -244,6 +265,7 @@ const PollDetail: React.SFC<PollDetailProps> = ({
                     poll={pollData}
                     user={userData}
                     isLoggedIn={isLoggedIn}
+                    size="large"
                   />
                 }
               </MetaDescriptionChild>
