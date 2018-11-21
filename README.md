@@ -363,7 +363,7 @@ Returns:
 
 Response Code: `400`  
 Description: Poll probably wasn't found  
-Json: N/A
+Returns: N/A
 
 ---
 
@@ -412,12 +412,12 @@ Returns:
 Response Code: `400`  
 Description: Failed to update poll, maybe syntax is invalid or poll with id
 doesn't exist  
-JSON: N/A
+Returns: N/A
 
 Response Code: `401`  
 Description: Unauthorized, either you are not logged in or you are trying to
 modify a poll that you did not create.  
-JSON: N/A
+Returns: N/A
 
 ---
 
@@ -435,17 +435,17 @@ N/A
 
 Response Code: `200`  
 Description: Got specific poll information  
-JSON:
+Returns:
 
-```json
+```
 {
-  "poll": Poll
+  poll: Poll
 }
 ```
 
 Response Code: `400`  
 Description: Failed to get poll information, poll with that id might not exist  
-JSON: N/A
+Returns: N/A
 
 ---
 
@@ -465,16 +465,16 @@ N/A
 
 Response Code: `200`  
 Description: Succesfully deleted poll  
-JSON: N/A
+Returns: N/A
 
 Response Code: `400`  
 Description: Failed to delete poll, maybe the poll with that id doesn't exist  
-JSON: N/A
+Returns: N/A
 
 Response Code: `401`  
 Description: Unauthorized, either you are trying to delete a poll you didn't
 create, or JWT is invalid.  
-JSON: N/A
+Returns: N/A
 
 ---
 
@@ -498,7 +498,7 @@ Casts a vote on an option within a specific poll and returns the updated poll.
 
 Response Code: `200`  
 Description: Succesfully voted for option in poll  
-JSON:
+Returns:
 
 ```
 {
@@ -508,11 +508,11 @@ JSON:
 
 Response Code: `400`  
 Description: Vote was rejected, could be invalid optionId, poll not found, or you don't have any votes remaining.  
-JSON: N/A
+Returns: N/A
 
 Response Code: `401`  
 Description: Unauthorized, you are not logged in or JWT is invalid  
-JSON: N/A
+Returns: N/A
 
 ### `/api/polls/:namespace/:id/remove-vote`
 
@@ -535,7 +535,7 @@ If the user does not have any votes on the option chosen, a 400 error will be re
 
 Response Code: `200`
 Description: Succesfully removed a vote on an option in a poll.
-JSON:
+Returns:
 
 ```
 {
@@ -545,11 +545,11 @@ JSON:
 
 Response Code: `400`  
 Description: Vote was rejected, could be invalid optionId, poll not found, or you don't have any votes to remove.  
-JSON: N/A
+Returns: N/A
 
 Response Code: `401`  
 Description: Unauthorized, you are not logged in or JWT is invalid  
-JSON: N/A
+Returns: N/A
 
 ### `/api/polls/:namespace/:id/open`
 
@@ -567,7 +567,7 @@ N/A
 
 Response Code: `200`  
 Description: Poll was successfully set to open  
-JSON:
+Returns:
 
 ```
 {
@@ -577,7 +577,7 @@ JSON:
 
 Response Code: `401`  
 Description: Unauthorized, you are not logged in or JWT is invalid  
-JSON: N/A
+Returns: N/A
 
 ### `/api/polls/:namespace/:id/close`
 
@@ -595,7 +595,7 @@ N/A
 
 Response Code: `200`  
 Description: Poll was successfully set to closed  
-JSON:
+Returns:
 
 ```
 {
@@ -605,7 +605,7 @@ JSON:
 
 Response Code: `401`  
 Description: Unauthorized, you are not logged in or JWT is invalid  
-JSON: N/A
+Returns: N/A
 
 ---
 
@@ -627,7 +627,7 @@ N/A
 
 Response Code: `200`  
 Description: Got users  
-JSON:
+Returns:
 
 ```
 {
@@ -653,7 +653,7 @@ N/A
 
 Response Code: `200`  
 Description: Got a user  
-JSON:
+Returns:
 
 ```
 {
@@ -679,14 +679,14 @@ N/A
 
 Response Code: `200`  
 Description: Got a user  
-JSON:
+Returns:
 
-```json
+```
 {
-  "user": User
+  user: User
 }
 ```
 
 Response Code: `401`  
 Description: Unauthorized, not logged in or JWT is invalid  
-JSON: N/A
+Returns: N/A
