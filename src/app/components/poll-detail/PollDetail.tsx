@@ -118,6 +118,7 @@ const PollDetail: React.SFC<PollDetailProps> = ({
     title: <span>Option</span>,
     dataIndex: "option",
     key: "option",
+    width: "8vw",
     render: (text, option) => {
       const voteUserData = option.votes.find(user => user.id === userData.id);
       const votesByUser = voteUserData ? voteUserData.numberOfVotes : 0;
