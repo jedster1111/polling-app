@@ -44,7 +44,10 @@ describe("Testing actions:", () => {
   });
 
   it("should create an action to discard poll form data", () => {
-    const expectedAction = { type: ActionTypes.discardFormData };
+    const expectedAction: actions.DiscardPollAction = {
+      type: ActionTypes.discardFormData,
+      payload: { namespace }
+    };
 
     expect(actions.discardPoll()).toEqual(expectedAction);
   });

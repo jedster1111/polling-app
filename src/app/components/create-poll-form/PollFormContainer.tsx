@@ -115,7 +115,7 @@ class PollFormContainer extends React.Component<
     if (this.props.edit) {
       this.props.discardUpdatePollForm();
     }
-    this.props.discardPoll();
+    this.props.discardPoll(this.props.namespace);
   };
   render() {
     return (

@@ -1,4 +1,5 @@
 import { ActionTypes } from "../../actions/action-types";
+import { discardPoll } from "../../actions/actions";
 import { Poll } from "../../types";
 import reducer, { initialPollFormState } from "../pollForm";
 
@@ -61,6 +62,7 @@ describe("Testing pollForm Reducer", () => {
   });
 
   it("should handle DISCARD_FORM_DATA", () => {
+    const namespace = "namespace";
     expect(
       reducer(
         {
@@ -71,12 +73,15 @@ describe("Testing pollForm Reducer", () => {
             options: [{ optionId: "1", value: " value1" }],
             voteLimit: 1,
             optionVoteLimit: 1,
-            namespace: "public"
+            namespace: "namespaceChanged"
           }
         },
-        { type: ActionTypes.discardFormData }
+        discardPoll(namespace)
       )
-    ).toEqual(initialPollFormState);
+    ).toEqual({
+      ...initialPollFormState,
+      data: { ...initialPollFormState.data, namespace }
+    });
   });
 
   it("should handle POST_POLLS_REQUEST", () => {
