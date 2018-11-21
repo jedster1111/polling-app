@@ -59,8 +59,21 @@ class PollingApp extends React.Component<PollingAppProps> {
                     />
                   )}
                 />
-                <Route path="/create-poll" component={CreatePollPage} />
-                <Route path="/:id" component={PollDetailPage} />
+                <Route
+                  exact
+                  path="/:namespace"
+                  component={() => (
+                    <PollsListPage
+                      hasClosedWarning={this.props.hasClosedWarning}
+                      onClosedWarning={this.props.closedWarning}
+                    />
+                  )}
+                />
+                <Route
+                  path="/:namespace/create-poll"
+                  component={CreatePollPage}
+                />
+                <Route path="/:namespace/:id" component={PollDetailPage} />
               </Switch>
             </div>
           </Content>

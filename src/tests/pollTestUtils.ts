@@ -19,7 +19,8 @@ export const generatePoll: (index: number) => Poll = i => ({
   voteLimit: 1,
   isOpen: true,
   totalVotes: 4,
-  optionVoteLimit: 4
+  optionVoteLimit: 4,
+  namespace: "public"
 });
 export const generatePolls: (n: number) => Poll[] = n => {
   const polls = [];

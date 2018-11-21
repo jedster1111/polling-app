@@ -1,15 +1,17 @@
-import { Avatar, Card, Icon, Modal, Table } from "antd";
+import { Avatar, Breadcrumb, Card, Icon, Modal, Table } from "antd";
 import { ColumnProps } from "antd/lib/table";
 import * as React from "react";
+import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 import { Poll, PollOption, User } from "../../types";
 import PollForm from "../create-poll-form/PollFormContainer";
 import IsOpenDisplay from "../IsOpenDisplay";
 import ActionButton from "../polls-list/ActionButton";
 import FetchPollsButton from "../polls-list/FetchPollsButton";
-import VoteDisplay from "../VoteDisplay";
+import VoteDisplay, { calculateTotalVotesByUser } from "../VoteDisplay";
 import { getRankings, getTotalVotesOnOption } from "./getRankings";
 import VoteBar from "./VoteBar";
+import VoteButtons from "./VoteButtons";
 
 interface PollDetailProps {
   pollData: Poll | undefined;
@@ -17,15 +19,10 @@ interface PollDetailProps {
   userData: User;
   isLoggedIn: boolean;
   windowWidth: number;
-  voteOption: (
-    isAddingVote: boolean,
-    userId: string,
-    pollId: string,
-    optionId: string
-  ) => void;
+  voteOption: (optionId: string, isAddingVote: boolean) => void;
   showEditForm: (pollId: string, poll: Poll) => void;
   discardUpdatePollForm: () => void;
-  deletePoll: (userId: string, pollId: string) => void;
+  deletePoll: () => void;
   fetchPolls: () => void;
   isEditing: boolean;
   openPoll: () => void;
@@ -52,6 +49,13 @@ const MetaDescriptionChild = styled.div`
   flex: 1;
   padding: 2px 5px;
   min-width: 155px;
+`;
+
+const VotesContainer = styled.div`
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-wrap: wrap;
 `;
 
 const PollDetail: React.SFC<PollDetailProps> = ({
@@ -114,7 +118,27 @@ const PollDetail: React.SFC<PollDetailProps> = ({
     title: <span>Option</span>,
     dataIndex: "option",
     key: "option",
-    render: (text, option) => <span className="value">{option.value}</span>,
+    width: "8vw",
+    render: (text, option) => {
+      const voteUserData = option.votes.find(user => user.id === userData.id);
+      const votesByUser = voteUserData ? voteUserData.numberOfVotes : 0;
+
+      return (
+        <VotesContainer className="value">
+          <span>{option.value}</span>
+          <VoteButtons
+            votesByUser={votesByUser}
+            optionVoteLimit={pollData.optionVoteLimit}
+            handleVote={(isAddingVote: boolean) =>
+              voteOption(option.optionId, isAddingVote)
+            }
+            pollIsOpen={pollData.isOpen}
+            pollVoteLimit={pollData.voteLimit}
+            totalVotesByUser={calculateTotalVotesByUser(userData.id, pollData)}
+          />
+        </VotesContainer>
+      );
+    },
     sorter: (a, b) => {
       const aValue = a.value.toLowerCase();
       const bValue = b.value.toLowerCase();
@@ -132,10 +156,9 @@ const PollDetail: React.SFC<PollDetailProps> = ({
     title: "Votes",
     dataIndex: "votes",
     key: "votes",
+    width: "250px",
     render: (text, option) => {
       const numberOfVotes = getTotalVotesOnOption(option);
-      const voteUserData = option.votes.find(user => user.id === userData.id);
-      const votesByUser = voteUserData ? voteUserData.numberOfVotes : 0;
       const ranking = optionRankings[numberOfVotes];
       return (
         <VoteBar
@@ -144,16 +167,6 @@ const PollDetail: React.SFC<PollDetailProps> = ({
             ...pollData.options.map(opt => getTotalVotesOnOption(opt))
           )}
           ranking={ranking}
-          votesByUser={votesByUser}
-          optionVoteLimit={pollData.optionVoteLimit}
-          handleVote={(isAddingVote: boolean) =>
-            voteOption(
-              isAddingVote,
-              userData.id,
-              pollData.pollId,
-              option.optionId
-            )
-          }
         />
       );
     },
@@ -189,7 +202,7 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       iconType="close"
       buttonType="danger"
       text="Delete"
-      handleClick={() => deletePoll(userData.id, pollData.pollId)}
+      handleClick={() => deletePoll()}
       style={style}
       key="delete-button"
       className="delete-button"
@@ -221,61 +234,70 @@ const PollDetail: React.SFC<PollDetailProps> = ({
     : [];
 
   return (
-    <Card
-      title={<span id="poll-detail-title">{pollName}</span>}
-      className="poll-detail"
-    >
-      <RefreshButtonContainer>
-        <FetchPollsButton fetchPolls={fetchPolls} isLoading={isLoading} />
-      </RefreshButtonContainer>
-
-      <Card.Meta
-        title={<span id="poll-detail-description">{description}</span>}
-        description={
-          <MetaDescriptionContainer>
-            <MetaDescriptionChild>
-              <p id="poll-detail-creator-name">
-                {creator.displayName || creator.userName}
-              </p>
-              <p>Total votes: {pollData.totalVotes}</p>
-              <IsOpenDisplay isOpen={pollData.isOpen} />
-            </MetaDescriptionChild>
-            <MetaDescriptionChild>
-              {
-                <VoteDisplay
-                  poll={pollData}
-                  user={userData}
-                  isLoggedIn={isLoggedIn}
-                />
-              }
-            </MetaDescriptionChild>
-          </MetaDescriptionContainer>
-        }
-        avatar={creator.photos && <Avatar src={creator.photos[0].value} />}
-        style={{ marginBottom: "15px" }}
-      />
-
-      <Table
-        // loading={isLoading}
-        columns={columns}
-        dataSource={options}
-        rowKey={option => option.optionId}
-        pagination={false}
-        // onRow={option => ({
-        //   onClick: () => voteOption(false, userData.id, pollId, option.optionId)
-        // })}
-      />
-      <ActionButtonContainer>{actions}</ActionButtonContainer>
-      <Modal
-        visible={isEditing}
-        onCancel={() => discardUpdatePollForm()}
-        footer={null}
-        width="75%"
-        style={{ maxWidth: "800px" }}
+    <>
+      <Breadcrumb style={{ marginBottom: "8px" }}>
+        <Breadcrumb.Item>
+          <NavLink to={`/${pollData.namespace}`}>{pollData.namespace}</NavLink>
+        </Breadcrumb.Item>
+        <Breadcrumb.Item>{pollData.pollName}</Breadcrumb.Item>
+      </Breadcrumb>
+      <Card
+        title={<span id="poll-detail-title">{pollName}</span>}
+        className="poll-detail"
       >
-        <PollForm edit pollId={pollData.pollId} />
-      </Modal>
-    </Card>
+        <RefreshButtonContainer>
+          <FetchPollsButton fetchPolls={fetchPolls} isLoading={isLoading} />
+        </RefreshButtonContainer>
+
+        <Card.Meta
+          title={<span id="poll-detail-description">{description}</span>}
+          description={
+            <MetaDescriptionContainer>
+              <MetaDescriptionChild>
+                <p id="poll-detail-creator-name">
+                  {creator.displayName || creator.userName}
+                </p>
+                <p>Total votes: {pollData.totalVotes}</p>
+                <IsOpenDisplay isOpen={pollData.isOpen} />
+              </MetaDescriptionChild>
+              <MetaDescriptionChild>
+                {
+                  <VoteDisplay
+                    poll={pollData}
+                    user={userData}
+                    isLoggedIn={isLoggedIn}
+                    size="large"
+                  />
+                }
+              </MetaDescriptionChild>
+            </MetaDescriptionContainer>
+          }
+          avatar={creator.photos && <Avatar src={creator.photos[0].value} />}
+          style={{ marginBottom: "15px" }}
+        />
+
+        <Table
+          // loading={isLoading}
+          columns={columns}
+          dataSource={options}
+          rowKey={option => option.optionId}
+          pagination={false}
+          // onRow={option => ({
+          //   onClick: () => voteOption(false, userData.id, pollId, option.optionId)
+          // })}
+        />
+        <ActionButtonContainer>{actions}</ActionButtonContainer>
+        <Modal
+          visible={isEditing}
+          onCancel={() => discardUpdatePollForm()}
+          footer={null}
+          width="75%"
+          style={{ maxWidth: "800px" }}
+        >
+          <PollForm edit pollId={pollData.pollId} />
+        </Modal>
+      </Card>
+    </>
   );
 };
 
