@@ -2,7 +2,8 @@ import { expectSaga } from "redux-saga-test-plan";
 import * as matchers from "redux-saga-test-plan/matchers";
 import { throwError } from "redux-saga-test-plan/providers";
 import { generatePolls } from "../../tests/pollTestUtils";
-import * as actionTypes from "../actions/action-types";
+import { ActionTypes } from "../actions/action-types";
+import { deletePoll, fetchPolls, fetchPollsSuccess } from "../actions/actions";
 import * as api from "../api/api";
 import * as sagas from "./sagas";
 
@@ -16,27 +17,30 @@ const errorText = "whoops";
 
 describe("Testing sagas:", () => {
   describe("Testing getPolls saga", () => {
+    const action = fetchPolls("namespace");
     it("getPollsSaga should put GET_POLLS_SUCCESS with polls in payload", () => {
       return (
-        expectSaga(sagas.getPollsSaga)
+        expectSaga(sagas.getPollsSaga, action)
           // Mocks the api call
-          .provide([[matchers.call.fn(api.getPolls), { data: { polls } }]])
+          .provide([
+            [matchers.call.fn(api.getPollsInNamespace), { data: { polls } }]
+          ])
           // Checks the action that is dispatched
-          .put({
-            type: actionTypes.GET_POLLS_SUCCESS,
-            payload: { polls }
-          })
+          .put(fetchPollsSuccess(polls))
           .run()
       );
     });
 
     it("getPollsSaga should put GET_POLLS_ERROR with error in payload", () => {
-      return expectSaga(sagas.getPollsSaga)
+      return expectSaga(sagas.getPollsSaga, action)
         .provide([
-          [matchers.call.fn(api.getPolls), throwError(new Error("whoops"))]
+          [
+            matchers.call.fn(api.getPollsInNamespace),
+            throwError(new Error("whoops"))
+          ]
         ])
         .put({
-          type: actionTypes.GET_POLLS_ERROR,
+          type: ActionTypes.getPollsError,
           payload: { error: "whoops" }
         })
         .run();
@@ -45,7 +49,7 @@ describe("Testing sagas:", () => {
 
   describe("Testing postPolls saga", () => {
     const action = {
-      type: actionTypes.POST_POLLS_SUCCESS,
+      type: ActionTypes.postPollsSuccess,
       payload: { poll }
     };
 
@@ -53,7 +57,7 @@ describe("Testing sagas:", () => {
       return expectSaga(sagas.postPollsSaga, action)
         .provide([[matchers.call.fn(api.createPoll), { data: { poll } }]])
         .put({
-          type: actionTypes.POST_POLLS_SUCCESS,
+          type: ActionTypes.postPollsSuccess,
           payload: { poll }
         })
         .run();
@@ -65,7 +69,7 @@ describe("Testing sagas:", () => {
           [matchers.call.fn(api.createPoll), throwError(new Error(errorText))]
         ])
         .put({
-          type: actionTypes.POST_POLLS_ERROR,
+          type: ActionTypes.postPollsError,
           payload: { error: errorText }
         })
         .run();
@@ -75,14 +79,14 @@ describe("Testing sagas:", () => {
   describe("Testing voteOption", () => {
     describe("Testing adding votes", () => {
       const action = {
-        type: actionTypes.VOTE_OPTION_LOADING,
+        type: ActionTypes.voteOptionLoading,
         payload: { pollId: "1", isAddingVote: true }
       };
       it("voteOption saga should put VOTE_OPTION_SUCCESS with poll in payload", () => {
         return expectSaga(sagas.voteOption, action)
           .provide([[matchers.call.fn(api.voteOption), { data: { poll } }]])
           .put({
-            type: actionTypes.VOTE_OPTION_SUCCESS,
+            type: ActionTypes.voteOptionSuccess,
             payload: { poll }
           })
           .run();
@@ -94,7 +98,7 @@ describe("Testing sagas:", () => {
             [matchers.call.fn(api.voteOption), throwError(new Error(errorText))]
           ])
           .put({
-            type: actionTypes.VOTE_OPTION_ERROR,
+            type: ActionTypes.voteOptionError,
             payload: { error: errorText }
           })
           .run();
@@ -103,7 +107,7 @@ describe("Testing sagas:", () => {
 
     describe("Testing removing votes", () => {
       const action = {
-        type: actionTypes.REMOVE_VOTE_OPTION_LOADING,
+        type: ActionTypes.removeVoteOptionLoading,
         payload: { pollId: "1", isAddingVote: false }
       };
       it("voteOption saga should put REMOVE_VOTE_OPTION_SUCCESS with poll in payload", () => {
@@ -112,7 +116,7 @@ describe("Testing sagas:", () => {
             [matchers.call.fn(api.removeVoteOption), { data: { poll } }]
           ])
           .put({
-            type: actionTypes.REMOVE_VOTE_OPTION_SUCCESS,
+            type: ActionTypes.removeVoteOptionSuccess,
             payload: { poll }
           })
           .run();
@@ -127,7 +131,7 @@ describe("Testing sagas:", () => {
             ]
           ])
           .put({
-            type: actionTypes.REMOVE_VOTE_OPTION_ERROR,
+            type: ActionTypes.removeVoteOptionError,
             payload: { error: errorText }
           })
           .run();
@@ -136,17 +140,14 @@ describe("Testing sagas:", () => {
   });
 
   describe("Testing deletePoll", () => {
-    const action = {
-      type: actionTypes.DELETE_POLL_LOADING,
-      payload: { userId: "1", pollId: "1" }
-    };
+    const action = deletePoll("1", "1", "namespace");
 
-    it("deletePoll should put DELETE_POLL_SUCCESS passing on the original payload", () => {
+    it("deletePoll should put DELETE_POLL_SUCCESS passing on pollId", () => {
       return expectSaga(sagas.deletePoll, action)
         .provide([[matchers.call.fn(api.deletePoll), "not used"]])
         .put({
-          type: actionTypes.DELETE_POLL_SUCCESS,
-          payload: action.payload
+          type: ActionTypes.deletePollSuccess,
+          payload: { pollId: action.payload.input.pollId }
         })
         .run();
     });
@@ -157,7 +158,7 @@ describe("Testing sagas:", () => {
           [matchers.call.fn(api.deletePoll), throwError(new Error(errorText))]
         ])
         .put({
-          type: actionTypes.DELETE_POLL_ERROR,
+          type: ActionTypes.deletePollError,
           payload: { error: errorText }
         })
         .run();
@@ -166,7 +167,7 @@ describe("Testing sagas:", () => {
 
   describe("Testing updatePoll", () => {
     const action = {
-      type: actionTypes.UPDATE_POLL_LOADING,
+      type: ActionTypes.updatePollLoading,
       payload: {
         userId: "1",
         pollId: "1",
@@ -175,10 +176,10 @@ describe("Testing sagas:", () => {
     };
 
     it("updatePoll should put UPDATE_POLL_SUCCESS with new poll in the payload", () => {
-      return expectSaga(sagas.updatePoll, action)
+      return expectSaga(sagas.updatePollSaga, action)
         .provide([[matchers.call.fn(api.updatePoll), { data: { poll } }]])
         .put({
-          type: actionTypes.UPDATE_POLL_SUCCESS,
+          type: ActionTypes.updatePollSuccess,
           payload: { poll }
         })
         .run();
@@ -200,7 +201,7 @@ describe("Testing sagas:", () => {
           [matchers.call.fn(api.getUserData), { data: { user }, status: 200 }]
         ])
         .put({
-          type: actionTypes.GET_USER_DATA_SUCCESS,
+          type: ActionTypes.getUserDataSuccess,
           payload: { user }
         })
         .run();
@@ -214,7 +215,7 @@ describe("Testing sagas:", () => {
             throwError(getErrorWithStatus(401))
           ]
         ])
-        .put({ type: actionTypes.GET_USER_DATA_NOT_LOGGED_IN })
+        .put({ type: ActionTypes.getUserDataNotLoggedIn })
         .run();
     });
 
@@ -224,7 +225,7 @@ describe("Testing sagas:", () => {
           [matchers.call.fn(api.getUserData), throwError(new Error(errorText))]
         ])
         .put({
-          type: actionTypes.GET_USER_DATA_ERROR,
+          type: ActionTypes.getUserDataError,
           payload: { error: errorText }
         })
         .run();
@@ -233,13 +234,13 @@ describe("Testing sagas:", () => {
 
   describe("Testing closePoll", () => {
     const action = {
-      type: actionTypes.CLOSE_POLL_LOADING,
+      type: ActionTypes.closePollLoading,
       payload: { pollId: "1" }
     };
     it("closePoll should put CLOSE_POLL_SUCCESS with updated poll in payload", () => {
       return expectSaga(sagas.closePoll, action)
         .provide([[matchers.call.fn(api.closePoll), { data: { poll } }]])
-        .put({ type: actionTypes.CLOSE_POLL_SUCCESS, payload: { poll } })
+        .put({ type: ActionTypes.closePollSuccess, payload: { poll } })
         .run();
     });
 
@@ -249,7 +250,7 @@ describe("Testing sagas:", () => {
           [matchers.call.fn(api.closePoll), throwError(new Error(errorText))]
         ])
         .put({
-          type: actionTypes.CLOSE_POLL_ERROR,
+          type: ActionTypes.closePollError,
           payload: { error: errorText }
         })
         .run();
@@ -258,13 +259,13 @@ describe("Testing sagas:", () => {
 
   describe("Testing openPoll", () => {
     const action = {
-      type: actionTypes.CLOSE_POLL_LOADING,
+      type: ActionTypes.closePollLoading,
       payload: { pollId: "1" }
     };
     it("openPoll should put OPEN_POLL_SUCCESS with updated poll in payload", () => {
       return expectSaga(sagas.openPoll, action)
         .provide([[matchers.call.fn(api.openPoll), { data: { poll } }]])
-        .put({ type: actionTypes.OPEN_POLL_SUCCESS, payload: { poll } })
+        .put({ type: ActionTypes.openPollSuccess, payload: { poll } })
         .run();
     });
 
@@ -274,7 +275,7 @@ describe("Testing sagas:", () => {
           [matchers.call.fn(api.openPoll), throwError(new Error(errorText))]
         ])
         .put({
-          type: actionTypes.OPEN_POLL_ERROR,
+          type: ActionTypes.openPollError,
           payload: { error: errorText }
         })
         .run();

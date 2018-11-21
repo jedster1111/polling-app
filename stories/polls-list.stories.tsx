@@ -29,7 +29,7 @@ const createOptions = (n: number) => {
     }));
   return options;
 };
-const examplePolls: Poll[] = [
+export const examplePolls: Poll[] = [
   {
     description: "What furniture do people want for the office?",
     options: createOptions(4),
@@ -39,7 +39,8 @@ const examplePolls: Poll[] = [
     voteLimit: 1,
     isOpen: true,
     totalVotes: 6,
-    optionVoteLimit: 6
+    optionVoteLimit: 6,
+    namespace: "public"
   },
   {
     creator: { id: "2", userName: "Joy" },
@@ -50,7 +51,8 @@ const examplePolls: Poll[] = [
     voteLimit: 1,
     isOpen: true,
     totalVotes: 7,
-    optionVoteLimit: 7
+    optionVoteLimit: 7,
+    namespace: "public"
   }
 ];
 
@@ -162,6 +164,7 @@ storiesOf("Polls List", module)
         isLoggedIn={true}
         closePoll={action("Closed poll")}
         openPoll={action("Opened poll")}
+        namespace="public"
       />
     );
   })

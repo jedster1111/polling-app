@@ -2,22 +2,27 @@ import * as React from "react";
 import styled from "styled-components";
 import { Poll, User } from "../types";
 
+type Sizes = "default" | "large";
+
 interface VoteDisplayProps {
   poll: Poll;
   user: User;
   isLoggedIn: boolean;
+  size?: Sizes;
 }
 
 const VoteDisplayContainer = styled.p<{
   numberOfVotes: number;
   voteLimit: number;
   isOpen: boolean;
+  size: Sizes;
 }>`
-  color: ${({ numberOfVotes, voteLimit, isOpen }) =>
+  color: ${({ numberOfVotes, voteLimit, isOpen, size }) =>
     (voteLimit && numberOfVotes && numberOfVotes > voteLimit) || !isOpen
       ? "red"
       : "inherit"};
-  font-size: 18px;
+  font-size: ${({ size }) => (size === "large" ? "22px" : "inherit")};
+  white-space: nowrap;
 `;
 
 const VoteDisplay: React.SFC<VoteDisplayProps> = props => {
@@ -34,6 +39,7 @@ const VoteDisplay: React.SFC<VoteDisplayProps> = props => {
         numberOfVotes={numberOfVotes}
         voteLimit={props.poll.voteLimit}
         isOpen={props.poll.isOpen}
+        size={props.size || "default"}
       >
         {voteDisplayText}
       </VoteDisplayContainer>

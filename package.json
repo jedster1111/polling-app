@@ -117,6 +117,7 @@
     "redux-saga": "^0.16.2",
     "redux-saga-effects": "^1.1.0",
     "styled-components": "^3.4.6",
+    "url-safe-string": "^1.1.0",
     "uuid": "^3.3.2"
   },
   "jest": {

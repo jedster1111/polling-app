@@ -1,4 +1,5 @@
 import Loki from "lokijs";
+import UrlSafeString from "url-safe-string";
 import { ErrorWithStatusCode } from "../app";
 import {
   Poll,
@@ -12,6 +13,8 @@ import {
   VoteInput
 } from "../types";
 import calculateNumberOfVotesFromUser from "./calculateNumberOfVotesFromUser";
+
+const { generate: makeStringUrlSafe } = UrlSafeString();
 
 class Database {
   static checkValidPollInput(pollInput: PollInput) {
@@ -72,8 +75,11 @@ class Database {
   getPolls(): Poll[] {
     return this.stripResultsMetadata<Poll>(this.polls.find());
   }
-  getPoll(pollId: string): Poll {
-    return this.stripMeta<Poll>(this.polls.findOne({ pollId }));
+  getPollsByNamespace(namespace: string): Poll[] {
+    return this.stripResultsMetadata<Poll>(this.polls.find({ namespace }));
+  }
+  getPoll(pollId: string, namespace: string): Poll {
+    return this.stripMeta<Poll>(this.polls.findOne({ pollId, namespace }));
   }
   insertPoll(pollInput: PollInput): Poll {
     Database.checkValidPollInput(pollInput);
@@ -91,7 +97,8 @@ class Database {
     );
     const cleanedPollInput = Object.assign(pollInput, {
       options: newOptions,
-      pollId: `${this.pollsCount + 1}`
+      pollId: `${this.pollsCount + 1}`,
+      namespace: makeStringUrlSafe(pollInput.namespace || "public")
     });
     const newPoll: StoredPoll = this.polls.insert(cleanedPollInput);
     this.pollsCount++;
@@ -101,11 +108,17 @@ class Database {
   updatePoll(
     userId: string,
     pollId: string,
-    updatePollInput: UpdatePollInput
+    updatePollInput: UpdatePollInput,
+    urlNamespace: string
   ): Poll {
-    const poll: StoredPoll = this.polls.findOne({ pollId });
-    if (poll === null) {
-      throw new Error(`Poll with Id ${pollId} could not be found`);
+    const poll: StoredPoll = this.polls.findOne({
+      pollId,
+      namespace: urlNamespace
+    });
+    if (!poll) {
+      throw new Error(
+        `Poll with Id ${pollId} in namespace ${urlNamespace} could not be found`
+      );
     }
     if (poll.creatorId !== userId) {
       this.throwErrorWithStatusCode(
@@ -174,9 +187,7 @@ class Database {
       }
     });
     if (poll.options.length === 0) {
-      const error: ErrorWithStatusCode = new Error("Can't delete all options!");
-      error.statusCode = 401;
-      throw error;
+      this.throwErrorWithStatusCode("Can't delete all options!", 400);
     }
     this.polls.update(poll);
     return this.stripMeta<Poll>(poll);
@@ -188,8 +199,8 @@ class Database {
    * @param voteInput An object containing name of person voting and the Id of the option they're voting on
    * @returns Returns the poll that was voted on
    */
-  votePoll(pollId: string, voteInput: VoteInput): Poll {
-    const poll: StoredPoll = this.polls.findOne({ pollId });
+  votePoll(pollId: string, voteInput: VoteInput, namespace: string): Poll {
+    const poll: StoredPoll = this.polls.findOne({ pollId, namespace });
 
     this.checkValidVoteAndThrowErrors(poll, voteInput);
 
@@ -211,11 +222,18 @@ class Database {
     return this.stripMeta<Poll>(poll);
   }
 
-  removeVotePoll(pollId: string, voteInput: VoteInput): Poll {
-    const poll: StoredPoll = this.polls.findOne({ pollId });
+  removeVotePoll(
+    pollId: string,
+    voteInput: VoteInput,
+    namespace: string
+  ): Poll {
+    const poll: StoredPoll = this.polls.findOne({ pollId, namespace });
 
-    if (poll === undefined) {
-      this.throwErrorWithStatusCode("That poll does not exist", 400);
+    if (!poll) {
+      this.throwErrorWithStatusCode(
+        `Poll with id "${pollId}" in namespace "${namespace}" can't be found!`,
+        400
+      );
     }
     if (!poll.isOpen) {
       this.throwErrorWithStatusCode("This poll has been closed!", 400);
@@ -241,8 +259,14 @@ class Database {
     return this.stripMeta<Poll>(poll);
   }
 
-  openPoll(userId: string, pollId: string): Poll {
-    const poll: StoredPoll = this.polls.findOne({ pollId });
+  openPoll(userId: string, pollId: string, namespace: string): Poll {
+    const poll: StoredPoll = this.polls.findOne({ pollId, namespace });
+    if (!poll) {
+      this.throwErrorWithStatusCode(
+        `Poll with id ${pollId} in namespace ${namespace} does not exist!`,
+        400
+      );
+    }
     if (poll.creatorId !== userId) {
       this.throwErrorWithStatusCode(
         "Can't open a poll that you didn't create!",
@@ -254,8 +278,14 @@ class Database {
     return this.stripMeta<Poll>(poll);
   }
 
-  closePoll(userId: string, pollId: string): Poll {
-    const poll: StoredPoll = this.polls.findOne({ pollId });
+  closePoll(userId: string, pollId: string, namespace: string): Poll {
+    const poll: StoredPoll = this.polls.findOne({ pollId, namespace });
+    if (!poll) {
+      this.throwErrorWithStatusCode(
+        `Poll with id ${pollId} in namespace ${namespace} does not exist!`,
+        400
+      );
+    }
     if (poll.creatorId !== userId) {
       this.throwErrorWithStatusCode(
         "Can't close a poll that you didn't create!",
@@ -271,14 +301,22 @@ class Database {
    * Removes a poll with the specified Id.
    * @param pollId Id of the poll you wish to remove from the database.
    */
-  removePoll(userId: string, pollId: string): void {
-    const poll: Poll = this.polls.findOne({ pollId });
+  removePoll(userId: string, pollId: string, namespace: string): void {
+    const poll: Poll = this.polls.findOne({ pollId, namespace });
+    if (!poll) {
+      this.throwErrorWithStatusCode(
+        `A poll with id ${pollId} in namespace ${namespace} does not exist!`,
+        400
+      );
+    }
+
     if (poll.creatorId !== userId) {
       this.throwErrorWithStatusCode(
         "Can't delete a poll that you didn't create!",
         401
       );
     }
+
     this.polls.remove(poll);
   }
   resetPolls(): void {

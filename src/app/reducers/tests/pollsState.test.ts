@@ -3,7 +3,7 @@ import {
   generatePoll,
   generatePolls
 } from "../../../tests/pollTestUtils";
-import * as types from "../../actions/action-types";
+import { ActionTypes } from "../../actions/action-types";
 import { Poll } from "../../types";
 import reducer, { initialPollsState } from "../pollsState";
 
@@ -31,12 +31,12 @@ describe("Testing pollsState reducer", () => {
 
   it("should handle LOCATION_CHANGED", () => {
     expect(
-      reducer(initialPollsState, { type: types.LOCATION_CHANGED })
+      reducer(initialPollsState, { type: ActionTypes.locationChanged })
     ).toEqual({ ...initialPollsState, editingPoll: null, showResults: {} });
   });
 
   it("should handle GET_POLLS_REQUEST", () => {
-    loadingTest(types.GET_POLLS_REQUEST);
+    loadingTest(ActionTypes.getPollsRequest);
   });
 
   it("should handle GET_POLLS_SUCCESS", () => {
@@ -44,17 +44,17 @@ describe("Testing pollsState reducer", () => {
     expect(
       reducer(
         { ...initialPollsState, isLoading: true },
-        { type: types.GET_POLLS_SUCCESS, payload: { polls } }
+        { type: ActionTypes.getPollsSuccess, payload: { polls } }
       )
     ).toEqual({ ...initialPollsState, isLoading: false, polls });
   });
 
   it("should handle GET_POLLS_ERROR", () => {
-    errorTest(types.GET_POLLS_ERROR);
+    errorTest(ActionTypes.getPollsError);
   });
 
   it("should handle VOTE_OPTION_LOADING", () => {
-    loadingTest(types.VOTE_OPTION_LOADING);
+    loadingTest(ActionTypes.voteOptionLoading);
   });
 
   it("should handle VOTE_OPTION_SUCCESS", () => {
@@ -72,21 +72,21 @@ describe("Testing pollsState reducer", () => {
     expect(
       reducer(
         { ...initialPollsState, isLoading: true, polls: initPolls },
-        { type: types.VOTE_OPTION_SUCCESS, payload: { poll: votedPoll } }
+        { type: ActionTypes.voteOptionSuccess, payload: { poll: votedPoll } }
       )
     ).toEqual({ ...initialPollsState, polls: resultPolls });
   });
 
   it("should handle VOTE_OPTION_ERROR", () => {
-    errorTest(types.VOTE_OPTION_ERROR);
+    errorTest(ActionTypes.voteOptionError);
   });
 
   it("should handle TOGGLE_SHOW_RESULTS_LOADING", () => {
-    loadingTest(types.TOGGLE_SHOW_RESULTS_LOADING);
+    loadingTest(ActionTypes.toggleShowResultsLoading);
   });
 
   it("should handle TOGGLE_SHOW_RESULTS_ERROR", () => {
-    errorTest(types.VOTE_OPTION_ERROR);
+    errorTest(ActionTypes.voteOptionError);
   });
 
   it("should handle TOGGLE_SHOW_RESULTS_SUCCESS", () => {
@@ -105,7 +105,7 @@ describe("Testing pollsState reducer", () => {
       reducer(
         { ...initialPollsState, isLoading: true, polls: initPolls },
         {
-          type: types.TOGGLE_SHOW_RESULTS_SUCCESS,
+          type: ActionTypes.toggleShowResultsSuccess,
           payload: { poll: showPoll }
         }
       )
@@ -118,11 +118,11 @@ describe("Testing pollsState reducer", () => {
   });
 
   it("should handle DELETE_POLL_LOADING", () => {
-    loadingTest(types.DELETE_POLL_LOADING);
+    loadingTest(ActionTypes.deletePollLoading);
   });
 
   it("should handle DELETE_POLL_ERROR", () => {
-    errorTest(types.DELETE_POLL_ERROR);
+    errorTest(ActionTypes.deletePollError);
   });
 
   it("should handle DELETE_POLL_SUCCESS", () => {
@@ -139,17 +139,20 @@ describe("Testing pollsState reducer", () => {
     expect(
       reducer(
         { ...initialPollsState, polls: initPolls, isLoading: true },
-        { type: types.DELETE_POLL_SUCCESS, payload: { pollId: pollIdToDelete } }
+        {
+          type: ActionTypes.deletePollSuccess,
+          payload: { pollId: pollIdToDelete }
+        }
       )
     ).toEqual({ ...initialPollsState, polls: newPolls, isLoading: false });
   });
 
   it("should handle UPDATE_POLL_LOADING", () => {
-    loadingTest(types.UPDATE_POLL_LOADING);
+    loadingTest(ActionTypes.updatePollLoading);
   });
 
   it("should handle UPDATE_POLL_ERROR", () => {
-    errorTest(types.UPDATE_POLL_ERROR);
+    errorTest(ActionTypes.updatePollError);
   });
 
   it("should handle UPDATE_POLL_SUCCESS", () => {
@@ -163,7 +166,7 @@ describe("Testing pollsState reducer", () => {
     expect(
       reducer(
         { ...initialPollsState, isLoading: true, polls: initPolls },
-        { type: types.UPDATE_POLL_SUCCESS, payload: { poll: updatedPoll } }
+        { type: ActionTypes.updatePollSuccess, payload: { poll: updatedPoll } }
       )
     ).toEqual({ ...initialPollsState, polls: newPolls });
   });
@@ -172,7 +175,7 @@ describe("Testing pollsState reducer", () => {
     const pollId = "1";
     expect(
       reducer(initialPollsState, {
-        type: types.SHOW_UPDATE_POLL_FORM,
+        type: ActionTypes.showUpdatePollForm,
         payload: { pollId }
       })
     ).toEqual({ ...initialPollsState, editingPoll: pollId });
@@ -182,17 +185,17 @@ describe("Testing pollsState reducer", () => {
     expect(
       reducer(
         { ...initialPollsState, editingPoll: "2" },
-        { type: types.DISCARD_UPDATE_POLL_FORM }
+        { type: ActionTypes.discardUpdatePollForm }
       )
     ).toEqual(initialPollsState);
   });
 
   it("should handle CLOSE_POLL_LOADING", () => {
-    loadingTest(types.CLOSE_POLL_LOADING);
+    loadingTest(ActionTypes.closePollLoading);
   });
 
   it("should handle CLOSE_POLL_ERROR", () => {
-    errorTest(types.CLOSE_POLL_ERROR);
+    errorTest(ActionTypes.closePollError);
   });
 
   it("should handle CLOSE_POLL_SUCCESS", () => {
@@ -206,17 +209,17 @@ describe("Testing pollsState reducer", () => {
     expect(
       reducer(
         { ...initialPollsState, isLoading: true, polls: initPolls },
-        { type: types.CLOSE_POLL_SUCCESS, payload: { poll: updatedPoll } }
+        { type: ActionTypes.closePollSuccess, payload: { poll: updatedPoll } }
       )
     ).toEqual({ ...initialPollsState, polls: newPolls });
   });
 
   it("should handle OPEN_POLL_LOADING", () => {
-    loadingTest(types.OPEN_POLL_LOADING);
+    loadingTest(ActionTypes.openPollLoading);
   });
 
   it("should handle OPEN_POLL_ERROR", () => {
-    errorTest(types.OPEN_POLL_ERROR);
+    errorTest(ActionTypes.openPollError);
   });
 
   it("should handle OPEN_POLL_SUCCESS", () => {
@@ -230,7 +233,7 @@ describe("Testing pollsState reducer", () => {
     expect(
       reducer(
         { ...initialPollsState, isLoading: true, polls: initPolls },
-        { type: types.OPEN_POLL_SUCCESS, payload: { poll: updatedPoll } }
+        { type: ActionTypes.openPollSuccess, payload: { poll: updatedPoll } }
       )
     ).toEqual({ ...initialPollsState, polls: newPolls });
   });

@@ -1,4 +1,3 @@
-import { push } from "connected-react-router";
 import * as React from "react";
 import { connect } from "react-redux";
 import {
@@ -6,48 +5,50 @@ import {
   deletePoll,
   discardUpdatePollForm,
   fetchPolls,
+  navigateToPoll,
   openPoll,
   showUpdatePollForm,
   toggleShowResults,
   voteOption
 } from "../../actions/actions";
-import { InitialState } from "../../reducers/rootReducer";
+import { StoreState } from "../../reducers/rootReducer";
 import { Poll, User } from "../../types";
+import { VoteInput } from "../poll-detail/PollDetailContainer";
 import PollsList from "./PollsList";
 
 interface PollsListContainerProps {
   user: User;
   polls: Poll[];
-  fetchPolls: () => any;
+  fetchPolls: (namespace: string) => any;
   voteOption: (
+    voteInput: VoteInput,
     isAddingVote: boolean,
-    userId: string,
-    pollId: string,
-    optionId: string
+    namespace: string
   ) => any;
   toggleShowResults: (pollId: string) => void;
-  deletePoll: (userId: string, pollId: string) => any;
+  deletePoll: (userId: string, pollId: string, namespace: string) => any;
   showResults: { [pollId: string]: boolean };
   showUpdatePollForm: (pollId: string, poll: Poll) => any;
   editingPoll: null | string;
   discardUpdatePollForm: () => any;
   isLoading: boolean;
   isLoggedIn: boolean;
-  navigateToPoll: (pollId: string) => any;
-  openPoll: (pollId: string) => any;
-  closePoll: (pollId: string) => any;
+  namespace: string;
+  navigateToPoll: (namespace: string, pollId: string) => any;
+  openPoll: (pollId: string, namespace: string) => any;
+  closePoll: (pollId: string, namespace: string) => any;
 }
 
-const navigateToPoll = (pollId: string) => push(`/${pollId}`);
-
-const mapStateToProps = (state: InitialState) => {
+const mapStateToProps = (state: StoreState) => {
+  const [namespace] = state.router.location.pathname.slice(1).split("/");
   return {
     polls: [...state.pollsState.polls].reverse(),
     user: state.userState.data,
     showResults: state.pollsState.showResults,
     editingPoll: state.pollsState.editingPoll,
     isLoading: state.pollsState.isLoading,
-    isLoggedIn: state.userState.isLoggedIn
+    isLoggedIn: state.userState.isLoggedIn,
+    namespace
   };
 };
 const mapDispatchToProps = {
@@ -67,10 +68,21 @@ class PollsListContainer extends React.Component<PollsListContainerProps> {
     super(props);
   }
   componentDidMount() {
-    this.props.fetchPolls();
+    this.props.fetchPolls(this.props.namespace || "public");
   }
+
+  componentDidUpdate(prevProps: PollsListContainerProps) {
+    if (this.props.namespace !== prevProps.namespace) {
+      this.props.fetchPolls(this.props.namespace || "public");
+    }
+  }
+
   handleVote = (isAddingVote: boolean, pollId: string, optionId: string) => {
-    this.props.voteOption(isAddingVote, this.props.user.id, pollId, optionId);
+    this.props.voteOption(
+      { userId: this.props.user.id, pollId, optionId },
+      isAddingVote,
+      this.props.namespace
+    );
   };
   handleToggleShowResults = (pollId: string) => {
     this.props.toggleShowResults(pollId);
@@ -89,19 +101,34 @@ class PollsListContainer extends React.Component<PollsListContainerProps> {
     return (
       <PollsList
         polls={this.props.polls}
-        fetchPolls={this.props.fetchPolls}
+        fetchPolls={() =>
+          this.props.fetchPolls(this.props.namespace || "public")
+        }
         handleVote={this.handleVote}
         user={this.props.user}
         showResults={this.props.showResults}
         toggleShowResults={this.handleToggleShowResults}
-        deletePoll={this.props.deletePoll}
+        deletePoll={(pollId: string) =>
+          this.props.deletePoll(
+            this.props.user.id,
+            pollId,
+            this.props.namespace || "public"
+          )
+        }
         showEditForm={this.showEditForm}
         editingPoll={this.props.editingPoll}
         isLoading={this.props.isLoading}
-        navigateToPoll={this.props.navigateToPoll}
+        navigateToPoll={(pollId: string) =>
+          this.props.navigateToPoll(this.props.namespace, pollId)
+        }
         isLoggedIn={this.props.isLoggedIn}
-        openPoll={this.props.openPoll}
-        closePoll={this.props.closePoll}
+        openPoll={(pollId: string) =>
+          this.props.openPoll(pollId, this.props.namespace)
+        }
+        closePoll={(pollId: string) =>
+          this.props.closePoll(pollId, this.props.namespace)
+        }
+        namespace={this.props.namespace || "public"}
       />
     );
   }

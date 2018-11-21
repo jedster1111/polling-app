@@ -1,5 +1,5 @@
 import { AnyAction, Reducer } from "redux";
-import * as actionTypes from "../actions/action-types";
+import { ActionTypes } from "../actions/action-types";
 import { User } from "../types";
 
 export interface UserState {
@@ -27,33 +27,33 @@ const userStateReducer: Reducer = (
   action: AnyAction
 ): UserState => {
   switch (action.type) {
-    case actionTypes.GET_USER_DATA_LOADING:
+    case ActionTypes.getUserDataLoading:
       return {
         ...userState,
         isLoading: true,
         error: null
       };
-    case actionTypes.GET_USER_DATA_SUCCESS:
+    case ActionTypes.getUserDataSuccess:
       return {
         ...userState,
         data: { ...action.payload.user },
         isLoading: false,
         isLoggedIn: true
       };
-    case actionTypes.GET_USER_DATA_ERROR:
+    case ActionTypes.getUserDataError:
       return {
         ...userState,
         isLoading: false,
         error: action.payload.error
       };
-    case actionTypes.GET_USER_DATA_NOT_LOGGED_IN:
+    case ActionTypes.getUserDataNotLoggedIn:
       return {
         ...userState,
         isLoading: false,
         isLoggedIn: false,
         data: { ...initialUserState.data }
       };
-    case actionTypes.CLOSED_WARNING:
+    case ActionTypes.closedWarning:
       return {
         ...userState,
         hasClosedWarning: true
