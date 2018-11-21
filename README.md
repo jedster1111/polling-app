@@ -1,8 +1,117 @@
 # Polling App
 
+An application to create and vote on polls, written in Typescript.
+
+[See the live version here.](https://polling-app-jed.herokuapp.com)
+
+![Polling app run through](https://s2.gifyu.com/images/runThrough.gif)
+
+## Table of Contents
+
+- [Polling App](#polling-app)
+  - [Table of Contents](#table-of-contents)
+  - [Technology Used](#technology-used)
+  - [Setup](#setup)
+  - [Development Server](#development-server)
+  - [Testing](#testing)
+  - [Deployment](#deployment)
+  - [Other Commands](#other-commands)
+  - [Auth](#auth)
+    - [`/auth/github`](#authgithub)
+      - [`/auth/logout`](#authlogout)
+      - [`/test`](#test)
+  - [Api Design](#api-design)
+    - [Models](#models)
+      - [Poll](#poll)
+      - [User](#user)
+    - [`/api/polls`](#apipolls)
+      - [`POST`](#post)
+        - [Usage](#usage)
+          - [Expects](#expects)
+          - [Returns](#returns)
+      - [`GET`](#get)
+      - [Usage](#usage-1)
+      - [Expects](#expects-1)
+      - [Returns](#returns-1)
+    - [`/api/polls/:namespace`](#apipollsnamespace)
+      - [`POST`](#post-1)
+        - [Usage](#usage-2)
+          - [Expects](#expects-2)
+          - [Returns](#returns-2)
+      - [`GET`](#get-1)
+        - [Usage](#usage-3)
+          - [Expects](#expects-3)
+          - [Returns](#returns-3)
+    - [`/api/polls/:namespace/:id`](#apipollsnamespaceid)
+      - [`POST`](#post-2)
+        - [Usage](#usage-4)
+          - [Expects](#expects-4)
+          - [Returns](#returns-4)
+      - [`GET`](#get-2)
+        - [Usage](#usage-5)
+          - [Expects](#expects-5)
+          - [Returns](#returns-5)
+      - [`DELETE`](#delete)
+        - [Usage](#usage-6)
+          - [Expects](#expects-6)
+          - [Returns](#returns-6)
+    - [`/api/polls/:namespace/:id/vote`](#apipollsnamespaceidvote)
+      - [`POST`](#post-3)
+        - [Usage](#usage-7)
+          - [Expects](#expects-7)
+          - [Returns](#returns-7)
+    - [`/api/polls/:namespace/:id/remove-vote`](#apipollsnamespaceidremove-vote)
+      - [`POST`](#post-4)
+        - [Usage](#usage-8)
+          - [Expects](#expects-8)
+          - [Returns](#returns-8)
+    - [`/api/polls/:namespace/:id/open`](#apipollsnamespaceidopen)
+      - [`POST`](#post-5)
+        - [Usage](#usage-9)
+          - [Expects](#expects-9)
+          - [Returns](#returns-9)
+    - [`/api/polls/:namespace/:id/close`](#apipollsnamespaceidclose)
+      - [`POST`](#post-6)
+        - [Usage](#usage-10)
+          - [Expects](#expects-10)
+          - [Returns](#returns-10)
+    - [`/api/users`](#apiusers)
+      - [`GET`](#get-3)
+        - [Usage](#usage-11)
+          - [Expects](#expects-11)
+          - [Returns](#returns-11)
+    - [`/api/users/:id`](#apiusersid)
+      - [`GET`](#get-4)
+        - [Usage](#usage-12)
+          - [Expects](#expects-12)
+          - [Returns](#returns-12)
+    - [`/api/users/me`](#apiusersme)
+      - [`GET`](#get-5)
+        - [Usage](#usage-13)
+          - [Expects](#expects-13)
+          - [Returns](#returns-13)
+
+## Technology Used
+
+- Frontend
+  - React
+  - Redux
+  - Redux-Saga
+  - styled components
+  - Ant Design
+  - Axios
+- Backend
+  - Express
+  - Passport (Github & JWT auth)
+  - LokiJS
+- Testing
+  - Jest
+  - SuperTest
+  - TestCafe
+
 ## Setup
 
-- To install dependencies run: `yarn install`
+- To install dependencies run: `yarn` or `yarn install`
 - In order for the github authentication to work, you must
   - Follow [github's tutorial for creating an OAuth app](https://developer.github.com/apps/building-oauth-apps/creating-an-oauth-app/)
     - Homepage Url might be `http://127.0.0.1:8000` while developing locally
@@ -38,8 +147,10 @@
 - To execute unit/integration tests with jest, run: `yarn test`
 - To execute end-to-end tests using testcafe, first ensure development server is running
   and run: `yarn testcafe`
+
   - **Add the github account you'd like to use for testing to `dev.env` file in the format shown below**  
     Probably best not to use your real github account especially if you share passwords between multiple accounts.
+
   ```
     TEST_USERNAME=YourGithubUsername
     TEST_PASSWORD=YourPassword
@@ -53,7 +164,7 @@ Run `yarn start:prod` to run the server.
 
 ## Other Commands
 
-- To start Storybook run: `yarn run storybook`
+- To start Storybook run: `yarn run storybook` - _hasn't been kept up to date though_
 - To launch a debug Chrome instance, run: `yarn start chrome`  
   Attach to port `9222` using your debugger and you can debug in your IDE now!
 
@@ -61,7 +172,7 @@ Run `yarn start:prod` to run the server.
 
 ### `/auth/github`
 
-Allows you to login using your github account and redirects to `/`.
+Allows you to login using your github account and then redirects to your previous location.
 
 #### `/auth/logout`
 
@@ -75,63 +186,99 @@ If logged in will display your user data stored in the databse.
 
 All routes go through `/api/`, eg: `localhost:8000/api/polls`
 
----
+### Models
 
-## `/api/polls`
+#### Poll
 
-### `POST`
-
-#### Usage
-
-Create a new poll.
-
-#### Expects
-
-```json
+```
 {
-  "creatorId": "1234",
-  "pollName": "What furniture?",
-  "description": "We are going to get some new furniture in the office!",
-  "options": ["bean bags", "rocking chairs", "garden bench"]
+  description: string,
+  pollId: string,
+  pollName: string,
+  voteLimit: number,
+  creator: User,
+  options: [
+    {
+      optionId: string,
+      value: string,
+      votes: []
+    },
+    {
+      optionId: string,
+      value: string,
+      votes: []
+    },
+    {
+      optionId: string,
+      value: string,
+      votes: []
+    },
+    {
+      optionId: string,
+      value: string,
+      votes: []
+    }
+  ],
+  isOpen: boolean,
+  totalVotes: number,
+  optionVoteLimit: number,
+  namespace: string
 }
 ```
 
-#### Returns
+#### User
 
-Response code: `201`  
-Description: Succesfully created a new poll  
-Json:
-
-```json
+```
 {
-  "poll": {
-    "pollId": "1",
-    "creator": { "displayName": "Roy", "id": "1234" },
-    "pollName": "What furniture?",
-    "description": "We are going to get some new furniture in the office!",
-    "isOpen": true,
-    "options": [
-      { "optionId": 1, "value": "bean bags", "votes": [] },
-      { "optionId": 2, "value": "rocking chairs", "votes": [] },
-      { "optionId": 3, "value": "garden bench", "votes": [] }
-    ]
+  displayName: string,
+  id: string,
+  userName: string,
+  photos: [
+    {
+      value: string
+    }
+  ]
+}
+```
+
+### `/api/polls`
+
+#### `POST`
+
+##### Usage
+
+Create a new poll. If no namespace is provided, it will be created in `/public`
+
+###### Expects
+
+```
+{
+  poll: {
+    pollName: string,
+    description: string,
+    options: string[],
+    voteLimit: int,
+    optionVoteLimit: int,
+    namespace?: string
   }
 }
 ```
 
-Response code: `400`  
-Description: Failed to create poll, could be due to an issue with the
-sent information  
-Json: N/A
+###### Returns
 
-Response code: `401`  
-Description: Unauthorized, authenitcation failed. Either you are not logged in
-or JWT is invalid.  
-Json: N/A
+Response code: `201`  
+Description: Succesfully created a new poll in public.  
+Returns:
+
+```
+{
+  poll: Poll
+}
+```
 
 ---
 
-### `GET`
+#### `GET`
 
 #### Usage
 
@@ -145,57 +292,86 @@ N/A
 
 Response code: `200`  
 Description: Got a list of polls  
-Json:
+Returns:
 
-```json
+```
 {
-  "polls": [
-    {
-      "pollId": "1",
-      "creator": { "id": "1234", "displayName": "Roy" },
-      "pollName": "What furniture?",
-      "description": "We are going to get some new furniture in the office!",
-      "isOpen": true,
-      "voteLimit": 1,
-      "options": [
-        {
-          "optionId": "1",
-          "value": "rocking chairs",
-          "votes": [{ "id": "2345", "displayName": "Jed", "numberOfVotes": 1 }]
-        },
-        { "optionId": "2", "value": "garden bench", "votes": [] }
-      ]
-    },
-    {
-      "pollId": "2",
-      "creator": { "id": "2345", "displayName": "Jed" },
-      "pollName": "New monitors?",
-      "description": "What type of monitor would you guys like?",
-      "isOpen": true,
-      "voteLimit": 2,
-      "options": [
-        {
-          "optionId": "1",
-          "value": "dell",
-          "votes": [
-            { "id": "1234", "displayName": "Roy", "numberOfVotes": 2 },
-            { "id": "2345", "displayName": "Jed", "numberOfVotes": 0 }
-          ]
-        },
-        { "optionId": "2", "value": "acer", "votes": [] }
-      ]
-    }
-  ]
+  polls: Poll[]
 }
 ```
 
 ---
 
-## `/api/polls/:id`
+### `/api/polls/:namespace`
 
-### `POST`
+#### `POST`
 
-#### Usage
+##### Usage
+
+Create a new poll. If no namespace is provided, it will be created in the url provided namespace.
+
+###### Expects
+
+```
+{
+  poll: {
+    pollName: string,
+    description: string,
+    options: string[],
+    voteLimit: int,
+    optionVoteLimit: int,
+    namespace?: string
+  }
+}
+```
+
+###### Returns
+
+Response code: `201`  
+Description: Succesfully created a new poll in public.  
+Returns:
+
+```
+{
+  poll: Poll
+}
+```
+
+---
+
+#### `GET`
+
+##### Usage
+
+Gets a specific poll.
+
+###### Expects
+
+N/A
+
+###### Returns
+
+Response code: `200`  
+Description: Got a poll  
+Returns:
+
+```
+{
+  polls: Poll
+}
+```
+
+Response Code: `400`  
+Description: Poll probably wasn't found  
+Json: N/A
+
+---
+
+### `/api/polls/:namespace/:id`
+
+#### `POST`
+
+##### Usage
 
 Updates a specific poll
 
@@ -203,55 +379,33 @@ Updates a specific poll
 - Id can not be changed, it can only be used for identification.
 - You will only be able to update polls that you have created.
 - If you provide an option without an optionId, a new option will be created.
+- If you prived an option with an optionId but without a value, the option specfied will be deleted.
 
-#### Expects
+###### Expects
 
-```json
+```
 {
-  "description": "What furniture do you want?",
-  "pollName": "Changed Name",
-  "voteLimit": 3
-  "options": [
-    { "optionId": "1", "value": "new option value" },
-    { "optionId": "3", "value": "updated option 3" },
-    { "optionId": "", "value": "new option!" }
+  description?: string,
+  pollName?: string,
+  voteLimit?: integer,
+  optionVoteLimit?: integer,
+  options?: [
+    { optionId: string, value: string },
+    { optionId: string, value: "" }, // --> This option will be removed
+    { optionId: "", value: "new option!" } // -> This option will be added
   ]
 }
 ```
 
-#### Returns
+###### Returns
 
 Response Code: `200`  
 Description: Succesfully updated poll information  
-JSON:
+Returns:
 
-```json
+```
 {
-  "poll": {
-    "pollId": "1",
-    "creatorName": "Changed Name",
-    "pollName": "What furniture?",
-    "description": "What furniture do you want?",
-    "isOpen": true,
-    "voteLimit": 3,
-    "options": [
-      {
-        "optionId": 1,
-        "value": "new option value",
-        "votes": [
-          { "id": "1234", "displayName": "Roy", "numberOfVotes": 1 },
-          { "id": "1234", "displayName": "Jed", "numberOfVotes": 1 }
-        ]
-      },
-      {
-        "optionId": 2,
-        "value": "rocking chairs",
-        "votes": [{ "id": "1234", "displayName": "Roy", "numberOfVotes": 1 }]
-      },
-      { "optionId": 3, "value": "updated option 3", "votes": [] },
-      { "optionId": 4, "value": "new option!", "votes": [] }
-    ]
-  }
+  poll: Poll
 }
 ```
 
@@ -267,17 +421,17 @@ JSON: N/A
 
 ---
 
-### `GET`
+#### `GET`
 
-#### Usage
+##### Usage
 
 Gets the data for a specific poll
 
-#### Expects
+###### Expects
 
 N/A
 
-#### Returns
+###### Returns
 
 Response Code: `200`  
 Description: Got specific poll information  
@@ -285,30 +439,7 @@ JSON:
 
 ```json
 {
-  "poll": {
-    "pollId": "1",
-    "creator": { "id": "1234", "displayName": "Roy" },
-    "pollName": "What furniture?",
-    "description": "What furniture do you want?",
-    "isOpen": true,
-    "voteLimit": 3
-    "options": [
-      {
-        "optionId": 1,
-        "value": "bean-bags",
-        "votes": [
-          { "id": "2345", "displayName": "Jed", "numberOfVotes": 3 },
-          { "id": "3456", "displayName": "Joy", "numberOfVotes": 0 }
-        ]
-      },
-      {
-        "optionId": 2,
-        "value": "rocking chairs",
-        "votes": [{ "id": "1234", "displayName": "Roy", "numberOfVotes": 2 }]
-      },
-      { "optionId": 3, "value": "garden bench", "votes": [] }
-    ]
-  }
+  "poll": Poll
 }
 ```
 
@@ -318,19 +449,19 @@ JSON: N/A
 
 ---
 
-### `DELETE`
+#### `DELETE`
 
-#### Usage
+##### Usage
 
 Deletes a specific poll
 
 - You can only delete polls that you created
 
-#### Expects
+###### Expects
 
 N/A
 
-#### Returns
+###### Returns
 
 Response Code: `200`  
 Description: Succesfully deleted poll  
@@ -347,165 +478,100 @@ JSON: N/A
 
 ---
 
-## `/api/polls/:id/vote`
+### `/api/polls/:namespace/:id/vote`
 
-### `POST`
+#### `POST`
 
-#### Usage
+##### Usage
 
-Casts a vote on an option within a specific poll and returns the updated poll.  
-If the user has already voted on the option chosen, his previous vote should be removed.
+Casts a vote on an option within a specific poll and returns the updated poll.
 
-#### Expects
+###### Expects
 
-```json
+```
 {
-  "voterId": "4567",
-  "optionId": "2"
+  optionId: string
 }
 ```
 
-#### Returns
+###### Returns
 
 Response Code: `200`  
 Description: Succesfully voted for option in poll  
 JSON:
 
-```json
+```
 {
-  "poll": {
-    "pollId": "1",
-    "creator": { "id": "1234", "displayName": "Roy" },
-    "pollName": "What furniture?",
-    "description": "What furniture do you want?",
-    "isOpen": true,
-    "voteLimit": 2
-    "options": [
-      {
-        "optionId": 1,
-        "value": "bean-bags",
-        "votes": [
-          { "id": "1234", "displayName": "Roy", "numberOfVotes": 1 },
-          { "id": "2345", "displayName": "Jed", "numberOfVotes": 1 }
-        ]
-      },
-      {
-        "optionId": 2,
-        "value": "rocking chairs",
-        "votes": [
-          { "id": "1234", "displayName": "Roy", "numberOfVotes": 1 },
-          { "id": "4567", "displayName": "Jimmy", "numberOfVotes": 1 }
-        ]
-      },
-      { "optionId": 3, "value": "garden bench", "votes": [] }
-    ]
-  }
+  poll: Poll
 }
 ```
 
 Response Code: `400`  
-Description: Vote was rejected, possibly due to invalid option id  
+Description: Vote was rejected, could be invalid optionId, poll not found, or you don't have any votes remaining.  
 JSON: N/A
 
 Response Code: `401`  
 Description: Unauthorized, you are not logged in or JWT is invalid  
 JSON: N/A
 
-## `/api/polls/:id/remove-vote`
+### `/api/polls/:namespace/:id/remove-vote`
 
-### `POST`
+#### `POST`
 
-#### Usage
+##### Usage
 
 Rmoves a vote on an option within a specific poll and returns the updated poll.  
 If the user does not have any votes on the option chosen, a 400 error will be returned.
 
-#### Expects
+###### Expects
 
-```json
+```
 {
-  "voterId": "4567",
-  "optionId": "2"
+  optionId: string
 }
 ```
 
-#### Returns
+###### Returns
 
 Response Code: `200`
 Description: Succesfully removed a vote on an option in a poll.
 JSON:
 
-```json
+```
 {
-  "poll": {
-    "pollId": "1",
-    "creator": { "id": "1234", "displayName": "Roy" },
-    "pollName": "What furniture?",
-    "description": "What furniture do you want?",
-    "isOpen": true,
-    "voteLimit": 3
-    "options": [
-      {
-        "optionId": 1,
-        "value": "bean-bags",
-        "votes": [
-          { "id": "1234", "displayName": "Roy", "numberOfVotes": 1 },
-          { "id": "2345", "displayName": "Jed", "numberOfVotes": 1 }
-        ]
-      },
-      {
-        "optionId": 2,
-        "value": "rocking chairs",
-        "votes": [{ "id": "1234", "displayName": "Roy", "numberOfVotes": 1 }]
-      },
-      { "optionId": 3, "value": "garden bench", "votes": [] }
-    ]
-  }
+  poll: Poll
 }
 ```
 
-## `/api/polls/:id/open`
+Response Code: `400`  
+Description: Vote was rejected, could be invalid optionId, poll not found, or you don't have any votes to remove.  
+JSON: N/A
 
-### `POST`
+Response Code: `401`  
+Description: Unauthorized, you are not logged in or JWT is invalid  
+JSON: N/A
 
-#### Usage
+### `/api/polls/:namespace/:id/open`
+
+#### `POST`
+
+##### Usage
 
 Sets a poll as open (users are able to vote on it) and returns the updated poll.
 
-#### Expects
+###### Expects
 
 N/A
 
-#### Returns
+###### Returns
 
 Response Code: `200`  
 Description: Poll was successfully set to open  
 JSON:
 
-```json
+```
 {
-  "poll": {
-    "pollId": "1",
-    "creatorName": "Changed Name",
-    "pollName": "What furniture?",
-    "description": "What furniture do you want?",
-    "isOpen": true,
-    "voteLimit": 2
-    "options": [
-      {
-        "optionId": 1,
-        "value": "new option value",
-        "votes": []
-      },
-      {
-        "optionId": 2,
-        "value": "rocking chairs",
-        "votes": [{ "id": "1234", "displayName": "Roy", "numberOfVotes": 1 }]
-      },
-      { "optionId": 3, "value": "updated option 3", "votes": [] },
-      { "optionId": 4, "value": "new option!", "votes": [] }
-    ]
-  }
+  poll: Poll
 }
 ```
 
@@ -513,48 +579,27 @@ Response Code: `401`
 Description: Unauthorized, you are not logged in or JWT is invalid  
 JSON: N/A
 
-## `/api/polls/:id/close`
+### `/api/polls/:namespace/:id/close`
 
-### `POST`
+#### `POST`
 
-#### Usage
+##### Usage
 
 Sets a poll as closed (users will be unable to vote on it) and returns the updated poll.
 
-#### Expects
+###### Expects
 
 N/A
 
-#### Returns
+###### Returns
 
 Response Code: `200`  
 Description: Poll was successfully set to closed  
 JSON:
 
-```json
+```
 {
-  "poll": {
-    "pollId": "1",
-    "creatorName": "Changed Name",
-    "pollName": "What furniture?",
-    "description": "What furniture do you want?",
-    "isOpen": false,
-    "voteLimit": 3
-    "options": [
-      {
-        "optionId": 1,
-        "value": "new option value",
-        "votes": []
-      },
-      {
-        "optionId": 2,
-        "value": "rocking chairs",
-        "votes": [{ "id": "1234", "displayName": "Roy", "numberOfVotes": 1 }]
-      },
-      { "optionId": 3, "value": "updated option 3", "votes": [] },
-      { "optionId": 4, "value": "new option!", "votes": [] }
-    ]
-  }
+  poll: Poll
 }
 ```
 
@@ -564,103 +609,73 @@ JSON: N/A
 
 ---
 
-## `/api/users`
+### `/api/users`
 
-### `GET`
+#### `GET`
 
-#### Usage
+##### Usage
 
 Gets an array of all existing users, or if query is provided,
 returns an array of specified users data.  
 For example `users?ids=25291974&ids=43615036`
 
-#### Expects
+###### Expects
 
 N/A
 
-#### Returns
+###### Returns
 
 Response Code: `200`  
 Description: Got users  
 JSON:
 
-```json
+```
 {
-  "users": [
-    {
-      "id": "1234",
-      "displayName": "Jed",
-      "userName": "jedsUsername",
-      "emails": [
-        {
-          "value": "someEmail@hotmail.co.uk"
-        }
-      ]
-    },
-    {
-      "id": "2345",
-      "displayName": "Roy",
-      "userName": "roysUsername",
-      "emails": [
-        {
-          "value": "someOtherEmail@hotmail.co.uk"
-        }
-      ]
-    }
-  ]
+  users: User[]
 }
 ```
 
 ---
 
-## `/api/users/:id`
+### `/api/users/:id`
 
-### `GET`
+#### `GET`
 
-#### Usage
+##### Usage
 
 Gets an existing user by id
 
-#### Expects
+###### Expects
 
 N/A
 
-#### Returns
+###### Returns
 
 Response Code: `200`  
 Description: Got a user  
 JSON:
 
-```json
+```
 {
-  "user": {
-    "id": "1234",
-    "displayName": "Jed",
-    "userName": "jedsUsername",
-    "emails": [
-      {
-        "value": "someEmail@hotmail.co.uk"
-      }
-    ]
-  }
+  user: User
 }
 ```
 
 ---
 
-## `/api/users/me`
+### `/api/users/me`
 
-### `GET`
+#### `GET`
 
-#### Usage
+##### Usage
 
 Gets the currently logged in user's data
 
-#### Expects
+###### Expects
 
 N/A
 
-#### Returns
+###### Returns
 
 Response Code: `200`  
 Description: Got a user  
@@ -668,16 +683,7 @@ JSON:
 
 ```json
 {
-  "user": {
-    "id": "1234",
-    "displayName": "Jed",
-    "userName": "jedsUsername",
-    "emails": [
-      {
-        "value": "someEmail@hotmail.co.uk"
-      }
-    ]
-  }
+  "user": User
 }
 ```
 
