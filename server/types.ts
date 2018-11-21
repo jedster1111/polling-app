@@ -4,6 +4,7 @@ export interface CreatePollRequest {
   options: string[];
   voteLimit: number;
   optionVoteLimit: number;
+  namespace?: string;
 }
 
 // export interface UserVoteCount {
@@ -23,6 +24,7 @@ export interface PollInput {
   voteLimit: number;
   optionVoteLimit: number;
   isOpen: boolean;
+  namespace?: string;
 }
 /**
  * The format a poll is actually stored in the database as, not including Loki property.
@@ -36,6 +38,7 @@ export interface Poll {
   voteLimit: number;
   optionVoteLimit: number;
   isOpen: boolean;
+  namespace: string;
   // userVoteCount: UserVoteCount;
 }
 export interface StoredPoll extends Poll {
@@ -63,6 +66,7 @@ export interface PollResponse {
   optionVoteLimit: number;
   isOpen: boolean;
   totalVotes: number;
+  namespace: string;
 }
 export interface PollResponseOption {
   optionId: string;

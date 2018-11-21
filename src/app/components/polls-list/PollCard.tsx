@@ -10,7 +10,7 @@ export interface PollCardProps {
   poll: Poll;
   user: User;
   handleVote: (isAddingVote: boolean, pollId: string, optionId: string) => void;
-  deletePoll: (userId: string, pollId: string) => void;
+  deletePoll: (pollId: string) => void;
   toggleShowResults: (pollId: string) => void;
   showResults: boolean;
   showEditForm: (pollId: string) => void;
@@ -37,7 +37,7 @@ const PollCard = (props: PollCardProps) => {
       iconType="close"
       buttonType="danger"
       text="Delete"
-      handleClick={() => props.deletePoll(props.user.id, props.poll.pollId)}
+      handleClick={() => props.deletePoll(props.poll.pollId)}
       className="delete"
     />
   );

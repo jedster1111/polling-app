@@ -1,4 +1,3 @@
-import { Button } from "antd";
 import * as React from "react";
 import styled from "styled-components";
 import getRankingWithOrdinalIndicator from "./getRankingWithOrdinalIndicator";
@@ -7,12 +6,11 @@ interface VoteBarProps {
   maxVotes: number;
   numberOfVotes: number;
   ranking: number;
-  votesByUser: number;
-  optionVoteLimit: number;
-  handleVote: (isAddingVote: boolean) => void;
 }
 
-const BarContainer = styled.div``;
+const BarContainer = styled.div`
+  width: auto;
+`;
 const InnerVoteBar = styled.div<{ percentageWidth: string; ranking: number }>`
   display: flex;
   justify-content: center;
@@ -44,25 +42,6 @@ const InnerVoteBar = styled.div<{ percentageWidth: string; ranking: number }>`
   width: ${({ percentageWidth }) => percentageWidth};
   height: 50px;
 `;
-const TextContainer = styled.div`
-  display: flex;
-  align-items: center;
-  font-weight: bold;
-  text-align: center;
-  border: 1px solid #d9d9d9;
-  background-color: #fff;
-  padding-left: 12px;
-  padding-right: 12px;
-  line-height: 0;
-  margin: 0 4px;
-  min-height: 30px;
-`;
-
-const ButtonsContainer = styled.div`
-  margin: 3px 0;
-  display: flex;
-  justify-content: center;
-`;
 
 const RankingContainer = styled.span<{ numberOfVotes: number }>`
   transition: all 0.5s;
@@ -72,10 +51,7 @@ const RankingContainer = styled.span<{ numberOfVotes: number }>`
 const VoteBar: React.SFC<VoteBarProps> = ({
   maxVotes,
   numberOfVotes,
-  ranking,
-  votesByUser,
-  optionVoteLimit,
-  handleVote
+  ranking
 }) => {
   const rankingWithOrdinalIndicator = getRankingWithOrdinalIndicator(ranking);
 
@@ -94,21 +70,6 @@ const VoteBar: React.SFC<VoteBarProps> = ({
           {numberOfVotes ? `Total votes: ${numberOfVotes}` : "No votes"}
         </div>
       </BarContainer>
-      <ButtonsContainer>
-        <Button
-          icon="minus-circle"
-          onClick={() => handleVote(false)}
-          className="remove-vote-button"
-        />
-        <TextContainer className="user-votes">
-          {votesByUser} / {optionVoteLimit}
-        </TextContainer>
-        <Button
-          icon="plus-circle"
-          onClick={() => handleVote(true)}
-          className="add-vote-button"
-        />
-      </ButtonsContainer>
     </div>
   );
 };

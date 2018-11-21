@@ -8,6 +8,7 @@ export interface Poll {
   optionVoteLimit: number;
   isOpen: boolean;
   totalVotes: number;
+  namespace: string;
 }
 export interface User {
   id: string;
@@ -31,6 +32,7 @@ export interface PollInput {
   options: string[];
   voteLimit: number;
   optionVoteLimit: number;
+  namespace?: string;
 }
 export interface UpdatePollInput {
   pollName?: string;
@@ -38,6 +40,7 @@ export interface UpdatePollInput {
   options?: UpdatePollInputOption[];
   voteLimit?: number;
   optionVoteLimit?: number;
+  namespace?: string;
 }
 export interface UpdatePollInputOption {
   optionId: string;
