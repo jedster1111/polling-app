@@ -10,7 +10,7 @@ An application to create and vote on polls, written in Typescript.
 
 - [Polling App](#polling-app)
   - [Table of Contents](#table-of-contents)
-  - [Tech Used](#tech-used)
+  - [Technology Used](#technology-used)
   - [Setup](#setup)
   - [Development Server](#development-server)
   - [Testing](#testing)
@@ -79,7 +79,7 @@ An application to create and vote on polls, written in Typescript.
       - [Expects](#expects-11)
       - [Returns](#returns-11)
 
-## Tech Used
+## Technology Used
 
 - Frontend
   - React
@@ -153,7 +153,7 @@ Run `yarn start:prod` to run the server.
 
 ## Other Commands
 
-- To start Storybook run: `yarn run storybook`
+- To start Storybook run: `yarn run storybook` - _hasn't been kept up to date though_
 - To launch a debug Chrome instance, run: `yarn start chrome`  
   Attach to port `9222` using your debugger and you can debug in your IDE now!
 
@@ -183,7 +183,7 @@ All routes go through `/api/`, eg: `localhost:8000/api/polls`
 
 #### Usage
 
-Create a new poll.
+Create a new poll. If no namespace is provided, it will be created in `/public`
 
 #### Expects
 
@@ -201,7 +201,7 @@ Create a new poll.
 #### Returns
 
 Response code: `201`  
-Description: Succesfully created a new poll  
+Description: Succesfully created a new poll in public.
 Json:
 
 ```json
