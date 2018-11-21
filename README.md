@@ -230,7 +230,7 @@ All routes go through `/api/`, eg: `localhost:8000/api/polls`
 
 ```
 {
-  displayName: string,
+  displayName?: string,
   id: string,
   userName: string,
   photos: [
