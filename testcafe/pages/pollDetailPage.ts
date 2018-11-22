@@ -147,7 +147,7 @@ export default class PollDetailPage {
       checkNumberOfVotesFromUser: async (expectedNumberOfVotes: number) => {
         await t
           .expect(selectors.userVotes.textContent)
-          .eql(`${expectedNumberOfVotes}`);
+          .match(new RegExp(`^${expectedNumberOfVotes} \/ \d*`));
       }
     };
     return {

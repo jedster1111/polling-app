@@ -6,6 +6,7 @@ import {
   Poll,
   PollInput,
   PollResponse,
+  PollResponseOption,
   UpdatePollInput,
   User,
   VoteInputRequest
@@ -13,6 +14,7 @@ import {
 import createJwtCookie from "./createJwtCookie";
 
 const voteLimit = 3;
+const optionVoteLimit = 3;
 
 const generateInputPolls = (n: number) => {
   const polls: PollInput[] = [];
@@ -24,7 +26,9 @@ const generateInputPolls = (n: number) => {
       creatorId: `${index}`,
       options: ["option1", "option2"],
       voteLimit,
-      isOpen: true
+      isOpen: true,
+      optionVoteLimit,
+      namespace: "jeds-room"
     });
   }
   return polls;
@@ -84,40 +88,56 @@ describe("Testing poll related routes:", () => {
         options: ["option1", "option2"],
         pollName: "pollNamePOST",
         voteLimit,
-        isOpen: true
+        isOpen: true,
+        optionVoteLimit,
+        namespace: "jeds-room"
       };
 
-      const expectedResponse = {
-        description: "descriptionPOST",
+      const expectedResponse: PollResponse = {
+        description: inputData.description,
         creator: userToUse,
-        options: [
-          { optionId: "1", value: "option1", votes: [] },
-          { optionId: "2", value: "option2", votes: [] }
-        ],
-        pollName: "pollNamePOST"
+        options: inputData.options.map<PollResponseOption>(
+          (optionValue, index) => ({
+            optionId: `${index + 1}`,
+            value: optionValue,
+            votes: []
+          })
+        ),
+        pollName: inputData.pollName,
+        isOpen: inputData.isOpen,
+        namespace: inputData.namespace || "public",
+        optionVoteLimit: inputData.optionVoteLimit,
+        totalVotes: 0,
+        voteLimit: inputData.voteLimit,
+        pollId: "someID"
       };
 
       const token = createJwtCookie(userToUse.id);
 
       const payload = await request(app)
         .post("/api/polls")
-        .send(inputData)
+        .send({ poll: inputData })
         .set("Accept", "application/json")
         .set("Cookie", token)
         .expect(201);
 
       const postResponse = JSON.parse(payload.text).poll;
 
-      expect(postResponse).toMatchObject(expectedResponse);
+      expect(postResponse).toMatchObject({
+        ...expectedResponse,
+        pollId: postResponse.pollId
+      });
     });
   });
 
-  describe("Testing /api/polls/:id:", () => {
+  describe("Testing /api/polls/:namespace/:id:", () => {
     test("Can I get a specific poll?", async () => {
       const pollToUse = db.getPolls()[0];
       const expectedPoll = getResponsePoll(pollToUse);
 
-      const response = await request(app).get(`/api/polls/${pollToUse.pollId}`);
+      const response = await request(app).get(
+        `/api/polls/${pollToUse.namespace}/${pollToUse.pollId}`
+      );
       const responsePoll: Poll = response.body.poll;
 
       expect(responsePoll).toMatchObject(expectedPoll);
@@ -149,20 +169,23 @@ describe("Testing poll related routes:", () => {
         pollId: pollToUse.pollId,
         pollName: "pollNameChanged",
         voteLimit,
-        isOpen: true
+        isOpen: true,
+        totalVotes: 1,
+        optionVoteLimit,
+        namespace: pollToUse.namespace
       };
 
       const token = createJwtCookie(creator.id);
 
       await request(app)
-        .post(`/api/polls/${pollToUse.pollId}/vote`)
+        .post(`/api/polls/${pollToUse.namespace}/${pollToUse.pollId}/vote`)
         .send({ voterId: creator.id, optionId: "2" })
         .set("Accept", "application/json")
         .set("Cookie", token)
         .expect(200);
 
       const payload = await request(app)
-        .post(`/api/polls/${pollToUse.pollId}`)
+        .post(`/api/polls/${pollToUse.namespace}/${pollToUse.pollId}`)
         .send(inputData)
         .set("Accept", "application/json")
         .set("Cookie", token)
@@ -175,14 +198,13 @@ describe("Testing poll related routes:", () => {
 
     test("Can I remove a specific poll?", async () => {
       const pollToRemove = db.getPolls()[0];
-      const pollId = pollToRemove.pollId;
-      // expect(db.getPoll(`${noOfPolls + 1}`).description).toBe("descriptionJed");
+      const { pollId, namespace } = pollToRemove;
       await request(app)
-        .delete(`/api/polls/${pollId}`)
+        .delete(`/api/polls/${namespace}/${pollId}`)
         .set("Cookie", createJwtCookie(pollToRemove.creatorId))
         .expect(200);
 
-      expect(db.getPoll(`${pollId}`)).toBeNull();
+      expect(db.getPoll(`${pollId}`, namespace)).toBeNull();
     });
 
     test("Am I unable to remove a poll that I didn't create?", async () => {
@@ -190,7 +212,7 @@ describe("Testing poll related routes:", () => {
       const userToUse = getAnotherUser(pollToRemove);
 
       await request(app)
-        .delete(`/api/polls/${pollToRemove.pollId}`)
+        .delete(`/api/polls/${pollToRemove.namespace}/${pollToRemove.pollId}`)
         .set("Cookie", createJwtCookie(userToUse.id))
         .expect(401);
     });
@@ -199,7 +221,7 @@ describe("Testing poll related routes:", () => {
       const pollToEdit = db.getPolls()[0];
       const userToUse = getAnotherUser(pollToEdit);
       await request(app)
-        .post(`/api/polls/${pollToEdit.pollId}`)
+        .post(`/api/polls/${pollToEdit.namespace}/${pollToEdit.pollId}`)
         .send({
           pollName: "pollNameChanged",
           options: [
@@ -212,7 +234,7 @@ describe("Testing poll related routes:", () => {
     });
   });
 
-  describe("Testing /api/polls/:id/vote:", () => {
+  describe("Testing /api/polls/:namespace/:id/vote:", () => {
     test("Can I vote on a poll?", async () => {
       const pollToVote = db.getPolls()[0];
       const userToUse = db.getUser(pollToVote.creatorId);
@@ -223,7 +245,7 @@ describe("Testing poll related routes:", () => {
       // console.log(object);
 
       const response = await request(app)
-        .post(`/api/polls/${pollToVote.pollId}/vote`)
+        .post(`/api/polls/${pollToVote.namespace}/${pollToVote.pollId}/vote`)
         .send(voteInput)
         .set("Accept", "application/json")
         .set("Cookie", token)
@@ -238,7 +260,7 @@ describe("Testing poll related routes:", () => {
     });
   });
 
-  describe("Testing /api/poll/:id/remove-vote", () => {
+  describe("Testing /api/poll/:namespace/:id/remove-vote", () => {
     test("Can I remove a vote on a poll?", async () => {
       const pollToVote = db.getPolls()[0];
       const userToUse = db.getUser(pollToVote.creatorId);
@@ -247,14 +269,16 @@ describe("Testing poll related routes:", () => {
       const token = createJwtCookie(userToUse.id);
 
       await request(app)
-        .post(`/api/polls/${pollToVote.pollId}/vote`)
+        .post(`/api/polls/${pollToVote.namespace}/${pollToVote.pollId}/vote`)
         .send(voteInput)
         .set("Accept", "application/json")
         .set("Cookie", token)
         .expect(200);
 
       const response = await request(app)
-        .post(`/api/polls/${pollToVote.pollId}/remove-vote`)
+        .post(
+          `/api/polls/${pollToVote.namespace}/${pollToVote.pollId}/remove-vote`
+        )
         .send(voteInput)
         .set("Accept", "application/json")
         .set("Cookie", token)
@@ -268,7 +292,7 @@ describe("Testing poll related routes:", () => {
     });
   });
 
-  describe("Testing /api/polls/:id/open and /api/polls/:id/close", () => {
+  describe("Testing /api/polls/:namespace/:id/open and /api/polls/:namespace/:id/close", () => {
     test("Can I close a poll and then re-open it?", async () => {
       const pollToChange = db.getPolls()[0];
       const userToUse = db.getUser(pollToChange.creatorId);
@@ -278,7 +302,9 @@ describe("Testing poll related routes:", () => {
       const token = createJwtCookie(userToUse.id);
 
       let response = await request(app)
-        .post(`/api/polls/${pollToChange.pollId}/close`)
+        .post(
+          `/api/polls/${pollToChange.namespace}/${pollToChange.pollId}/close`
+        )
         .set("Accept", "application/json")
         .set("Cookie", token)
         .expect(200);
@@ -289,7 +315,9 @@ describe("Testing poll related routes:", () => {
       pollToChange.isOpen = true;
 
       response = await request(app)
-        .post(`/api/polls/${pollToChange.pollId}/open`)
+        .post(
+          `/api/polls/${pollToChange.namespace}/${pollToChange.pollId}/open`
+        )
         .set("Accept", "application/json")
         .set("Cookie", token)
         .expect(200);
@@ -304,13 +332,17 @@ describe("Testing poll related routes:", () => {
       const token = createJwtCookie(userToUse.id);
 
       await request(app)
-        .post(`/api/polls/${pollToChange.pollId}/close`)
+        .post(
+          `/api/polls/${pollToChange.namespace}/${pollToChange.pollId}/close`
+        )
         .set("Accept", "application/json")
         .set("Cookie", token)
         .expect(401);
 
       await request(app)
-        .post(`/api/polls/${pollToChange.pollId}/open`)
+        .post(
+          `/api/polls/${pollToChange.namespace}/${pollToChange.pollId}/open`
+        )
         .set("Accept", "application/json")
         .set("Cookie", token)
         .expect(401);

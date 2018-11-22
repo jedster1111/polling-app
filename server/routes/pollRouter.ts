@@ -4,6 +4,7 @@ import db from "../models/database";
 import {
   CreatePollRequest,
   PollResponseUser,
+  StoredPollOption,
   VoteInputRequest
 } from "../types";
 import {
@@ -27,7 +28,9 @@ export const getResponsePoll = (storedPoll: Poll): PollResponse => {
     pollName,
     pollId,
     voteLimit,
-    isOpen
+    isOpen,
+    optionVoteLimit,
+    namespace
   } = storedPoll;
   const creator = db.getUser(creatorId);
   return {
@@ -54,7 +57,10 @@ export const getResponsePoll = (storedPoll: Poll): PollResponse => {
         })
       };
     }),
-    isOpen
+    isOpen,
+    totalVotes: calculateTotalVotes(options),
+    optionVoteLimit,
+    namespace
   };
 };
 
@@ -70,9 +76,13 @@ pollRouter
     (req, res, next) => {
       try {
         const user = req.user;
-        const newPoll: CreatePollRequest = req.body;
+        const newPoll: CreatePollRequest = req.body.poll;
         const poll = getResponsePoll(
-          db.insertPoll({ ...newPoll, creatorId: user.id, isOpen: true })
+          db.insertPoll({
+            ...newPoll,
+            creatorId: user.id,
+            isOpen: true
+          })
         );
         res.status(201);
         res.json({ poll });
@@ -83,9 +93,42 @@ pollRouter
   );
 
 pollRouter
-  .route("/:pollId")
+  .route("/:namespace")
   .get((req, res) => {
-    const poll = getResponsePoll(db.getPoll(req.params.pollId));
+    const polls = getResponsePolls(
+      db.getPollsByNamespace(req.params.namespace)
+    );
+    res.json({ polls });
+  })
+  .post(
+    passport.authenticate(["jwt"], { session: false }),
+    (req, res, next) => {
+      try {
+        const user = req.user;
+        const newPoll: CreatePollRequest = req.body.poll;
+        const urlNamespace = req.params.namespace;
+
+        const poll = getResponsePoll(
+          db.insertPoll({
+            ...newPoll,
+            creatorId: user.id,
+            isOpen: true,
+            namespace: newPoll.namespace || urlNamespace
+          })
+        );
+        res.status(201).json({ poll });
+      } catch (error) {
+        next(error);
+      }
+    }
+  );
+
+pollRouter
+  .route("/:namespace/:pollId")
+  .get((req, res) => {
+    const poll = getResponsePoll(
+      db.getPoll(req.params.pollId, req.params.namespace)
+    );
     res.json({ poll });
   })
   .post(
@@ -94,9 +137,9 @@ pollRouter
       try {
         const userId = req.user.id;
         const updatedPollInput: UpdatePollInput = req.body;
-        const pollId = req.params.pollId;
+        const { pollId, namespace } = req.params;
         const poll = getResponsePoll(
-          db.updatePoll(userId, pollId, updatedPollInput)
+          db.updatePoll(userId, pollId, updatedPollInput, namespace)
         );
         res.status(200).json({ poll });
       } catch (error) {
@@ -106,22 +149,26 @@ pollRouter
   )
   .delete(passport.authenticate(["jwt"], { session: false }), (req, res) => {
     const userId: string = req.user.id;
-    const pollId = req.params.pollId;
-    db.removePoll(userId, pollId);
+    const { pollId, namespace } = req.params;
+    db.removePoll(userId, pollId, namespace);
     res.status(200).send();
   });
 
 pollRouter
-  .route("/:pollId/vote")
+  .route("/:namespace/:pollId/vote")
   .post(
     passport.authenticate(["jwt"], { session: false }),
     (req, res, next) => {
       try {
         const userId: string = req.user.id;
-        const pollId: string = req.params.pollId;
+        const { pollId, namespace } = req.params;
         const voteInput: VoteInputRequest = req.body;
         const poll = getResponsePoll(
-          db.votePoll(pollId, { optionId: voteInput.optionId, voterId: userId })
+          db.votePoll(
+            pollId,
+            { optionId: voteInput.optionId, voterId: userId },
+            namespace
+          )
         );
         res.status(200).json({ poll });
       } catch (error) {
@@ -131,19 +178,23 @@ pollRouter
   );
 
 pollRouter
-  .route("/:pollId/remove-vote")
+  .route("/:namespace/:pollId/remove-vote")
   .post(
     passport.authenticate(["jwt"], { session: false }),
     (req, res, next) => {
       try {
         const userId: string = req.user.id;
-        const pollId: string = req.params.pollId;
+        const { pollId, namespace } = req.params;
         const voteInput: VoteInputRequest = req.body;
         const poll = getResponsePoll(
-          db.removeVotePoll(pollId, {
-            optionId: voteInput.optionId,
-            voterId: userId
-          })
+          db.removeVotePoll(
+            pollId,
+            {
+              optionId: voteInput.optionId,
+              voterId: userId
+            },
+            namespace
+          )
         );
         res.status(200).json({ poll });
       } catch (error) {
@@ -153,15 +204,15 @@ pollRouter
   );
 
 pollRouter
-  .route("/:pollId/open")
+  .route("/:namespace/:pollId/open")
   .post(
     passport.authenticate(["jwt"], { session: false }),
     (req, res, next) => {
       try {
         const userId: string = req.user.id;
-        const pollId: string = req.params.pollId;
+        const { pollId, namespace } = req.params;
 
-        const poll = getResponsePoll(db.openPoll(userId, pollId));
+        const poll = getResponsePoll(db.openPoll(userId, pollId, namespace));
 
         res.status(200).json({ poll });
       } catch (error) {
@@ -170,15 +221,15 @@ pollRouter
     }
   );
 pollRouter
-  .route("/:pollId/close")
+  .route("/:namespace/:pollId/close")
   .post(
     passport.authenticate(["jwt"], { session: false }),
     (req, res, next) => {
       try {
         const userId: string = req.user.id;
-        const pollId: string = req.params.pollId;
+        const { pollId, namespace } = req.params;
 
-        const poll = getResponsePoll(db.closePoll(userId, pollId));
+        const poll = getResponsePoll(db.closePoll(userId, pollId, namespace));
 
         res.status(200).json({ poll });
       } catch (error) {
@@ -186,5 +237,12 @@ pollRouter
       }
     }
   );
+
+export function calculateTotalVotes(options: StoredPollOption[]): number {
+  return options.reduce((accum, option) => {
+    Object.values(option.votes).forEach(voteNumber => (accum += voteNumber));
+    return accum;
+  }, 0);
+}
 
 export default pollRouter;

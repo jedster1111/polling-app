@@ -1,55 +1,47 @@
-import { Icon } from "antd";
 import * as React from "react";
 import styled from "styled-components";
 import { Poll, User } from "../types";
+
+type Sizes = "default" | "large";
 
 interface VoteDisplayProps {
   poll: Poll;
   user: User;
   isLoggedIn: boolean;
+  size?: Sizes;
 }
 
 const VoteDisplayContainer = styled.p<{
-  numberOfVotes?: number;
-  voteLimit?: number;
+  numberOfVotes: number;
+  voteLimit: number;
   isOpen: boolean;
+  size: Sizes;
 }>`
-  color: ${({ numberOfVotes, voteLimit, isOpen }) =>
-    (numberOfVotes && voteLimit && numberOfVotes > voteLimit) || !isOpen
+  color: ${({ numberOfVotes, voteLimit, isOpen, size }) =>
+    (voteLimit && numberOfVotes && numberOfVotes > voteLimit) || !isOpen
       ? "red"
       : "inherit"};
+  font-size: ${({ size }) => (size === "large" ? "22px" : "inherit")};
+  white-space: nowrap;
 `;
 
 const VoteDisplay: React.SFC<VoteDisplayProps> = props => {
   const numberOfVotes = calculateTotalVotesByUser(props.user.id, props.poll);
-  const { isOpen } = props.poll;
-  const VoteCount = props.isLoggedIn ? (
-    <VoteDisplayContainer
-      numberOfVotes={numberOfVotes}
-      voteLimit={props.poll.voteLimit}
-      isOpen={isOpen}
-    >
-      Votes: {numberOfVotes} / {props.poll.voteLimit}
-    </VoteDisplayContainer>
-  ) : (
-    <VoteDisplayContainer isOpen={isOpen}>
-      Vote Limit: {props.poll.voteLimit}
-    </VoteDisplayContainer>
-  );
+  const { voteLimit } = props.poll;
+  const voteDisplayText = props.isLoggedIn
+    ? `Your Votes: ${numberOfVotes} / ${voteLimit}`
+    : `Vote Limit: ${voteLimit}`;
   return (
     <React.Fragment>
-      <span id="vote-display-count">{VoteCount}</span>
-      <VoteDisplayContainer isOpen={isOpen} id="vote-display-is-open">
-        Poll is{" "}
-        {props.poll.isOpen ? (
-          <span>
-            open <Icon type="unlock" />
-          </span>
-        ) : (
-          <span>
-            closed <Icon type="lock" />
-          </span>
-        )}
+      {/* <span id="vote-display-count">{VoteCount}</span> */}
+      <VoteDisplayContainer
+        id="vote-display-count"
+        numberOfVotes={numberOfVotes}
+        voteLimit={props.poll.voteLimit}
+        isOpen={props.poll.isOpen}
+        size={props.size || "default"}
+      >
+        {voteDisplayText}
       </VoteDisplayContainer>
     </React.Fragment>
   );

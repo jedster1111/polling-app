@@ -1,4 +1,4 @@
-import * as types from "../../actions/action-types";
+import { ActionTypes } from "../../actions/action-types";
 import reducer, { initialUserState } from "../userState";
 
 const user = { name: "Jed", id: "1" };
@@ -10,7 +10,7 @@ describe("Testing userState reducer:", () => {
   it("should handle GET_USER_DATA_LOADING", () => {
     expect(
       reducer(initialUserState, {
-        type: types.GET_USER_DATA_LOADING
+        type: ActionTypes.getUserDataLoading
       })
     ).toEqual({ ...initialUserState, isLoading: true, error: null });
   });
@@ -20,7 +20,7 @@ describe("Testing userState reducer:", () => {
       reducer(
         { ...initialUserState, isLoading: true },
         {
-          type: types.GET_USER_DATA_SUCCESS,
+          type: ActionTypes.getUserDataSuccess,
           payload: { user }
         }
       )
@@ -36,9 +36,9 @@ describe("Testing userState reducer:", () => {
     const error = "Whoops";
     expect(
       reducer(
-        { data: user, isLoading: true, isLoggedIn: true },
+        { ...initialUserState, data: user, isLoading: true, isLoggedIn: true },
         {
-          type: types.GET_USER_DATA_ERROR,
+          type: ActionTypes.getUserDataError,
           payload: { error }
         }
       )
@@ -51,7 +51,7 @@ describe("Testing userState reducer:", () => {
         reducer(
           { ...initialUserState, isLoading: true },
           {
-            type: types.GET_USER_DATA_NOT_LOGGED_IN
+            type: ActionTypes.getUserDataNotLoggedIn
           }
         )
       ).toEqual({ ...initialUserState, isLoading: false, isLoggedIn: false });
@@ -67,7 +67,7 @@ describe("Testing userState reducer:", () => {
             data: user
           },
           {
-            type: types.GET_USER_DATA_NOT_LOGGED_IN
+            type: ActionTypes.getUserDataNotLoggedIn
           }
         )
       ).toEqual({ ...initialUserState, isLoading: false, isLoggedIn: false });

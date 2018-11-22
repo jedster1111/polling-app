@@ -14,8 +14,14 @@
     "noImplicitAny": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "lib": ["es2015", "dom"],
-    "strictNullChecks": true
+    "lib": ["es2015", "es2017.object", "dom"],
+    "strictNullChecks": true,
+    "baseUrl": ".",
+    "paths": {
+      "*": [
+        "types/*"
+      ]
+    }
   },
   "include": [
     "src/**/*.ts",

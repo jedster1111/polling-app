@@ -1,3 +1,8 @@
 #root > .ant-layout > .ant-layout-header {
   height: auto;
 }
+
+.poll-detail .ant-card-meta-title {
+  white-space: normal;
+  overflow: hidden;
+}

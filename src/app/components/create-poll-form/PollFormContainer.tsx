@@ -1,8 +1,10 @@
 import * as React from "react";
 import { connect } from "react-redux";
+import UrlSafeString from "url-safe-string";
 import {
   addPollOption,
   changeFormData,
+  changeIsEditingNamespace,
   createPoll,
   discardPoll,
   discardUpdatePollForm,
@@ -10,25 +12,31 @@ import {
   updatePoll
 } from "../../actions/actions";
 import { PollFormInput } from "../../reducers/pollForm";
-import { InitialState } from "../../reducers/rootReducer";
+import { StoreState } from "../../reducers/rootReducer";
 import { PollInput, UpdatePollInput, User } from "../../types";
 import PollForm from "./PollForm";
+
+const { generate: makeStringUrlSafe } = UrlSafeString();
 
 interface PollFormContainerProps {
   pollFormData: PollFormInput;
   originalData: PollFormInput;
   user: User;
   isLoading: boolean;
+  namespace: string;
+  isEditingNamespace: boolean;
   submitPoll: (poll: PollInput) => any;
   handleChange: (fieldId: string, value: string | number) => any;
-  discardPoll: () => any;
+  discardPoll: (namespace?: string) => any;
   addPollOption: () => any;
   removePollOption: (index: number) => any;
   discardUpdatePollForm: () => any;
+  changeIsEditingNamespace: (isEditing: boolean) => any;
   updatePoll: (
     userId: string,
     pollId: string,
-    updatePollInput: UpdatePollInput
+    updatePollInput: UpdatePollInput,
+    namespace: string
   ) => any;
 }
 interface OwnProps {
@@ -43,21 +51,30 @@ const mapDispatchToProps = {
   addPollOption,
   removePollOption,
   discardUpdatePollForm,
-  updatePoll
+  updatePoll,
+  changeIsEditingNamespace
 };
 
-const mapStateToProps = (state: InitialState, ownProps: OwnProps) => {
+const mapStateToProps = (state: StoreState, ownProps: OwnProps) => {
   return {
     pollFormData: state.pollForm.data,
     originalData: state.pollForm.originalData,
     isLoading: state.pollForm.isLoading,
-    user: state.userState.data
+    isEditingNamespace: state.pollForm.isEditingNamespace,
+    user: state.userState.data,
+    namespace: state.router.location.pathname.slice(1).split("/")[0]
   };
 };
 
 class PollFormContainer extends React.Component<
   PollFormContainerProps & OwnProps
 > {
+  componentDidMount = () => {
+    if (!this.props.edit) {
+      this.props.discardPoll(this.props.namespace);
+    }
+  };
+
   handleSubmitPoll = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!this.props.edit) {
@@ -66,13 +83,21 @@ class PollFormContainer extends React.Component<
         description: this.props.pollFormData.description,
         pollName: this.props.pollFormData.pollName,
         options: this.props.pollFormData.options.map(option => option.value),
-        voteLimit: this.props.pollFormData.voteLimit
+        voteLimit: this.props.pollFormData.voteLimit,
+        optionVoteLimit: this.props.pollFormData.optionVoteLimit,
+        namespace: this.props.pollFormData.namespace
       };
       this.props.submitPoll(inputData);
     } else if (this.props.edit && this.props.pollId) {
-      this.props.updatePoll(this.props.user.id, this.props.pollId, {
-        ...this.props.pollFormData
-      });
+      this.props.updatePoll(
+        this.props.user.id,
+        this.props.pollId,
+        {
+          ...this.props.pollFormData,
+          namespace: makeStringUrlSafe(this.props.pollFormData.namespace)
+        },
+        this.props.originalData.namespace || "public"
+      );
     }
   };
   handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,18 +105,6 @@ class PollFormContainer extends React.Component<
     let value: string | number = e.target.value;
     if (target === "voteLimit" && value) {
       value = parseInt(value, 10);
-      // const noOfOptions = this.props.pollFormData.options.reduce(
-      //   (prev, option) => {
-      //     if (option.value) {
-      //       prev++;
-      //     }
-      //     return prev;
-      //   },
-      //   0
-      // );
-      // if (value > noOfOptions) {
-      //   value = noOfOptions;
-      // }
     }
     this.props.handleChange(target, value);
   };
@@ -102,7 +115,7 @@ class PollFormContainer extends React.Component<
     if (this.props.edit) {
       this.props.discardUpdatePollForm();
     }
-    this.props.discardPoll();
+    this.props.discardPoll(this.props.namespace);
   };
   render() {
     return (
@@ -117,6 +130,8 @@ class PollFormContainer extends React.Component<
         isLoading={this.props.isLoading}
         clearOption={this.clearOption}
         originalValues={this.props.originalData}
+        isEditingNamespace={this.props.isEditingNamespace}
+        changeIsEditingNamespace={this.props.changeIsEditingNamespace}
       />
     );
   }

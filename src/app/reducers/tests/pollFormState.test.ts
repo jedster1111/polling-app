@@ -1,4 +1,5 @@
-import * as types from "../../actions/action-types";
+import { ActionTypes } from "../../actions/action-types";
+import { discardPoll } from "../../actions/actions";
 import { Poll } from "../../types";
 import reducer, { initialPollFormState } from "../pollForm";
 
@@ -20,7 +21,7 @@ describe("Testing pollForm Reducer", () => {
             data: { ...initialPollFormState.data, [fieldId]: "initialValue" }
           },
           {
-            type: types.CHANGE_FORM_DATA,
+            type: ActionTypes.changeFormData,
             payload: { fieldId, value }
           }
         )
@@ -45,7 +46,7 @@ describe("Testing pollForm Reducer", () => {
               ]
             }
           },
-          { type: types.CHANGE_FORM_DATA, payload: { fieldId, value } }
+          { type: ActionTypes.changeFormData, payload: { fieldId, value } }
         )
       ).toEqual({
         ...initialPollFormState,
@@ -61,6 +62,7 @@ describe("Testing pollForm Reducer", () => {
   });
 
   it("should handle DISCARD_FORM_DATA", () => {
+    const namespace = "namespace";
     expect(
       reducer(
         {
@@ -69,12 +71,17 @@ describe("Testing pollForm Reducer", () => {
             pollName: "pollName",
             description: "description",
             options: [{ optionId: "1", value: " value1" }],
-            voteLimit: 1
+            voteLimit: 1,
+            optionVoteLimit: 1,
+            namespace: "namespaceChanged"
           }
         },
-        { type: types.DISCARD_FORM_DATA }
+        discardPoll(namespace)
       )
-    ).toEqual(initialPollFormState);
+    ).toEqual({
+      ...initialPollFormState,
+      data: { ...initialPollFormState.data, namespace }
+    });
   });
 
   it("should handle POST_POLLS_REQUEST", () => {
@@ -82,7 +89,7 @@ describe("Testing pollForm Reducer", () => {
       reducer(
         { ...initialPollFormState, error: "Error" },
         {
-          type: types.POST_POLLS_REQUEST
+          type: ActionTypes.postPollsRequest
         }
       )
     ).toEqual({ ...initialPollFormState, isLoading: true, error: null });
@@ -92,7 +99,7 @@ describe("Testing pollForm Reducer", () => {
     expect(
       reducer(
         { ...initialPollFormState, isLoading: true },
-        { type: types.POST_POLLS_SUCCESS }
+        { type: ActionTypes.postPollsSuccess }
       )
     ).toEqual(initialPollFormState);
   });
@@ -102,7 +109,7 @@ describe("Testing pollForm Reducer", () => {
     expect(
       reducer(
         { ...initialPollFormState, isLoading: true },
-        { type: types.POST_POLLS_ERROR, payload: { error } }
+        { type: ActionTypes.postPollsError, payload: { error } }
       )
     ).toEqual({ ...initialPollFormState, error });
   });
@@ -111,7 +118,7 @@ describe("Testing pollForm Reducer", () => {
     const data = initialPollFormState.data;
     const options = data.options;
     expect(
-      reducer(initialPollFormState, { type: types.ADD_POLL_FORM_OPTION })
+      reducer(initialPollFormState, { type: ActionTypes.addPollFormOption })
     ).toEqual({
       ...initialPollFormState,
       data: {
@@ -127,7 +134,7 @@ describe("Testing pollForm Reducer", () => {
     options.splice(index, 1);
     expect(
       reducer(initialPollFormState, {
-        type: types.REMOVE_POLL_FORM_OPTION,
+        type: ActionTypes.removePollFormOption,
         payload: { index }
       })
     ).toEqual({
@@ -151,11 +158,14 @@ describe("Testing pollForm Reducer", () => {
       pollId: "1",
       pollName: "pollName",
       voteLimit: 1,
-      isOpen: true
+      isOpen: true,
+      totalVotes: 4,
+      optionVoteLimit: 4,
+      namespace: "public"
     };
     expect(
       reducer(initialPollFormState, {
-        type: types.SHOW_UPDATE_POLL_FORM,
+        type: ActionTypes.showUpdatePollForm,
         payload: { poll }
       })
     ).toEqual({ ...initialPollFormState, data: poll, originalData: poll });
@@ -165,7 +175,7 @@ describe("Testing pollForm Reducer", () => {
     expect(
       reducer(
         { ...initialPollFormState, error: "whoops" },
-        { type: types.UPDATE_POLL_LOADING }
+        { type: ActionTypes.updatePollLoading }
       )
     ).toEqual({ ...initialPollFormState, isLoading: true, error: null });
   });
@@ -174,7 +184,7 @@ describe("Testing pollForm Reducer", () => {
     expect(
       reducer(
         { ...initialPollFormState, isLoading: true },
-        { type: types.UPDATE_POLL_SUCCESS }
+        { type: ActionTypes.updatePollSuccess }
       )
     ).toEqual(initialPollFormState);
   });
@@ -184,7 +194,7 @@ describe("Testing pollForm Reducer", () => {
     expect(
       reducer(
         { ...initialPollFormState, isLoading: true },
-        { type: types.UPDATE_POLL_ERROR, payload: { error } }
+        { type: ActionTypes.updatePollError, payload: { error } }
       )
     ).toEqual({ ...initialPollFormState, error });
   });

@@ -1,4 +1,5 @@
 import Loki from "lokijs";
+import UrlSafeString from "url-safe-string";
 import { ErrorWithStatusCode } from "../app";
 import {
   Poll,
@@ -13,6 +14,8 @@ import {
 } from "../types";
 import calculateNumberOfVotesFromUser from "./calculateNumberOfVotesFromUser";
 
+const { generate: makeStringUrlSafe } = UrlSafeString();
+
 class Database {
   static checkValidPollInput(pollInput: PollInput) {
     const necessaryProperties: Array<keyof PollInput> = [
@@ -20,11 +23,17 @@ class Database {
       "description",
       "pollName",
       "options",
-      "voteLimit"
+      "voteLimit",
+      "optionVoteLimit"
     ];
     const missingProperties: string[] = [];
     necessaryProperties.forEach(property => {
-      if (!pollInput.hasOwnProperty(property) || !pollInput[property]) {
+      if (
+        !pollInput.hasOwnProperty(property) ||
+        pollInput[property] === undefined ||
+        pollInput[property] === "" ||
+        (property === "options" && pollInput[property].length === 0)
+      ) {
         missingProperties.push(property);
       }
     });
@@ -37,6 +46,15 @@ class Database {
     }
     if (pollInput.options.length === 0) {
       errorMessage += ` Can't create a poll with no options`;
+    }
+    if (pollInput.optionVoteLimit > pollInput.voteLimit) {
+      errorMessage += ` Option-vote limit can't be bigger than the vote-limit.`;
+    }
+    if (pollInput.voteLimit <= 0) {
+      errorMessage += ` Vote limit can't be less than or equal to 0!`;
+    }
+    if (pollInput.optionVoteLimit <= 0) {
+      errorMessage += ` Option vote limit can't be less than or equal to 0!`;
     }
     if (errorMessage) {
       const err = new Error(errorMessage) as ErrorWithStatusCode;
@@ -57,8 +75,11 @@ class Database {
   getPolls(): Poll[] {
     return this.stripResultsMetadata<Poll>(this.polls.find());
   }
-  getPoll(pollId: string): Poll {
-    return this.stripMeta<Poll>(this.polls.findOne({ pollId }));
+  getPollsByNamespace(namespace: string): Poll[] {
+    return this.stripResultsMetadata<Poll>(this.polls.find({ namespace }));
+  }
+  getPoll(pollId: string, namespace: string): Poll {
+    return this.stripMeta<Poll>(this.polls.findOne({ pollId, namespace }));
   }
   insertPoll(pollInput: PollInput): Poll {
     Database.checkValidPollInput(pollInput);
@@ -76,7 +97,8 @@ class Database {
     );
     const cleanedPollInput = Object.assign(pollInput, {
       options: newOptions,
-      pollId: `${this.pollsCount + 1}`
+      pollId: `${this.pollsCount + 1}`,
+      namespace: makeStringUrlSafe(pollInput.namespace || "public")
     });
     const newPoll: StoredPoll = this.polls.insert(cleanedPollInput);
     this.pollsCount++;
@@ -86,18 +108,50 @@ class Database {
   updatePoll(
     userId: string,
     pollId: string,
-    updatePollInput: UpdatePollInput
+    updatePollInput: UpdatePollInput,
+    urlNamespace: string
   ): Poll {
-    const poll: StoredPoll = this.polls.findOne({ pollId });
-    if (poll === null) {
-      throw new Error(`Poll with Id ${pollId} could not be found`);
+    const poll: StoredPoll = this.polls.findOne({
+      pollId,
+      namespace: urlNamespace
+    });
+    if (!poll) {
+      throw new Error(
+        `Poll with Id ${pollId} in namespace ${urlNamespace} could not be found`
+      );
     }
     if (poll.creatorId !== userId) {
-      const error = new Error(
-        `Can't edit a poll that you didn't create!`
-      ) as ErrorWithStatusCode;
-      error.statusCode = 401;
-      throw error;
+      this.throwErrorWithStatusCode(
+        "Can't edit a poll that you didn't create!",
+        401
+      );
+    }
+    if (
+      (updatePollInput.optionVoteLimit || poll.optionVoteLimit) >
+      (updatePollInput.voteLimit || poll.voteLimit)
+    ) {
+      this.throwErrorWithStatusCode(
+        "Can't set the option-vote limit to be lower than the vote-limit!",
+        400
+      );
+    }
+    if (
+      updatePollInput.voteLimit !== undefined &&
+      updatePollInput.voteLimit <= 0
+    ) {
+      this.throwErrorWithStatusCode(
+        "Can't create a poll with a vote limit of 0 or less!",
+        400
+      );
+    }
+    if (
+      updatePollInput.optionVoteLimit !== undefined &&
+      updatePollInput.optionVoteLimit <= 0
+    ) {
+      this.throwErrorWithStatusCode(
+        "Can't create a poll with a option vote limit of 0 or less!",
+        400
+      );
     }
     const updateKeys = Object.keys(updatePollInput) as Array<
       keyof UpdatePollInput
@@ -133,9 +187,7 @@ class Database {
       }
     });
     if (poll.options.length === 0) {
-      const error: ErrorWithStatusCode = new Error("Can't delete all options!");
-      error.statusCode = 401;
-      throw error;
+      this.throwErrorWithStatusCode("Can't delete all options!", 400);
     }
     this.polls.update(poll);
     return this.stripMeta<Poll>(poll);
@@ -147,8 +199,8 @@ class Database {
    * @param voteInput An object containing name of person voting and the Id of the option they're voting on
    * @returns Returns the poll that was voted on
    */
-  votePoll(pollId: string, voteInput: VoteInput): Poll {
-    const poll: StoredPoll = this.polls.findOne({ pollId });
+  votePoll(pollId: string, voteInput: VoteInput, namespace: string): Poll {
+    const poll: StoredPoll = this.polls.findOne({ pollId, namespace });
 
     this.checkValidVoteAndThrowErrors(poll, voteInput);
 
@@ -170,11 +222,18 @@ class Database {
     return this.stripMeta<Poll>(poll);
   }
 
-  removeVotePoll(pollId: string, voteInput: VoteInput): Poll {
-    const poll: StoredPoll = this.polls.findOne({ pollId });
+  removeVotePoll(
+    pollId: string,
+    voteInput: VoteInput,
+    namespace: string
+  ): Poll {
+    const poll: StoredPoll = this.polls.findOne({ pollId, namespace });
 
-    if (poll === undefined) {
-      this.throwErrorWithStatusCode("That poll does not exist", 400);
+    if (!poll) {
+      this.throwErrorWithStatusCode(
+        `Poll with id "${pollId}" in namespace "${namespace}" can't be found!`,
+        400
+      );
     }
     if (!poll.isOpen) {
       this.throwErrorWithStatusCode("This poll has been closed!", 400);
@@ -200,8 +259,14 @@ class Database {
     return this.stripMeta<Poll>(poll);
   }
 
-  openPoll(userId: string, pollId: string): Poll {
-    const poll: StoredPoll = this.polls.findOne({ pollId });
+  openPoll(userId: string, pollId: string, namespace: string): Poll {
+    const poll: StoredPoll = this.polls.findOne({ pollId, namespace });
+    if (!poll) {
+      this.throwErrorWithStatusCode(
+        `Poll with id ${pollId} in namespace ${namespace} does not exist!`,
+        400
+      );
+    }
     if (poll.creatorId !== userId) {
       this.throwErrorWithStatusCode(
         "Can't open a poll that you didn't create!",
@@ -213,8 +278,14 @@ class Database {
     return this.stripMeta<Poll>(poll);
   }
 
-  closePoll(userId: string, pollId: string): Poll {
-    const poll: StoredPoll = this.polls.findOne({ pollId });
+  closePoll(userId: string, pollId: string, namespace: string): Poll {
+    const poll: StoredPoll = this.polls.findOne({ pollId, namespace });
+    if (!poll) {
+      this.throwErrorWithStatusCode(
+        `Poll with id ${pollId} in namespace ${namespace} does not exist!`,
+        400
+      );
+    }
     if (poll.creatorId !== userId) {
       this.throwErrorWithStatusCode(
         "Can't close a poll that you didn't create!",
@@ -230,14 +301,22 @@ class Database {
    * Removes a poll with the specified Id.
    * @param pollId Id of the poll you wish to remove from the database.
    */
-  removePoll(userId: string, pollId: string): void {
-    const poll: Poll = this.polls.findOne({ pollId });
+  removePoll(userId: string, pollId: string, namespace: string): void {
+    const poll: Poll = this.polls.findOne({ pollId, namespace });
+    if (!poll) {
+      this.throwErrorWithStatusCode(
+        `A poll with id ${pollId} in namespace ${namespace} does not exist!`,
+        400
+      );
+    }
+
     if (poll.creatorId !== userId) {
       this.throwErrorWithStatusCode(
         "Can't delete a poll that you didn't create!",
         401
       );
     }
+
     this.polls.remove(poll);
   }
   resetPolls(): void {
@@ -273,7 +352,7 @@ class Database {
     poll: StoredPoll | undefined,
     voteInput: VoteInput
   ): void {
-    let messages: string = "";
+    let message: string = "";
     if (!poll) {
       this.throwErrorWithStatusCode("Poll was not found!", 400);
       return;
@@ -288,15 +367,19 @@ class Database {
     );
 
     if (!poll.isOpen) {
-      messages = "This poll has been closed!";
+      message = "This poll has been closed!";
     } else if (!optionBeingVotedOn) {
-      messages = "That option doesn't exist!";
+      message = "That option doesn't exist!";
     } else if (numberOfExistingVotes >= poll.voteLimit) {
-      messages = "You've used up all of your votes!";
+      message = "You've used up all of your votes!";
+    } else if (
+      optionBeingVotedOn.votes[voteInput.voterId] >= poll.optionVoteLimit
+    ) {
+      message = "You can't add anymore votes to this option!";
     }
 
-    if (messages) {
-      this.throwErrorWithStatusCode(messages, 400);
+    if (message) {
+      this.throwErrorWithStatusCode(message, 400);
     }
   }
 

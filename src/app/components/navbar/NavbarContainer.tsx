@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { StoreState } from "../../reducers/rootReducer";
 import { User } from "../../types";
 
-import { discardPoll, navigateToPollForm } from "../../actions/actions";
+import { navigateToPollForm } from "../../actions/actions";
 import NavBar from "./Navbar";
 // import * as React from "react";
 
@@ -15,7 +15,6 @@ interface StateProps {
 }
 interface DispatchProps {
   navigateToPollForm: () => any;
-  discardPoll: () => any;
 }
 
 type NavBarContainerProps = StateProps & DispatchProps;
@@ -32,8 +31,7 @@ const mapStateToProps: (state: StoreState) => StateProps = state => ({
 });
 
 const mapDispatchToProps: DispatchProps = {
-  navigateToPollForm,
-  discardPoll
+  navigateToPollForm
 };
 
 class NavBarContainer extends React.Component<NavBarContainerProps, State> {
@@ -58,10 +56,7 @@ class NavBarContainer extends React.Component<NavBarContainerProps, State> {
 
   handleLogin = () => (window.location.href = "/auth/github");
   handleLogout = () => (window.location.href = "/auth/logout");
-  navigateToPollForm = () => {
-    this.props.discardPoll();
-    this.props.navigateToPollForm();
-  };
+
   render() {
     const location = this.props.location;
     return (
@@ -73,7 +68,6 @@ class NavBarContainer extends React.Component<NavBarContainerProps, State> {
         handleLogin={this.handleLogin}
         handleLogout={this.handleLogout}
         location={location}
-        navigateToPollForm={this.navigateToPollForm}
       />
     );
   }

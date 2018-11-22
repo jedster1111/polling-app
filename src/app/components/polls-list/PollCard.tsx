@@ -2,6 +2,7 @@ import { Avatar, List, Modal } from "antd";
 import * as React from "react";
 import { Poll, User } from "../../types";
 import PollForm from "../create-poll-form/PollFormContainer";
+import IsOpenDisplay from "../IsOpenDisplay";
 import VoteDisplay from "../VoteDisplay";
 import ActionButton from "./ActionButton";
 
@@ -9,7 +10,7 @@ export interface PollCardProps {
   poll: Poll;
   user: User;
   handleVote: (isAddingVote: boolean, pollId: string, optionId: string) => void;
-  deletePoll: (userId: string, pollId: string) => void;
+  deletePoll: (pollId: string) => void;
   toggleShowResults: (pollId: string) => void;
   showResults: boolean;
   showEditForm: (pollId: string) => void;
@@ -36,7 +37,7 @@ const PollCard = (props: PollCardProps) => {
       iconType="close"
       buttonType="danger"
       text="Delete"
-      handleClick={() => props.deletePoll(props.user.id, props.poll.pollId)}
+      handleClick={() => props.deletePoll(props.poll.pollId)}
       className="delete"
     />
   );
@@ -98,6 +99,8 @@ const PollCard = (props: PollCardProps) => {
                 user={props.user}
                 isLoggedIn={props.isLoggedIn}
               />
+              <IsOpenDisplay isOpen={props.poll.isOpen} />
+              <p>Total votes: {props.poll.totalVotes}</p>
             </span>
           }
         />

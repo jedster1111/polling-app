@@ -1,58 +1,67 @@
-export const LOCATION_CHANGED = "@@router/LOCATION_CHANGE";
+export enum ActionTypes {
+  locationChanged = "@@router/LOCATION_CHANGE",
 
-export const GET_POLLS_REQUEST = "GET_POLLS_REQUEST";
-export const GET_POLLS_SUCCESS = "GET_POLLS_SUCCESS";
-export const GET_POLLS_ERROR = "GET_POLLS_ERROR";
+  getPollsRequest = "GET_POLLS_REQUEST",
+  getPollsSuccess = "GET_POLLS_SUCCESS",
+  getPollsError = "GET_POLLS_ERROR",
 
-export const POST_POLLS_REQUEST = "POST_POLLS_REQUEST";
-export const POST_POLLS_SUCCESS = "POST_POLLS_SUCCESS";
-export const POST_POLLS_ERROR = "POST_POLLS_ERROR";
+  postPollsRequest = "POST_POLLS_REQUEST",
+  postPollsSuccess = "POST_POLLS_SUCCESS",
+  postPollsError = "POST_POLLS_ERROR",
 
-export const HELLO_SAGA = "HELLO_SAGA";
+  changeIsEditingNamespace = "CHANGE_IS_EDITING_NAMESPACE",
 
-export const CHANGE_FORM_DATA = "CHANGE_FORM_DATA";
-export const DISCARD_FORM_DATA = "DISCARD_FORM_DATA";
+  changeFormData = "CHANGE_FORM_DATA",
+  discardFormData = "DISCARD_FORM_DATA",
 
-export const TOGGLE_CHANGING_NAME = "TOGGLE_CHANGING_NAME";
-export const CHANGE_USER_FORM_DATA = "CHANGE_USER_FORM_DATA";
-export const SAVE_USER_FORM_DATA = "SAVE_USER_FORM_DATA";
-export const DISCARD_USER_FORM_DATA = "DISCARD_USER_FORM_DATA";
+  toggleChangingName = "TOGGLE_CHANGING_NAME",
+  changeUserFormData = "CHANGE_USER_FORM_DATA",
+  saveUserFormData = "SAVE_USER_FORM_DATA",
+  discardUserFormData = "DISCARD_USER_FORM_DATA",
 
-export const VOTE_OPTION_LOADING = "VOTE_OPTION_LOADING";
-export const VOTE_OPTION_SUCCESS = "VOTE_OPTION_SUCCESS";
-export const VOTE_OPTION_ERROR = "VOTE_OPTION_ERROR";
+  voteOptionLoading = "VOTE_OPTION_LOADING",
+  voteOptionSuccess = "VOTE_OPTION_SUCCESS",
+  voteOptionError = "VOTE_OPTION_ERROR",
 
-export const REMOVE_VOTE_OPTION_LOADING = "REMOVE_VOTE_OPTION_LOADING";
-export const REMOVE_VOTE_OPTION_SUCCESS = "REMOVE_VOTE_OPTION_SUCCESS";
-export const REMOVE_VOTE_OPTION_ERROR = "REMOVE_VOTE_OPTION_ERROR";
+  removeVoteOptionLoading = "REMOVE_VOTE_OPTION_LOADING",
+  removeVoteOptionSuccess = "REMOVE_VOTE_OPTION_SUCCESS",
+  removeVoteOptionError = "REMOVE_VOTE_OPTION_ERROR",
 
-export const TOGGLE_SHOW_RESULTS_LOADING = "TOGGLE_SHOW_RESULTS_LOADING";
-export const TOGGLE_SHOW_RESULTS_SUCCESS = "TOGGLE_SHOW_RESULTS_SUCCESS";
-export const TOGGLE_SHOW_RESULTS_ERROR = "TOGGLE_SHOW_RESULTS_ERROR";
+  toggleShowResultsLoading = "TOGGLE_SHOW_RESULTS_LOADING",
+  toggleShowResultsSuccess = "TOGGLE_SHOW_RESULTS_SUCCESS",
+  toggleShowResultsError = "TOGGLE_SHOW_RESULTS_ERROR",
 
-export const ADD_POLL_FORM_OPTION = "ADD_POLL_FORM_OPTION";
-export const REMOVE_POLL_FORM_OPTION = "REMOVE_POLL_FORM_OPTION";
+  addPollFormOption = "ADD_POLL_FORM_OPTION",
+  removePollFormOption = "REMOVE_POLL_FORM_OPTION",
 
-export const DELETE_POLL_LOADING = "DELETE_POLL_LOADING";
-export const DELETE_POLL_SUCCESS = "DELETE_POLL_SUCCESS";
-export const DELETE_POLL_ERROR = "DELETE_POLL_ERROR";
+  deletePollLoading = "DELETE_POLL_LOADING",
+  deletePollSuccess = "DELETE_POLL_SUCCESS",
+  deletePollError = "DELETE_POLL_ERROR",
 
-export const SHOW_UPDATE_POLL_FORM = "SHOW_UPDATE_POLL_FORM";
-export const DISCARD_UPDATE_POLL_FORM = "DISCARD_UPDATE_POLL_FORM";
+  showUpdatePollForm = "SHOW_UPDATE_POLL_FORM",
+  discardUpdatePollForm = "DISCARD_UPDATE_POLL_FORM",
 
-export const UPDATE_POLL_LOADING = "UPDATE_POLL_LOADING";
-export const UPDATE_POLL_SUCCESS = "UPDATE_POLL_SUCCESS";
-export const UPDATE_POLL_ERROR = "UPDATE_POLL_ERROR";
+  updatePollLoading = "UPDATE_POLL_LOADING",
+  updatePollSuccess = "UPDATE_POLL_SUCCESS",
+  updatePollError = "UPDATE_POLL_ERROR",
 
-export const GET_USER_DATA_LOADING = "GET_USER_DATA_LOADING";
-export const GET_USER_DATA_SUCCESS = "GET_USER_DATA_SUCCESS";
-export const GET_USER_DATA_ERROR = "GET_USER_DATA_ERROR";
-export const GET_USER_DATA_NOT_LOGGED_IN = "GET_USER_DATA_NOT_LOGGED_IN";
+  getUserDataLoading = "GET_USER_DATA_LOADING",
+  getUserDataSuccess = "GET_USER_DATA_SUCCESS",
+  getUserDataError = "GET_USER_DATA_ERROR",
+  getUserDataNotLoggedIn = "GET_USER_DATA_NOT_LOGGED_IN",
 
-export const OPEN_POLL_LOADING = "OPEN_POLL_LOADING";
-export const OPEN_POLL_SUCCESS = "OPEN_POLL_SUCCESS";
-export const OPEN_POLL_ERROR = "OPEN_POLL_ERROR";
+  openPollLoading = "OPEN_POLL_LOADING",
+  openPollSuccess = "OPEN_POLL_SUCCESS",
+  openPollError = "OPEN_POLL_ERROR",
 
-export const CLOSE_POLL_LOADING = "CLOSE_POLL_LOADING";
-export const CLOSE_POLL_SUCCESS = "CLOSE_POLL_SUCCESS";
-export const CLOSE_POLL_ERROR = "CLOSE_POLL_ERROR";
+  closePollLoading = "CLOSE_POLL_LOADING",
+  closePollSuccess = "CLOSE_POLL_SUCCESS",
+  closePollError = "CLOSE_POLL_ERROR",
+
+  closedWarning = "CLOSED_WARNING",
+
+  changeNamespaceFormShowing = "CHANGE_NAMESPACE_FORM_SHOWING",
+  changeNamespaceForm = "CHANGE_NAMESPACE_FORM",
+  discardNamespaceForm = "DISCARD_NAMESPACE_FORM",
+  updateNamespace = "UPDATE_NAMESPACE"
+}

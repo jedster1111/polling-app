@@ -21,7 +21,9 @@ const values = {
     { value: "test2", optionId: "2" },
     { value: "test3", optionId: "3" }
   ],
-  voteLimit: 1
+  voteLimit: 1,
+  optionVoteLimit: 1,
+  namespace: "public"
 };
 storiesOf("Create Poll Form", module)
   .add("Buttons", () => (
@@ -99,5 +101,7 @@ storiesOf("Create Poll Form", module)
       isLoading={false}
       clearOption={action("Cleared option")}
       originalValues={values}
+      changeIsEditingNamespace={action("changed isEditing namespace")}
+      isEditingNamespace={false}
     />
   ));

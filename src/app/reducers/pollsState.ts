@@ -1,5 +1,5 @@
 import { AnyAction, Reducer } from "redux";
-import * as actionTypes from "../actions/action-types";
+import { ActionTypes } from "../actions/action-types";
 import { Poll } from "../types";
 
 export interface PollsState {
@@ -18,61 +18,58 @@ export const initialPollsState = {
   editingPoll: null
 };
 
-const calculateNewPolls: (
-  pollsState: PollsState,
-  action: AnyAction
-) => Poll[] = (pollsState, action) => {
+function calculateNewPolls(pollsState: PollsState, action: AnyAction): Poll[] {
   const newPolls = [...pollsState.polls];
   const indexOfUpdatedPoll = newPolls.findIndex(
     poll => poll.pollId === action.payload.poll.pollId
   );
   newPolls[indexOfUpdatedPoll] = action.payload.poll;
   return newPolls;
-};
+}
 
 const pollsStateReducer: Reducer<PollsState, AnyAction> = (
   pollsState = initialPollsState,
   action
 ): PollsState => {
   switch (action.type) {
-    case actionTypes.LOCATION_CHANGED:
+    case ActionTypes.locationChanged:
       return {
         ...pollsState,
         editingPoll: null,
         showResults: {}
       };
-    case actionTypes.GET_POLLS_REQUEST:
+    case ActionTypes.getPollsRequest:
       return {
         ...pollsState,
         isLoading: true,
         error: null
       };
-    case actionTypes.GET_POLLS_SUCCESS:
+    case ActionTypes.getPollsSuccess:
       const polls: Poll[] = action.payload.polls;
       return {
         ...pollsState,
         polls,
         isLoading: false
       };
-    case actionTypes.GET_POLLS_ERROR:
+    case ActionTypes.getPollsError:
       return {
         ...pollsState,
         isLoading: false,
         error: action.payload.error
       };
-    case actionTypes.POST_POLLS_SUCCESS:
+    case ActionTypes.postPollsSuccess:
       return {
         ...pollsState,
         polls: [...pollsState.polls, action.payload.poll]
       };
-    case actionTypes.VOTE_OPTION_LOADING:
+    case ActionTypes.voteOptionLoading:
       return {
         ...pollsState,
         isLoading: true,
         error: null
       };
-    case actionTypes.VOTE_OPTION_SUCCESS:
-    case actionTypes.REMOVE_VOTE_OPTION_SUCCESS: {
+    case ActionTypes.voteOptionSuccess:
+    case ActionTypes.removeVoteOptionSuccess: {
       const newPolls = calculateNewPolls(pollsState, action);
       return {
         ...pollsState,
@@ -80,27 +77,27 @@ const pollsStateReducer: Reducer<PollsState, AnyAction> = (
         polls: newPolls
       };
     }
-    case actionTypes.VOTE_OPTION_ERROR:
-    case actionTypes.REMOVE_VOTE_OPTION_ERROR:
+    case ActionTypes.voteOptionError:
+    case ActionTypes.removeVoteOptionError:
       return {
         ...pollsState,
         isLoading: false,
         error: action.payload.error
       };
-    case actionTypes.TOGGLE_SHOW_RESULTS_LOADING: {
+    case ActionTypes.toggleShowResultsLoading: {
       return {
         ...pollsState,
         isLoading: true,
         error: null
       };
     }
-    case actionTypes.TOGGLE_SHOW_RESULTS_ERROR:
+    case ActionTypes.toggleShowResultsError:
       return {
         ...pollsState,
         isLoading: false,
         error: action.payload.error
       };
-    case actionTypes.TOGGLE_SHOW_RESULTS_SUCCESS: {
+    case ActionTypes.toggleShowResultsSuccess: {
       const pollId = action.payload.poll.pollId;
       const pollShowResult = pollsState.showResults[pollId];
       const indexOfUpdatedPoll = pollsState.polls.findIndex(
@@ -118,21 +115,21 @@ const pollsStateReducer: Reducer<PollsState, AnyAction> = (
         isLoading: false
       };
     }
-    case actionTypes.DELETE_POLL_LOADING: {
+    case ActionTypes.deletePollLoading: {
       return {
         ...pollsState,
         error: null,
         isLoading: true
       };
     }
-    case actionTypes.DELETE_POLL_ERROR: {
+    case ActionTypes.deletePollError: {
       return {
         ...pollsState,
         error: action.payload.error,
         isLoading: false
       };
     }
-    case actionTypes.DELETE_POLL_SUCCESS: {
+    case ActionTypes.deletePollSuccess: {
       const indexToRemove = pollsState.polls.findIndex(
         poll => poll.pollId === action.payload.pollId
       );
@@ -146,14 +143,14 @@ const pollsStateReducer: Reducer<PollsState, AnyAction> = (
         polls: newPolls
       };
     }
-    case actionTypes.UPDATE_POLL_LOADING: {
+    case ActionTypes.updatePollLoading: {
       return {
         ...pollsState,
         isLoading: true,
         error: null
       };
     }
-    case actionTypes.UPDATE_POLL_SUCCESS: {
+    case ActionTypes.updatePollSuccess: {
       const newPolls = calculateNewPolls(pollsState, action);
       return {
         ...pollsState,
@@ -162,33 +159,33 @@ const pollsStateReducer: Reducer<PollsState, AnyAction> = (
         isLoading: false
       };
     }
-    case actionTypes.UPDATE_POLL_ERROR: {
+    case ActionTypes.updatePollError: {
       return {
         ...pollsState,
         isLoading: false,
         error: action.payload.error
       };
     }
-    case actionTypes.SHOW_UPDATE_POLL_FORM: {
+    case ActionTypes.showUpdatePollForm: {
       return {
         ...pollsState,
         editingPoll: action.payload.pollId
       };
     }
-    case actionTypes.DISCARD_UPDATE_POLL_FORM: {
+    case ActionTypes.discardUpdatePollForm: {
       return {
         ...pollsState,
         editingPoll: null
       };
     }
-    case actionTypes.CLOSE_POLL_LOADING: {
+    case ActionTypes.closePollLoading: {
       return {
         ...pollsState,
         isLoading: true,
         error: null
       };
     }
-    case actionTypes.CLOSE_POLL_SUCCESS: {
+    case ActionTypes.closePollSuccess: {
       const newPolls = calculateNewPolls(pollsState, action);
       return {
         ...pollsState,
@@ -196,21 +193,21 @@ const pollsStateReducer: Reducer<PollsState, AnyAction> = (
         polls: newPolls
       };
     }
-    case actionTypes.CLOSE_POLL_ERROR: {
+    case ActionTypes.closePollError: {
       return {
         ...pollsState,
         isLoading: false,
         error: action.payload.error
       };
     }
-    case actionTypes.OPEN_POLL_LOADING: {
+    case ActionTypes.openPollLoading: {
       return {
         ...pollsState,
         isLoading: true,
         error: null
       };
     }
-    case actionTypes.OPEN_POLL_SUCCESS: {
+    case ActionTypes.openPollSuccess: {
       const newPolls = calculateNewPolls(pollsState, action);
       return {
         ...pollsState,
@@ -218,7 +215,7 @@ const pollsStateReducer: Reducer<PollsState, AnyAction> = (
         polls: newPolls
       };
     }
-    case actionTypes.OPEN_POLL_ERROR: {
+    case ActionTypes.openPollError: {
       return {
         ...pollsState,
         isLoading: false,
