@@ -351,3 +351,25 @@ test("Can I sort alphabetically, by # of votes and by if you've voted or not", a
 
   await pollsListPage.clickDetailButton(id);
 });
+
+test("If I edit a poll and give it a new namespace, I will get automatically redirected to the new location", async t => {
+  const editedPollInput: PollInput = {
+    description: "descriptionChanged",
+    pollName: "pollNameChanged",
+    options: [
+      "option1 changed",
+      "option2 changed",
+      "option3 changed",
+      "option4 changed"
+    ],
+    voteLimit: 4,
+    optionVoteLimit: 4,
+    namespace: "changed-room"
+  };
+
+  await t.click(detailPage.actionButtons.editButton);
+  await createPollPage.fillFormInputs(t, editedPollInput);
+  await t.click(createPollPage.createPollButton);
+
+  await navbar.checkNamespace("changed-room");
+});

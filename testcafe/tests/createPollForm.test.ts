@@ -22,7 +22,7 @@ fixture("Testing the create a poll form").page(
   "http://127.0.0.1:8000/public/create-poll"
 );
 
-test("When a poll is submitted succesfully, should be redirected to Polls page.", async t => {
+test("When a poll is submitted succesfully, should be redirected to created poll page.", async t => {
   const titleToUse = uuid();
   const pollInput: PollInput = { ...defaultPollInput, pollName: titleToUse };
 

@@ -20,3 +20,10 @@ test("Each nav link works", async t => {
     .expect(ReactSelector("PollsListPage").exists)
     .ok("Polls list page isn't showing");
 });
+
+test("namespace display works", async t => {
+  await navbar.checkNamespace("public");
+
+  await navbar.changeNamespace("jed room");
+  await navbar.checkNamespace("jed-room");
+});

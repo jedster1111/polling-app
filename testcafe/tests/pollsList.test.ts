@@ -36,6 +36,23 @@ test("Can I create a poll, then see it in the list of polls?", async t => {
   await pollsListPage.checkCreatedPoll(pollInput.pollName, pollInput);
 });
 
+test("If I create polls in different namespaces I only see polls in that namespace?", async t => {
+  await t.useRole(githubTestUser);
+
+  const pollInput1 = createPollInput();
+  const pollInput2 = createPollInput();
+
+  pollInput2.namespace = "jed room";
+
+  await createPoll(t, pollInput1);
+  await createPoll(t, pollInput2);
+
+  await pollsListPage.checkCreatedPoll(pollInput2.pollName, pollInput2);
+
+  await navbar.changeNamespace("public");
+
+  await pollsListPage.checkCreatedPoll(pollInput1.pollName, pollInput1);
+});
 test("I can't delete or edit polls if I'm not logged in", async t => {
   await t.useRole(githubTestUser);
 
