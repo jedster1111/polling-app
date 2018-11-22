@@ -257,7 +257,7 @@ test("Can I sort alphabetically, by # of votes and by if you've voted or not", a
     await t.expect(detailPage.options.count).eql(values.length);
     for (const [index, value] of values.entries()) {
       await t
-        .expect(detailPage.getOptionByIndex(index).ValueColumn.textContent)
+        .expect(detailPage.getOptionByIndex(index).optionValue.textContent)
         .eql(value);
     }
   }

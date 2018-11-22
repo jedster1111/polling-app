@@ -1,8 +1,8 @@
 import { Selector, t } from "testcafe";
 
 export enum IsOpenText {
-  open = "Poll is open ",
-  closed = "Poll is closed "
+  open = "Poll is open",
+  closed = "Poll is closed"
 }
 
 export interface ExpectedValues {
@@ -65,7 +65,9 @@ export default class PollDetailPage {
       .eql(expectedValues.username)
       // voteLimit && userVotes
       .expect(this.values.voteCount.textContent)
-      .eql(`Votes: ${expectedValues.userVotes} / ${expectedValues.voteLimit}`)
+      .eql(
+        `Your Votes: ${expectedValues.userVotes} / ${expectedValues.voteLimit}`
+      )
       // isOpenText
       .expect(this.values.isOpen.textContent)
       .eql(expectedValues.isOpenText);
@@ -111,7 +113,7 @@ export default class PollDetailPage {
     // Use this loop as foreach doesn't handle async
     for (const [index, option] of expectedValues.options.entries()) {
       await t
-        .expect(this.getOptionByIndex(index).ValueColumn.textContent)
+        .expect(this.getOptionByIndex(index).optionValue.textContent)
         .eql(expectedValues.options[index]);
     }
   }
@@ -119,12 +121,12 @@ export default class PollDetailPage {
   private getOptionSelectorObject(option: Selector, voteBar: Selector) {
     const selectors = {
       VotedColumn: option.find(".voted"),
-      ValueColumn: option.find(".value"),
+      optionValue: option.find(".option-value"),
       ranking: voteBar.find(".ranking"),
       totalVotes: voteBar.find(".total-votes"),
-      userVotes: voteBar.find(".user-votes"),
-      removeVoteButton: voteBar.find(".remove-vote-button"),
-      addVoteButton: voteBar.find(".add-vote-button")
+      userVotes: option.find(".user-votes"),
+      removeVoteButton: option.find(".remove-vote-button"),
+      addVoteButton: option.find(".add-vote-button")
     };
 
     const functions = {

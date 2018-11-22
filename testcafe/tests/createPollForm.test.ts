@@ -19,7 +19,7 @@ const defaultPollInput: PollInput = {
 };
 
 fixture("Testing the create a poll form").page(
-  "http://127.0.0.1:8000/create-poll"
+  "http://127.0.0.1:8000/public/create-poll"
 );
 
 test("When a poll is submitted succesfully, should be redirected to Polls page.", async t => {
@@ -30,7 +30,9 @@ test("When a poll is submitted succesfully, should be redirected to Polls page."
   await page.fillFormInputs(t, pollInput);
   await t.click(page.createPollButton);
 
-  await t.expect(getPageUrl()).contains("127.0.0.1:8000", { timeout: 10000 });
+  await t
+    .expect(getPageUrl())
+    .contains("127.0.0.1:8000/public/", { timeout: 10000 });
   await t.expect(listPage.checkCreatedPoll(titleToUse, pollInput));
 });
 
