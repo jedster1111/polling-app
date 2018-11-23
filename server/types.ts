@@ -1,15 +1,17 @@
 export interface CreatePollRequest {
   pollName: string;
   description: string;
-  options: string[];
+  options: CreatePollRequestOption[];
   voteLimit: number;
   optionVoteLimit: number;
   namespace?: string;
 }
 
-// export interface UserVoteCount {
-//   [userId: string]: number;
-// }
+export interface CreatePollRequestOption {
+  value: string;
+  imageUrl?: string;
+  link?: string;
+}
 
 /**
  * The format the database is expecting polls' data to be in.
@@ -20,7 +22,7 @@ export interface PollInput {
   creatorId: string;
   pollName: string;
   description: string;
-  options: string[];
+  options: CreatePollRequestOption[];
   voteLimit: number;
   optionVoteLimit: number;
   isOpen: boolean;
@@ -52,7 +54,10 @@ export interface StoredPollOption {
   value: string;
   // votes: string[];
   votes: { [userId: string]: number };
+  imageUrl?: string;
+  link?: string;
 }
+
 /**
  * The format a poll should be in when it is sent to the front end
  */
@@ -72,6 +77,8 @@ export interface PollResponseOption {
   optionId: string;
   value: string;
   votes: PollResponseUser[];
+  imageUrl?: string;
+  link?: string;
 }
 export interface PollResponseCreator {
   id: string;

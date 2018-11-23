@@ -83,14 +83,12 @@ class Database {
   }
   insertPoll(pollInput: PollInput): Poll {
     Database.checkValidPollInput(pollInput);
-    const filteredOptions: string[] = pollInput.options.filter(
-      option => option
-    );
+    const filteredOptions = pollInput.options.filter(option => option.value);
     const newOptions: StoredPollOption[] = filteredOptions.map(
-      (option: string, index: number) => {
+      (option, index) => {
         return {
+          ...option,
           optionId: `${index + 1}`,
-          value: option,
           votes: {}
         };
       }

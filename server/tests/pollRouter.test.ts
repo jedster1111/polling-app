@@ -24,7 +24,7 @@ const generateInputPolls = (n: number) => {
       pollName: `pollName${index}`,
       description: `description${index}`,
       creatorId: `${index}`,
-      options: ["option1", "option2"],
+      options: [{ value: "option1" }, { value: "option2" }],
       voteLimit,
       isOpen: true,
       optionVoteLimit,
@@ -85,7 +85,10 @@ describe("Testing poll related routes:", () => {
       const inputData: PollInput = {
         creatorId: userToUse.id,
         description: "descriptionPOST",
-        options: ["option1", "option2"],
+        options: [
+          { value: "option1", imageUrl: "imageUrl", link: "link" },
+          { value: "option2" }
+        ],
         pollName: "pollNamePOST",
         voteLimit,
         isOpen: true,
@@ -96,13 +99,11 @@ describe("Testing poll related routes:", () => {
       const expectedResponse: PollResponse = {
         description: inputData.description,
         creator: userToUse,
-        options: inputData.options.map<PollResponseOption>(
-          (optionValue, index) => ({
-            optionId: `${index + 1}`,
-            value: optionValue,
-            votes: []
-          })
-        ),
+        options: inputData.options.map<PollResponseOption>((option, index) => ({
+          optionId: `${index + 1}`,
+          ...option,
+          votes: []
+        })),
         pollName: inputData.pollName,
         isOpen: inputData.isOpen,
         namespace: inputData.namespace || "public",
