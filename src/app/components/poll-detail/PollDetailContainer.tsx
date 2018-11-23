@@ -95,10 +95,17 @@ class PollDetailContainer extends React.Component<
   };
 
   componentDidMount() {
-    if (!this.props.pollData) {
+    this.props.fetchPolls(this.props.namespace);
+    window.addEventListener("resize", this.handleResize);
+  }
+
+  componentDidUpdate(prevProps: PollDetailContainerProps) {
+    if (
+      prevProps.namespace !== this.props.namespace ||
+      prevProps.pollId !== this.props.pollId
+    ) {
       this.props.fetchPolls(this.props.namespace);
     }
-    window.addEventListener("resize", this.handleResize);
   }
 
   componentWillUnmount() {
