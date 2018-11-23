@@ -25,7 +25,7 @@ export default class PollsListPage {
     await t.click(this.pollDetailButton(id));
 
   checkField = async (field: Selector, input: string) => {
-    await t.expect(field.innerText).eql(input);
+    await t.expect(field.textContent).eql(input);
   };
 
   checkCreatedPoll = async (id: string, pollInput: PollInput) => {

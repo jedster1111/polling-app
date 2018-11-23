@@ -83,11 +83,14 @@ class NamespaceDisplay extends React.Component<NamespaceDisplayProps> {
     return (
       <NamespaceDisplayContainer>
         <div>
-          /{this.props.namespace || "public"}{" "}
+          <span className="namespace-value">
+            /{this.props.namespace || "public"}
+          </span>{" "}
           <Button
             icon="edit"
             onClick={() => this.props.showNamespaceForm("show")}
             size="small"
+            className="edit-namespace-button"
           />
         </div>
         <Modal
@@ -116,6 +119,7 @@ class NamespaceDisplay extends React.Component<NamespaceDisplayProps> {
                     event.target.value
                   )
                 }
+                className="edit-namespace-input"
               />
             </Form.Item>
             <Form.Item>

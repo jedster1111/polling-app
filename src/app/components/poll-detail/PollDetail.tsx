@@ -125,7 +125,7 @@ const PollDetail: React.SFC<PollDetailProps> = ({
 
       return (
         <VotesContainer className="value">
-          <span>{option.value}</span>
+          <span className="option-value">{option.value}</span>
           <VoteButtons
             votesByUser={votesByUser}
             optionVoteLimit={pollData.optionVoteLimit}
