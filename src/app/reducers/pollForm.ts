@@ -12,19 +12,26 @@ export interface PollForm {
 export interface PollFormInput {
   description: string;
   pollName: string;
-  options: Array<{ optionId: string; value: string }>;
+  options: PollFormInputOption[];
   voteLimit: number;
   optionVoteLimit: number;
   namespace: string;
 }
 
+export interface PollFormInputOption {
+  optionId: string;
+  value: string;
+  imageUrl: string;
+  link: string;
+}
+
 const initData: PollFormInput = {
   description: "",
   options: [
-    { optionId: "", value: "" },
-    { optionId: "", value: "" },
-    { optionId: "", value: "" },
-    { optionId: "", value: "" }
+    { optionId: "", value: "", imageUrl: "", link: "" },
+    { optionId: "", value: "", imageUrl: "", link: "" },
+    { optionId: "", value: "", imageUrl: "", link: "" },
+    { optionId: "", value: "", imageUrl: "", link: "" }
   ],
   pollName: "",
   voteLimit: 1,
@@ -97,7 +104,7 @@ const pollFormReducer: Reducer<PollForm, AnyAction> = (
     case ActionTypes.addPollFormOption: {
       const newOptions = [
         ...pollFormState.data.options,
-        { optionId: "", value: "" }
+        { optionId: "", value: "", imageUrl: "", link: "" }
       ];
       return {
         ...pollFormState,

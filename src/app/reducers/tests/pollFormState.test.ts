@@ -41,7 +41,7 @@ describe("Testing pollForm Reducer", () => {
             data: {
               ...initialPollFormState.data,
               options: [
-                { optionId: "1", value: "value" },
+                { optionId: "1", value: "value", link: "", imageUrl: "" },
                 ...initialPollFormState.data.options
               ]
             }
@@ -70,7 +70,9 @@ describe("Testing pollForm Reducer", () => {
           data: {
             pollName: "pollName",
             description: "description",
-            options: [{ optionId: "1", value: " value1" }],
+            options: [
+              { optionId: "1", value: " value1", imageUrl: "", link: "" }
+            ],
             voteLimit: 1,
             optionVoteLimit: 1,
             namespace: "namespaceChanged"
@@ -123,7 +125,10 @@ describe("Testing pollForm Reducer", () => {
       ...initialPollFormState,
       data: {
         ...data,
-        options: [...options, { optionId: "", value: "" }]
+        options: [
+          ...options,
+          { optionId: "", value: "", imageUrl: "", link: "" }
+        ]
       }
     });
   });
