@@ -1,7 +1,7 @@
 import { message } from "antd";
 import { AxiosError, AxiosResponse } from "axios";
 import { push } from "connected-react-router";
-import { all, call, put, takeLatest } from "redux-saga/effects";
+import { all, call, put, takeEvery, takeLatest } from "redux-saga/effects";
 import { ActionTypes } from "../actions/action-types";
 import {
   ClosePollAction,
@@ -222,7 +222,7 @@ export function* mainSaga() {
   yield all([
     takeLatest(ActionTypes.getPollsRequest, getPollsSaga),
     takeLatest(ActionTypes.postPollsRequest, postPollsSaga),
-    takeLatest(ActionTypes.voteOptionLoading, voteOption),
+    takeEvery(ActionTypes.voteOptionLoading, voteOption),
     takeLatest(ActionTypes.deletePollLoading, deletePoll),
     takeLatest(ActionTypes.updatePollLoading, updatePollSaga),
     takeLatest(ActionTypes.getUserDataLoading, getUserData),
