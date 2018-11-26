@@ -99,6 +99,8 @@ export interface UpdatePollInput {
 export interface UpdatePollInputOption {
   optionId: string;
   value: string;
+  link?: string;
+  imageUrl?: string;
 }
 export interface VoteInputRequest {
   optionId: string;

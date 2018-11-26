@@ -164,10 +164,19 @@ class Database {
               const optionToUpdate = poll.options.find(
                 option => option.optionId === optionInput.optionId
               );
-              if (optionToUpdate !== undefined && optionInput.value !== "") {
-                optionToUpdate.value = optionInput.value;
-              } else if (optionToUpdate !== undefined) {
-                poll.options.splice(poll.options.indexOf(optionToUpdate), 1);
+              if (optionToUpdate !== undefined) {
+                if (optionInput.value !== "") {
+                  optionToUpdate.value = optionInput.value;
+
+                  if (optionInput.link !== undefined) {
+                    optionToUpdate.link = optionInput.link;
+                  }
+                  if (optionInput.imageUrl !== undefined) {
+                    optionToUpdate.imageUrl = optionInput.imageUrl;
+                  }
+                } else {
+                  poll.options.splice(poll.options.indexOf(optionToUpdate), 1);
+                }
               }
             } else if (optionInput.value) {
               const lastOption = poll.options[poll.options.length - 1];
@@ -177,6 +186,8 @@ class Database {
                   10
                 ) + 1}`,
                 value: optionInput.value,
+                imageUrl: optionInput.imageUrl,
+                link: optionInput.link,
                 votes: {}
               });
             }
