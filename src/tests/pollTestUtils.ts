@@ -19,6 +19,7 @@ export const generatePoll: (index: number) => Poll = i => ({
   voteLimit: 1,
   isOpen: true,
   totalVotes: 4,
+  totalVoters: 3,
   optionVoteLimit: 4,
   namespace: "public"
 });

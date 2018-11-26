@@ -100,7 +100,7 @@ const PollCard = (props: PollCardProps) => {
                 isLoggedIn={props.isLoggedIn}
               />
               <IsOpenDisplay isOpen={props.poll.isOpen} />
-              <p>Total votes: {props.poll.totalVotes}</p>
+              <p>Total voters: {props.poll.totalVoters}</p>
             </span>
           }
         />

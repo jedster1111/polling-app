@@ -39,6 +39,7 @@ export const examplePolls: Poll[] = [
     voteLimit: 1,
     isOpen: true,
     totalVotes: 6,
+    totalVoters: 3,
     optionVoteLimit: 6,
     namespace: "public"
   },
@@ -51,6 +52,7 @@ export const examplePolls: Poll[] = [
     voteLimit: 1,
     isOpen: true,
     totalVotes: 7,
+    totalVoters: 3,
     optionVoteLimit: 7,
     namespace: "public"
   }

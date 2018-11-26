@@ -297,7 +297,7 @@ const PollDetail: React.SFC<PollDetailProps> = ({
                 <p id="poll-detail-creator-name">
                   {creator.displayName || creator.userName}
                 </p>
-                <p>Total votes: {pollData.totalVotes}</p>
+                <p>Total voters: {pollData.totalVoters}</p>
                 <IsOpenDisplay isOpen={pollData.isOpen} />
               </MetaDescriptionChild>
               <MetaDescriptionChild>
