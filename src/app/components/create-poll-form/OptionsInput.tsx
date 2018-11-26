@@ -1,5 +1,6 @@
-import { Button, Form, Icon, Input, Modal, Card } from "antd";
+import { Button, Card, Form, Icon, Input, Modal } from "antd";
 import * as React from "react";
+import styled from "styled-components";
 import { FormOptionFields } from "../../actions/actions";
 import { PollFormInputOption } from "../../reducers/pollForm";
 
@@ -18,6 +19,13 @@ interface OptionsInputProps {
   editingAdvancedOptionIndex: number | undefined;
   edit?: boolean;
 }
+
+const ImageThumbnail = styled.img`
+  display: block;
+  margin: 0 auto;
+  max-width: 250px;
+  min-width: 150px;
+`;
 
 const OptionsInput = (props: OptionsInputProps) => {
   return (
@@ -70,6 +78,7 @@ const OptionsInput = (props: OptionsInputProps) => {
                       shape="circle"
                       size="small"
                       onClick={() => props.setEditingAdvancedOption(index)}
+                      style={{ margin: "0 3px" }}
                     />
                     <Button
                       className="removeOption"
@@ -81,6 +90,7 @@ const OptionsInput = (props: OptionsInputProps) => {
                           ? props.removePollOption(index)
                           : props.clearOption(index)
                       }
+                      style={{ margin: "0 3px" }}
                     />
                   </span>
                 )
@@ -91,26 +101,48 @@ const OptionsInput = (props: OptionsInputProps) => {
               onOk={() => props.setEditingAdvancedOption(undefined)}
               onCancel={() => props.setEditingAdvancedOption(undefined)}
               footer={null}
-              width="75%"
-              style={{ maxWidth: "800px" }}
+              keyboard
+              width="65%"
+              style={{ maxWidth: "700px" }}
+              destroyOnClose
+              centered
             >
-              <Card style={{ margin: "15px 14px" }}>
+              <Card style={{ margin: "15px 14px" }} title={option.value}>
                 <Form.Item
                   label="Link"
                   labelCol={{ span: 4 }}
                   wrapperCol={{ span: 16 }}
+                  help={
+                    originalOption &&
+                    option.link !== originalOption.link &&
+                    props.edit
+                      ? option.link === ""
+                        ? "This link will be deleted"
+                        : "This link will be updated"
+                      : undefined
+                  }
                 >
                   <Input
                     value={option.link}
                     onChange={e =>
                       props.handleChange(index, "link", e.target.value)
                     }
+                    autoFocus
                   />
                 </Form.Item>
                 <Form.Item
                   label="Image Url"
                   labelCol={{ span: 4 }}
                   wrapperCol={{ span: 16 }}
+                  help={
+                    originalOption &&
+                    option.imageUrl !== originalOption.imageUrl &&
+                    props.edit
+                      ? option.imageUrl === ""
+                        ? "This image url will be deleted"
+                        : "This image url will be updated"
+                      : undefined
+                  }
                 >
                   <Input
                     value={option.imageUrl}
@@ -119,6 +151,7 @@ const OptionsInput = (props: OptionsInputProps) => {
                     }
                   />
                 </Form.Item>
+                {option.imageUrl && <ImageThumbnail src={option.imageUrl} />}
               </Card>
             </Modal>
           </Form.Item>

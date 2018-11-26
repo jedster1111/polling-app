@@ -80,6 +80,7 @@ const ImageThumbnail = styled.img`
 const VoteButtonsContainer = styled.div`
   display: flex;
   justify-content: center;
+  align-items: flex-end;
 `;
 
 const PollDetail: React.SFC<PollDetailProps> = ({
@@ -328,6 +329,8 @@ const PollDetail: React.SFC<PollDetailProps> = ({
           footer={null}
           width="75%"
           style={{ maxWidth: "800px" }}
+          destroyOnClose
+          centered
         >
           <PollForm edit pollId={pollData.pollId} />
         </Modal>

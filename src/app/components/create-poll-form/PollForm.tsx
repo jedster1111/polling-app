@@ -75,6 +75,7 @@ const PollForm: React.SFC<CreatePollFormProps> = props => {
           placeholder={
             props.edit ? `${props.originalValues.pollName}` : "Poll name"
           }
+          autoFocus
         />
       </Form.Item>
       <Form.Item

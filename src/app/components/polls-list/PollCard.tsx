@@ -111,6 +111,8 @@ const PollCard = (props: PollCardProps) => {
         footer={null}
         width="75%"
         style={{ maxWidth: "800px" }}
+        destroyOnClose
+        centered
       >
         <PollForm edit pollId={props.poll.pollId} />
       </Modal>
