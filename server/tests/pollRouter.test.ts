@@ -110,7 +110,8 @@ describe("Testing poll related routes:", () => {
         optionVoteLimit: inputData.optionVoteLimit,
         totalVotes: 0,
         voteLimit: inputData.voteLimit,
-        pollId: "someID"
+        pollId: "someID",
+        totalVoters: 0
       };
 
       const token = createJwtCookie(userToUse.id);
@@ -173,7 +174,8 @@ describe("Testing poll related routes:", () => {
         isOpen: true,
         totalVotes: 1,
         optionVoteLimit,
-        namespace: pollToUse.namespace
+        namespace: pollToUse.namespace,
+        totalVoters: 1
       };
 
       const token = createJwtCookie(creator.id);

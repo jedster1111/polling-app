@@ -71,6 +71,7 @@ export interface PollResponse {
   optionVoteLimit: number;
   isOpen: boolean;
   totalVotes: number;
+  totalVoters: number;
   namespace: string;
 }
 export interface PollResponseOption {
