@@ -51,7 +51,11 @@ const MetaDescriptionChild = styled.div`
   min-width: 155px;
 `;
 
-const VotesContainer = styled.div``;
+const VotesContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+`;
 const ValueAndImageContainer = styled.div`
   display: flex;
   justify-content: space-evenly;
@@ -75,7 +79,7 @@ const ImageThumbnail = styled.img`
 
 const VoteButtonsContainer = styled.div`
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
 `;
 
 const PollDetail: React.SFC<PollDetailProps> = ({
@@ -100,7 +104,6 @@ const PollDetail: React.SFC<PollDetailProps> = ({
   const optionRankings = getRankings(pollData.options);
 
   const votedColumn: ColumnProps<PollOption> = {
-    title: "Voted",
     dataIndex: "voted",
     key: "voted",
     render: (text, option) => (
