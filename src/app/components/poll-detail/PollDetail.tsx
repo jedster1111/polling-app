@@ -51,11 +51,31 @@ const MetaDescriptionChild = styled.div`
   min-width: 155px;
 `;
 
-const VotesContainer = styled.div`
+const VotesContainer = styled.div``;
+const ValueAndImageContainer = styled.div`
   display: flex;
   justify-content: space-evenly;
-  align-items: center;
   flex-wrap: wrap;
+  align-items: center;
+`;
+
+const OptionValueContainer = styled.span`
+  text-align: center;
+  min-width: 100px;
+`;
+
+const ImageThumbnail = styled.img`
+  margin: 6px;
+  width: 40%;
+  min-width: 65px;
+  max-width: 130px;
+  min-height: 65px;
+  max-height: 130px;
+`;
+
+const VoteButtonsContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
 `;
 
 const PollDetail: React.SFC<PollDetailProps> = ({
@@ -96,7 +116,7 @@ const PollDetail: React.SFC<PollDetailProps> = ({
         )}
       </span>
     ),
-    width: "100px",
+    width: "40px",
     sorter: (a, b) => {
       let result = 0;
       const aIndex = a.votes.find(
@@ -125,17 +145,33 @@ const PollDetail: React.SFC<PollDetailProps> = ({
 
       return (
         <VotesContainer className="value">
-          <span className="option-value">{option.value}</span>
-          <VoteButtons
-            votesByUser={votesByUser}
-            optionVoteLimit={pollData.optionVoteLimit}
-            handleVote={(isAddingVote: boolean) =>
-              voteOption(option.optionId, isAddingVote)
-            }
-            pollIsOpen={pollData.isOpen}
-            pollVoteLimit={pollData.voteLimit}
-            totalVotesByUser={calculateTotalVotesByUser(userData.id, pollData)}
-          />
+          <ValueAndImageContainer>
+            <OptionValueContainer className="option-value">
+              {option.link ? (
+                <a href={option.link} target="_blank">
+                  {option.value}
+                </a>
+              ) : (
+                option.value
+              )}
+            </OptionValueContainer>
+            {option.imageUrl && <ImageThumbnail src={option.imageUrl} />}
+          </ValueAndImageContainer>
+          <VoteButtonsContainer>
+            <VoteButtons
+              votesByUser={votesByUser}
+              optionVoteLimit={pollData.optionVoteLimit}
+              handleVote={(isAddingVote: boolean) =>
+                voteOption(option.optionId, isAddingVote)
+              }
+              pollIsOpen={pollData.isOpen}
+              pollVoteLimit={pollData.voteLimit}
+              totalVotesByUser={calculateTotalVotesByUser(
+                userData.id,
+                pollData
+              )}
+            />
+          </VoteButtonsContainer>
         </VotesContainer>
       );
     },
@@ -277,14 +313,10 @@ const PollDetail: React.SFC<PollDetailProps> = ({
         />
 
         <Table
-          // loading={isLoading}
           columns={columns}
           dataSource={options}
           rowKey={option => option.optionId}
           pagination={false}
-          // onRow={option => ({
-          //   onClick: () => voteOption(false, userData.id, pollId, option.optionId)
-          // })}
         />
         <ActionButtonContainer>{actions}</ActionButtonContainer>
         <Modal
