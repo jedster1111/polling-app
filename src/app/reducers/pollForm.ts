@@ -1,5 +1,9 @@
 import { AnyAction, Reducer } from "redux";
 import { ActionTypes } from "../actions/action-types";
+import {
+  ChangeFormOptionDataAction,
+  SetEditingAdvancedOptionAction
+} from "../actions/actions";
 
 export interface PollForm {
   data: PollFormInput;
@@ -7,6 +11,7 @@ export interface PollForm {
   isLoading: boolean;
   error: string | null;
   isEditingNamespace: boolean;
+  editingAdvancedOptionIndex: number | undefined;
 }
 
 export interface PollFormInput {
@@ -44,7 +49,8 @@ export const initialPollFormState: PollForm = {
   originalData: initData,
   isLoading: false,
   error: null,
-  isEditingNamespace: false
+  isEditingNamespace: false,
+  editingAdvancedOptionIndex: undefined
 };
 
 const pollFormReducer: Reducer<PollForm, AnyAction> = (
@@ -52,30 +58,39 @@ const pollFormReducer: Reducer<PollForm, AnyAction> = (
   action
 ): PollForm => {
   switch (action.type) {
-    case ActionTypes.changeFormData:
+    case ActionTypes.changeFormData: {
       const { fieldId, value } = action.payload;
-      if (/^(optionInput)/.test(fieldId)) {
-        const newOptions = [...pollFormState.data.options];
-        // need to deep clone options
-        const clonedNewOptions = newOptions.map(option => ({ ...option }));
-        const optionIndex = parseInt(fieldId.replace(/^(optionInput)/, ""), 10);
-        clonedNewOptions[optionIndex - 1].value = value;
-        return {
-          ...pollFormState,
-          data: {
-            ...pollFormState.data,
-            options: clonedNewOptions
-          }
-        };
-      } else {
-        return {
-          ...pollFormState,
-          data: {
-            ...pollFormState.data,
-            [fieldId]: value
-          }
-        };
-      }
+      return {
+        ...pollFormState,
+        data: {
+          ...pollFormState.data,
+          [fieldId]: value
+        }
+      };
+    }
+
+    case ActionTypes.changeFormOptionData: {
+      const {
+        optionIndex,
+        field,
+        value
+      } = (action as ChangeFormOptionDataAction).payload;
+
+      const newOptions = [...pollFormState.data.options];
+
+      const editedOption = { ...newOptions[optionIndex], [field]: value };
+
+      newOptions[optionIndex] = editedOption;
+
+      return {
+        ...pollFormState,
+        data: {
+          ...pollFormState.data,
+          options: newOptions
+        }
+      };
+    }
+
     case ActionTypes.discardFormData: {
       return {
         ...initialPollFormState,
@@ -113,7 +128,7 @@ const pollFormReducer: Reducer<PollForm, AnyAction> = (
     }
     case ActionTypes.removePollFormOption: {
       const newOptions = [...pollFormState.data.options];
-      const indexToRemove = action.payload.index;
+      const indexToRemove: number = action.payload.index;
       newOptions.splice(indexToRemove, 1);
 
       const newVoteLimit = calculateNewVoteLimit(pollFormState, newOptions);
@@ -160,6 +175,13 @@ const pollFormReducer: Reducer<PollForm, AnyAction> = (
       return {
         ...pollFormState,
         isEditingNamespace: action.payload.isEditing
+      };
+    }
+    case ActionTypes.setEditingAdvancedOption: {
+      const index = (action as SetEditingAdvancedOptionAction).payload.index;
+      return {
+        ...pollFormState,
+        editingAdvancedOptionIndex: index
       };
     }
     default:

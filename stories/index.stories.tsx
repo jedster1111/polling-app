@@ -93,6 +93,7 @@ storiesOf("Create Poll Form", module)
   .add("Create poll form", () => (
     <PollForm
       handleChange={action("Value changed")}
+      handleOptionChange={action("Option Changed")}
       handleSubmit={mockSubmit}
       discardPoll={action("Discarded poll")}
       values={values}
@@ -103,5 +104,7 @@ storiesOf("Create Poll Form", module)
       originalValues={values}
       changeIsEditingNamespace={action("changed isEditing namespace")}
       isEditingNamespace={false}
+      setEditingAdvancedOption={action("set editingAdvancedOption")}
+      editingAdvancedOptionIndex={1}
     />
   ));

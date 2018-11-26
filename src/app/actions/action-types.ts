@@ -12,6 +12,7 @@ export enum ActionTypes {
   changeIsEditingNamespace = "CHANGE_IS_EDITING_NAMESPACE",
 
   changeFormData = "CHANGE_FORM_DATA",
+  changeFormOptionData = "CHANGE_FORM_OPTION_DATA",
   discardFormData = "DISCARD_FORM_DATA",
 
   toggleChangingName = "TOGGLE_CHANGING_NAME",
@@ -63,5 +64,7 @@ export enum ActionTypes {
   changeNamespaceFormShowing = "CHANGE_NAMESPACE_FORM_SHOWING",
   changeNamespaceForm = "CHANGE_NAMESPACE_FORM",
   discardNamespaceForm = "DISCARD_NAMESPACE_FORM",
-  updateNamespace = "UPDATE_NAMESPACE"
+  updateNamespace = "UPDATE_NAMESPACE",
+
+  setEditingAdvancedOption = "SET_EDITING_ADVANCED_OPTION"
 }
