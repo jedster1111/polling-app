@@ -9,6 +9,7 @@ import IsOpenDisplay from "../IsOpenDisplay";
 import ActionButton from "../polls-list/ActionButton";
 import FetchPollsButton from "../polls-list/FetchPollsButton";
 import VoteDisplay, { calculateTotalVotesByUser } from "../VoteDisplay";
+import { createListOfVoters } from "./createListOfVoters";
 import { getRankings, getTotalVotesOnOption } from "./getRankings";
 import VoteBar from "./VoteBar";
 import VoteButtons from "./VoteButtons";
@@ -81,6 +82,15 @@ const VoteButtonsContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: flex-end;
+`;
+
+const VotersList = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+`;
+
+const VotersItem = styled.div`
+  margin: 2px 5px;
 `;
 
 const PollDetail: React.SFC<PollDetailProps> = ({
@@ -273,6 +283,8 @@ const PollDetail: React.SFC<PollDetailProps> = ({
     ? [EditButton, DeleteButton, pollData.isOpen ? closeButton : openButton]
     : [];
 
+  const listOfVoters = createListOfVoters(pollData.options);
+
   return (
     <>
       <Breadcrumb style={{ marginBottom: "8px" }}>
@@ -322,6 +334,20 @@ const PollDetail: React.SFC<PollDetailProps> = ({
           rowKey={option => option.optionId}
           pagination={false}
         />
+        <Card
+          title="List of Voters & Number of Votes"
+          style={{ marginTop: "10px" }}
+        >
+          <VotersList>
+            {listOfVoters.map(voterItem => (
+              <VotersItem key={voterItem.user.id}>
+                {`${voterItem.user.displayName || voterItem.user.userName} - ${
+                  voterItem.numberOfVotes
+                }`}
+              </VotersItem>
+            ))}
+          </VotersList>
+        </Card>
         <ActionButtonContainer>{actions}</ActionButtonContainer>
         <Modal
           visible={isEditing}

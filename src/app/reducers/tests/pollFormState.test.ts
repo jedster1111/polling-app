@@ -46,7 +46,7 @@ describe("Testing pollForm Reducer", () => {
             }
           },
           {
-            type: ActionTypes.changeFormData,
+            type: ActionTypes.changeFormOptionData,
             payload: { optionIndex: 0, field: "value", value }
           }
         )
@@ -55,7 +55,7 @@ describe("Testing pollForm Reducer", () => {
         data: {
           ...initialPollFormState.data,
           options: [
-            { optionId: "1", value },
+            { optionId: "1", value, link: "", imageUrl: "" },
             ...initialPollFormState.data.options
           ]
         }
