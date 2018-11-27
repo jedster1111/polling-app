@@ -103,6 +103,7 @@ class NamespaceDisplay extends React.Component<NamespaceDisplayProps> {
             alignItems: "center",
             padding: "8px 14px"
           }}
+          destroyOnClose
         >
           <Form
             onSubmit={this.handleSubmit}
@@ -120,6 +121,7 @@ class NamespaceDisplay extends React.Component<NamespaceDisplayProps> {
                   )
                 }
                 className="edit-namespace-input"
+                autoFocus
               />
             </Form.Item>
             <Form.Item>
