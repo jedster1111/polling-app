@@ -298,7 +298,16 @@ const PollDetail: React.SFC<PollDetailProps> = ({
         className="poll-detail"
       >
         <RefreshButtonContainer>
-          <FetchPollsButton fetchPolls={fetchPolls} isLoading={isLoading} />
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              flexWrap: "wrap"
+            }}
+          >
+            <FetchPollsButton fetchPolls={fetchPolls} isLoading={isLoading} />
+            <IsOpenDisplay isOpen={pollData.isOpen} />
+          </div>
         </RefreshButtonContainer>
 
         <Card.Meta
@@ -310,7 +319,6 @@ const PollDetail: React.SFC<PollDetailProps> = ({
                   {creator.displayName || creator.userName}
                 </p>
                 <p>Total voters: {pollData.totalVoters}</p>
-                <IsOpenDisplay isOpen={pollData.isOpen} />
               </MetaDescriptionChild>
               <MetaDescriptionChild>
                 {
