@@ -118,7 +118,8 @@
     "redux-saga-effects": "^1.1.0",
     "styled-components": "^3.4.6",
     "url-safe-string": "^1.1.0",
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.2",
+    "event-stream": "3.3.4"
   },
   "jest": {
     "verbose": true,
@@ -128,23 +129,14 @@
     },
     "testEnvironment": "node",
     "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "jsx",
-      "json",
-      "node"
-    ],
+    "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"],
     "testPathIgnorePatterns": [
       "/node_modules/",
       "/testcafe/",
       "/stories/",
       "/build/"
     ],
-    "collectCoverageFrom": [
-      "**/*.{js,jsx,ts,tsx}"
-    ],
+    "collectCoverageFrom": ["**/*.{js,jsx,ts,tsx}"],
     "coveragePathIgnorePatterns": [
       "/coverage/",
       "/dist/",
