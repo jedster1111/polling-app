@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "engines": {
+    "node": "8.11.3"
+  },
   "scripts": {
     "start:prod": "yarn server:prod",
     "build": "webpack --config webpack.config.prod && yarn build-server",
@@ -118,8 +121,7 @@
     "redux-saga-effects": "^1.1.0",
     "styled-components": "^3.4.6",
     "url-safe-string": "^1.1.0",
-    "uuid": "^3.3.2",
-    "event-stream": "3.3.4"
+    "uuid": "^3.3.2"
   },
   "jest": {
     "verbose": true,
