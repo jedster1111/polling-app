@@ -132,6 +132,7 @@ describe("Testing actions:", () => {
       isOpen: true,
       totalVotes: 3,
       optionVoteLimit: 3,
+      totalVoters: 4,
       namespace: "public"
     };
     const expectedAction = {

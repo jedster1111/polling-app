@@ -32,7 +32,6 @@ describe("Testing pollForm Reducer", () => {
     });
 
     it("when option changed", () => {
-      const fieldId = "optionInput1";
       const value = "option changed";
       expect(
         reducer(
@@ -46,14 +45,17 @@ describe("Testing pollForm Reducer", () => {
               ]
             }
           },
-          { type: ActionTypes.changeFormData, payload: { fieldId, value } }
+          {
+            type: ActionTypes.changeFormOptionData,
+            payload: { optionIndex: 0, field: "value", value }
+          }
         )
       ).toEqual({
         ...initialPollFormState,
         data: {
           ...initialPollFormState.data,
           options: [
-            { optionId: "1", value },
+            { optionId: "1", value, link: "", imageUrl: "" },
             ...initialPollFormState.data.options
           ]
         }
@@ -165,6 +167,7 @@ describe("Testing pollForm Reducer", () => {
       voteLimit: 1,
       isOpen: true,
       totalVotes: 4,
+      totalVoters: 2,
       optionVoteLimit: 4,
       namespace: "public"
     };

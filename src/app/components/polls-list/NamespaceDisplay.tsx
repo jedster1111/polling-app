@@ -51,6 +51,8 @@ const NamespaceDisplayContainer = styled.li`
   float: right;
 `;
 
+const ButtonContainer = styled.div``;
+
 class NamespaceDisplay extends React.Component<NamespaceDisplayProps> {
   handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -98,16 +100,14 @@ class NamespaceDisplay extends React.Component<NamespaceDisplayProps> {
           onCancel={this.handleDiscard}
           footer={null}
           style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            padding: "8px 14px"
+            width: "70%"
           }}
+          destroyOnClose
         >
           <Form
             onSubmit={this.handleSubmit}
             layout="inline"
-            style={{ padding: "8px 4px" }}
+            style={{ padding: "8px 4px", margin: "15px 20px" }}
           >
             <Form.Item>
               <Input
@@ -120,17 +120,26 @@ class NamespaceDisplay extends React.Component<NamespaceDisplayProps> {
                   )
                 }
                 className="edit-namespace-input"
+                autoFocus
               />
             </Form.Item>
             <Form.Item>
-              <Button htmlType="button" onClick={this.handleDiscard}>
-                Discard
-              </Button>
-            </Form.Item>
-            <Form.Item>
-              <Button type="primary" htmlType="submit">
-                Submit
-              </Button>
+              <ButtonContainer>
+                <Button
+                  htmlType="button"
+                  onClick={this.handleDiscard}
+                  style={{ margin: "2px 5px" }}
+                >
+                  Discard
+                </Button>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  style={{ margin: "2px 5px" }}
+                >
+                  Submit
+                </Button>
+              </ButtonContainer>
             </Form.Item>
           </Form>
         </Modal>

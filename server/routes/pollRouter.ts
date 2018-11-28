@@ -58,6 +58,7 @@ export const getResponsePoll = (storedPoll: Poll): PollResponse => {
     }),
     isOpen,
     totalVotes: calculateTotalVotes(options),
+    totalVoters: calculateTotalVoters(options),
     optionVoteLimit,
     namespace
   };
@@ -241,6 +242,23 @@ export function calculateTotalVotes(options: StoredPollOption[]): number {
   return options.reduce((accum, option) => {
     Object.values(option.votes).forEach(voteNumber => (accum += voteNumber));
     return accum;
+  }, 0);
+}
+
+export function calculateTotalVoters(options: StoredPollOption[]): number {
+  const prevSeenId: { [id: string]: boolean } = {};
+
+  return options.reduce<number>((prev, option) => {
+    let optionVoterCount = 0;
+
+    Object.entries(option.votes).forEach(([id, numberOfVotes]) => {
+      if (numberOfVotes > 0 && !prevSeenId[id]) {
+        prevSeenId[id] = true;
+        optionVoterCount++;
+      }
+    });
+
+    return prev + optionVoterCount;
   }, 0);
 }
 
