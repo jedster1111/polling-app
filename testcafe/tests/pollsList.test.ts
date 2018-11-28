@@ -19,7 +19,12 @@ const createPollInput = (): PollInput => ({
   // uses pollName as a unique identifier
   pollName: uuid(),
   description: "pollListDescriptionTest",
-  options: ["option1", "option2", "option3", "option4"],
+  options: [
+    { value: "option1" },
+    { value: "option2" },
+    { value: "option3" },
+    { value: "option4" }
+  ],
   voteLimit: 1,
   optionVoteLimit: 1
 });

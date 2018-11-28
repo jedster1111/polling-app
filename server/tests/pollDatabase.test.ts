@@ -167,6 +167,15 @@ describe("Testing poll related database methods:", () => {
       });
     });
 
+    test("creating a poll with all options having no values should throw", () => {
+      const pollInput = generatePollInputs(1)[0];
+      pollInput.options = pollInput.options.map(option => ({
+        ...option,
+        value: ""
+      }));
+      expect(() => db.insertPoll(pollInput)).toThrowError();
+    });
+
     test("Can I get a poll by Id?", () => {
       const storedPolls = db.getPolls();
       const poll = db.getPoll(storedPolls[0].pollId, storedPolls[0].namespace);
