@@ -41,7 +41,12 @@ fixture("Testing the poll detail page")
     const pollInput: PollInput = {
       pollName: id,
       description: "description",
-      options: ["option1", "option2", "option3", "option4"],
+      options: [
+        { value: "option1" },
+        { value: "option2" },
+        { value: "option3" },
+        { value: "option4" }
+      ],
       voteLimit: 5,
       optionVoteLimit: 5
     };
@@ -166,10 +171,10 @@ test(`Can I edit a poll, will it not lose my votes?
     description: "descriptionChanged",
     pollName: "pollNameChanged",
     options: [
-      "option1 changed",
-      "option2 changed",
-      "option3 changed",
-      "option4 changed"
+      { value: "option1 changed" },
+      { value: "option2 changed" },
+      { value: "option3 changed" },
+      { value: "option4 changed" }
     ],
     voteLimit: 4,
     optionVoteLimit: 4
@@ -221,8 +226,8 @@ test(`Can I edit a poll, will it not lose my votes?
   await t.click(createPollPage.addOptionButton);
   await t.typeText(createPollPage.optionInputs.nth(4), newOptionText);
 
-  editedPollInput.options.push(newOptionText);
-  editedPollInput.options[0] = "";
+  editedPollInput.options.push({ value: newOptionText });
+  editedPollInput.options[0] = { value: "" };
 
   await createPollPage.fillFormInputs(t, editedPollInput);
 
@@ -340,7 +345,7 @@ test("Can I sort alphabetically, by # of votes and by if you've voted or not", a
   const pollInput: PollInput = {
     pollName: id,
     description: "description",
-    options: optionsInDefaultOrder,
+    options: optionsInDefaultOrder.map(optionText => ({ value: optionText })),
     voteLimit: 6,
     optionVoteLimit: 6
   };
@@ -357,10 +362,10 @@ test("If I edit a poll and give it a new namespace, I will get automatically red
     description: "descriptionChanged",
     pollName: "pollNameChanged",
     options: [
-      "option1 changed",
-      "option2 changed",
-      "option3 changed",
-      "option4 changed"
+      { value: "option1 changed" },
+      { value: "option2 changed" },
+      { value: "option3 changed" },
+      { value: "option4 changed" }
     ],
     voteLimit: 4,
     optionVoteLimit: 4,

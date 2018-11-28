@@ -13,7 +13,12 @@ const listPage = new listPollPage();
 const defaultPollInput: PollInput = {
   pollName: "pollName",
   description: "description",
-  options: ["option1", "option2", "option3", "option4"],
+  options: [
+    { value: "option1" },
+    { value: "option2" },
+    { value: "option3" },
+    { value: "option4" }
+  ],
   voteLimit: 1,
   optionVoteLimit: 1
 };
@@ -86,17 +91,17 @@ test("Should be able to add and remove options", async t => {
     .expect(page.removeOptionButtons.count)
     .eql(2)
     .expect(page.optionInputs.nth(0).value)
-    .eql(defaultPollInput.options[2])
+    .eql(defaultPollInput.options[2].value)
     .expect(page.optionInputs.nth(1).value)
-    .eql(defaultPollInput.options[3]);
+    .eql(defaultPollInput.options[3].value);
 
-  const newInputs = ["newOption1", "newOption2"];
+  const newInputs = [{ value: "newOption1" }, { value: "newOption2" }];
 
   // Add two new options and fill with text
   await t.click(page.addOptionButton).click(page.addOptionButton);
   await t
-    .typeText(page.optionInputs.nth(2), newInputs[0])
-    .typeText(page.optionInputs.nth(3), newInputs[1]);
+    .typeText(page.optionInputs.nth(2), newInputs[0].value)
+    .typeText(page.optionInputs.nth(3), newInputs[1].value);
   await page.checkFormInputs(t, {
     ...defaultPollInput,
     options: [
