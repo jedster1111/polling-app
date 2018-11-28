@@ -184,6 +184,7 @@ const PollDetail: React.SFC<PollDetailProps> = ({
                 userData.id,
                 pollData
               )}
+              isLoggedIn={isLoggedIn}
             />
           </VoteButtonsContainer>
         </VotesContainer>
