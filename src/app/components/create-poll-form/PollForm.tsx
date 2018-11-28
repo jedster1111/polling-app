@@ -2,6 +2,7 @@ import { Button, Form, Input } from "antd";
 import { ColProps } from "antd/lib/col";
 import * as React from "react";
 import UrlSafeString from "url-safe-string";
+import { FormOptionFields } from "../../actions/actions";
 import { PollFormInput } from "../../reducers/pollForm";
 import "./antd-poll-form-override.css";
 import OptionsInput from "./OptionsInput";
@@ -12,12 +13,19 @@ interface CreatePollFormProps {
   values: PollFormInput;
   originalValues: PollFormInput;
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleOptionChange: (
+    optionIndex: number,
+    field: FormOptionFields,
+    value: string
+  ) => void;
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   discardPoll: () => void;
   addPollOption: () => void;
   removePollOption: (index: number) => void;
   clearOption: (index: number) => void;
   changeIsEditingNamespace: (isEditing: boolean) => void;
+  setEditingAdvancedOption: (index: number | undefined) => void;
+  editingAdvancedOptionIndex: number | undefined;
   edit?: boolean;
   isLoading: boolean;
   isEditingNamespace: boolean;
@@ -67,6 +75,7 @@ const PollForm: React.SFC<CreatePollFormProps> = props => {
           placeholder={
             props.edit ? `${props.originalValues.pollName}` : "Poll name"
           }
+          autoFocus
         />
       </Form.Item>
       <Form.Item
@@ -95,11 +104,13 @@ const PollForm: React.SFC<CreatePollFormProps> = props => {
       <OptionsInput
         addPollOption={props.addPollOption}
         removePollOption={props.removePollOption}
-        handleChange={props.handleChange}
+        handleChange={props.handleOptionChange}
         values={props.values.options}
         originalValues={props.originalValues.options}
         edit={props.edit}
         clearOption={props.clearOption}
+        setEditingAdvancedOption={props.setEditingAdvancedOption}
+        editingAdvancedOptionIndex={props.editingAdvancedOptionIndex}
       />
       <Form.Item label="Vote Limit" {...itemLayout}>
         <Input

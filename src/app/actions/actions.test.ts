@@ -18,7 +18,11 @@ describe("Testing actions:", () => {
     const pollInput: PollInput = {
       creatorId: "creatorId",
       description: "description",
-      options: ["option1", "option2", "option3"],
+      options: [
+        { value: "option1" },
+        { value: "option2" },
+        { value: "option3" }
+      ],
       pollName: "pollName",
       voteLimit: 1,
       optionVoteLimit: 1
@@ -128,6 +132,7 @@ describe("Testing actions:", () => {
       isOpen: true,
       totalVotes: 3,
       optionVoteLimit: 3,
+      totalVoters: 4,
       namespace: "public"
     };
     const expectedAction = {

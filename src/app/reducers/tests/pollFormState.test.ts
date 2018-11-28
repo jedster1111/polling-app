@@ -32,7 +32,6 @@ describe("Testing pollForm Reducer", () => {
     });
 
     it("when option changed", () => {
-      const fieldId = "optionInput1";
       const value = "option changed";
       expect(
         reducer(
@@ -41,19 +40,22 @@ describe("Testing pollForm Reducer", () => {
             data: {
               ...initialPollFormState.data,
               options: [
-                { optionId: "1", value: "value" },
+                { optionId: "1", value: "value", link: "", imageUrl: "" },
                 ...initialPollFormState.data.options
               ]
             }
           },
-          { type: ActionTypes.changeFormData, payload: { fieldId, value } }
+          {
+            type: ActionTypes.changeFormOptionData,
+            payload: { optionIndex: 0, field: "value", value }
+          }
         )
       ).toEqual({
         ...initialPollFormState,
         data: {
           ...initialPollFormState.data,
           options: [
-            { optionId: "1", value },
+            { optionId: "1", value, link: "", imageUrl: "" },
             ...initialPollFormState.data.options
           ]
         }
@@ -70,7 +72,9 @@ describe("Testing pollForm Reducer", () => {
           data: {
             pollName: "pollName",
             description: "description",
-            options: [{ optionId: "1", value: " value1" }],
+            options: [
+              { optionId: "1", value: " value1", imageUrl: "", link: "" }
+            ],
             voteLimit: 1,
             optionVoteLimit: 1,
             namespace: "namespaceChanged"
@@ -123,7 +127,10 @@ describe("Testing pollForm Reducer", () => {
       ...initialPollFormState,
       data: {
         ...data,
-        options: [...options, { optionId: "", value: "" }]
+        options: [
+          ...options,
+          { optionId: "", value: "", imageUrl: "", link: "" }
+        ]
       }
     });
   });
@@ -160,6 +167,7 @@ describe("Testing pollForm Reducer", () => {
       voteLimit: 1,
       isOpen: true,
       totalVotes: 4,
+      totalVoters: 2,
       optionVoteLimit: 4,
       namespace: "public"
     };

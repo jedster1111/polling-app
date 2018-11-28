@@ -27,6 +27,7 @@ export default class CreatePollPage {
   addOptionButton = Selector("#addOption");
   voteLimitInput = Selector("#voteLimit");
   optionVoteLimitInput = Selector("#optionVoteLimit");
+  namespaceInput = Selector("#namespace");
   allInputs = ReactSelector("PollForm").find("input[type='text']");
   removeOptionButton = (index: number) => this.removeOptionButtons.nth(index);
 
@@ -42,6 +43,9 @@ export default class CreatePollPage {
       this.optionVoteLimitInput,
       pollInput.optionVoteLimit.toString()
     );
+    if (pollInput.namespace) {
+      await typeText(t, this.namespaceInput, pollInput.namespace);
+    }
   };
 
   checkFormInputs = async (t: TestController, pollInput: PollInput) => {

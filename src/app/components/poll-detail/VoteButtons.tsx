@@ -13,7 +13,7 @@ interface VoteButtonProps {
 
 const ButtonsContainer = styled.div`
   margin: 3px 0;
-  display: flex;
+  display: inline-flex;
   justify-content: center;
 `;
 

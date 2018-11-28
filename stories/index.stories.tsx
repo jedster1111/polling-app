@@ -17,9 +17,9 @@ const values = {
   pollName: "New furniture guys!",
   description: "description",
   options: [
-    { value: "test", optionId: "1" },
-    { value: "test2", optionId: "2" },
-    { value: "test3", optionId: "3" }
+    { value: "test", optionId: "1", imageUrl: "", link: "" },
+    { value: "test2", optionId: "2", imageUrl: "", link: "" },
+    { value: "test3", optionId: "3", imageUrl: "", link: "" }
   ],
   voteLimit: 1,
   optionVoteLimit: 1,
@@ -93,6 +93,7 @@ storiesOf("Create Poll Form", module)
   .add("Create poll form", () => (
     <PollForm
       handleChange={action("Value changed")}
+      handleOptionChange={action("Option Changed")}
       handleSubmit={mockSubmit}
       discardPoll={action("Discarded poll")}
       values={values}
@@ -103,5 +104,7 @@ storiesOf("Create Poll Form", module)
       originalValues={values}
       changeIsEditingNamespace={action("changed isEditing namespace")}
       isEditingNamespace={false}
+      setEditingAdvancedOption={action("set editingAdvancedOption")}
+      editingAdvancedOptionIndex={1}
     />
   ));

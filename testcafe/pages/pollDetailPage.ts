@@ -55,21 +55,21 @@ export default class PollDetailPage {
   checkValues = async (expectedValues: ExpectedValues) => {
     await t
       // pollName
-      .expect(this.values.title.innerText)
+      .expect(this.values.title.textContent)
       .eql(expectedValues.pollName)
       // description
-      .expect(this.values.description.innerText)
+      .expect(this.values.description.textContent)
       .eql(expectedValues.description)
       // creatorName
-      .expect(this.values.creatorName.innerText)
+      .expect(this.values.creatorName.textContent)
       .eql(expectedValues.username)
       // voteLimit && userVotes
-      .expect(this.values.voteCount.innerText)
+      .expect(this.values.voteCount.textContent)
       .eql(
         `Your Votes: ${expectedValues.userVotes} / ${expectedValues.voteLimit}`
       )
       // isOpenText
-      .expect(this.values.isOpen.innerText)
+      .expect(this.values.isOpen.textContent)
       .eql(expectedValues.isOpenText);
 
     // check that options actually have the required length
@@ -78,7 +78,7 @@ export default class PollDetailPage {
 
   checkIsOpenText = async (isOpen: boolean) =>
     await t
-      .expect(this.values.isOpen.innerText)
+      .expect(this.values.isOpen.textContent)
       .eql(isOpen ? IsOpenText.open : IsOpenText.closed);
 
   checkActionButtons = async (
@@ -113,7 +113,7 @@ export default class PollDetailPage {
     // Use this loop as foreach doesn't handle async
     for (const [index, option] of expectedValues.options.entries()) {
       await t
-        .expect(this.getOptionByIndex(index).ValueColumn.innerText)
+        .expect(this.getOptionByIndex(index).optionValue.textContent)
         .eql(expectedValues.options[index]);
     }
   }
@@ -121,12 +121,12 @@ export default class PollDetailPage {
   private getOptionSelectorObject(option: Selector, voteBar: Selector) {
     const selectors = {
       VotedColumn: option.find(".voted"),
-      ValueColumn: option.find(".value"),
+      optionValue: option.find(".option-value"),
       ranking: voteBar.find(".ranking"),
       totalVotes: voteBar.find(".total-votes"),
-      userVotes: voteBar.find(".user-votes"),
-      removeVoteButton: voteBar.find(".remove-vote-button"),
-      addVoteButton: voteBar.find(".add-vote-button")
+      userVotes: option.find(".user-votes"),
+      removeVoteButton: option.find(".remove-vote-button"),
+      addVoteButton: option.find(".add-vote-button")
     };
 
     const functions = {
@@ -148,7 +148,7 @@ export default class PollDetailPage {
       },
       checkNumberOfVotesFromUser: async (expectedNumberOfVotes: number) => {
         await t
-          .expect(selectors.userVotes.innerText)
+          .expect(selectors.userVotes.textContent)
           .match(new RegExp(`^${expectedNumberOfVotes} \/ \d*`));
       }
     };

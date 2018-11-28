@@ -9,6 +9,7 @@ import IsOpenDisplay from "../IsOpenDisplay";
 import ActionButton from "../polls-list/ActionButton";
 import FetchPollsButton from "../polls-list/FetchPollsButton";
 import VoteDisplay, { calculateTotalVotesByUser } from "../VoteDisplay";
+import { createListOfVoters } from "./createListOfVoters";
 import { getRankings, getTotalVotesOnOption } from "./getRankings";
 import VoteBar from "./VoteBar";
 import VoteButtons from "./VoteButtons";
@@ -53,9 +54,43 @@ const MetaDescriptionChild = styled.div`
 
 const VotesContainer = styled.div`
   display: flex;
-  justify-content: space-evenly;
-  align-items: center;
   flex-wrap: wrap;
+  justify-content: center;
+`;
+const ValueAndImageContainer = styled.div`
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+  align-items: center;
+`;
+
+const OptionValueContainer = styled.span`
+  text-align: center;
+  min-width: 100px;
+`;
+
+const ImageThumbnail = styled.img`
+  margin: 6px;
+  width: 40%;
+  min-width: 65px;
+  max-width: 130px;
+  min-height: 65px;
+  max-height: 130px;
+`;
+
+const VoteButtonsContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+`;
+
+const VotersList = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+`;
+
+const VotersItem = styled.div`
+  margin: 2px 5px;
 `;
 
 const PollDetail: React.SFC<PollDetailProps> = ({
@@ -80,7 +115,6 @@ const PollDetail: React.SFC<PollDetailProps> = ({
   const optionRankings = getRankings(pollData.options);
 
   const votedColumn: ColumnProps<PollOption> = {
-    title: "Voted",
     dataIndex: "voted",
     key: "voted",
     render: (text, option) => (
@@ -96,7 +130,7 @@ const PollDetail: React.SFC<PollDetailProps> = ({
         )}
       </span>
     ),
-    width: "100px",
+    width: "40px",
     sorter: (a, b) => {
       let result = 0;
       const aIndex = a.votes.find(
@@ -125,17 +159,33 @@ const PollDetail: React.SFC<PollDetailProps> = ({
 
       return (
         <VotesContainer className="value">
-          <span>{option.value}</span>
-          <VoteButtons
-            votesByUser={votesByUser}
-            optionVoteLimit={pollData.optionVoteLimit}
-            handleVote={(isAddingVote: boolean) =>
-              voteOption(option.optionId, isAddingVote)
-            }
-            pollIsOpen={pollData.isOpen}
-            pollVoteLimit={pollData.voteLimit}
-            totalVotesByUser={calculateTotalVotesByUser(userData.id, pollData)}
-          />
+          <ValueAndImageContainer>
+            <OptionValueContainer className="option-value">
+              {option.link ? (
+                <a href={option.link} target="_blank">
+                  {option.value}
+                </a>
+              ) : (
+                option.value
+              )}
+            </OptionValueContainer>
+            {option.imageUrl && <ImageThumbnail src={option.imageUrl} />}
+          </ValueAndImageContainer>
+          <VoteButtonsContainer>
+            <VoteButtons
+              votesByUser={votesByUser}
+              optionVoteLimit={pollData.optionVoteLimit}
+              handleVote={(isAddingVote: boolean) =>
+                voteOption(option.optionId, isAddingVote)
+              }
+              pollIsOpen={pollData.isOpen}
+              pollVoteLimit={pollData.voteLimit}
+              totalVotesByUser={calculateTotalVotesByUser(
+                userData.id,
+                pollData
+              )}
+            />
+          </VoteButtonsContainer>
         </VotesContainer>
       );
     },
@@ -233,6 +283,8 @@ const PollDetail: React.SFC<PollDetailProps> = ({
     ? [EditButton, DeleteButton, pollData.isOpen ? closeButton : openButton]
     : [];
 
+  const listOfVoters = createListOfVoters(pollData.options);
+
   return (
     <>
       <Breadcrumb style={{ marginBottom: "8px" }}>
@@ -257,7 +309,7 @@ const PollDetail: React.SFC<PollDetailProps> = ({
                 <p id="poll-detail-creator-name">
                   {creator.displayName || creator.userName}
                 </p>
-                <p>Total votes: {pollData.totalVotes}</p>
+                <p>Total voters: {pollData.totalVoters}</p>
                 <IsOpenDisplay isOpen={pollData.isOpen} />
               </MetaDescriptionChild>
               <MetaDescriptionChild>
@@ -277,15 +329,25 @@ const PollDetail: React.SFC<PollDetailProps> = ({
         />
 
         <Table
-          // loading={isLoading}
           columns={columns}
           dataSource={options}
           rowKey={option => option.optionId}
           pagination={false}
-          // onRow={option => ({
-          //   onClick: () => voteOption(false, userData.id, pollId, option.optionId)
-          // })}
         />
+        <Card
+          title="List of Voters & Number of Votes"
+          style={{ marginTop: "10px" }}
+        >
+          <VotersList>
+            {listOfVoters.map(voterItem => (
+              <VotersItem key={voterItem.user.id}>
+                {`${voterItem.user.displayName || voterItem.user.userName} - ${
+                  voterItem.numberOfVotes
+                }`}
+              </VotersItem>
+            ))}
+          </VotersList>
+        </Card>
         <ActionButtonContainer>{actions}</ActionButtonContainer>
         <Modal
           visible={isEditing}
@@ -293,6 +355,8 @@ const PollDetail: React.SFC<PollDetailProps> = ({
           footer={null}
           width="75%"
           style={{ maxWidth: "800px" }}
+          destroyOnClose
+          centered
         >
           <PollForm edit pollId={pollData.pollId} />
         </Modal>
