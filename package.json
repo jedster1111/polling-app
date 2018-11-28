@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "engines": {
-    "node": "10.12.0"
+    "node": "8.11.3"
   },
   "scripts": {
     "start:prod": "yarn server:prod",
