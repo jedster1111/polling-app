@@ -1,6 +1,7 @@
 import { push, RouterAction } from "connected-react-router";
 import { Action } from "redux";
 import UrlSafeString from "url-safe-string";
+import { PollFormInputOption } from "../reducers/pollForm";
 import { Poll, PollInput, UpdatePollInput, User } from "../types";
 import { ActionTypes } from "./action-types";
 
@@ -97,6 +98,24 @@ export function changeFormData(
       fieldId,
       value
     }
+  };
+}
+
+export type FormOptionFields = Exclude<keyof PollFormInputOption, "optionId">;
+
+export interface ChangeFormOptionDataAction
+  extends Action<ActionTypes.changeFormOptionData> {
+  payload: { optionIndex: number; field: FormOptionFields; value: string };
+}
+
+export function createChangeFormOptionDataAction(
+  optionIndex: number,
+  field: FormOptionFields,
+  value: string
+): ChangeFormOptionDataAction {
+  return {
+    type: ActionTypes.changeFormOptionData,
+    payload: { optionIndex, field, value }
   };
 }
 
@@ -390,6 +409,20 @@ export function closedWarning(): ClosedWarningAction {
 
 export function navigateToPoll(namespace: string, pollId: string) {
   return push(`/${namespaceClean(namespace)}/${pollId}`);
+}
+
+export interface SetEditingAdvancedOptionAction
+  extends Action<ActionTypes.setEditingAdvancedOption> {
+  payload: { index: number | undefined };
+}
+
+export function createSetEditingAdvancedOptionAction(
+  index: number | undefined
+): SetEditingAdvancedOptionAction {
+  return {
+    type: ActionTypes.setEditingAdvancedOption,
+    payload: { index }
+  };
 }
 
 export type NamespaceActions =

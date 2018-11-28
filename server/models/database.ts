@@ -83,14 +83,12 @@ class Database {
   }
   insertPoll(pollInput: PollInput): Poll {
     Database.checkValidPollInput(pollInput);
-    const filteredOptions: string[] = pollInput.options.filter(
-      option => option
-    );
+    const filteredOptions = pollInput.options.filter(option => option.value);
     const newOptions: StoredPollOption[] = filteredOptions.map(
-      (option: string, index: number) => {
+      (option, index) => {
         return {
+          ...option,
           optionId: `${index + 1}`,
-          value: option,
           votes: {}
         };
       }
@@ -166,10 +164,19 @@ class Database {
               const optionToUpdate = poll.options.find(
                 option => option.optionId === optionInput.optionId
               );
-              if (optionToUpdate !== undefined && optionInput.value !== "") {
-                optionToUpdate.value = optionInput.value;
-              } else if (optionToUpdate !== undefined) {
-                poll.options.splice(poll.options.indexOf(optionToUpdate), 1);
+              if (optionToUpdate !== undefined) {
+                if (optionInput.value !== "") {
+                  optionToUpdate.value = optionInput.value;
+
+                  if (optionInput.link !== undefined) {
+                    optionToUpdate.link = optionInput.link;
+                  }
+                  if (optionInput.imageUrl !== undefined) {
+                    optionToUpdate.imageUrl = optionInput.imageUrl;
+                  }
+                } else {
+                  poll.options.splice(poll.options.indexOf(optionToUpdate), 1);
+                }
               }
             } else if (optionInput.value) {
               const lastOption = poll.options[poll.options.length - 1];
@@ -179,6 +186,8 @@ class Database {
                   10
                 ) + 1}`,
                 value: optionInput.value,
+                imageUrl: optionInput.imageUrl,
+                link: optionInput.link,
                 votes: {}
               });
             }

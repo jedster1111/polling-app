@@ -46,8 +46,7 @@ export const getResponsePoll = (storedPoll: Poll): PollResponse => {
     },
     options: options.map<PollResponseOption>(option => {
       return {
-        optionId: option.optionId,
-        value: option.value,
+        ...option,
         votes: Object.keys(option.votes).map<PollResponseUser>(userId => {
           const user = db.getUser(userId);
           return {

@@ -12,7 +12,7 @@ const generatePollInputs = (n: number) => {
       creatorId: `${index}`,
       pollName: `pollName${index}`,
       description: `description${index}`,
-      options: ["option1", "option2"],
+      options: [{ value: "option1" }, { value: "option2" }],
       voteLimit: 3,
       isOpen: true,
       optionVoteLimit: 3,
@@ -102,7 +102,7 @@ describe("Testing poll related database methods:", () => {
 
     test("If I create a poll with options containing empty strings, do the empty strings get filtered?", () => {
       const pollInput = generatePollInputs(1)[0];
-      pollInput.options.push("", "");
+      pollInput.options.push({ value: "" }, { value: "" });
       const poll = db.insertPoll(pollInput);
       const result = generateExpectedPolls(1)[0];
       expect(poll).toMatchObject(result);
@@ -150,6 +150,21 @@ describe("Testing poll related database methods:", () => {
 
       const poll = db.insertPoll(pollInput);
       expect(poll).toMatchObject({ ...expectedPoll, namespace: "public" });
+    });
+
+    test("can create a poll with imageUrl and link in option", () => {
+      const pollInput = generatePollInputs(1)[0];
+      pollInput.options[0].imageUrl = "imageUrl";
+      pollInput.options[0].link = "link";
+
+      const poll = db.insertPoll(pollInput);
+      expect(poll.options[0]).toEqual({
+        value: "option1",
+        imageUrl: "imageUrl",
+        link: "link",
+        optionId: "1",
+        votes: {}
+      });
     });
 
     test("Can I get a poll by Id?", () => {
