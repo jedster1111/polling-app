@@ -13,6 +13,7 @@ import { createListOfVoters } from "./createListOfVoters";
 import { getRankings, getTotalVotesOnOption } from "./getRankings";
 import VoteBar from "./VoteBar";
 import VoteButtons from "./VoteButtons";
+import { VotersList } from "./VotersList";
 
 interface PollDetailProps {
   pollData: Poll | undefined;
@@ -82,15 +83,6 @@ const VoteButtonsContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: flex-end;
-`;
-
-const VotersList = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-`;
-
-const VotersItem = styled.div`
-  margin: 2px 5px;
 `;
 
 const PollDetail: React.SFC<PollDetailProps> = ({
@@ -347,15 +339,7 @@ const PollDetail: React.SFC<PollDetailProps> = ({
           title="List of Voters & Number of Votes"
           style={{ marginTop: "10px" }}
         >
-          <VotersList>
-            {listOfVoters.map(voterItem => (
-              <VotersItem key={voterItem.user.id}>
-                {`${voterItem.user.displayName || voterItem.user.userName} - ${
-                  voterItem.numberOfVotes
-                }`}
-              </VotersItem>
-            ))}
-          </VotersList>
+          <VotersList listOfVoters={listOfVoters} />
         </Card>
         <ActionButtonContainer>{actions}</ActionButtonContainer>
         <Modal
