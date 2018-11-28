@@ -35,7 +35,7 @@ export default class CreatePollPage {
     await typeText(t, this.pollNameInput, pollInput.pollName);
     await typeText(t, this.descriptionInput, pollInput.description);
     for (const [index, option] of pollInput.options.entries()) {
-      await typeText(t, this.optionInputs.nth(index), option);
+      await typeText(t, this.optionInputs.nth(index), option.value);
     }
     await typeText(t, this.voteLimitInput, pollInput.voteLimit.toString());
     await typeText(
@@ -53,7 +53,7 @@ export default class CreatePollPage {
     await checkInput(t, this.descriptionInput, pollInput.description);
     // need to use this as foreach loop doesn't hadnle async callbacks!
     for (const [index, option] of pollInput.options.entries()) {
-      await checkInput(t, this.optionInputs.nth(index), option);
+      await checkInput(t, this.optionInputs.nth(index), option.value);
     }
   };
 }

@@ -1,4 +1,5 @@
 import { Selector, t } from "testcafe";
+import { PollOption } from "../../src/app/types";
 
 export enum IsOpenText {
   open = "Poll is open",
@@ -12,7 +13,7 @@ export interface ExpectedValues {
   userVotes: number;
   voteLimit: number;
   isOpenText: IsOpenText;
-  options: string[];
+  options: Array<{ value: string }>;
 }
 
 export default class PollDetailPage {
@@ -46,9 +47,9 @@ export default class PollDetailPage {
   getHeaders = () => {
     const tableHeaders = Selector(".ant-table-thead th");
     return {
-      votedHeader: tableHeaders.withText("Voted"),
-      optionHeader: tableHeaders.withText("Option"),
-      votesHeader: tableHeaders.withText("Votes")
+      votedHeader: tableHeaders.nth(0),
+      optionHeader: tableHeaders.nth(1),
+      votesHeader: tableHeaders.nth(2)
     };
   };
 
@@ -114,7 +115,7 @@ export default class PollDetailPage {
     for (const [index, option] of expectedValues.options.entries()) {
       await t
         .expect(this.getOptionByIndex(index).optionValue.textContent)
-        .eql(expectedValues.options[index]);
+        .eql(expectedValues.options[index].value);
     }
   }
 

@@ -122,8 +122,8 @@ const PollDetail: React.SFC<PollDetailProps> = ({
         {isLoading ? (
           <Icon type="loading" />
         ) : option.votes.find(
-          voter => voter.id === userData.id && voter.numberOfVotes !== 0
-        ) ? (
+            voter => voter.id === userData.id && voter.numberOfVotes !== 0
+          ) ? (
           <Icon type="check" />
         ) : (
           undefined
@@ -140,9 +140,9 @@ const PollDetail: React.SFC<PollDetailProps> = ({
         voter => voter.id === userData.id && voter.numberOfVotes !== 0
       );
       if (aIndex && !bIndex) {
-        result = 1;
-      } else if (!aIndex && bIndex) {
         result = -1;
+      } else if (!aIndex && bIndex) {
+        result = 1;
       }
       return result;
     }
@@ -194,9 +194,9 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       const bValue = b.value.toLowerCase();
       let result = 0;
       if (aValue > bValue) {
-        result = -1;
-      } else if (aValue < bValue) {
         result = 1;
+      } else if (aValue < bValue) {
+        result = -1;
       }
       return result;
     }
@@ -221,7 +221,7 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       );
     },
     sorter: (a, b) => {
-      return getTotalVotesOnOption(a) - getTotalVotesOnOption(b);
+      return getTotalVotesOnOption(b) - getTotalVotesOnOption(a);
     }
   };
 
