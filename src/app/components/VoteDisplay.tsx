@@ -17,8 +17,6 @@ const VoteDisplayContainer = styled.p<{
   isOpen: boolean;
   size: Sizes;
 }>`
-  display: flex;
-  flex-wrap: wrap;
   color: ${({ numberOfVotes, voteLimit, isOpen, size }) =>
     (voteLimit && numberOfVotes && numberOfVotes > voteLimit) || !isOpen
       ? "red"
@@ -29,7 +27,9 @@ const VoteDisplayContainer = styled.p<{
 const VoteDisplay: React.SFC<VoteDisplayProps> = props => {
   const numberOfVotes = calculateTotalVotesByUser(props.user.id, props.poll);
   const { voteLimit } = props.poll;
-
+  const voteDisplayText = props.isLoggedIn
+    ? `Your Votes: ${numberOfVotes}/${voteLimit}`
+    : `Vote Limit: ${voteLimit}`;
   return (
     <React.Fragment>
       {/* <span id="vote-display-count">{VoteCount}</span> */}
@@ -40,10 +40,7 @@ const VoteDisplay: React.SFC<VoteDisplayProps> = props => {
         isOpen={props.poll.isOpen}
         size={props.size || "default"}
       >
-        <div>{props.isLoggedIn ? "Your Votes" : "Vote Limit"}</div>
-        <div>
-          {props.isLoggedIn ? `${numberOfVotes} / ${voteLimit}` : voteLimit}
-        </div>
+        {voteDisplayText}
       </VoteDisplayContainer>
     </React.Fragment>
   );
