@@ -1,6 +1,6 @@
 import { PollOption, User } from "../../types";
 
-interface UserItem {
+export interface UserItem {
   user: User;
   numberOfVotes: number;
 }

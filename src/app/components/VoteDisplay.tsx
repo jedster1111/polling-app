@@ -21,15 +21,14 @@ const VoteDisplayContainer = styled.p<{
     (voteLimit && numberOfVotes && numberOfVotes > voteLimit) || !isOpen
       ? "red"
       : "inherit"};
-  font-size: ${({ size }) => (size === "large" ? "22px" : "inherit")};
-  white-space: nowrap;
+  font-size: ${({ size }) => (size === "large" ? "40px" : "inherit")};
 `;
 
 const VoteDisplay: React.SFC<VoteDisplayProps> = props => {
   const numberOfVotes = calculateTotalVotesByUser(props.user.id, props.poll);
   const { voteLimit } = props.poll;
   const voteDisplayText = props.isLoggedIn
-    ? `Your Votes: ${numberOfVotes} / ${voteLimit}`
+    ? `Your Votes: ${numberOfVotes}/${voteLimit}`
     : `Vote Limit: ${voteLimit}`;
   return (
     <React.Fragment>

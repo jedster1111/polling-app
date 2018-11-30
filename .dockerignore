@@ -1,0 +1,10 @@
+.git
+node_modules
+stories
+testcafe
+dist
+coverage
+.vscode
+.storybook
+dev.env
+prod.env

@@ -13,6 +13,7 @@ import { createListOfVoters } from "./createListOfVoters";
 import { getRankings, getTotalVotesOnOption } from "./getRankings";
 import VoteBar from "./VoteBar";
 import VoteButtons from "./VoteButtons";
+import { VotersList } from "./VotersList";
 
 interface PollDetailProps {
   pollData: Poll | undefined;
@@ -84,15 +85,6 @@ const VoteButtonsContainer = styled.div`
   align-items: flex-end;
 `;
 
-const VotersList = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-`;
-
-const VotersItem = styled.div`
-  margin: 2px 5px;
-`;
-
 const PollDetail: React.SFC<PollDetailProps> = ({
   pollData,
   isLoading,
@@ -122,8 +114,8 @@ const PollDetail: React.SFC<PollDetailProps> = ({
         {isLoading ? (
           <Icon type="loading" />
         ) : option.votes.find(
-          voter => voter.id === userData.id && voter.numberOfVotes !== 0
-        ) ? (
+            voter => voter.id === userData.id && voter.numberOfVotes !== 0
+          ) ? (
           <Icon type="check" />
         ) : (
           undefined
@@ -140,9 +132,9 @@ const PollDetail: React.SFC<PollDetailProps> = ({
         voter => voter.id === userData.id && voter.numberOfVotes !== 0
       );
       if (aIndex && !bIndex) {
-        result = 1;
-      } else if (!aIndex && bIndex) {
         result = -1;
+      } else if (!aIndex && bIndex) {
+        result = 1;
       }
       return result;
     }
@@ -184,6 +176,7 @@ const PollDetail: React.SFC<PollDetailProps> = ({
                 userData.id,
                 pollData
               )}
+              isLoggedIn={isLoggedIn}
             />
           </VoteButtonsContainer>
         </VotesContainer>
@@ -194,9 +187,9 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       const bValue = b.value.toLowerCase();
       let result = 0;
       if (aValue > bValue) {
-        result = -1;
-      } else if (aValue < bValue) {
         result = 1;
+      } else if (aValue < bValue) {
+        result = -1;
       }
       return result;
     }
@@ -221,7 +214,7 @@ const PollDetail: React.SFC<PollDetailProps> = ({
       );
     },
     sorter: (a, b) => {
-      return getTotalVotesOnOption(a) - getTotalVotesOnOption(b);
+      return getTotalVotesOnOption(b) - getTotalVotesOnOption(a);
     }
   };
 
@@ -298,7 +291,16 @@ const PollDetail: React.SFC<PollDetailProps> = ({
         className="poll-detail"
       >
         <RefreshButtonContainer>
-          <FetchPollsButton fetchPolls={fetchPolls} isLoading={isLoading} />
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              flexWrap: "wrap"
+            }}
+          >
+            <FetchPollsButton fetchPolls={fetchPolls} isLoading={isLoading} />
+            <IsOpenDisplay isOpen={pollData.isOpen} />
+          </div>
         </RefreshButtonContainer>
 
         <Card.Meta
@@ -310,7 +312,6 @@ const PollDetail: React.SFC<PollDetailProps> = ({
                   {creator.displayName || creator.userName}
                 </p>
                 <p>Total voters: {pollData.totalVoters}</p>
-                <IsOpenDisplay isOpen={pollData.isOpen} />
               </MetaDescriptionChild>
               <MetaDescriptionChild>
                 {
@@ -338,15 +339,7 @@ const PollDetail: React.SFC<PollDetailProps> = ({
           title="List of Voters & Number of Votes"
           style={{ marginTop: "10px" }}
         >
-          <VotersList>
-            {listOfVoters.map(voterItem => (
-              <VotersItem key={voterItem.user.id}>
-                {`${voterItem.user.displayName || voterItem.user.userName} - ${
-                  voterItem.numberOfVotes
-                }`}
-              </VotersItem>
-            ))}
-          </VotersList>
+          <VotersList listOfVoters={listOfVoters} />
         </Card>
         <ActionButtonContainer>{actions}</ActionButtonContainer>
         <Modal

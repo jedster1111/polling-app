@@ -32,7 +32,8 @@ class Database {
         !pollInput.hasOwnProperty(property) ||
         pollInput[property] === undefined ||
         pollInput[property] === "" ||
-        (property === "options" && pollInput[property].length === 0)
+        (property === "options" &&
+          pollInput[property].filter(option => option.value).length === 0)
       ) {
         missingProperties.push(property);
       }
