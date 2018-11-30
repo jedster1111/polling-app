@@ -9,6 +9,7 @@ interface VoteButtonProps {
   pollIsOpen: boolean;
   totalVotesByUser: number;
   pollVoteLimit: number;
+  isLoggedIn: boolean;
 }
 
 const ButtonsContainer = styled.div`
@@ -53,7 +54,8 @@ const VoteButtons: React.SFC<VoteButtonProps> = props => {
         disabled={
           !canAddVote ||
           !props.pollIsOpen ||
-          props.totalVotesByUser >= props.pollVoteLimit
+          props.totalVotesByUser >= props.pollVoteLimit ||
+          !props.isLoggedIn
         }
       />
     </ButtonsContainer>

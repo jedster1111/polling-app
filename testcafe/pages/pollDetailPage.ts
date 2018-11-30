@@ -67,7 +67,7 @@ export default class PollDetailPage {
       // voteLimit && userVotes
       .expect(this.values.voteCount.textContent)
       .eql(
-        `Your Votes: ${expectedValues.userVotes} / ${expectedValues.voteLimit}`
+        `Your Votes: ${expectedValues.userVotes}/${expectedValues.voteLimit}`
       )
       // isOpenText
       .expect(this.values.isOpen.textContent)
