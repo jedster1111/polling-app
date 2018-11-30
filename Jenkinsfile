@@ -9,12 +9,15 @@ pipeline {
         }
     }
 
-    stage('Prepare') {
-      sh "npm instsall -g yarn"
-      sh "yarn install"
-    }
 
     stages {
+        stage('Prepare') {
+            steps {
+                echo 'Installing yarn...'
+                sh "npm instsall -g yarn"
+                sh "yarn install"
+            }
+        }
         stage('Build') {
             steps {
                 echo 'Building...'
