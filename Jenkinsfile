@@ -26,7 +26,7 @@ pipeline {
         stage('E2E setup') {
           steps {
             echo 'Setting up E2E tests...'
-            sh 'npm build'
+            sh 'npm run build'
             sh 'npm run start:prod'
           }
         }
