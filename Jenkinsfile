@@ -9,26 +9,17 @@ pipeline {
         }
     }
 
-
     stages {
-        stage('Prepare') {
-            steps {
-                echo 'Installing yarn...'
-                sh "npm instsall -g yarn"
-                sh "yarn install"
-            }
-        }
         stage('Build') {
             steps {
                 echo 'Building...'
-                sh 'yarn install -g yarn'
-                sh 'yarn install'
+                sh 'npm install'
             }
         }
-        stage('Unit Tests') {
+        stage('Test') {
             steps {
                 echo 'Testing...'
-                sh 'yarn test'
+                sh 'npm test'
             }
         }
     }
