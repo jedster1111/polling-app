@@ -10,17 +10,23 @@ pipeline {
     }
 
     stages {
-        stage('Build') {
+        stage('Setup') {
             steps {
-                echo 'Building...'
+                echo 'Seting up...'
+                sh 'npm install -g testcafe'
                 sh 'npm install'
             }
         }
-        stage('Test') {
+        stage('Unit Tests') {
             steps {
                 echo 'Testing...'
                 sh 'npm test'
             }
+        }
+        state("E2E tests") {
+          steps {
+            sh 'testcafe "chrome:headless" testcafe/'
+          }
         }
     }
 }

@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "engines": {
-    "node": "8.11.3"
-  },
   "scripts": {
     "start:prod": "yarn server:prod",
     "build": "webpack --config webpack.config.prod && yarn build-server",
