@@ -4,7 +4,7 @@ pipeline {
 
     agent {
         docker {
-            image 'geekykaran/headless-chrome-node-docker'
+            image 'node'
             args '-u root'
         }
     }
