@@ -23,7 +23,7 @@ pipeline {
                 sh 'npm test'
             }
         }
-        state("E2E tests") {
+        stage("E2E tests") {
           steps {
             sh 'testcafe "chrome:headless" testcafe/'
           }
