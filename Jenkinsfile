@@ -12,9 +12,12 @@ pipeline {
     stages {
         stage('Setup') {
             steps {
-                echo 'Seting up...'
+                echo 'Setting up...'
                 sh 'npm install -g testcafe'
                 sh 'npm install'
+                sh 'wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb'
+                sh 'sudo dpkg -i --force-depends google-chrome-stable_current_amd64.deb'
+                sh 'sudo apt-get install -f'
             }
         }
         stage('Unit Tests') {
