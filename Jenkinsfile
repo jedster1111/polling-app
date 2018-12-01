@@ -14,20 +14,20 @@ pipeline {
             steps {
                 echo 'Setting up...'
                 sh 'npm install -g testcafe'
-                sh 'yarn install'
+                sh 'npm install'
             }
         }
         stage('Unit Tests') {
             steps {
                 echo 'Testing...'
-                sh 'yarn test'
+                sh 'npm test'
             }
         }
         stage('E2E setup') {
           steps {
             echo 'Setting up E2E tests...'
-            sh 'yarn build'
-            sh 'yarn start:prod'
+            sh 'npm build'
+            sh 'npm start:prod'
           }
         }
         stage("E2E tests") {
