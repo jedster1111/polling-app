@@ -23,18 +23,18 @@ pipeline {
                 sh 'npm test'
             }
         }
-        stage('E2E setup') {
-          steps {
-            echo 'Setting up E2E tests...'
-            sh 'npm run build'
-            sh 'npm run start:prod'
-          }
-        }
-        stage("E2E tests") {
-          steps {
-            echo 'Running E2E tests'
-            sh 'testcafe "chrome:headless --no-sandbox" testcafe/'
-          }
-        }
+        // stage('E2E setup') {
+        //   steps {
+        //     echo 'Setting up E2E tests...'
+        //     sh 'npm run build'
+        //     sh 'npm run start:prod'
+        //   }
+        // }
+        // stage("E2E tests") {
+        //   steps {
+        //     echo 'Running E2E tests'
+        //     sh 'testcafe "chrome:headless --no-sandbox" testcafe/'
+        //   }
+        // }
     }
 }
