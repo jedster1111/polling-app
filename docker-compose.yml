@@ -1,4 +1,4 @@
-version: '3'
+version: '2'
 services:
   nginx-proxy:
     image: jwilder/nginx-proxy
@@ -6,10 +6,10 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - /path/to/certs:/etc/nginx/certs:ro
-      - /etc/nginx/vhost.d
-      - /usr/share/nginx/html
-      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - "/etc/nginx/certs"
+      - "/etc/nginx/vhost.d"
+      - "/usr/share/nginx/html"
+      - "/var/run/docker.sock:/tmp/docker.sock:ro"
     labels:
       - com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy
     restart: on-failure
@@ -17,10 +17,9 @@ services:
   nginx-proxy-encrypt-companion:
     image: jrcs/letsencrypt-nginx-proxy-companion
     volumes:
-      - /path/to/certs:/etc/nginx/certs:rw
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /etc/nginx/vhost.d
-      - /usr/share/nginx/html
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    volumes_from:
+      - "nginx-proxy"
     restart: on-failure
 
   pollingapp:
@@ -38,16 +37,14 @@ services:
   jenkins:
     image: jedster1111/jenkinsdocker
     volumes:
-      - jenkins_home:/var/jenkins_home
-      - /var/run/docker.sock:/var/run/docker.sock
+      - "./jenkins_home:/var/jenkins_home"
+      - "/var/run/docker.sock:/var/run/docker.sock"
     environment:
       - VIRTUAL_HOST=jenkins.jedthompson.co.uk
       - LETSENCRYPT_HOST=jenkins.jedthompson.co.uk
       - LETSENCRYPT_EMAIL=jedster1111@hotmail.co.uk
       - VIRTUAL_PORT=8080
+
     user: root
     privileged: true
     restart: on-failure
-
-volumes:
-  jenkins_home:
