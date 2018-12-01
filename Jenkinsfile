@@ -13,7 +13,6 @@ pipeline {
         stage('Setup') {
             steps {
                 echo 'Setting up...'
-                sh 'npm install -g testcafe'
                 sh 'npm install'
             }
         }
