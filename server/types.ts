@@ -96,6 +96,7 @@ export interface UpdatePollInput {
   options?: UpdatePollInputOption[];
   voteLimit?: number;
   optionVoteLimit?: number;
+  namespace?: string;
 }
 export interface UpdatePollInputOption {
   optionId: string;
