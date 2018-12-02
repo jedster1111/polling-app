@@ -22,6 +22,18 @@ services:
       - "nginx-proxy"
     restart: on-failure
 
+  dockerhub-hook:
+    image: maccyber/micro-dockerhub-hook
+    volumes:
+      - "/scripts:/src/scripts"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    environment:
+      - VIRTUAL_HOST=dockerhub.jedthompson.co.uk
+      - LETSENCRYPT_HOST=dockerhub.jedthompson.co.uk
+      - LETSENCRYPT_EMAIL=jedster1111@hotmail.co.uk
+      - TOKEN
+    restart: on-failure
+
   pollingapp:
     image: jedster1111/pollingapp
     environment:
