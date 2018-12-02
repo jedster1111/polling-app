@@ -186,12 +186,12 @@ describe("Testing poll related database methods:", () => {
       const storedPolls = db.getPolls();
       const namespace = storedPolls[0].namespace;
 
-      // const expectedPolls = storedPolls.filter(
-      //   poll => poll.namespace === namespace
-      // );
+      const expectedPolls = storedPolls.filter(
+        poll => poll.namespace === namespace
+      );
       const polls = db.getPollsByNamespace(namespace);
 
-      expect(polls).toEqual({});
+      expect(polls).toEqual(expectedPolls);
     });
   });
 
