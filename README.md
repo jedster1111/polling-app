@@ -1,6 +1,6 @@
 # Polling App
 
-An application to create and vote on polls, written in Typescript. Trying to set up CI!
+An application to create and vote on polls, written in Typescript.
 
 [See the live version here.](https://polling-app-jed.herokuapp.com)
 
