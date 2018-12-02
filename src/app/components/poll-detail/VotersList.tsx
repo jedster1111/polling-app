@@ -19,15 +19,17 @@ export const VotersList: React.FC<VotersListProps> = ({ listOfVoters }) => {
   const isAnyVoters = listOfVoters.length !== 0;
   return (
     <VotersListContainer>
-      {isAnyVoters
-        ? listOfVoters.map(voterItem => (
-            <VotersItem key={voterItem.user.id}>
-              {`${voterItem.user.displayName || voterItem.user.userName} - ${
-                voterItem.numberOfVotes
-              }`}
-            </VotersItem>
-          ))
-        : "No one's voted yet!"}
+      {isAnyVoters ? (
+        listOfVoters.map(voterItem => (
+          <VotersItem key={voterItem.user.id}>
+            {`${voterItem.user.displayName || voterItem.user.userName} - ${
+              voterItem.numberOfVotes
+            }`}
+          </VotersItem>
+        ))
+      ) : (
+        <VotersItem>"No one's voted yet!"</VotersItem>
+      )}
     </VotersListContainer>
   );
 };
