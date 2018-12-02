@@ -6,7 +6,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - "/etc/nginx/certs"
+      - "/path/to/certs:/etc/nginx/certs:ro"
       - "/etc/nginx/vhost.d"
       - "/usr/share/nginx/html"
       - "/var/run/docker.sock:/tmp/docker.sock:ro"
@@ -17,6 +17,7 @@ services:
   nginx-proxy-encrypt-companion:
     image: jrcs/letsencrypt-nginx-proxy-companion
     volumes:
+      - "/path/to/certs:/etc/nginx/certs:rw"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
     volumes_from:
       - "nginx-proxy"
@@ -27,6 +28,7 @@ services:
     volumes:
       - "/scripts:/src/scripts"
       - "/var/run/docker.sock:/var/run/docker.sock"
+      - "/docker-compose:/docker-compose"
     environment:
       - VIRTUAL_HOST=dockerhub.jedthompson.co.uk
       - LETSENCRYPT_HOST=dockerhub.jedthompson.co.uk
@@ -45,11 +47,12 @@ services:
       - SECRET_KEY
       - URL
     restart: on-failure
+    container_name: pollingapp
 
   jenkins:
     image: jedster1111/jenkinsdocker
     volumes:
-      - "./jenkins_home:/var/jenkins_home"
+      - "/jenkins_home:/var/jenkins_home"
       - "/var/run/docker.sock:/var/run/docker.sock"
     environment:
       - VIRTUAL_HOST=jenkins.jedthompson.co.uk
