@@ -158,6 +158,8 @@ class Database {
     updateKeys.forEach((key: keyof UpdatePollInput) => {
       if (key !== "options" && updatePollInput[key]) {
         poll[key] = updatePollInput[key] as string;
+      } else if (key === "namespace" && updatePollInput[key] === "") {
+        poll.namespace = "public";
       } else if (key === "options") {
         updatePollInput.options!.forEach(
           (optionInput: UpdatePollInputOption) => {
