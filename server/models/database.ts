@@ -75,33 +75,44 @@ class Database {
 
   db = new Loki(dbFolderPath);
 
+  polls = this.db.addCollection("polls", {
+    clone: true,
+    disableMeta: true
+  });
+  users = this.db.addCollection("users", {
+    clone: true,
+    disableMeta: true
+  });
+
   pollsCount = 0;
 
   initialiseCollections() {
-    this.db.loadDatabase({}, () => {
-      const polls = this.db.getCollection("polls");
-      console.log("Getting existing polls...");
-      if (polls === null) {
-        console.log("There are no existing polls!");
-        this.db.addCollection("polls", {
-          clone: true,
-          disableMeta: true
-        });
-      } else {
-        console.log("Hydrated polls!");
-      }
-      const users = this.db.getCollection("users");
-      console.log("Getting existing users...");
-      if (users === null) {
-        console.log("There are no existing users!");
-        this.db.addCollection("users", {
-          clone: true,
-          disableMeta: true
-        });
-      } else {
-        console.log("Hydrated users!");
-      }
-    });
+    if (process.env.NODE_ENV !== "test") {
+      this.db.loadDatabase({}, () => {
+        const polls = this.db.getCollection("polls");
+        console.log("Getting existing polls...");
+        if (polls === null) {
+          console.log("There are no existing polls!");
+          this.db.addCollection("polls", {
+            clone: true,
+            disableMeta: true
+          });
+        } else {
+          console.log("Hydrated polls!");
+        }
+        const users = this.db.getCollection("users");
+        console.log("Getting existing users...");
+        if (users === null) {
+          console.log("There are no existing users!");
+          this.db.addCollection("users", {
+            clone: true,
+            disableMeta: true
+          });
+        } else {
+          console.log("Hydrated users!");
+        }
+      });
+    }
   }
 
   saveCollections(cb: () => void) {
