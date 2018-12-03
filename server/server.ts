@@ -34,12 +34,15 @@ const server = app.listen(PORT, () =>
   console.log(`App is running on port: ${PORT}`)
 );
 
+const saveInterval = setInterval(db.saveCollections, 8000);
+
 process.on("SIGTERM", shutdown);
 process.on("SIGINT", shutdown);
 
 function shutdown() {
   console.log("Saving database collections!");
   db.saveCollections(gracefulShutdown);
+  clearInterval(saveInterval);
 
   function gracefulShutdown() {
     console.log("Shutting down the server gracefully!");

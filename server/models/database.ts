@@ -115,7 +115,7 @@ class Database {
     }
   }
 
-  saveCollections(cb: () => void) {
+  saveCollections(cb?: () => void) {
     this.db.saveDatabase(cb);
   }
 
