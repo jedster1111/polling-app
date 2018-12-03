@@ -1,4 +1,4 @@
-import { Alert } from "antd";
+// import { Alert } from "antd";
 import * as React from "react";
 import PollsList from "../polls-list/PollsListContainer";
 
@@ -12,14 +12,14 @@ const PollsListPage = ({
   onClosedWarning
 }: PollsListPageInterface) => (
   <div>
-    {!hasClosedWarning && (
+    {/* {!hasClosedWarning && (
       <Alert
         message="The server shuts down after 30 minutes of inactivity. Any polls that you have created will be lost!!!"
         type="warning"
         closable={true}
         onClose={onClosedWarning}
       />
-    )}
+    )} */}
     <PollsList key="pollList" />
   </div>
 );
