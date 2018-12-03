@@ -1,4 +1,5 @@
 import Loki from "lokijs";
+import path from "path";
 import UrlSafeString from "url-safe-string";
 import { ErrorWithStatusCode } from "../app";
 import {
@@ -14,8 +15,16 @@ import {
 } from "../types";
 import calculateNumberOfVotesFromUser from "./calculateNumberOfVotesFromUser";
 
+const ENV = process.env.NODE_ENV || "development";
+
 const { generate: makeStringUrlSafe } = UrlSafeString();
 
+const dbFolderPath = path.resolve(
+  __dirname,
+  ENV === "production"
+    ? "../../../database/polling-app.json"
+    : "../../database/polling-app.json"
+);
 class Database {
   static checkValidPollInput(pollInput: PollInput) {
     const necessaryProperties: Array<keyof PollInput> = [
@@ -64,23 +73,59 @@ class Database {
     }
   }
 
-  db = new Loki("polling-app.db");
-  polls = this.db.addCollection("polls", { clone: true, disableMeta: true });
-  users = this.db.addCollection("users", { clone: true, disableMeta: true });
+  db = new Loki(dbFolderPath);
+
   pollsCount = 0;
+
+  initialiseCollections() {
+    this.db.loadDatabase({}, () => {
+      const polls = this.db.getCollection("polls");
+      console.log("Getting existing polls...");
+      if (polls === null) {
+        console.log("There are no existing polls!");
+        this.db.addCollection("polls", {
+          clone: true,
+          disableMeta: true
+        });
+      } else {
+        console.log("Hydrated polls!");
+      }
+      const users = this.db.getCollection("users");
+      console.log("Getting existing users...");
+      if (users === null) {
+        console.log("There are no existing users!");
+        this.db.addCollection("users", {
+          clone: true,
+          disableMeta: true
+        });
+      } else {
+        console.log("Hydrated users!");
+      }
+    });
+  }
+
+  saveCollections(cb: () => void) {
+    this.db.saveDatabase(cb);
+  }
 
   /**
    * Gets current polls
    * @returns returns an array of polls
    */
   getPolls(): Poll[] {
-    return this.stripResultsMetadata<Poll>(this.polls.find());
+    return this.stripResultsMetadata<Poll>(
+      this.db.getCollection("polls").find()
+    );
   }
   getPollsByNamespace(namespace: string): Poll[] {
-    return this.stripResultsMetadata<Poll>(this.polls.find({ namespace }));
+    return this.stripResultsMetadata<Poll>(
+      this.db.getCollection("polls").find({ namespace })
+    );
   }
   getPoll(pollId: string, namespace: string): Poll {
-    return this.stripMeta<Poll>(this.polls.findOne({ pollId, namespace }));
+    return this.stripMeta<Poll>(
+      this.db.getCollection("polls").findOne({ pollId, namespace })
+    );
   }
   insertPoll(pollInput: PollInput): Poll {
     Database.checkValidPollInput(pollInput);
@@ -99,7 +144,9 @@ class Database {
       pollId: `${this.pollsCount + 1}`,
       namespace: makeStringUrlSafe(pollInput.namespace || "public")
     });
-    const newPoll: StoredPoll = this.polls.insert(cleanedPollInput);
+    const newPoll: StoredPoll = this.db
+      .getCollection("polls")
+      .insert(cleanedPollInput);
     this.pollsCount++;
     return this.stripMeta<Poll>(newPoll);
   }
@@ -110,7 +157,7 @@ class Database {
     updatePollInput: UpdatePollInput,
     urlNamespace: string
   ): Poll {
-    const poll: StoredPoll = this.polls.findOne({
+    const poll: StoredPoll = this.db.getCollection("polls").findOne({
       pollId,
       namespace: urlNamespace
     });
@@ -201,7 +248,7 @@ class Database {
     if (poll.options.length === 0) {
       this.throwErrorWithStatusCode("Can't delete all options!", 400);
     }
-    this.polls.update(poll);
+    this.db.getCollection("polls").update(poll);
     return this.stripMeta<Poll>(poll);
   }
 
@@ -212,7 +259,9 @@ class Database {
    * @returns Returns the poll that was voted on
    */
   votePoll(pollId: string, voteInput: VoteInput, namespace: string): Poll {
-    const poll: StoredPoll = this.polls.findOne({ pollId, namespace });
+    const poll: StoredPoll = this.db
+      .getCollection("polls")
+      .findOne({ pollId, namespace });
 
     this.checkValidVoteAndThrowErrors(poll, voteInput);
 
@@ -229,7 +278,7 @@ class Database {
       }
     }
 
-    this.polls.update(poll);
+    this.db.getCollection("polls").update(poll);
 
     return this.stripMeta<Poll>(poll);
   }
@@ -239,7 +288,9 @@ class Database {
     voteInput: VoteInput,
     namespace: string
   ): Poll {
-    const poll: StoredPoll = this.polls.findOne({ pollId, namespace });
+    const poll: StoredPoll = this.db
+      .getCollection("polls")
+      .findOne({ pollId, namespace });
 
     if (!poll) {
       this.throwErrorWithStatusCode(
@@ -266,13 +317,15 @@ class Database {
       optionToVote.votes[voteInput.voterId]--;
     }
 
-    this.polls.update(poll);
+    this.db.getCollection("polls").update(poll);
 
     return this.stripMeta<Poll>(poll);
   }
 
   openPoll(userId: string, pollId: string, namespace: string): Poll {
-    const poll: StoredPoll = this.polls.findOne({ pollId, namespace });
+    const poll: StoredPoll = this.db
+      .getCollection("polls")
+      .findOne({ pollId, namespace });
     if (!poll) {
       this.throwErrorWithStatusCode(
         `Poll with id ${pollId} in namespace ${namespace} does not exist!`,
@@ -286,12 +339,14 @@ class Database {
       );
     }
     poll.isOpen = true;
-    this.polls.update(poll);
+    this.db.getCollection("polls").update(poll);
     return this.stripMeta<Poll>(poll);
   }
 
   closePoll(userId: string, pollId: string, namespace: string): Poll {
-    const poll: StoredPoll = this.polls.findOne({ pollId, namespace });
+    const poll: StoredPoll = this.db
+      .getCollection("polls")
+      .findOne({ pollId, namespace });
     if (!poll) {
       this.throwErrorWithStatusCode(
         `Poll with id ${pollId} in namespace ${namespace} does not exist!`,
@@ -305,7 +360,7 @@ class Database {
       );
     }
     poll.isOpen = false;
-    this.polls.update(poll);
+    this.db.getCollection("polls").update(poll);
     return this.stripMeta<Poll>(poll);
   }
 
@@ -314,7 +369,9 @@ class Database {
    * @param pollId Id of the poll you wish to remove from the database.
    */
   removePoll(userId: string, pollId: string, namespace: string): void {
-    const poll: Poll = this.polls.findOne({ pollId, namespace });
+    const poll: Poll = this.db
+      .getCollection("polls")
+      .findOne({ pollId, namespace });
     if (!poll) {
       this.throwErrorWithStatusCode(
         `A poll with id ${pollId} in namespace ${namespace} does not exist!`,
@@ -329,30 +386,36 @@ class Database {
       );
     }
 
-    this.polls.remove(poll);
+    this.db.getCollection("polls").remove(poll);
   }
   resetPolls(): void {
     this.removeAllPollsData();
     this.resetPollsCount();
   }
   getUser(userId: string): User {
-    return this.stripMeta<User>(this.users.findOne({ id: userId }));
+    return this.stripMeta<User>(
+      this.db.getCollection("users").findOne({ id: userId })
+    );
   }
   getUsers(userIds: string[]): User[] {
     const users: StoredUser[] = userIds.map(userId =>
-      this.users.findOne({ id: userId })
+      this.db.getCollection("users").findOne({ id: userId })
     );
     const filteredUsers = users.filter(user => user);
     return this.stripResultsMetadata<User>(filteredUsers);
   }
   getAllUsers(): User[] {
-    return this.stripResultsMetadata<User>(this.users.find());
+    return this.stripResultsMetadata<User>(
+      this.db.getCollection("users").find()
+    );
   }
   insertUser(userInput: any): User {
-    return this.stripMeta<User>(this.users.insert(userInput));
+    return this.stripMeta<User>(
+      this.db.getCollection("users").insert(userInput)
+    );
   }
   resetUsers(): void {
-    this.users.clear();
+    this.db.getCollection("users").clear();
   }
 
   /**
@@ -422,7 +485,7 @@ class Database {
   }
 
   private removeAllPollsData(): void {
-    this.polls.clear();
+    this.db.getCollection("polls").clear();
   }
   private resetPollsCount(): void {
     this.pollsCount = 0;
@@ -435,5 +498,6 @@ export function createDatabase() {
 }
 
 const db = createDatabase();
+db.initialiseCollections();
 
 export default db;

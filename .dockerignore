@@ -8,3 +8,4 @@ coverage
 .storybook
 dev.env
 prod.env
+/database/polling-app.json

@@ -4,6 +4,7 @@ import webpackDevMiddleware from "webpack-dev-middleware";
 import webpackHotMiddleware from "webpack-hot-middleware";
 import webpackConfig from "../webpack.config.js";
 import app from "./app";
+import db from "./models/database";
 
 const PORT = process.env.PORT || 8000;
 const ENV = process.env.NODE_ENV || "development";
@@ -29,4 +30,21 @@ app.get("*", (req, res) => {
 //   app.use(express.static(`${__dirname}/../index.html`));
 // }
 
-app.listen(PORT, () => console.log(`App is running on port: ${PORT}`));
+const server = app.listen(PORT, () =>
+  console.log(`App is running on port: ${PORT}`)
+);
+
+process.on("SIGTERM", shutdown);
+process.on("SIGINT", shutdown);
+
+function shutdown() {
+  console.log("Saving database collections!");
+  db.saveCollections(gracefulShutdown);
+
+  function gracefulShutdown() {
+    console.log("Shutting down the server gracefully!");
+    server.close(() => {
+      process.exit();
+    });
+  }
+}

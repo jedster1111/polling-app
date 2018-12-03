@@ -38,6 +38,8 @@ services:
 
   pollingapp:
     image: jedster1111/pollingapp
+    volumes:
+      - "/database:/usr/src/app/database"
     environment:
       - VIRTUAL_HOST=jedthompson.co.uk,www.jedthompson.co.uk
       - LETSENCRYPT_HOST=jedthompson.co.uk,www.jedthompson.co.uk
