@@ -14,11 +14,12 @@ pipeline {
         stage('Setup') {
             steps {
                 echo 'Setting up...'
+                echo 'Git commit: ${GIT_COMMIT}'
                 sh 'yarn'
                 // Get the commit that we're working on to be used for tagging later
-                script {
-                    shortCommit = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
-                }
+                // script {
+                //     // shortCommit = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
+                // }
             }
         }
         stage('Unit Tests') {
