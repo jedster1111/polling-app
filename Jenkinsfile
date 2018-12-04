@@ -33,7 +33,7 @@ pipeline {
                 echo 'Setting up E2E tests...'
 
                 echo "Building this commits image"
-                sh(returnStdout: true, script: "docker build -t pollingapp:${GIT_COMMIT} -f dockerfiles/pollingapp/Dockerfile .").trim()
+                sh "docker build -t pollingapp:${GIT_COMMIT} -f dockerfiles/pollingapp/Dockerfile ."
                 script {
                     imageName = "pollingapp:${GIT_COMMIT}"
                 }
