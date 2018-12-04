@@ -31,7 +31,9 @@ pipeline {
         stage('E2E setup') {
           steps {
             echo 'Setting up E2E tests...'
-            containerId = sh(returnStdout: true, script: "docker build -t pollingapp:${GIT_COMMIT} -f dockerfiles/pollingapp/Dockerfile .")
+            script {
+                containerId = sh(returnStdout: true, script: "docker build -t pollingapp:${GIT_COMMIT} -f dockerfiles/pollingapp/Dockerfile .")
+            }
             echo "${containerId}"
           }
         }
