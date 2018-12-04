@@ -14,7 +14,7 @@ pipeline {
         stage('Setup') {
             steps {
                 echo 'Setting up...'
-                echo 'Git commit: ${GIT_COMMIT}'
+                sh 'printenv'
                 sh 'yarn'
                 // Get the commit that we're working on to be used for tagging later
                 // script {
