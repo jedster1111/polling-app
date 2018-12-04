@@ -6,7 +6,7 @@ pipeline {
         dockerfile {
             filename 'Dockerfile'
             dir 'dockerfiles/e2e'
-            args '-u root -t nodechrome:latest'
+            args '-u root'
         }
     }
 
