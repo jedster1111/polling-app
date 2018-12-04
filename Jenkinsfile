@@ -52,16 +52,20 @@ pipeline {
         stage("E2E tests") {
           steps {
             echo 'Running E2E tests'
-            // sh 'testcafe \\"chromium --headless --no-sandbox --disable-gpu --window-size=1920x1080\\" testcafe/'
+            sh 'testcafe \\"chromium --headless --no-sandbox --disable-gpu --window-size=1920x1080\\" testcafe/'
           }
         }
 
-        stage("E2E cleanup") {
-            steps {
-                echo "Stopping and removing container with id ${containerId}"
-                sh "docker stop ${containerId}"
-                echo "Removing the built image with Id: ${imageId}"
-                sh "docker rmi ${imageId}"
+        post {
+            always {
+                stage("E2E cleanup") {
+                    steps {
+                        echo "Stopping and removing container with id ${containerId}"
+                        sh "docker stop ${containerId}"
+                        echo "Removing the built image with Id: ${imageId}"
+                        sh "docker rmi -f ${imageId}"
+                    }
+                }
             }
         }
     }
