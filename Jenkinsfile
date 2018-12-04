@@ -31,14 +31,15 @@ pipeline {
         stage('E2E setup') {
           steps {
             echo 'Setting up E2E tests...'
-            sh "docker build -t pollingappdev:${GIT_COMMIT} -f dockerfiles/pollingappdev/Dockerfile ."
+            containerId = sh(returnStdout: true, script: "docker build -t pollingapp:${GIT_COMMIT} -f dockerfiles/pollingapp/Dockerfile .")
+            echo "${containerId}"
           }
         }
-        stage("E2E tests") {
-          steps {
-            echo 'Running E2E tests'
-            sh 'testcafe \\"chromium --headless --no-sandbox --disable-gpu --window-size=1920x1080\\" testcafe/'
-          }
-        }
+        // stage("E2E tests") {
+        //   steps {
+        //     echo 'Running E2E tests'
+        //     sh 'testcafe \\"chromium --headless --no-sandbox --disable-gpu --window-size=1920x1080\\" testcafe/'
+        //   }
+        // }
     }
 }
