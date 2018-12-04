@@ -31,7 +31,7 @@ pipeline {
         stage('E2E setup') {
           steps {
             echo 'Setting up E2E tests...'
-            sh "docker build -t pollingappdev:${GIT_COMMIT}"
+            sh "docker build -t pollingappdev:${GIT_COMMIT} ."
           }
         }
         stage("E2E tests") {
