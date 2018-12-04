@@ -29,19 +29,37 @@ pipeline {
             }
         }
         stage('E2E setup') {
-          steps {
-            echo 'Setting up E2E tests...'
-            script {
-                containerId = sh(returnStdout: true, script: "docker build -t pollingapp:${GIT_COMMIT} -f dockerfiles/pollingapp/Dockerfile .")
+            steps {
+                echo 'Setting up E2E tests...'
+
+                echo "Building this commits image"
+                script {
+                    imageId = sh(returnStdout: true, script: "docker build -t pollingapp:${GIT_COMMIT} -f dockerfiles/pollingapp/Dockerfile .").trim()
+                }
+                echo "imageId is saved with value ${imageId}"
+
+                echo "Starting container with imageId: ${imageId}"
+                script {
+                    containerId = sh(returnStdout: true, script: "docker run --rm -d ${imageId}").trim()
+                }
+                echo "containerId is saved with value ${containerId}"
             }
-            echo "${containerId}"
+        }
+
+        stage("E2E tests") {
+          steps {
+            echo 'Running E2E tests'
+            // sh 'testcafe \\"chromium --headless --no-sandbox --disable-gpu --window-size=1920x1080\\" testcafe/'
           }
         }
-        // stage("E2E tests") {
-        //   steps {
-        //     echo 'Running E2E tests'
-        //     sh 'testcafe \\"chromium --headless --no-sandbox --disable-gpu --window-size=1920x1080\\" testcafe/'
-        //   }
-        // }
+
+        stage("E2E cleanup") {
+            steps {
+                echo "Stopping container with id ${containerId}"
+
+                echo "Removing the built image with id ${imageId}"
+                sh "docker rmi ${imageId}"
+            }
+        }
     }
 }
