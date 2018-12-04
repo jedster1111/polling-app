@@ -33,14 +33,16 @@ pipeline {
                 echo 'Setting up E2E tests...'
 
                 echo "Building this commits image"
+                sh(returnStdout: true, script: "docker build -t pollingapp:${GIT_COMMIT} -f dockerfiles/pollingapp/Dockerfile .").trim()
                 script {
-                    imageId = sh(returnStdout: true, script: "docker build -t pollingapp:${GIT_COMMIT} -f dockerfiles/pollingapp/Dockerfile .").trim()
+                    imageName = "pollingapp:${GIT_COMMIT}"
                 }
-                echo "imageId is saved with value ${imageId}"
+                echo "Image has been built and tagged as ${imageName}"
 
-                echo "Starting container with imageId: ${imageId}"
+
+                echo "Starting container with image name: ${imageName}"
                 script {
-                    containerId = sh(returnStdout: true, script: "docker run --rm -d ${imageId}").trim()
+                    containerId = sh(returnStdout: true, script: "docker run --rm -d ${imageName}").trim()
                 }
                 echo "containerId is saved with value ${containerId}"
             }
@@ -57,8 +59,8 @@ pipeline {
             steps {
                 echo "Stopping container with id ${containerId}"
 
-                echo "Removing the built image with id ${imageId}"
-                sh "docker rmi ${imageId}"
+                echo "Removing the built image: ${imageName}"
+                sh "docker rmi ${imageName}"
             }
         }
     }
