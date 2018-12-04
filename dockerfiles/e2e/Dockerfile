@@ -4,7 +4,7 @@ RUN echo "http://dl-2.alpinelinux.org/alpine/edge/main" > /etc/apk/repositories
 RUN echo "http://dl-2.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
 RUN echo "http://dl-2.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
 
-# install chromium
+# install chromium & docker
 RUN apk -U --no-cache \
     --allow-untrusted add \
     zlib-dev \
@@ -16,6 +16,7 @@ RUN apk -U --no-cache \
     ttf-freefont \
     grep \ 
     udev \
+    docker \
     && apk del --purge --force linux-headers binutils-gold gnupg zlib-dev libc-utils \
     && rm -rf /var/lib/apt/lists/* \
     /var/cache/apk/* \
@@ -29,9 +30,3 @@ RUN apk -U --no-cache \
 ENV CHROME_BIN=/usr/bin/chromium-browser
 ENV CHROME_PATH=/usr/lib/chromium/
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1
-
-# install docker
-RUN apk add docker
-
-
-
