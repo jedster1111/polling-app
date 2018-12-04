@@ -14,7 +14,7 @@ pipeline {
         stage('Setup') {
             steps {
                 echo 'Setting up...'
-                sh 'printenv'
+                // sh 'printenv'
                 sh 'yarn'
                 // Get the commit that we're working on to be used for tagging later
                 // script {
@@ -33,16 +33,20 @@ pipeline {
                 echo 'Setting up E2E tests...'
 
                 echo "Building this commits image"
-                sh "docker build -t pollingapp:${GIT_COMMIT} -f dockerfiles/pollingapp/Dockerfile ."
+
+                script {
+                    imageId = sh(returnStdout: true, script: "docker build -q -t pollingapp:${GIT_COMMIT} -f dockerfiles/pollingapp/Dockerfile .").trim()
+                }
+
                 script {
                     imageName = "pollingapp:${GIT_COMMIT}"
                 }
-                echo "Image has been built and tagged as ${imageName}"
+                echo "Image has been built and tagged as ${imageName} with imageId ${imageId}"
 
 
-                echo "Starting container with image name: ${imageName}"
+                echo "Starting container with imageId: ${imageId}"
                 script {
-                    containerId = sh(returnStdout: true, script: "docker run --rm -d ${imageName}").trim()
+                    containerId = sh(returnStdout: true, script: "docker run --rm -d ${imageId}").trim()
                 }
                 echo "containerId is saved with value ${containerId}"
             }
@@ -57,10 +61,10 @@ pipeline {
 
         stage("E2E cleanup") {
             steps {
-                echo "Stopping container with id ${containerId}"
+                echo "Stopping and removing container with id ${containerId}"
                 sh "docker stop ${containerId}"
-                echo "Removing the built image: ${imageName}"
-                sh "docker rmi ${imageName}"
+                echo "Removing the built image with Id: ${imageId}"
+                sh "docker rmi ${imageId}"
             }
         }
     }
