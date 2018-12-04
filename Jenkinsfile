@@ -58,7 +58,7 @@ pipeline {
         stage("E2E cleanup") {
             steps {
                 echo "Stopping container with id ${containerId}"
-
+                sh "docker stop ${containerId}"
                 echo "Removing the built image: ${imageName}"
                 sh "docker rmi ${imageName}"
             }
