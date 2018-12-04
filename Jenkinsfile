@@ -3,8 +3,9 @@
 pipeline {
 
     agent {
-        docker {
-            image 'node'
+        dockerfile {
+            filename 'Dockerfile'
+            dir 'dockerfiles/e2e'
             args '-u root'
         }
     }
@@ -13,20 +14,19 @@ pipeline {
         stage('Setup') {
             steps {
                 echo 'Setting up...'
-                sh 'npm install'
+                sh 'yarn'
             }
         }
         stage('Unit Tests') {
             steps {
                 echo 'Testing...'
-                sh 'npm test'
+                sh 'yarn test'
             }
         }
         // stage('E2E setup') {
         //   steps {
         //     echo 'Setting up E2E tests...'
-        //     sh 'npm run build'
-        //     sh 'npm run start:prod'
+        //     sh 'npm start'
         //   }
         // }
         // stage("E2E tests") {
