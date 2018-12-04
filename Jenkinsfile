@@ -56,16 +56,15 @@ pipeline {
           }
         }
 
-        post {
-            always {
-                stage("E2E cleanup") {
-                    steps {
-                        echo "Stopping and removing container with id ${containerId}"
-                        sh "docker stop ${containerId}"
-                        echo "Removing the built image with Id: ${imageId}"
-                        sh "docker rmi -f ${imageId}"
-                    }
-                }
+    }
+
+    post {
+        cleanup {
+            steps {
+                echo "Stopping and removing container with id ${containerId}"
+                sh "docker stop ${containerId}"
+                echo "Removing the built image with Id: ${imageId}"
+                sh "docker rmi -f ${imageId}"
             }
         }
     }
