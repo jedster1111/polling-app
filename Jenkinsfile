@@ -6,7 +6,7 @@ pipeline {
         dockerfile {
             filename 'Dockerfile'
             dir 'dockerfiles/e2e'
-            args '-u root'
+            args '-u root -t nodechrome:latest'
         }
     }
 
@@ -15,6 +15,8 @@ pipeline {
             steps {
                 echo 'Setting up...'
                 sh 'yarn'
+                // Get the commit that we're working on to be used for tagging later
+                shortCommit = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
             }
         }
         stage('Unit Tests') {
@@ -23,17 +25,17 @@ pipeline {
                 sh 'yarn test'
             }
         }
-        // stage('E2E setup') {
-        //   steps {
-        //     echo 'Setting up E2E tests...'
-        //     sh 'npm start'
-        //   }
-        // }
-        // stage("E2E tests") {
-        //   steps {
-        //     echo 'Running E2E tests'
-        //     sh 'testcafe "chrome:headless --no-sandbox" testcafe/'
-        //   }
-        // }
+        stage('E2E setup') {
+          steps {
+            echo 'Setting up E2E tests...'
+            sh "docker build -t pollingappdev:${shortCommit}"
+          }
+        }
+        stage("E2E tests") {
+          steps {
+            echo 'Running E2E tests'
+            sh 'testcafe \\"chromium --headless --no-sandbox --disable-gpu --window-size=1920x1080\\" testcafe/'
+          }
+        }
     }
 }

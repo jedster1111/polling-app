@@ -30,4 +30,8 @@ ENV CHROME_BIN=/usr/bin/chromium-browser
 ENV CHROME_PATH=/usr/lib/chromium/
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1
 
+# install docker
+RUN apk add docker
+
+
 
