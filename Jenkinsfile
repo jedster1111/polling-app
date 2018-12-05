@@ -4,7 +4,7 @@ pipeline {
 
     agent {
         docker {
-            image 'jedster1111/pollingappdev:latest'
+            image 'jedster1111/pollingappe2e:latest'
             args '-u root'
         }
     }
