@@ -6,6 +6,7 @@ pipeline {
         docker {
             image 'jedster1111/pollingappe2e:latest'
             args '-u root'
+            alwaysPull
         }
     }
 
@@ -60,7 +61,10 @@ pipeline {
 
         stage("E2E tests") {
           steps {
+            sh 'testcafe -b'
             echo 'Running E2E tests'
+            sh 'pwd'
+            sh 'ls'
             sh 'testcafe \\"chromium --headless --no-sandbox --disable-gpu --window-size=1920x1080\\" testcafe/'
           }
         }
