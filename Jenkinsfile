@@ -56,7 +56,7 @@ pipeline {
 
                 stage('Stopping pollingappdev container') {
                     steps {
-                        sh "docker container inspect <container-name> || docker stop pollingappdev"
+                        sh (propagate: false, script: "docker stop pollingappdev")
                     }
                 }
 
