@@ -3,9 +3,8 @@
 pipeline {
 
     agent {
-        dockerfile {
-            filename 'Dockerfile'
-            dir 'dockerfiles/e2e'
+        docker {
+            image 'jedster1111/pollingappdev:latest'
             args '-u root'
         }
     }
