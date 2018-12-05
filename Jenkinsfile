@@ -42,7 +42,7 @@ pipeline {
 
                 echo "Starting container with imageId: ${imageId}"
                 script {
-                    containerId = sh(returnStdout: true, script: "docker run --rm -d ${imageId}").trim()
+                    containerId = sh(returnStdout: true, script: "docker run --rm -p 127.0.0.1:8000:8000 -d ${imageId}").trim()
                 }
                 echo "containerId is saved with value ${containerId}"
             }
