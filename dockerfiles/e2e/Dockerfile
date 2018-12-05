@@ -27,6 +27,8 @@ RUN apk -U --no-cache \
     /usr/lib/node_modules/npm/html \
     /usr/lib/node_modules/npm/scripts
 
+RUN npm install -g testcafe
+
 ENV CHROME_BIN=/usr/bin/chromium-browser
 ENV CHROME_PATH=/usr/lib/chromium/
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1
