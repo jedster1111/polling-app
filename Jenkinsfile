@@ -57,7 +57,7 @@ pipeline {
                 stage('Stopping pollingappdev container') {
                     steps {
                         sh '''
-                            result=$( docker ps -q | grep pollingappdev )
+                            result=$( docker ps -f name=pollingappdev --format \\"{{.ID}}\\" )
 
                             if [ -z \\"$result\\" ]; then
                               echo \\"No such container\\"
