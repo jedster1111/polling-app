@@ -57,7 +57,7 @@ pipeline {
                 stage('Stopping pollingappdev container') {
                     steps {
                         sh '''
-                            result=$( sudo docker images -q pollingappdev )
+                            result=$( docker images -q pollingappdev )
 
                             if [[ -n \\"$result\\" ]]; then
                               echo \\"Container exists\\"
