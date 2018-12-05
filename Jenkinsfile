@@ -63,7 +63,7 @@ pipeline {
                 }
             }
         }
-
+    }
     //     stage('E2E setup') {
     //         steps {
     //             echo 'Setting up E2E tests...'
