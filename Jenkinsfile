@@ -35,7 +35,7 @@ pipeline {
                 echo "Building this commits image"
 
                 script {
-                    imageId = sh(returnStdout: true, script: "docker build -t pollingappdev -q -f dockerfiles/pollingapp/Dockerfile .").trim()
+                    imageId = sh(returnStdout: true, script: "docker build -t pollingappdev:${GIT_COMMIT} -q -f dockerfiles/pollingapp/Dockerfile .").trim()
                 }
 
                 echo "Image has been built with imageId ${imageId}"
@@ -62,8 +62,8 @@ pipeline {
         cleanup {
             echo "Stopping and removing container with id ${containerId}"
             sh "docker stop ${containerId}"
-            echo "Removing the built image with Id: ${imageId}"
-            sh "docker rmi -f ${imageId}"
+            // echo "Removing the built image with Id: ${imageId}"
+            // sh "docker rmi -f ${imageId}"
         }
     }
 }

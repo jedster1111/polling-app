@@ -8,4 +8,6 @@ coverage
 .storybook
 dev.env
 prod.env
-/database/polling-app.json
+database/polling-app.json
+dockerfiles
+Jenkinsfile
