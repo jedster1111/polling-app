@@ -45,21 +45,27 @@ pipeline {
             }
             stages {
                 stage('Building image') {
-                    echo "Building image"
-                    script {
-                        imageId = sh(returnStdout: true, script: "docker build -t pollingappdev:${GIT_COMMIT} -t pollingappdev:latest -q -f dockerfiles/pollingapp/Dockerfile .").trim()
+                    steps {
+                        echo "Building image"
+                        script {
+                            imageId = sh(returnStdout: true, script: "docker build -t pollingappdev:${GIT_COMMIT} -t pollingappdev:latest -q -f dockerfiles/pollingapp/Dockerfile .").trim()
+                        }
+                        echo "Finished building image. Tagged as pollingappdev:${GIT_COMMIT} and pollingappdev:latest"
                     }
-                    echo "Finished building image. Tagged as pollingappdev:${GIT_COMMIT} and pollingappdev:latest"
                 }
 
                 stage('Stopping pollingappdev container') {
-                    sh "docker container inspect <container-name> || docker stop pollingappdev"
+                    steps {
+                        sh "docker container inspect <container-name> || docker stop pollingappdev"
+                    }
                 }
 
                 stage('Deploying to dev') {
-                    echo 'Deploying commit ${GIT_COMMIT} to dev server'
-                    sh "docker run -v /database/dev:/usr/src/app/database -e CLIENT_ID -e CLIENT_SECRET -e SECRET_KEY -e VIRTUAL_HOST=dev.pollingapp.jedthompson.co.uk -e LETSENCRYPT_HOST=dev.pollingapp.jedthompson.co.uk -e LETSENCRYPT_EMAIL=jedster1111@hotmail.co.uk --restart=on-failure --name pollingappdev --rm -d ${imageId}"
-                    echo 'Deployment succesful! Should be accessible at dev.pollingapp.jedthompson.co.uk'
+                    steps {
+                        echo 'Deploying commit ${GIT_COMMIT} to dev server'
+                        sh "docker run -v /database/dev:/usr/src/app/database -e CLIENT_ID -e CLIENT_SECRET -e SECRET_KEY -e VIRTUAL_HOST=dev.pollingapp.jedthompson.co.uk -e LETSENCRYPT_HOST=dev.pollingapp.jedthompson.co.uk -e LETSENCRYPT_EMAIL=jedster1111@hotmail.co.uk --restart=on-failure --name pollingappdev --rm -d ${imageId}"
+                        echo 'Deployment succesful! Should be accessible at dev.pollingapp.jedthompson.co.uk'
+                    }
                 }
             }
         }
