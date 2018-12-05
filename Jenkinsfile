@@ -6,7 +6,7 @@ pipeline {
         docker {
             image 'jedster1111/pollingappe2e:latest'
             args '-u root'
-            alwaysPull = true
+            alwaysPull 'true'
         }
     }
 
