@@ -56,13 +56,17 @@ pipeline {
 
                 stage('Stopping pollingappdev container') {
                     steps {
-                        script {
-                            try {
-                                sh "docker stop pollingappdev"
-                            } catch(e) {
-                                echo e
-                            }
-                        }
+                        sh '''
+                            result=$( sudo docker images -q pollingappdev )
+
+                            if [[ -n \\"$result\\" ]]; then
+                              echo \\"Container exists\\"
+                              docker rm pollingappdev
+                            else
+                              echo \\"No such container\\"
+                            fi
+                        '''
+
                     }
                 }
 
