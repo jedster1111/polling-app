@@ -59,7 +59,7 @@ pipeline {
                         sh '''
                             result=$( docker ps -q | grep pollingappdev )
 
-                            if [ \\"x$result\\" == \\"x\\" ]; then
+                            if [ -z \\"$result\\" ]; then
                               echo \\"No such container\\"
                             else
                               echo \\"Container exists\\"
