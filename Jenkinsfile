@@ -10,7 +10,8 @@ pipeline {
     }
 
     environment {
-        URL = "http://127.0.0.1:8000"
+        DEV_URL = "http://127.0.0.1:8000"
+        CLIENT_ID = credentials('CLIENT_ID')
     }
 
     stages {
@@ -19,7 +20,7 @@ pipeline {
                 echo 'Setting up...'
                 sh 'printenv'
                 sh 'yarn'
-                echo "${CLIENT_ID}"
+                echo "${env.CLIENT_ID}"
                 // Get the commit that we're working on to be used for tagging later
                 // script {
                 //     // shortCommit = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
