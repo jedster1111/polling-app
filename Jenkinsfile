@@ -12,6 +12,10 @@ pipeline {
     environment {
         DEV_URL = "http://127.0.0.1:8000"
         CLIENT_ID = credentials('CLIENT_ID')
+        CLIENT_SECRET = credentials('CLIENT_SECRET')
+        SECRET_KEY = credentials('SECRET_KEY')
+        TEST_USERNAME = credentials('TEST_USERNAME')
+        TEST_PASSWORD = credentials('TEST_PASSWORD')
     }
 
     stages {
@@ -48,7 +52,7 @@ pipeline {
 
                 echo "Starting container with imageId: ${imageId}"
                 script {
-                    containerId = sh(returnStdout: true, script: "docker run --rm -p 127.0.0.1:8000:8000 -d ${imageId}").trim()
+                    containerId = sh(returnStdout: true, script: "docker run -e CLIENT_ID -e CLIENT_SECRET -e SECRET_KEY -e TEST_USERNAME -e TEST_PASSWORD --rm -p 127.0.0.1:8000:8000 -d ${imageId}").trim()
                 }
                 echo "containerId is saved with value ${containerId}"
             }
