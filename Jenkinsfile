@@ -56,7 +56,11 @@ pipeline {
 
                 stage('Stopping pollingappdev container') {
                     steps {
-                        sh (propagate: false, script: "docker stop pollingappdev")
+                        try {
+                            sh "docker stop pollingappdev"
+                        } catch(e) {
+                            echo e
+                        }
                     }
                 }
 
