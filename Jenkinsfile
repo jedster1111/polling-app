@@ -35,7 +35,7 @@ pipeline {
                 echo "Building this commits image"
 
                 script {
-                    imageId = sh(returnStdout: true, script: "docker build -q -f dockerfiles/pollingapp/Dockerfile .").trim()
+                    imageId = sh(returnStdout: true, script: "docker build -t pollingappdev -q -f dockerfiles/pollingapp/Dockerfile .").trim()
                 }
 
                 echo "Image has been built with imageId ${imageId}"
