@@ -55,21 +55,36 @@ pipeline {
                 }
 
                 stage('Stopping pollingappdev container') {
+                    when {
+                        not {
+                            expression {
+                                sh(returnStdout: true, script: "docker ps -f name=pollingappdev --format \\"{{.ID}}\\"").trim() == ""
+                            }
+                        }
+                    }
                     steps {
-                        sh '''
-                            result=$( docker ps -f name=pollingappdev --format \\"{{.ID}}\\" )
-
-                            if [ -z \\"$result\\" ]; then
-                              echo \\"No such container\\"
-                            else
-                              echo \\"Container exists\\"
-                              docker stop pollingappdev
-                              docker rm pollingappdev
-                            fi
-                        '''
-
+                        echo 'Container exists so we need to stop it...'
+                        sh 'docker stop pollingappdev'
+                        sh 'docker rm pollingappdev'
                     }
                 }
+
+                // stage('Stopping pollingappdev container') {
+                //     steps {
+                //         sh '''
+                //             result=$( docker ps -f name=pollingappdev --format \\"{{.ID}}\\" )
+
+                //             if [ -z \\"$result\\" ]; then
+                //               echo \\"No such container\\"
+                //             else
+                //               echo \\"Container exists\\"
+                //               docker stop pollingappdev
+                //               docker rm pollingappdev
+                //             fi
+                //         '''
+
+                //     }
+                // }
 
                 stage('Deploying to dev') {
                     steps {
