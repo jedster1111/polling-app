@@ -43,6 +43,9 @@ pipeline {
             when {
                 branch 'development'
             }
+            input {
+              message 'Deploy to dev server? This will stop and replace the existing server if one is running.'
+            }
             stages {
                 stage('Building image') {
                     steps {
@@ -68,23 +71,6 @@ pipeline {
                         sh 'docker rm pollingappdev'
                     }
                 }
-
-                // stage('Stopping pollingappdev container') {
-                //     steps {
-                //         sh '''
-                //             result=$( docker ps -f name=pollingappdev --format \\"{{.ID}}\\" )
-
-                //             if [ -z \\"$result\\" ]; then
-                //               echo \\"No such container\\"
-                //             else
-                //               echo \\"Container exists\\"
-                //               docker stop pollingappdev
-                //               docker rm pollingappdev
-                //             fi
-                //         '''
-
-                //     }
-                // }
 
                 stage('Deploying to dev') {
                     steps {
