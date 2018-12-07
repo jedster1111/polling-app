@@ -23,7 +23,7 @@ pipeline {
         stage('Setup') {
             steps {
                 echo 'Setting up...'
-                sh 'printenv'
+                sh 'printenv | sort'
                 echo 'Installing node dependencies'
                 sh 'yarn'
                 echo "${env.CLIENT_ID}"
@@ -54,6 +54,12 @@ pipeline {
                     containerId = sh(returnStdout: true, script: "docker run -e CLIENT_ID -e CLIENT_SECRET -e SECRET_KEY -e TEST_USERNAME -e TEST_PASSWORD --rm -d ${imageId}").trim()
                 }
                 echo "containerId is saved with value ${containerId}"
+            }
+        }
+
+        stage("Wait") {
+            input {
+                message 'Wait so I can play around...'
             }
         }
 
