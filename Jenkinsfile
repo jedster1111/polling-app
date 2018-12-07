@@ -57,13 +57,10 @@ pipeline {
             }
         }
 
-        stage("Wait") {
+        stage("E2E tests") {
             input {
                 message 'Wait so I can play around...'
             }
-        }
-
-        stage("E2E tests") {
           steps {
             sh 'testcafe -b'
             echo 'Running E2E tests'
