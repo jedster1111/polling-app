@@ -54,6 +54,13 @@ pipeline {
                     containerId = sh(returnStdout: true, script: "docker run -e CLIENT_ID -e CLIENT_SECRET -e SECRET_KEY -e TEST_USERNAME -e TEST_PASSWORD --rm -d ${imageId}").trim()
                 }
                 echo "containerId is saved with value ${containerId}"
+
+                script {
+                  containerIp = sh(returnStdout: true, script: 'docker inspect -f \\"{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}\\"').trim()
+                }
+                echo "containerIp is saved with value ${containerIp}"
+
+                sh 'printenv | sort'
             }
         }
 
