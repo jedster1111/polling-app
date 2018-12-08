@@ -5,6 +5,9 @@ import createPollPage from "../pages/createPollPage";
 import listPollPage from "../pages/pollsListPage";
 import { githubTestUser } from "../roles/roles";
 
+const BASE_URL =
+  `http://${process.env.TESTCAFE_IP}:8000` || "http://127.0.0.1:8000";
+
 const getPageUrl = ClientFunction(() => window.location.href.toString());
 
 const page = new createPollPage();
@@ -24,7 +27,7 @@ const defaultPollInput: PollInput = {
 };
 
 fixture("Testing the create a poll form").page(
-  "http://127.0.0.1:8000/public/create-poll"
+  `${BASE_URL}/public/create-poll`
 );
 
 test("When a poll is submitted succesfully, should be redirected to created poll page.", async t => {
@@ -37,7 +40,7 @@ test("When a poll is submitted succesfully, should be redirected to created poll
 
   await t
     .expect(getPageUrl())
-    .contains("127.0.0.1:8000/public/", { timeout: 10000 });
+    .contains(`${BASE_URL}/public/`, { timeout: 10000 });
   await t.expect(listPage.checkCreatedPoll(titleToUse, pollInput));
 });
 

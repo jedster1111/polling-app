@@ -59,20 +59,20 @@ pipeline {
                   containerIp = sh(returnStdout: true, script: "docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${containerId}").trim()
                 }
                 echo "containerIp is saved with value ${containerIp}"
-
-                sh 'printenv | sort'
             }
         }
 
         stage("E2E tests") {
-            input {
-                message 'Wait so I can play around...'
-            }
+          input {
+            message 'Wait so I can play around...'
+          }
+          environment {
+            TESTCAFE_BASE_URL = ${containerIp}
+          }
           steps {
-            sh 'testcafe -b'
+            sh 'printenv | sort'
+
             echo 'Running E2E tests'
-            sh 'pwd'
-            sh 'ls'
             sh 'testcafe \"chromium --headless --no-sandbox --disable-gpu --window-size=1920x1080\" testcafe/tests/helloWorld.test.ts'
           }
         }

@@ -7,6 +7,9 @@ import PollDetailPage, { IsOpenText } from "../pages/pollDetailPage";
 import PollsListPage from "../pages/pollsListPage";
 import { githubTestUser, username } from "../roles/roles";
 
+const BASE_URL =
+  `http://${process.env.TESTCAFE_IP}:8000` || "http://127.0.0.1:8000";
+
 enum OptionText {
   b = "banana",
   d = "deer",
@@ -33,7 +36,7 @@ async function createPoll(t: TestController, pollInput: PollInput) {
 }
 
 fixture("Testing the poll detail page")
-  .page("http://127.0.0.1:8000")
+  .page(BASE_URL)
   .beforeEach(async t => {
     await t.useRole(githubTestUser);
 
