@@ -66,7 +66,7 @@ pipeline {
             echo 'Running E2E tests'
             sh 'pwd'
             sh 'ls'
-            sh 'testcafe \\"chromium --headless --no-sandbox --disable-gpu --window-size=1920x1080\\" testcafe/tests/helloWorld.test.ts'
+            sh 'testcafe \"chromium --headless --no-sandbox --disable-gpu --window-size=1920x1080\" testcafe/tests/helloWorld.test.ts'
           }
         }
 
