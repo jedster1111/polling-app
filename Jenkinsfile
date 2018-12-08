@@ -56,7 +56,7 @@ pipeline {
                 echo "containerId is saved with value ${containerId}"
 
                 script {
-                  containerIp = sh(returnStdout: true, script: "docker inspect -f \\"\{\{range .NetworkSettings.Networks\}\}\{\{.IPAddress\}\}\{\{end\}\}\\"").trim()
+                  containerIp = sh(returnStdout: true, script: "docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${containerId}").trim()
                 }
                 echo "containerIp is saved with value ${containerIp}"
 
