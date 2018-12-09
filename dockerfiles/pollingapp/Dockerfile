@@ -15,4 +15,4 @@ COPY --from=build-deps /usr/src/app/dist /usr/src/app/dist
 RUN yarn
 EXPOSE 8000
 # CMD [ "yarn", "start:prod"]
-CMD ["sh", "-c", "export LOCAL_IP=$(ip route get 1.1.1.1 | awk '{print $NF; exit}'); yarn start"]
+CMD ["sh", "-c", "export LOCAL_IP=$(ip route get 1.1.1.1 | awk '{print $NF; exit}'); yarn start:prod"]
