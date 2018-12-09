@@ -22,7 +22,9 @@ if (ENV === "development") {
   dotenv.config({ path: path.resolve(__dirname, "..", "..", "prod.env") });
 }
 
-const rootUrl = process.env.URL || "127.0.0.1:8000";
+// const rootUrl = process.env.URL || "127.0.0.1:8000";
+const BASE_URL =
+  `http://${process.env.TESTCAFE_IP}:8000` || "http://127.0.0.1:8000";
 const secretKey = process.env.SECRET_KEY || "SuperSecretKey";
 const clientId = process.env.CLIENT_ID || "GithubProvidedClientId";
 const clientSecret = process.env.CLIENT_SECRET || "GithubProvidedSecretKey";
@@ -81,7 +83,7 @@ interface User {
   emails: Array<{ value: string }>;
 }
 
-const callbackURL = `${rootUrl}/auth/github/callback`;
+const callbackURL = `${BASE_URL}/auth/github/callback`;
 passport.use(
   new Strategy(
     {

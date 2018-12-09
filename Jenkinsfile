@@ -11,7 +11,6 @@ pipeline {
     }
 
     environment {
-        DEV_URL = "http://127.0.0.1:8000"
         CLIENT_ID = credentials('CLIENT_ID')
         CLIENT_SECRET = credentials('CLIENT_SECRET')
         SECRET_KEY = credentials('SECRET_KEY')
