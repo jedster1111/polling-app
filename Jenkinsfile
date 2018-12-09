@@ -63,11 +63,8 @@ pipeline {
         }
 
         stage("E2E tests") {
-          input {
-            message 'Wait so I can play around...'
-          }
           environment {
-            TESTCAFE_BASE_URL = "${containerIp}"
+            TESTCAFE_IP = "${containerIp}"
           }
           steps {
             sh 'printenv | sort'
