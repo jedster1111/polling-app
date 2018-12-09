@@ -67,7 +67,7 @@ pipeline {
             message 'Wait so I can play around...'
           }
           environment {
-            TESTCAFE_BASE_URL = ${containerIp}
+            TESTCAFE_BASE_URL = containerIp
           }
           steps {
             sh 'printenv | sort'
