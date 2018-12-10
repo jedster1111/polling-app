@@ -118,16 +118,29 @@ pipeline {
                     }
                 }
                 stage('Stopping and restarting pollingApp container') {
-                    steps {
-                        sh 'printenv | sort'
-                        sh 'docker stop pollingapp'
-                        sh 'docker rm pollingapp'
+                    stages {
+                        stage ('Stopping existing pollingapp container') {
+                            when {
+                                not {
+                                    expression {
+                                        sh(returnStdout: true, script: 'docker container ls --all -f name=pollingapp --format "{{.ID}}"').trim() == ""
+                                    }
+                                }
+                            }
+                            steps {
+                                sh 'docker stop pollingapp'
+                                sh 'docker rm pollingapp'
+                            }
+                        }
 
-                        sh 'docker-compose -f /docker-compose/docker-compose.yml up -d'
+                        stage ('Starting up polling app production container') {
+                            steps {
+                                sh 'docker-compose -f /docker-compose/docker-compose.yml up -d'        
+                            }
+                        }
                     }
                 }
             }
-
         }
     }
 }
