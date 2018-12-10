@@ -11,7 +11,7 @@ const PollsListPage = ({
   hasClosedWarning,
   onClosedWarning
 }: PollsListPageInterface) => (
-  <div>
+  <div className="pollsListPage">
     {/* {!hasClosedWarning && (
       <Alert
         message="The server shuts down after 30 minutes of inactivity. Any polls that you have created will be lost!!!"

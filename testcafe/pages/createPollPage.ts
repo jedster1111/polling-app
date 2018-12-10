@@ -1,5 +1,4 @@
 import { Selector } from "testcafe";
-import { ReactSelector } from "testcafe-react-selectors";
 import { PollInput } from "../../src/app/types";
 
 const typeText = async (t: TestController, input: Selector, text: string) => {
@@ -28,7 +27,7 @@ export default class CreatePollPage {
   voteLimitInput = Selector("#voteLimit");
   optionVoteLimitInput = Selector("#optionVoteLimit");
   namespaceInput = Selector("#namespace");
-  allInputs = ReactSelector("PollForm").find("input[type='text']");
+  allInputs = Selector("#createPollForm").find("input[type='text']");
   removeOptionButton = (index: number) => this.removeOptionButtons.nth(index);
 
   fillFormInputs = async (t: TestController, pollInput: PollInput) => {

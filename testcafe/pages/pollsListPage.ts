@@ -1,11 +1,10 @@
-import { t } from "testcafe";
-import { ReactSelector } from "testcafe-react-selectors";
+import { Selector, t } from "testcafe";
 import { PollInput } from "../../src/app/types";
 import { username } from "../roles/roles";
 
 export default class PollsListPage {
-  refreshPolls = ReactSelector("FetchPollsButton");
-  pollCards = ReactSelector("PollCard");
+  refreshPolls = Selector(".fetchPollsButton");
+  pollCards = Selector(".pollCard");
 
   getPollCard = (id: string) => this.pollCards.withText(id);
 

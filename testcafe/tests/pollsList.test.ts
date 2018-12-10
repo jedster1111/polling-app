@@ -69,11 +69,11 @@ test("I can't delete or edit polls if I'm not logged in", async t => {
   await t.useRole(Role.anonymous());
 
   await t
-    .expect(pollsListPage.pollCards.findReact("EditButton").exists)
+    .expect(pollsListPage.pollCards.find(".edit").exists)
     .notOk("You shouldn't see any edit buttons if not logged in");
 
   await t
-    .expect(pollsListPage.pollCards.findReact("DeletePollButton").exists)
+    .expect(pollsListPage.pollCards.find(".delete").exists)
     .notOk("You shouldn't see any remove poll buttons");
 });
 

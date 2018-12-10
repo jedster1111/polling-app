@@ -10,7 +10,11 @@ const FetchPollsButton: React.SFC<FetchPollsButtonProps> = ({
   fetchPolls,
   isLoading
 }) => (
-  <Button onClick={fetchPolls} style={{ marginBottom: "5px" }}>
+  <Button
+    onClick={fetchPolls}
+    style={{ marginBottom: "5px" }}
+    className="fetchPollsButton"
+  >
     Refresh Polls
     <Icon type="reload" spin={isLoading} />
   </Button>
