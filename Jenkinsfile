@@ -97,6 +97,7 @@ pipeline {
 
         stage ('Prod deploy') {
             when {
+                beforeInput true
                 branch 'master'
             }
             input {
