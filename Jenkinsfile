@@ -61,7 +61,7 @@ pipeline {
                     when {
                         not {
                             expression {
-                                sh(returnStdout: true, script: 'docker ps -f name=pollingappdev --format "{{.ID}}"').trim() == ""
+                                sh(returnStdout: true, script: 'docker container ls --all -f name=pollingappdev --format "{{.ID}}"').trim() == ""
                             }
                         }
                     }
