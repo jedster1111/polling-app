@@ -1,13 +1,12 @@
 import { Selector, t } from "testcafe";
-import { ReactSelector } from "testcafe-react-selectors";
 
 export default class Navbar {
-  navBar = ReactSelector("NavBar");
+  navBar = Selector(".navbar");
   home = this.navBar.find("#homeLink");
   createPoll = this.navBar.find("#createPollLink");
   pollsList = this.navBar.find("#pollsListLink");
-  loginButton = this.navBar.findReact("LoginButton").find("button");
-  logoutButton = this.navBar.findReact("LogoutButton").find("button");
+  loginButton = this.navBar.find(".loginButton").find("button");
+  logoutButton = this.navBar.find(".logoutButton").find("button");
   editNamespaceButton = this.navBar.find(".edit-namespace-button");
   namespaceValue = this.navBar.find(".namespace-value");
   editNamespaceInput = Selector(".edit-namespace-input");

@@ -18,7 +18,18 @@ const NavBarButton: React.SFC<NavBarButtonProps> = ({ handleClick, type }) => {
       undefined
     );
   return (
-    <Button onClick={handleClick}>
+    <Button
+      onClick={handleClick}
+      className={
+        type === "Login"
+          ? "loginButton"
+          : type === "Logout"
+          ? "logoutButton"
+          : type === "Loading"
+          ? "loggedInLoading"
+          : undefined
+      }
+    >
       {type}
       {icon}
     </Button>

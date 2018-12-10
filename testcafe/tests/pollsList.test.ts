@@ -6,6 +6,8 @@ import Navbar from "../pages/navbar";
 import PollsListPage from "../pages/pollsListPage";
 import { githubTestUser } from "../roles/roles";
 
+const BASE_URL = process.env.TESTCAFE_URL || "http://127.0.0.1:8000";
+
 const navbar = new Navbar();
 const createPollPage = new CreatePollPage();
 const pollsListPage = new PollsListPage();
@@ -29,7 +31,7 @@ const createPollInput = (): PollInput => ({
   optionVoteLimit: 1
 });
 
-fixture("Testing the polls list page").page("http://127.0.0.1:8000");
+fixture("Testing the polls list page").page(BASE_URL);
 
 test("Can I create a poll, then see it in the list of polls?", async t => {
   await t.useRole(githubTestUser);
@@ -67,11 +69,11 @@ test("I can't delete or edit polls if I'm not logged in", async t => {
   await t.useRole(Role.anonymous());
 
   await t
-    .expect(pollsListPage.pollCards.findReact("EditButton").exists)
+    .expect(pollsListPage.pollCards.find(".edit").exists)
     .notOk("You shouldn't see any edit buttons if not logged in");
 
   await t
-    .expect(pollsListPage.pollCards.findReact("DeletePollButton").exists)
+    .expect(pollsListPage.pollCards.find(".delete").exists)
     .notOk("You shouldn't see any remove poll buttons");
 });
 

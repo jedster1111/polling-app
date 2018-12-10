@@ -32,6 +32,7 @@ const NavBar: React.SFC<NavBarProps> = ({
         mode={layout}
         defaultSelectedKeys={[""]}
         selectedKeys={[page || "/"]}
+        className="navbar"
       >
         <Menu.Item key="/">
           <NavLink to={`/${namespace || "public"}`} id="pollsListLink">

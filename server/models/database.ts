@@ -99,6 +99,7 @@ class Database {
           });
         } else {
           console.log("Hydrated polls!");
+          this.pollsCount = polls.count();
         }
         const users = this.db.getCollection("users");
         console.log("Getting existing users...");

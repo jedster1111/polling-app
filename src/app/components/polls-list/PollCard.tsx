@@ -79,7 +79,7 @@ const PollCard = (props: PollCardProps) => {
 
   return (
     <>
-      <List.Item key={props.poll.pollId} actions={actions}>
+      <List.Item key={props.poll.pollId} actions={actions} className="pollCard">
         <List.Item.Meta
           avatar={
             props.poll.creator.photos && (

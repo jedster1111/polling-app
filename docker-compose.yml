@@ -41,8 +41,8 @@ services:
     volumes:
       - "/database:/usr/src/app/database"
     environment:
-      - VIRTUAL_HOST=jedthompson.co.uk,www.jedthompson.co.uk
-      - LETSENCRYPT_HOST=jedthompson.co.uk,www.jedthompson.co.uk
+      - VIRTUAL_HOST=pollingapp.jedthompson.co.uk
+      - LETSENCRYPT_HOST=pollingapp.jedthompson.co.uk
       - LETSENCRYPT_EMAIL=jedster1111@hotmail.co.uk
       - CLIENT_ID
       - CLIENT_SECRET
