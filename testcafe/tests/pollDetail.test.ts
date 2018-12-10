@@ -7,7 +7,7 @@ import PollDetailPage, { IsOpenText } from "../pages/pollDetailPage";
 import PollsListPage from "../pages/pollsListPage";
 import { githubTestUser, username } from "../roles/roles";
 
-const BASE_URL = `${process.env.TESTCAFE_URL}` || "http://127.0.0.1:8000";
+const BASE_URL = process.env.TESTCAFE_URL || "http://127.0.0.1:8000";
 
 enum OptionText {
   b = "banana",
