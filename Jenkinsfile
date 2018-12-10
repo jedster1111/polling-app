@@ -112,7 +112,6 @@ pipeline {
             stages {
                 stage('Tagging and pushing images to jedster1111/pollingapp:release') {
                     steps {
-                        sh 'export URL=https://pollingapp.jedthompson.co.uk'
                         sh "docker login -u ${DOCKERHUB_CREDS_USR} -p ${DOCKERHUB_CREDS_PSW}"
                         sh "docker tag ${imageId} jedster1111/pollingapp:release"
                         sh 'docker push jedster1111/pollingapp:release'
@@ -120,6 +119,7 @@ pipeline {
                 }
                 stage('Stopping and restarting pollingApp container') {
                     steps {
+                        sh 'export URL=https://pollingapp.jedthompson.co.uk'
                         sh 'docker stop pollingapp'
                         sh 'docker rm pollingapp'
 
