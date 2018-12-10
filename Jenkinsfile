@@ -96,6 +96,9 @@ pipeline {
         }
 
         stage ('Prod deploy') {
+            environment {
+                DOCKERHUB_CREDS = credentials('DOCKERHUB_CREDS')
+            }
             when {
                 beforeInput true
                 branch 'master'
@@ -106,6 +109,7 @@ pipeline {
             stages {
                 stage('Tagging and pushing images to jedster1111/pollingapp:release') {
                     steps {
+                        sh "docker login -u ${DOCKERHUB_CREDS_USR} -p ${DOCKERHUB_CREDS_PSW}"
                         sh "docker tag ${imageId} jedster1111/pollingapp:release"
                         sh 'docker push jedster1111/pollingapp:release'
                     }
