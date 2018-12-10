@@ -73,9 +73,12 @@ pipeline {
                 }
 
                 stage('Deploying to dev') {
+                    environment {
+                        URL = 'dev.pollingapp.jedthompson.co.uk'
+                    }
                     steps {
                         echo "Deploying commit ${GIT_COMMIT} to dev server"
-                        sh "docker run -v /database/dev:/usr/src/app/database -e CLIENT_ID -e CLIENT_SECRET -e SECRET_KEY -e VIRTUAL_HOST=dev.pollingapp.jedthompson.co.uk -e LETSENCRYPT_HOST=dev.pollingapp.jedthompson.co.uk -e LETSENCRYPT_EMAIL=jedster1111@hotmail.co.uk --restart=on-failure --name pollingappdev --net docker-compose_default -d ${imageId}"
+                        sh "docker run -v /database/dev:/usr/src/app/database -e CLIENT_ID -e CLIENT_SECRET -e SECRET_KEY -e VIRTUAL_HOST=dev.pollingapp.jedthompson.co.uk -e LETSENCRYPT_HOST=dev.pollingapp.jedthompson.co.uk -e LETSENCRYPT_EMAIL=jedster1111@hotmail.co.uk -e URL --restart=on-failure --name pollingappdev --net docker-compose_default -d ${imageId}"
                         echo 'Deployment succesful! Should be accessible at dev.pollingapp.jedthompson.co.uk'
                     }
                 }
