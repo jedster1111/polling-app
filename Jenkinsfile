@@ -100,7 +100,7 @@ pipeline {
                 DOCKERHUB_CREDS = credentials('DOCKERHUB_CREDS')
                 CLIENT_ID = credentials('PROD_CLIENT_ID')
                 CLIENT_SECRET = credentials('PROD_CLIENT_SECRET')
-                URL = 'https://pollingapp.jedthompson.co.uk'
+                // URL 'https://pollingapp.jedthompson.co.uk'
             }
             when {
                 beforeInput true
@@ -112,6 +112,9 @@ pipeline {
             stages {
                 stage('Tagging and pushing images to jedster1111/pollingapp:release') {
                     steps {
+                        script {
+                            URL = 'https://pollingapp.jedthompson.co.uk'
+                        }
                         sh "docker login -u ${DOCKERHUB_CREDS_USR} -p ${DOCKERHUB_CREDS_PSW}"
                         sh "docker tag ${imageId} jedster1111/pollingapp:release"
                         sh 'docker push jedster1111/pollingapp:release'
