@@ -37,7 +37,7 @@ services:
     restart: on-failure
 
   pollingapp:
-    image: jedster1111/pollingapp
+    image: jedster1111/pollingapp:release
     volumes:
       - "/database:/usr/src/app/database"
     environment:
@@ -56,6 +56,7 @@ services:
     volumes:
       - "/jenkins_home:/var/jenkins_home"
       - "/var/run/docker.sock:/var/run/docker.sock"
+      - "/docker-compose:/docker-compose"
     environment:
       - VIRTUAL_HOST=jenkins.jedthompson.co.uk
       - LETSENCRYPT_HOST=jenkins.jedthompson.co.uk

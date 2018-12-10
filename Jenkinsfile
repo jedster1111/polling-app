@@ -119,7 +119,7 @@ pipeline {
                         sh 'docker stop pollingapp'
                         sh 'docker rm pollingapp'
 
-                        sh 'docker-compose up -d'
+                        sh 'docker-compose -f /docker-compose/docker-compose.yml up -d'
                     }
                 }
             }

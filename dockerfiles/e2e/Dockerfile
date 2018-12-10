@@ -17,6 +17,8 @@ RUN apk -U --no-cache \
     grep \ 
     udev \
     docker \
+    docker-compose \
+    curl \
     && apk del --purge --force linux-headers binutils-gold gnupg zlib-dev libc-utils \
     && rm -rf /var/lib/apt/lists/* \
     /var/cache/apk/* \
