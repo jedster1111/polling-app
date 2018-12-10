@@ -42,7 +42,7 @@ pipeline {
             steps {
                 echo "Building image"
                 script {
-                    imageId = sh(returnStdout: true, script: "docker build -t pollingappdev:${GIT_COMMIT} -t pollingappdev:latest -q -f dockerfiles/pollingapp/Dockerfile .").trim()
+                    imageId = sh(returnStdout: true, script: "docker build -t jedster1111/pollingapp:${GIT_COMMIT} -t jedster1111/pollingapp:latest -q -f dockerfiles/pollingapp/Dockerfile .").trim()
                 }
                 echo "Finished building image. Tagged as pollingappdev:${GIT_COMMIT} and pollingappdev:latest"
             }
@@ -88,11 +88,33 @@ pipeline {
                         TESTCAFE_URL = 'https://dev.pollingapp.jedthompson.co.uk'
                     }
                     steps {
-                        echo 'Running E2E tests'
+                        echo 'Running   E2E tests'
                         sh 'testcafe \"chromium --headless --no-sandbox --disable-gpu --window-size=1920x1080\" testcafe/'
                     }
                 }
             }
+        }
+
+        stage ('Prod deploy') {
+            when {
+                branch 'master'
+            }
+            input {
+                message 'Should we deploy to production?'
+            }
+            stages {
+                stage('Tagging and pushing images to jedster1111/pollingapp:release') {
+                    sh "docker tag ${imageId} jedster1111/pollingapp:release"
+                    sh 'docker push jedster1111/pollingapp:release'
+                }
+                stage('Stopping and restarting pollingApp container') {
+                    sh 'docker stop pollingapp'
+                    sh 'docker rm pollingapp'
+
+                    sh 'docker-compose up -d'
+                }
+            }
+
         }
     }
 }
