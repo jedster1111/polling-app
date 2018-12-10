@@ -47,7 +47,7 @@ services:
       - CLIENT_ID
       - CLIENT_SECRET
       - SECRET_KEY
-      - URL
+      - POLLING_APP_URL
     restart: on-failure
     container_name: pollingapp
 

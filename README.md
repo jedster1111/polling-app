@@ -121,13 +121,13 @@ An application to create and vote on polls, written in Typescript.
   - You will then be provided with a clientId and a clientSecret.
   - You must then set the following environment variables in order for the app
     to run in both development and production.  
-    _Note the `URL` must match the `Homepage URL` provided when creating your
+    _Note the `POLLING_APP_URL` must match the `Homepage URL` provided when creating your
     GitHub OAuth app_
     ```txt
     CLIENT_ID=YourGitHubProvidedClientId
     Client_SECRET=YoutGitHubProvidedClientSecret
     SECRET_KEY=ASecretKeyGeneratedByYou
-    URL=http://127.0.0.1:8000
+    POLLING_APP_URL=http://127.0.0.1:8000
     ```
     - Dotenv is set up, so create a file in the root directory called `dev.env`
       and store the env variables in there as shown above. They will be loaded into

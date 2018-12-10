@@ -22,8 +22,7 @@ if (ENV === "development") {
   dotenv.config({ path: path.resolve(__dirname, "..", "..", "prod.env") });
 }
 
-// const rootUrl = process.env.URL || "127.0.0.1:8000";
-const BASE_URL = process.env.URL || "http://127.0.0.1:8000";
+const BASE_URL = process.env.POLLING_APP_URL || "http://127.0.0.1:8000";
 const secretKey = process.env.SECRET_KEY || "SuperSecretKey";
 const clientId = process.env.CLIENT_ID || "GithubProvidedClientId";
 const clientSecret = process.env.CLIENT_SECRET || "GithubProvidedSecretKey";

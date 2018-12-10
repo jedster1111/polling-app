@@ -78,7 +78,7 @@ pipeline {
                     }
                     steps {
                         echo "Deploying commit ${GIT_COMMIT} to dev server"
-                        sh "docker run -v /database/dev:/usr/src/app/database -e CLIENT_ID -e CLIENT_SECRET -e SECRET_KEY -e VIRTUAL_HOST=dev.pollingapp.jedthompson.co.uk -e LETSENCRYPT_HOST=dev.pollingapp.jedthompson.co.uk -e LETSENCRYPT_EMAIL=jedster1111@hotmail.co.uk -e URL=${DEV_URL} --restart=on-failure --name pollingappdev --net docker-compose_default -d ${imageId}"
+                        sh "docker run -v /database/dev:/usr/src/app/database -e CLIENT_ID -e CLIENT_SECRET -e SECRET_KEY -e VIRTUAL_HOST=dev.pollingapp.jedthompson.co.uk -e LETSENCRYPT_HOST=dev.pollingapp.jedthompson.co.uk -e LETSENCRYPT_EMAIL=jedster1111@hotmail.co.uk -e POLLING_APP_URL=${DEV_URL} --restart=on-failure --name pollingappdev --net docker-compose_default -d ${imageId}"
                         echo 'Deployment succesful! Should be accessible at dev.pollingapp.jedthompson.co.uk'
                     }
                 }
@@ -100,7 +100,7 @@ pipeline {
                 DOCKERHUB_CREDS = credentials('DOCKERHUB_CREDS')
                 CLIENT_ID = credentials('PROD_CLIENT_ID')
                 CLIENT_SECRET = credentials('PROD_CLIENT_SECRET')
-                // URL 'https://pollingapp.jedthompson.co.uk'
+                POLLING_APP_URL = 'https://pollingapp.jedthompson.co.uk'
             }
             when {
                 beforeInput true
@@ -119,7 +119,7 @@ pipeline {
                 }
                 stage('Stopping and restarting pollingApp container') {
                     steps {
-                        sh 'export URL=https://pollingapp.jedthompson.co.uk'
+                        sh 'printenv | sort'
                         sh 'docker stop pollingapp'
                         sh 'docker rm pollingapp'
 
