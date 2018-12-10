@@ -3,8 +3,7 @@ import Navbar from "../pages/navbar";
 import { githubTestUser } from "../roles/roles";
 const navbar = new Navbar();
 
-const BASE_URL =
-  `http://${process.env.TESTCAFE_IP}:8000` || "http://127.0.0.1:8000";
+const BASE_URL = `${process.env.TESTCAFE_URL}` || "http://127.0.0.1:8000";
 
 fixture("Can you navigate properly using the navbar?").page(BASE_URL);
 

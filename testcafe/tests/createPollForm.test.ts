@@ -5,8 +5,7 @@ import createPollPage from "../pages/createPollPage";
 import listPollPage from "../pages/pollsListPage";
 import { githubTestUser } from "../roles/roles";
 
-const BASE_URL =
-  `http://${process.env.TESTCAFE_IP}:8000` || "http://127.0.0.1:8000";
+const BASE_URL = `${process.env.TESTCAFE_URL}` || "http://127.0.0.1:8000";
 
 const getPageUrl = ClientFunction(() => window.location.href.toString());
 
