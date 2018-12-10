@@ -74,7 +74,7 @@ pipeline {
 
                 stage('Deploying to dev') {
                     environment {
-                        DEV_URL = 'dev.pollingapp.jedthompson.co.uk'
+                        DEV_URL = 'https://dev.pollingapp.jedthompson.co.uk'
                     }
                     steps {
                         echo "Deploying commit ${GIT_COMMIT} to dev server"
