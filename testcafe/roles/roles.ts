@@ -5,8 +5,7 @@ import { Role, Selector } from "testcafe";
 
 dotenv.config({ path: path.resolve(__dirname, "..", "..", "dev.env") });
 
-const BASE_URL =
-  `http://${process.env.TESTCAFE_IP}:8000` || "http://127.0.0.1:8000";
+const BASE_URL = process.env.TESTCAFE_URL || "http://127.0.0.1:8000";
 
 export const username = process.env.TEST_USERNAME;
 const password = process.env.TEST_PASSWORD;
