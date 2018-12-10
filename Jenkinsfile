@@ -98,6 +98,9 @@ pipeline {
         stage ('Prod deploy') {
             environment {
                 DOCKERHUB_CREDS = credentials('DOCKERHUB_CREDS')
+                CLIENT_ID = credentials('PROD_CLIENT_ID')
+                CLIENT_SECRET = credentials('PROD_CLIENT_SECRET')
+                URL = 'https://pollingapp.jedthompson.co.uk'
             }
             when {
                 beforeInput true
