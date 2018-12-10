@@ -112,9 +112,7 @@ pipeline {
             stages {
                 stage('Tagging and pushing images to jedster1111/pollingapp:release') {
                     steps {
-                        script {
-                            URL = 'https://pollingapp.jedthompson.co.uk'
-                        }
+                        sh 'URL=https://pollingapp.jedthompson.co.uk'
                         sh "docker login -u ${DOCKERHUB_CREDS_USR} -p ${DOCKERHUB_CREDS_PSW}"
                         sh "docker tag ${imageId} jedster1111/pollingapp:release"
                         sh 'docker push jedster1111/pollingapp:release'
