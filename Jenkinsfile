@@ -104,14 +104,18 @@ pipeline {
             }
             stages {
                 stage('Tagging and pushing images to jedster1111/pollingapp:release') {
-                    sh "docker tag ${imageId} jedster1111/pollingapp:release"
-                    sh 'docker push jedster1111/pollingapp:release'
+                    steps {
+                        sh "docker tag ${imageId} jedster1111/pollingapp:release"
+                        sh 'docker push jedster1111/pollingapp:release'
+                    }
                 }
                 stage('Stopping and restarting pollingApp container') {
-                    sh 'docker stop pollingapp'
-                    sh 'docker rm pollingapp'
+                    steps {
+                        sh 'docker stop pollingapp'
+                        sh 'docker rm pollingapp'
 
-                    sh 'docker-compose up -d'
+                        sh 'docker-compose up -d'
+                    }
                 }
             }
 
