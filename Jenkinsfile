@@ -1,5 +1,7 @@
 #!/usr/bin/env groovy
 
+// docker inspect e1a2a16cab23 | grep IPAddress |  grep -v '""' | grep -v null | cut -d '"' -f 4
+
 pipeline {
 
     agent {
@@ -11,7 +13,6 @@ pipeline {
     }
 
     environment {
-        DEV_URL = "http://127.0.0.1:8000"
         CLIENT_ID = credentials('CLIENT_ID')
         CLIENT_SECRET = credentials('CLIENT_SECRET')
         SECRET_KEY = credentials('SECRET_KEY')
@@ -23,7 +24,7 @@ pipeline {
         stage('Setup') {
             steps {
                 echo 'Setting up...'
-                sh 'printenv'
+                sh 'printenv | sort'
                 echo 'Installing node dependencies'
                 sh 'yarn'
                 echo "${env.CLIENT_ID}"
@@ -47,33 +48,14 @@ pipeline {
             }
         }
 
-        stage('E2E setup') {
-            steps {
-                echo "Starting container with imageId: ${imageId}"
-                script {
-                    containerId = sh(returnStdout: true, script: "docker run -e CLIENT_ID -e CLIENT_SECRET -e SECRET_KEY -e TEST_USERNAME -e TEST_PASSWORD --rm -d ${imageId}").trim()
-                }
-                echo "containerId is saved with value ${containerId}"
-            }
-        }
-
-        stage("E2E tests") {
-          steps {
-            sh 'testcafe -b'
-            echo 'Running E2E tests'
-            sh 'pwd'
-            sh 'ls'
-            sh 'testcafe \\"chromium --headless --no-sandbox --disable-gpu --window-size=1920x1080\\" testcafe/'
-          }
-        }
-
         stage("Dev Deploy") {
             when {
                 branch 'development'
             }
-            input {
-              message 'Deploy to dev server? This will stop and replace the existing server if one is running.'
+            options {
+                lock('devServer')
             }
+            
             stages {
                 stage('Stopping pollingappdev container') {
                     when {
@@ -97,16 +79,17 @@ pipeline {
                         echo 'Deployment succesful! Should be accessible at dev.pollingapp.jedthompson.co.uk'
                     }
                 }
+
+                stage("E2E tests") {
+                    environment {
+                        TESTCAFE_URL = 'https://dev.pollingapp.jedthompson.co.uk'
+                    }
+                    steps {
+                        echo 'Running E2E tests'
+                        sh 'testcafe \"chromium --headless --no-sandbox --disable-gpu --window-size=1920x1080\" testcafe/'
+                    }
+                }
             }
-        }
-    }
-        
-    post {
-        cleanup {
-            echo "Stopping and removing container with id ${containerId}"
-            sh "docker stop ${containerId}"
-            // echo "Removing the built image with Id: ${imageId}"
-            // sh "docker rmi -f ${imageId}"
         }
     }
 }
