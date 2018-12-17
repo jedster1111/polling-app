@@ -7,6 +7,7 @@ import { Request } from "express-serve-static-core";
 import jwt from "jsonwebtoken";
 import passport from "passport";
 import { Strategy } from "passport-github2";
+import { OAuth2Strategy, Profile } from "passport-google-oauth";
 import passportJwt from "passport-jwt";
 import { VerifyCallback } from "passport-oauth2";
 import path from "path";
@@ -24,8 +25,13 @@ if (ENV === "development") {
 
 const BASE_URL = process.env.POLLING_APP_URL || "http://127.0.0.1:8000";
 const secretKey = process.env.SECRET_KEY || "SuperSecretKey";
-const clientId = process.env.CLIENT_ID || "GithubProvidedClientId";
-const clientSecret = process.env.CLIENT_SECRET || "GithubProvidedSecretKey";
+const githubClientId = process.env.GITHUB_CLIENT_ID || "GithubProvidedClientId";
+const githubClientSecret =
+  process.env.GITHUB_CLIENT_SECRET || "GithubProvidedSecretKey";
+
+const googleClientId = process.env.GOOGLE_CLIENT_ID || "GoogleProvidedClientId";
+const googleClientSecret =
+  process.env.GOOGLE_CLIENT_SECRET || "GoogleProvidedClientSecret";
 
 export interface ErrorWithStatusCode extends Error {
   statusCode?: number;
@@ -61,6 +67,7 @@ export const generateAccessToken = (userId: string) => {
   });
   return token;
 };
+
 passport.use(
   new passportJwt.Strategy(jwtOptions, (payload, done) => {
     const user = db.getUser(payload.sub);
@@ -72,7 +79,7 @@ passport.use(
   })
 );
 
-interface User {
+interface GithubUser {
   id: string;
   displayName?: string;
   username: string;
@@ -81,24 +88,26 @@ interface User {
   emails: Array<{ value: string }>;
 }
 
-const callbackURL = `${BASE_URL}/auth/github/callback`;
+const githubCallbackUrl = `${BASE_URL}/auth/github/callback`;
+const googleCallbackUrl = `${BASE_URL}/auth/google/callback`;
+
 passport.use(
   new Strategy(
     {
-      clientID: clientId,
-      clientSecret,
-      callbackURL,
+      clientID: githubClientId,
+      clientSecret: githubClientSecret,
+      callbackURL: githubCallbackUrl,
       passReqToCallback: true
     },
     (
       req: Request,
       accessToken: string,
       refreshToken: string,
-      profile: User,
+      profile: GithubUser,
       done: VerifyCallback
     ) => {
       const cleanedProfile = {
-        id: profile.id,
+        id: `GITHUB_${profile.id}`,
         displayName: profile.displayName,
         userName: profile.username,
         emails: profile.emails,
@@ -110,6 +119,35 @@ passport.use(
     }
   )
 );
+
+passport.use(
+  new OAuth2Strategy(
+    {
+      clientID: googleClientId,
+      clientSecret: googleClientSecret,
+      callbackURL: googleCallbackUrl,
+      passReqToCallback: true
+    },
+    (
+      req: Request,
+      accessToken: string,
+      refreshToken: string,
+      profile: Profile,
+      done: VerifyCallback
+    ) => {
+      const cleanedProfile = {
+        id: `GOOGLE_${profile.id}`,
+        displayName: profile.displayName,
+        userName: profile.username,
+        emails: profile.emails,
+        photos: profile.photos
+      };
+      const user = db.getUser(profile.id) || db.insertUser(cleanedProfile);
+      return done(null, user);
+    }
+  )
+);
+
 passport.serializeUser<any, any>((user, done) => {
   done(null, user.id);
 });
@@ -155,6 +193,31 @@ app.get(
     );
   }
 );
+
+app.get(
+  "/auth/google",
+  (req, res, next) => {
+    res.cookie("originalUrl", req.headers.referer);
+    next();
+  },
+  passport.authenticate("google", { scope: ["profile"] })
+);
+app.get(
+  "/auth/google/callback",
+  passport.authenticate("google", {
+    session: false
+  }),
+  (req, res) => {
+    const token = generateAccessToken(req.user.id);
+    res.cookie("jwt", token, { httpOnly: true });
+    res.redirect(
+      !req.cookies.originalUrl || req.cookies.originalUrl === "undefined"
+        ? "/"
+        : req.cookies.originalUrl
+    );
+  }
+);
+
 app.get("/auth/logout", (req, res) => {
   req.logout();
   res
