@@ -1248,6 +1248,14 @@
     "@types/passport" "*"
     "@types/passport-oauth2" "*"
 
+"@types/passport-google-oauth@^1.0.39":
+  version "1.0.39"
+  resolved "https://registry.yarnpkg.com/@types/passport-google-oauth/-/passport-google-oauth-1.0.39.tgz#af0e9035a1c3e03849d86baabfcec4c210ab49d1"
+  integrity sha512-Gtzju0dYVt3gW4g3a21NJjA73q18PydJNE3PlETQXbK/dd2/rvDLNC4SrEiGv7bS+fX9cvyDckqH+g49zYmDrw==
+  dependencies:
+    "@types/express" "*"
+    "@types/passport" "*"
+
 "@types/passport-jwt@^3.0.1":
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/@types/passport-jwt/-/passport-jwt-3.0.1.tgz#bc4c2610815565de977ea1a580c047d71c646084"
@@ -8513,6 +8521,28 @@ passport-github2@^0.1.11:
   dependencies:
     passport-oauth2 "1.x.x"
 
+passport-google-oauth1@1.x.x:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/passport-google-oauth1/-/passport-google-oauth1-1.0.0.tgz#af74a803df51ec646f66a44d82282be6f108e0cc"
+  integrity sha1-r3SoA99R7GRvZqRNgigr5vEI4Mw=
+  dependencies:
+    passport-oauth1 "1.x.x"
+
+passport-google-oauth20@1.x.x:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/passport-google-oauth20/-/passport-google-oauth20-1.0.0.tgz#3b960e8a1d70d1dbe794615c827c68c40392a5d0"
+  integrity sha1-O5YOih1w0dvnlGFcgnxoxAOSpdA=
+  dependencies:
+    passport-oauth2 "1.x.x"
+
+passport-google-oauth@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/passport-google-oauth/-/passport-google-oauth-1.0.0.tgz#65f50633192ad0627a18b08960077109d84eb76d"
+  integrity sha1-ZfUGMxkq0GJ6GLCJYAdxCdhOt20=
+  dependencies:
+    passport-google-oauth1 "1.x.x"
+    passport-google-oauth20 "1.x.x"
+
 passport-jwt@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/passport-jwt/-/passport-jwt-4.0.0.tgz#7f0be7ba942e28b9f5d22c2ebbb8ce96ef7cf065"
@@ -8520,6 +8550,15 @@ passport-jwt@^4.0.0:
   dependencies:
     jsonwebtoken "^8.2.0"
     passport-strategy "^1.0.0"
+
+passport-oauth1@1.x.x:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/passport-oauth1/-/passport-oauth1-1.1.0.tgz#a7de988a211f9cf4687377130ea74df32730c918"
+  integrity sha1-p96YiiEfnPRoc3cTDqdN8ycwyRg=
+  dependencies:
+    oauth "0.9.x"
+    passport-strategy "1.x.x"
+    utils-merge "1.x.x"
 
 passport-oauth2@1.x.x:
   version "1.4.0"

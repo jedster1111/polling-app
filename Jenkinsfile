@@ -13,8 +13,10 @@ pipeline {
     }
 
     environment {
-        CLIENT_ID = credentials('CLIENT_ID')
-        CLIENT_SECRET = credentials('CLIENT_SECRET')
+        GITHUB_CLIENT_ID = credentials('DEV_GITHUB_CLIENT_ID')
+        GITHUB_CLIENT_SECRET = credentials('DEV_GITHUB_CLIENT_SECRET')
+        GOOGLE_CLIENT_ID = credentials('GOOGLE_CLIENT_ID')
+        GOOGLE_CLIENT_SECRET = credentials('GOOGLE_CLIENT_SECRET')
         SECRET_KEY = credentials('SECRET_KEY')
         TEST_USERNAME = credentials('TEST_USERNAME')
         TEST_PASSWORD = credentials('TEST_PASSWORD')
@@ -78,7 +80,7 @@ pipeline {
                     }
                     steps {
                         echo "Deploying commit ${GIT_COMMIT} to dev server"
-                        sh "docker run -v /database/dev:/usr/src/app/database -e CLIENT_ID -e CLIENT_SECRET -e SECRET_KEY -e VIRTUAL_HOST=dev.pollingapp.jedthompson.co.uk -e LETSENCRYPT_HOST=dev.pollingapp.jedthompson.co.uk -e LETSENCRYPT_EMAIL=jedster1111@hotmail.co.uk -e POLLING_APP_URL=${DEV_URL} --restart=on-failure --name pollingappdev --net docker-compose_default -d ${imageId}"
+                        sh "docker run -v /database/dev:/usr/src/app/database -e GITHUB_CLIENT_ID -e GITHUB_CLIENT_SECRET -e GOOGLE_CLIENT_ID -e GOOGLE_CLIENT_SECRET -e SECRET_KEY -e VIRTUAL_HOST=dev.pollingapp.jedthompson.co.uk -e LETSENCRYPT_HOST=dev.pollingapp.jedthompson.co.uk -e LETSENCRYPT_EMAIL=jedster1111@hotmail.co.uk -e POLLING_APP_URL=${DEV_URL} --restart=on-failure --name pollingappdev --net docker-compose_default -d ${imageId}"
                         echo 'Deployment succesful! Should be accessible at dev.pollingapp.jedthompson.co.uk'
                     }
                 }
@@ -98,8 +100,10 @@ pipeline {
         stage ('Prod deploy') {
             environment {
                 DOCKERHUB_CREDS = credentials('DOCKERHUB_CREDS')
-                CLIENT_ID = credentials('PROD_CLIENT_ID')
-                CLIENT_SECRET = credentials('PROD_CLIENT_SECRET')
+                GITHUB_CLIENT_ID = credentials('PROD_GITHUB_CLIENT_ID')
+                GITHUB_CLIENT_SECRET = credentials('PROD_GITHUB_CLIENT_SECRET')
+                GOOGLE_CLIENT_ID = credentials('GOOGLE_CLIENT_ID')
+                GOOGLE_CLIENT_SECRET = credentials('GOOGLE_CLIENT_SECRET')
                 POLLING_APP_URL = 'https://pollingapp.jedthompson.co.uk'
             }
             when {

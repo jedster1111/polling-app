@@ -1,9 +1,13 @@
-import { Avatar, Menu } from "antd";
+import { Avatar, Icon, Menu } from "antd";
 import * as React from "react";
 import { NavLink } from "react-router-dom";
 import { User } from "../../types";
 import NamespaceDisplay from "../polls-list/NamespaceDisplay";
-import NavBarButton from "./AuthButtons";
+import {
+  GithubLoginButton,
+  GoogleLoginButton,
+  LogoutButton
+} from "./AuthButtons";
 
 interface NavBarProps {
   location: string;
@@ -11,7 +15,8 @@ interface NavBarProps {
   isLoading: boolean;
   userData: User;
   layout: "horizontal" | "inline";
-  handleLogin: () => void;
+  handleGithubLogin: () => void;
+  handleGoogleLogin: () => void;
   handleLogout: () => void;
 }
 
@@ -20,7 +25,8 @@ const NavBar: React.SFC<NavBarProps> = ({
   isLoggedIn,
   isLoading,
   userData,
-  handleLogin,
+  handleGithubLogin,
+  handleGoogleLogin,
   handleLogout,
   layout
 }) => {
@@ -47,15 +53,6 @@ const NavBar: React.SFC<NavBarProps> = ({
             Create a Poll
           </NavLink>
         </Menu.Item>
-        <Menu.Item>
-          {isLoading ? (
-            <NavBarButton type="Loading" />
-          ) : isLoggedIn ? (
-            <NavBarButton type="Logout" handleClick={handleLogout} />
-          ) : (
-            <NavBarButton type="Login" handleClick={handleLogin} />
-          )}
-        </Menu.Item>
         {isLoggedIn && (
           <Menu.Item>
             <a href={userData.profileUrl} target="_blank">
@@ -65,6 +62,27 @@ const NavBar: React.SFC<NavBarProps> = ({
               />
             </a>
           </Menu.Item>
+        )}
+        {isLoggedIn ? (
+          <Menu.Item>
+            <LogoutButton handleClick={handleLogout} />
+          </Menu.Item>
+        ) : (
+          <Menu.SubMenu
+            title={
+              <span>
+                Login
+                <Icon type="login" style={{ marginLeft: "6px" }} />
+              </span>
+            }
+          >
+            <Menu.Item>
+              <GithubLoginButton handleClick={handleGithubLogin} />
+            </Menu.Item>
+            <Menu.Item>
+              <GoogleLoginButton handleClick={handleGoogleLogin} />
+            </Menu.Item>
+          </Menu.SubMenu>
         )}
         <NamespaceDisplay />
       </Menu>

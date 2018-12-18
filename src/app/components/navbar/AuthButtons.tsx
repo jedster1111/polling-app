@@ -1,39 +1,28 @@
 import { Button, Icon } from "antd";
 import * as React from "react";
 
-type ButtonTypes = "Login" | "Logout" | "Loading";
+export const GithubLoginButton: React.SFC<{ handleClick: () => void }> = ({
+  handleClick
+}) => (
+  <Button onClick={handleClick} className="githubLoginButton">
+    Github
+    <Icon type="github" />
+  </Button>
+);
 
-interface NavBarButtonProps {
-  handleClick?: () => void;
-  type: ButtonTypes;
-}
+export const GoogleLoginButton: React.SFC<{ handleClick: () => void }> = ({
+  handleClick
+}) => (
+  <Button onClick={handleClick} className="googleLoginButton">
+    Google
+    <Icon type="google" />
+  </Button>
+);
 
-const NavBarButton: React.SFC<NavBarButtonProps> = ({ handleClick, type }) => {
-  const icon =
-    type === "Login" ? (
-      <Icon type="github" />
-    ) : type === "Loading" ? (
-      <Icon type="loading" />
-    ) : (
-      undefined
-    );
-  return (
-    <Button
-      onClick={handleClick}
-      className={
-        type === "Login"
-          ? "loginButton"
-          : type === "Logout"
-          ? "logoutButton"
-          : type === "Loading"
-          ? "loggedInLoading"
-          : undefined
-      }
-    >
-      {type}
-      {icon}
-    </Button>
-  );
-};
-
-export default NavBarButton;
+export const LogoutButton: React.SFC<{ handleClick: () => void }> = ({
+  handleClick
+}) => (
+  <Button onClick={handleClick} className="logoutButton">
+    Logout
+  </Button>
+);
