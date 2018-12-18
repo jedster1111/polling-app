@@ -114,7 +114,8 @@ passport.use(
         photos: profile.photos,
         profileUrl: profile.profileUrl
       };
-      const user = db.getUser(profile.id) || db.insertUser(cleanedProfile);
+      const user =
+        db.getUser(`GITHUB_${profile.id}`) || db.insertUser(cleanedProfile);
       return done(null, user);
     }
   )
@@ -142,7 +143,8 @@ passport.use(
         emails: profile.emails,
         photos: profile.photos
       };
-      const user = db.getUser(profile.id) || db.insertUser(cleanedProfile);
+      const user =
+        db.getUser(`GOOGLE_${profile.id}`) || db.insertUser(cleanedProfile);
       return done(null, user);
     }
   )
