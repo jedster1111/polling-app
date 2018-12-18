@@ -47,14 +47,14 @@ class NavBarContainer extends React.Component<NavBarContainerProps, State> {
 
   componentDidMount() {
     window.addEventListener("resize", this.handleResize);
-    setTimeout(this.handleResize, 1000);
   }
 
   componentWillUnmount() {
     window.removeEventListener("resize", this.handleResize);
   }
 
-  handleLogin = () => (window.location.href = "/auth/github");
+  handleGithubLogin = () => (window.location.href = "/auth/github");
+  handleGoogleLogin = () => (window.location.href = "/auth/google");
   handleLogout = () => (window.location.href = "/auth/logout");
 
   render() {
@@ -65,7 +65,8 @@ class NavBarContainer extends React.Component<NavBarContainerProps, State> {
         isLoading={this.props.isLoading}
         isLoggedIn={this.props.isLoggedIn}
         userData={this.props.userData}
-        handleLogin={this.handleLogin}
+        handleGithubLogin={this.handleGithubLogin}
+        handleGoogleLogin={this.handleGoogleLogin}
         handleLogout={this.handleLogout}
         location={location}
       />
