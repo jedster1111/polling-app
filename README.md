@@ -2,7 +2,7 @@
 
 An application to create and vote on polls, written in Typescript.
 
-[See the live version here.](https://polling-app-jed.herokuapp.com)
+[See the live version here.](https://pollingapp.jedthompson.co.uk)
 
 ![Polling app run through](https://s2.gifyu.com/images/runThrough.gif)
 
